@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "976324609510",
+    "project_id": "my-wallet-99fdf",
+    "storage_bucket": "my-wallet-99fdf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976324609510:android:62ceacf3c246006de4c227",
+        "android_client_info": {
+          "package_name": "com.traversal.my_wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976324609510-n7chclp3jhe9j9vfv508a7ah1h7b0tp8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traversal.my_wallet",
+            "certificate_hash": "e458bb9cb738df9c4cc7c495f17b1afa3c642390"
+          }
+        },
+        {
+          "client_id": "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdGnZegndZF2qOWwWA_RPrzC9iQvrydPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976324609510-ilctc0qqdoj7o7j52ggu0j38pe04h3d5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
