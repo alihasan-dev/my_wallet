@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../domain/left_navigation_icon_title_model.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
