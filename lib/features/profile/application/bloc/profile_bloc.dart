@@ -10,7 +10,7 @@ import '../../../../utils/check_connectivity.dart';
 part 'profile_event.dart';
 part 'profile_state.dart';
 
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
 
   bool idVisible = false;
   late DocumentReference firebaseDocReference;
@@ -25,6 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     checkConnectivity = CheckConnectivity();
     firebaseDocReference = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
     firebaseStorage = FirebaseStorage.instance.ref();
+
     ///Register Event Here
     on<ProfileUpdateEvent>(_onProfileUpdate);
     on<ProfileShowIdEvent>(_onProfileShowId);
@@ -45,16 +46,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     return super.close();
   }
 
-  void _onNameChange(ProfileNameChangeEvent event, Emitter emit){
-    if(event.text.isEmpty){
+  void _onNameChange(ProfileNameChangeEvent event, Emitter emit) {
+    if(event.text.isEmpty) {
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
     } else {
       emit(ProfileErrorNameState(message: AppStrings.emptyString));
     }
   }
 
-  void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit){
-    if(event.text.isNotEmpty){
+  void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
+    if(event.text.isNotEmpty) {
       if(event.text.length < 10){
         emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
       } else {
@@ -65,7 +66,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  void _onChooseImage(ProfileChooseImageEvent event, Emitter emit){
+  void _onChooseImage(ProfileChooseImageEvent event, Emitter emit) {
     selectedImagePath = event.imagePath;
     emit(ProfileChooseImageState(imagePath: selectedImagePath));
   }
@@ -83,7 +84,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             });
           });
         } catch (e) {
-          debugPrint('Unable to upload the image');
+          debugPrint(AppStrings.somethingWentWrong);
         }
       }
       await firebaseDocReference.update({
@@ -98,11 +99,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     } 
   }
 
-  void _getProfileData(ProfileDataEvent event, Emitter emit){
+  void _getProfileData(ProfileDataEvent event, Emitter emit) {
     emit(ProfileSuccessState(profileData: profileData));
   }
 
-  void _onProfileShowId(ProfileShowIdEvent event, Emitter emit){
+  void _onProfileShowId(ProfileShowIdEvent event, Emitter emit) {
     idVisible = !idVisible;
     emit(ProfileShowIdState(isIdVisible: idVisible));
   }
@@ -119,8 +120,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return false;
     } else if(event.profileData['phone'].isNotEmpty) {
       var data = event.profileData['phone'];
-      if(data.length < 10) return false;
-      return true;
+      if(data.length < 10){
+        return false;
+      } else {
+        return true;
+      }
     } else if(!await checkConnectivity.hasConnection) {
       emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
@@ -128,4 +132,5 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return true;
     }
   }
+  
 }

@@ -4,6 +4,7 @@ import '../constants/app_color.dart';
 import '../constants/app_size.dart';
 
 class CustomExpandedWidget extends StatelessWidget {
+
   final TextStyle? textStyle;
   final String title;
   final Color? textColor;
@@ -18,12 +19,12 @@ class CustomExpandedWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Expanded(
       flex: flex ?? 1,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSize.s10, 
+          horizontal: AppSize.s10,
           vertical: AppSize.s15
         ),
         color: AppColors.white,
@@ -34,4 +35,5 @@ class CustomExpandedWidget extends StatelessWidget {
       ),
     );
   }
+
 }

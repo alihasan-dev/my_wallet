@@ -35,4 +35,5 @@ class CustomEmptyWidget extends StatelessWidget {
       ),
     );
   }
+
 }

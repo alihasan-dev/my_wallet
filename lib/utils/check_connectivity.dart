@@ -2,13 +2,16 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class CheckConnectivity {
 
-  ///Named internal constructor
+  static CheckConnectivity? _checkConnectivity;
+
+  ///named internal constructor
   CheckConnectivity._internal();
 
-  static final CheckConnectivity instance = CheckConnectivity._internal();
-
   ///factory constructor
-  factory CheckConnectivity() => instance;
+  factory CheckConnectivity() {
+    _checkConnectivity ??= CheckConnectivity._internal();
+    return _checkConnectivity!;
+  }
 
   ///method used to check the internet connection
   Future<bool> get hasConnection async {

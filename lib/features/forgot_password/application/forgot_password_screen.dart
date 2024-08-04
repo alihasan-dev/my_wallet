@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../features/forgot_password/application/bloc/forgot_password_event.dart';
 import '../../../features/forgot_password/application/bloc/forgot_password_bloc.dart';
+import '../../../features/forgot_password/application/bloc/forgot_password_state.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_images.dart';
 import '../../../constants/app_size.dart';
@@ -35,7 +37,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            // switch (state.runtimeType) {
+            //   case LoginFailedState:
+            //     hideLoadingDialog(context: context);
+            //     state = state as LoginFailedState;
+            //     showSnackBar(context: context, title: state.title, message: state.message);
+            //     break;
+            //   case LoginLoadingState:
+            //     showLoadingDialog(context: context);
+            //     break;
+            //   case LoginSuccessState:
+            //     hideLoadingDialog(context: context);
+            //     context.go(AppRoutes.homeScreen);
+            //     break;
+            //   default:
+            // }
+          },
           builder: (context, state) {
             switch (state.runtimeType) {
               case ForgotPasswordEmailFieldState:

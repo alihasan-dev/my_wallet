@@ -15,13 +15,13 @@ part 'login_state.dart';
 ///Business logic layer is notified of events/actions from the presentation layer and then communicates with 
 ///repository in order to build a new state for the presentation layer to consume.
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class LoginBloc extends Bloc<LoginEvent, LoginState>{
 
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth authInstance;
   late DocumentReference firebaseDocumentReference;
 
-  LoginBloc() : super(LoginInitialState()) {
+  LoginBloc() : super(LoginInitialState()){
     authInstance = FirebaseAuth.instance;
     checkConnectivity = CheckConnectivity();
     on<LoginSubmitEvent>(_onLoginSubmit);
@@ -63,7 +63,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onRememberMe(event, emit) => emit(LoginRememberMeState(event.value));
 
-  void _onEmailChange(event, emit) {
+  void _onEmailChange(LoginEmailChangeEvent event, Emitter emit) {
     if(event.email.isEmpty) {
       emit(LoginEmailFieldState(emailMessage: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
@@ -73,10 +73,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  void _onPasswordChange(event, emit) {
-    if(event.password.toString().isBlank){
+  void _onPasswordChange(LoginPasswordChangeEvent event, Emitter emit){
+    if(event.password.toString().isBlank) {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
-    } else  if(event.password.toString().length < 8){
+    } else  if(event.password.toString().length < 8) {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.invalidPassword));
     } else {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyString));
@@ -84,7 +84,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   //method used to show and hide password
-  void _onShowHidePassword(event, emit) {
+  void _onShowHidePassword(LoginShowPasswordEvent event, Emitter emit){
     var temp = event.isVisible ? false : true;
     emit(LoginPasswordVisibilityState(temp));
   }

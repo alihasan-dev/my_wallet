@@ -19,15 +19,15 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     authInstance = FirebaseAuth.instance;
     collectionReference = FirebaseFirestore.instance.collection('users');
     checkConnectivity = CheckConnectivity();
-    on<SignupSubmitEvent>(onSignupSubmit);
+    on<SignupSubmitEvent>(_onSignupSubmit);
     on<SignupEmailChangeEvent>(_onEmailChange);
     on<SignupNameChangeEvent>(_onNameChange);
     on<SignupPasswordChangeEvent>(_onPasswordChange);
     on<SignupShowPasswordEvent>(_onShowHidePassword);
   }
 
-  Future<void> onSignupSubmit(event, emit) async {
-    if(await validation(emit, name: event.name, email: event.email, password: event.password)) {
+  Future<void> _onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {
+    if(await validation(emit, name: event.name, email: event.email, password: event.password)){
       ///Show loading dialog
       emit(SignupLoadingState());
       try {
@@ -56,7 +56,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     }
   }
 
-  void _onEmailChange(event, emit) {
+  void _onEmailChange(SignupEmailChangeEvent event, Emitter emit) {
     if(event.email.isEmpty) {
       emit(SignupEmailFieldState(emailMessage: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
@@ -66,7 +66,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     }
   }
 
-  void _onNameChange(event, emit) {
+  void _onNameChange(SignupNameChangeEvent event, Emitter emit) {
     if(event.name.isEmpty) {
       emit(SignupNameFieldState(nameMessage: AppStrings.emptyName));
     } else {
@@ -74,7 +74,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     }
   }
 
-  void _onPasswordChange(event, emit){
+  void _onPasswordChange(SignupPasswordChangeEvent event, Emitter emit){
     if(event.password.toString().isBlank) {
       emit(SignupPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
     } else  if(event.password.toString().length < 8) {
@@ -84,13 +84,12 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     }
   }
 
-  void _onShowHidePassword(event, emit){
-    var temp = event.isVisible ? false : true;
-    emit(SignupPasswordVisibilityState(temp));
+  void _onShowHidePassword(SignupShowPasswordEvent event, Emitter emit) {
+    emit(SignupPasswordVisibilityState(!event.isVisible));
   }
 
 
-  Future<bool> validation(Emitter<SignupState> emit, {required String name, required String email, required String password}) async {
+  Future<bool> validation(Emitter emit, {required String name, required String email, required String password}) async {
     if(name.isBlank) {
       emit(SignupNameFieldState(nameMessage: AppStrings.emptyName));
       return false;

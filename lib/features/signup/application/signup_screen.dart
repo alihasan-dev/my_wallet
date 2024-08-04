@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../features/signup/application/bloc/signup_bloc.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/helper.dart';
@@ -15,7 +16,6 @@ import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
-
   const SignupScreen({super.key});
 
   @override
@@ -27,17 +27,25 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
   var nameTextController = TextEditingController();
   var emailTextController = TextEditingController();
   var passwordTextController = TextEditingController();
+  AppLocalizations? _localizations;
   var errorName = AppStrings.emptyString;
   var errorEmail = AppStrings.emptyString;
   var errorPassword = AppStrings.emptyString;
   bool showPassword = true;
 
   @override
+  void didChangeDependencies() {
+    _localizations = AppLocalizations.of(context)!;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context){
     return BlocProvider(
       create: (_) => SignupBloc(),
       child: Scaffold(
-        appBar: AppBar(toolbarHeight: 0),
+        appBar: AppBar(toolbarHeight: 0, backgroundColor: AppColors.primaryColor),
+        backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
         body: BlocConsumer<SignupBloc, SignupState>(
           listener: (context, state) {
             switch (state.runtimeType) {
@@ -83,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
                 Center(child: Image.asset(AppImages.appImage, height: 80, width: 80)),
                 const SizedBox(height: AppSize.s20),
                 CustomTextField(
-                  title: AppStrings.name,
+                  title: _localizations!.name,
                   isPasswordField: false,
                   isMandatory: true,
                   textEditingController: nameTextController,
@@ -93,7 +101,7 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
                 ),
                 const SizedBox(height: AppSize.s10),
                 CustomTextField(
-                  title: AppStrings.email,
+                  title: _localizations!.email,
                   isPasswordField: false,
                   isMandatory: true,
                   textEditingController: emailTextController,
@@ -103,7 +111,7 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
                 ),
                 const SizedBox(height: AppSize.s10),
                 CustomTextField(
-                  title: AppStrings.password,
+                  title: _localizations!.password,
                   isPasswordField: showPassword,
                   isMandatory: true,
                   textEditingController: passwordTextController,
@@ -115,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
                 ),
                 const SizedBox(height: AppSize.s24),
                 CustomButton(
-                  title: AppStrings.signup,
+                  title: _localizations!.signup,
                   titleSize: AppSize.s16, 
                   onTap: () => context.read<SignupBloc>().add(SignupSubmitEvent(name: nameTextController.text, email: emailTextController.text, password: passwordTextController.text))
                 ),
@@ -125,13 +133,13 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomText(
-                      title: '${AppStrings.alreadyHaveAccount}  ', 
-                      textStyle: getMediumStyle(color: AppColors.black)
+                      title: '${_localizations!.alreadyHaveAnAccount}  ', 
+                      textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black)
                     ),
                     CustomInkWellWidget(
                       onTap: () => context.pop(), 
                       widget: CustomText(
-                        title: AppStrings.login, 
+                        title: _localizations!.login, 
                         textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: AppColors.primaryColor)
                       ),
                     ),

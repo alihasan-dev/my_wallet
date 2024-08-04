@@ -22,6 +22,7 @@ class CustomCheckBoxWidget extends StatelessWidget {
       height: padding ?? AppSize.s20,
       child: Checkbox(
         activeColor: AppColors.primaryColor,
+        checkColor: AppColors.white,
         value: value, 
         onChanged: onChange
       ),

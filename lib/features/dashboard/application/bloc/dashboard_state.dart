@@ -1,6 +1,6 @@
 part of 'dashboard_bloc.dart';
 
-sealed class DashboardState {}
+abstract class DashboardState {}
 
 class DashboardInitialState extends DashboardState {}
 

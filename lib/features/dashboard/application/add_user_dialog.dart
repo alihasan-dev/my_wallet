@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/dashboard_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../utils/helper.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
@@ -9,29 +11,41 @@ import '../../../widgets/custom_text.dart';
 
 
 class AddUserDialog extends StatefulWidget {
+
   const AddUserDialog({super.key});
 
   @override
-  State<AddUserDialog> createState() => _AddUserDialogState();
+  State createState() => _AddUserDialogState();
 }
 
 class _AddUserDialogState extends State<AddUserDialog> {
 
-  var emailTextController = TextEditingController();
-  var nameTextController = TextEditingController();
+  late TextEditingController emailTextController;
+  late TextEditingController nameTextController;
   String errorName = '';
   String errorEmail = '';
   bool isFirstOpen = true;
+  AppLocalizations? _localizations;
+
+  @override
+  void initState() {
+    emailTextController = TextEditingController();
+    nameTextController = TextEditingController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    _localizations = AppLocalizations.of(context)!;
     return BlocProvider<DashboardBloc>(
       create: (context) => DashboardBloc(),
       child: AlertDialog(
         contentPadding: const EdgeInsets.all(AppSize.s15),
         insetPadding: const EdgeInsets.symmetric(horizontal: AppSize.s15),
-        backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s8)),
+        backgroundColor: Helper.isDark 
+        ? AppColors.dialogColorDark 
+        : AppColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
         content: BlocConsumer<DashboardBloc, DashboardState>(
           builder: (context, state){
             switch (state.runtimeType) {
@@ -58,8 +72,21 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       errorText: errorName.isNotEmpty
                       ? errorName
                       : null,
-                      label: const CustomText(title: 'Name *',textColor: AppColors.black),
-                      border: const OutlineInputBorder()
+                      label: CustomText(
+                        title: '${_localizations!.name} *',
+                        textColor: Helper.isDark 
+                        ? AppColors.white.withOpacity(0.8)
+                        : AppColors.black
+                      ),
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s10),
@@ -71,14 +98,30 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       errorText: errorEmail.isNotEmpty
                       ? errorEmail
                       : null,
-                      label: const CustomText(title: 'Email *',textColor: AppColors.black),
-                      border: const OutlineInputBorder()
+                      label: CustomText(
+                        title: '${_localizations!.email} *',
+                        textColor: Helper.isDark 
+                        ? AppColors.white.withOpacity(0.8)
+                        : AppColors.black
+                      ),
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s10),
                   CustomButton(
-                    title:  AppStrings.addUser, 
-                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(name: nameTextController.text, email: emailTextController.text))
+                    title: _localizations!.addUser, 
+                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
+                      name: nameTextController.text, 
+                      email: emailTextController.text
+                    ))
                   ),
                 ],
               ),

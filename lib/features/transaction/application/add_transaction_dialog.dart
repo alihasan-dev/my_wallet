@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../constants/app_color.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../constants/app_strings.dart';
@@ -9,15 +10,9 @@ import '../../../widgets/custom_button.dart';
 import '../../../utils/helper.dart';
 
 class AddTransactionDialog extends StatefulWidget {
-  
   final String userName;
   final String friendId;
-  
-  const AddTransactionDialog({
-    super.key, 
-    required this.userName, 
-    required this.friendId
-  });
+  const AddTransactionDialog({super.key, required this.userName, required this.friendId});
 
   @override
   State createState() => _AddTransactionDialogState();
@@ -30,18 +25,27 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
   bool isFirst = true;
   DateTime? transactionDate;
   String transactionType = AppStrings.transfer;
-  var amountTextController = TextEditingController();
-  var dateTextController = TextEditingController();
+  late TextEditingController amountTextController;
+  late TextEditingController dateTextController;
+  AppLocalizations? _localizations;
+
+  @override
+  void initState() {
+    amountTextController = TextEditingController();
+    dateTextController = TextEditingController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    _localizations = AppLocalizations.of(context)!;
     return BlocProvider<TransactionBloc>(
       create: (_) => TransactionBloc(userName: widget.userName, friendId: widget.friendId),
       child: AlertDialog(
         contentPadding: const EdgeInsets.all(AppSize.s15),
         insetPadding: const EdgeInsets.symmetric(horizontal: AppSize.s15),
-        backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s8)),
+        backgroundColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
         content: BlocConsumer<TransactionBloc, TransactionState>(
           builder: (context, state){
             switch (state.runtimeType) {
@@ -75,17 +79,32 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       ? AppStrings.emptyAmount
                       : null,
                       hintText: AppStrings.amount,
-                      label: const Text('${AppStrings.amount} *'),
-                      border: const OutlineInputBorder()
+                      label: Text('${_localizations!.amount} *'),
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),
                   InputDecorator(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       isDense: true,
-                      label: Text(AppStrings.transactionType),
-                      contentPadding: EdgeInsets.symmetric(vertical: AppSize.s4, horizontal: AppSize.s14),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: AppSize.s1)),
+                      label: Text(_localizations!.transferType),
+                      contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s4, horizontal: AppSize.s14),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                     child: DropdownButton(
                       value: transactionType,
@@ -93,6 +112,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       items: Helper.listTransactionType.map((String value) {
                         return DropdownMenuItem(value: value, child: Text(value));
                       }).toList(), 
+                      dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => context.read<TransactionBloc>().add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
                     ),
@@ -116,13 +136,21 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       ? AppStrings.emptyDate
                       : null,
                       hintText: AppStrings.emptyDate,
-                      label: const Text('${AppStrings.date} *'),
-                      border: const OutlineInputBorder()
+                      label: Text('${_localizations!.date} *'),
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s20),
                   CustomButton(
-                    title:  AppStrings.addTransaction, 
+                    title:  _localizations!.addTransaction, 
                     onTap: () => context.read<TransactionBloc>().add(TransactionAddEvent(
                       userName: widget.userName, 
                       date: transactionDate, 

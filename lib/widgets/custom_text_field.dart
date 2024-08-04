@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../utils/helper.dart';
 import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
@@ -49,27 +50,27 @@ class CustomTextField extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text: title, 
-                style: const TextStyle(
-                  color: AppColors.black
+                text: '  $title', 
+                style: TextStyle(
+                  color: Helper.isDark 
+                  ? AppColors.white.withOpacity(0.8) 
+                  : AppColors.black
                 ),
               ),
               TextSpan(
-                text: isMandatory == null || !isMandatory! 
-                ? '' 
-                : ' *', 
+                text: isMandatory == null || !isMandatory! ? '' : ' *', 
                 style: const TextStyle(color: AppColors.red)
               ),
             ],
           ),
         ),
-        const SizedBox(height: AppSize.s2),
+        const SizedBox(height: AppSize.s4),
         TextField(
           obscureText: isPasswordField,
           obscuringCharacter: '●',
           controller: textEditingController,
           cursorWidth: 1.5,
-          style: getMediumStyle(color: AppColors.black),
+          style: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black),
           textInputAction: textInputAction,
           readOnly: readOnly == null || !readOnly! ? false : true,
           // maxLines: maxLines,
@@ -78,14 +79,12 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: title,
             counterText: '',
-            hintStyle: getRegularStyle(color: AppColors.black),
+            hintStyle: getRegularStyle(color: Helper.isDark ? AppColors.grey : AppColors.black),
             isDense: true,
             enabled: isEnabled == null || isEnabled! ? true : false,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: AppSize.s14, 
-              horizontal: AppSize.s10
-            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s14, horizontal: AppSize.s10),
             border: const OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05)),
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black)),
             suffixIcon: onShowPassword == null
             ? null
             : InkWell(

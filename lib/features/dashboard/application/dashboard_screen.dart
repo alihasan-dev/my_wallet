@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../widgets/custom_outlined_button.dart';
@@ -17,26 +18,23 @@ import '../../../utils/helper.dart';
 import '../../../widgets/custom_text_field.dart';
 import 'add_user_dialog.dart';
 
-class DashboardScreen extends StatefulWidget {
-
+class DashboardScreen extends StatefulWidget{
   const DashboardScreen({super.key});
 
   @override
-  State createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   List<UserModel> allUsers = [];
   bool isLoading = true;
-  late TextEditingController emailTextController;
-  late TextEditingController nameTextController;
+  AppLocalizations? _localizations;
 
   @override
-  void initState() {
-    emailTextController = TextEditingController();
-    nameTextController = TextEditingController();
-    super.initState();
+  void didChangeDependencies() {
+    _localizations = AppLocalizations.of(context)!;
+    super.didChangeDependencies();
   }
 
   @override
@@ -49,11 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
             case DashboardFailedState:
               hideLoadingDialog(context: context);
               state = state as DashboardFailedState;
-              showSnackBar(
-                context: context, 
-                title: state.title, 
-                message: state.message
-              );
+              showSnackBar(context: context, title: state.title, message: state.message);
               break;
             case DashboardAllUserState:
               isLoading = false;
@@ -78,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
               isLoading
               ? const Center(child: CircularProgressIndicator())
               : allUsers.isNotEmpty
-              ? ListView.separated(
+              ? ListView.builder(
                   itemCount: allUsers.length,
                   padding: EdgeInsets.zero,
                   itemBuilder: (_, index){
@@ -86,14 +80,23 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                     return InkWell(
                       onTap: () => context.push(AppRoutes.transactionScreen, extra: data),
                       child: Ink(
-                        padding: const EdgeInsets.all(AppSize.s18),
-                        color: AppColors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSize.s18,
+                          vertical: AppSize.s15,
+                        ),
+                        decoration: const BoxDecoration(
+                          border: Border(bottom: BorderSide(color: AppColors.grey, width: AppSize.s05))
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomText(
                               title: data.name, 
-                              textStyle: getSemiBoldStyle(color: AppColors.black)
+                              textStyle: getSemiBoldStyle(
+                                color: Helper.isDark 
+                                ? AppColors.white.withOpacity(0.9) 
+                                : AppColors.black
+                              ),
                             ),
                             SizedBox(
                               width: AppSize.s40,
@@ -101,13 +104,16 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                               child: IconButton(
                                 onPressed: () async {
                                   var deleteStatus = await showUserInfoSheet(context, data);
-                                  if(deleteStatus) {
-                                    if(context.mounted && await confirmationDialog(context: context, title: AppStrings.deleteUser, content: "${AppStrings.deleteUserMsg} ${data.name}")){
+                                  if(deleteStatus){
+                                    if(context.mounted && await confirmationDialog(context: context, title: _localizations!.deleteUser, content: "${_localizations!.deleteUserMsg} ${data.name}", localizations: _localizations!)){
                                       context.read<DashboardBloc>().add(DashboardDeleteUserEvent(docId: data.userId));
                                     }
                                   }
                                 },
-                                icon: const Icon(Icons.info_outline_rounded, color: AppColors.primaryColor),
+                                icon: const Icon(
+                                  Icons.info_outline_rounded, 
+                                  color: AppColors.primaryColor
+                                ),
                               ),
                             ),
                           ],
@@ -115,13 +121,8 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                       ),
                     );
                   },
-                  separatorBuilder: (_,__) => const Divider(
-                    color: AppColors.grey, 
-                    thickness: AppSize.s05, 
-                    height: AppSize.s05
-                  ),
                 )
-              : const CustomEmptyWidget(title: AppStrings.noUserFound, icon: AppIcons.personIcon),
+              : const CustomEmptyWidget(title: AppStrings.noUserFound,icon: AppIcons.personIcon),
               Visibility(
                 visible: !isLoading,
                 child: Positioned(
@@ -132,7 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                     borderRadius: BorderRadius.circular(AppSize.s30),
                     child: Ink(
                       child: Container(
-                        padding: const EdgeInsets.all(AppSize.s16),
+                        padding: const EdgeInsets.all(AppSize.s15),
                         decoration: const BoxDecoration(
                           color: AppColors.primaryColor,
                           shape: BoxShape.circle
@@ -140,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                         child: const Icon(
                           AppIcons.addIcon, 
                           color: AppColors.white, 
-                          size: AppSize.s26
+                          size: AppSize.s28
                         ),
                       ),
                     ),
@@ -155,46 +156,44 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
   }
 
   Future<bool> showUserInfoSheet(BuildContext mContext, UserModel userData) async {
-    emailTextController.text = userData.email;
-    nameTextController.text = userData.name;
     return await showModalBottomSheet(
       context: mContext, 
       builder: (_) {
         return Container(
           width: context.screenWidth,
-          color: AppColors.white,
+          color: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
           child: ListView(
             shrinkWrap: true,
             padding: const EdgeInsets.all(AppSize.s20),
             children: [
               CustomText(
-                title: AppStrings.userProfile, 
+                title: _localizations!.userProfile, 
                 textStyle: getMediumStyle(
-                  color: AppColors.black, 
+                  color: Helper.isDark ? AppColors.white : AppColors.black, 
                   fontSize: AppSize.s16
                 ),
               ),
               const SizedBox(height: AppSize.s20),
               CustomTextField(
-                title: AppStrings.email, 
+                title: _localizations!.email, 
                 isPasswordField: false, 
                 isEnabled: false,
                 isMandatory: true,
-                textEditingController: emailTextController,
+                textEditingController: TextEditingController(text: userData.email),
               ),
               CustomTextField(
-                title: AppStrings.name, 
+                title: _localizations!.name, 
                 isPasswordField: false, 
                 isEnabled: false,
                 isMandatory: true,
-                textEditingController: nameTextController,
+                textEditingController: TextEditingController(text: userData.name),
               ),
               Row(
                 children: [
                   Expanded(
                     child: CustomOutlinedButton(
                       onPressed: () => context.pop(true),
-                      title: AppStrings.deleteUser, 
+                      title: _localizations!.deleteUser, 
                       icon: AppIcons.deleteIcon,
                       isSelected: true,
                       foregroundColor: AppColors.red,

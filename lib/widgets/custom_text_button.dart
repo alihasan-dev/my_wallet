@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wallet/utils/helper.dart';
 import '../constants/app_color.dart';
 import '../constants/app_size.dart';
 import '../constants/app_style.dart';
@@ -48,7 +49,7 @@ class CustomTextButton extends StatelessWidget {
             icon, 
             size: AppSize.s22, 
             color: isSelected == null || !isSelected! 
-            ? const Color.fromRGBO(0, 0, 0, 1) 
+            ? Helper.isDark ? AppColors.grey : AppColors.black 
             : foregroundColor ?? AppColors.primaryColor
           ),
           const SizedBox(width: AppSize.s14),
@@ -56,7 +57,7 @@ class CustomTextButton extends StatelessWidget {
             title: title, 
             textStyle: getMediumStyle(
               color: isSelected == null || !isSelected! 
-              ? AppColors.black 
+              ? Helper.isDark ? AppColors.grey : AppColors.black 
               : foregroundColor ?? AppColors.primaryColor
             ),
           ),

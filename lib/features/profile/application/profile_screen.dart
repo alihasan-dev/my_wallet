@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -21,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> with Helper {
@@ -31,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
   late TextEditingController phoneTextController;
   late TextEditingController addressTextController;
   late TextEditingController userIdTextController;
+  AppLocalizations? _localizations;
   
   bool showProfileId = false;
   String imageUrl = '';
@@ -55,6 +57,12 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
     addressTextController = TextEditingController();
     userIdTextController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _localizations = AppLocalizations.of(context)!;
+    super.didChangeDependencies();
   }
   
   @override
@@ -148,10 +156,10 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                       onTap: () => showImagePickerSheet(context),
                       child: Container(
                         padding: const EdgeInsets.all(AppSize.s6),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.white,
-                          boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+                          color: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
+                          boxShadow: const [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
                         ),
                         child: const Icon(Icons.edit, size: AppSize.s18),
                       ),
@@ -161,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               ),
               const SizedBox(height: AppSize.s15),
               CustomTextField(
-                title: AppStrings.userId, 
+                title: _localizations!.userId, 
                 isPasswordField: !showProfileId, 
                 textEditingController: userIdTextController,
                 readOnly: true,
@@ -170,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 errorText: errorUserId,
               ),
               CustomTextField(
-                title: AppStrings.email, 
+                title: _localizations!.email, 
                 isPasswordField: false, 
                 isEnabled: false,
                 isMandatory: true,
@@ -178,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 errorText: errorEmail,
               ),
               CustomTextField(
-                title: AppStrings.name, 
+                title: _localizations!.name, 
                 isPasswordField: false, 
                 isMandatory: true,
                 textEditingController: nameTextController,
@@ -186,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 onChange: (value) => context.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
               ),
               CustomTextField(
-                title: AppStrings.phone, 
+                title: _localizations!.phone, 
                 isPasswordField: false, 
                 textEditingController: phoneTextController,
                 errorText: errorPhone,
@@ -195,14 +203,14 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 onChange: (value) => context.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
               ),
               CustomTextField(
-                title: AppStrings.address, 
+                title: _localizations!.address, 
                 isPasswordField: false, 
                 textEditingController: addressTextController,
                 errorText: errorAddress
               ),
               const SizedBox(height: AppSize.s8),
               CustomButton(
-                title: AppStrings.update, 
+                title: _localizations!.update, 
                 onTap: () => context.read<ProfileBloc>().add(ProfileUpdateEvent(profileData: {
                   'user_id': userIdTextController.text,
                   'email': emailTextController.text,
@@ -223,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
             case ProfileSuccessState:
               hideLoadingDialog(context: context);
               if(isFetchProfileData) {
-                showSnackBar(context: context, title: AppStrings.profileUpdatedMsg, color: AppColors.green);
+                showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
               } else {
                 isFetchProfileData = true;
               }
@@ -241,15 +249,19 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       builder: (_) {
         return Container(
           width: context.screenWidth,
-          color: AppColors.white,
+          color: Helper.isDark
+          ? AppColors.backgroundColorDark
+          : AppColors.white,
           child: ListView(
             shrinkWrap: true,
             padding: const EdgeInsets.all(AppSize.s20),
             children: [
               CustomText(
-                title: AppStrings.selectImage, 
+                title: _localizations!.selectImg, 
                 textStyle: getMediumStyle(
-                  color: AppColors.black, 
+                  color: Helper.isDark
+                  ? AppColors.white.withOpacity(0.8)
+                  : AppColors.black, 
                   fontSize: AppSize.s16
                 ),
               ),
@@ -265,18 +277,25 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                         mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                       }
                     },
-                    child: const Column(
+                    child: Column(
                       children: [
                         CircleAvatar(
                           radius: AppSize.s26,
                           child: Icon(
                             Icons.camera, 
                             size: AppSize.s28, 
-                            color: AppColors.primaryColor
+                            color: Helper.isDark
+                            ? AppColors.white.withOpacity(0.8)
+                            : AppColors.primaryColor
                           ),
                         ),
-                        SizedBox(height: AppSize.s4),
-                        CustomText(title: AppStrings.camera, textColor: AppColors.black)
+                        const SizedBox(height: AppSize.s4),
+                        CustomText(
+                          title: _localizations!.camera, 
+                          textColor: Helper.isDark
+                          ? AppColors.white.withOpacity(0.8)
+                          : AppColors.black,
+                        ),
                       ],
                     ),
                   ),
@@ -284,23 +303,30 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                   InkWell(
                     onTap: () async {
                       context.pop();
-                      var data = await pickImage(imageSource: ImageSource.gallery);
+                      String data = await pickImage(imageSource: ImageSource.gallery);
                       if(data.isNotEmpty && context.mounted){
                         mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                       }
                     },
-                    child: const Column(
+                    child: Column(
                       children: [
                         CircleAvatar(
                           radius: AppSize.s26,
                           child: Icon(
                             Icons.photo, 
                             size: AppSize.s28, 
-                            color: AppColors.primaryColor
+                            color: Helper.isDark
+                            ? AppColors.white.withOpacity(0.8)
+                            : AppColors.primaryColor
                           ),
                         ),
-                        SizedBox(height: AppSize.s4),
-                        CustomText(title: AppStrings.gallery, textColor: AppColors.black)
+                        const SizedBox(height: AppSize.s4),
+                        CustomText(
+                          title: _localizations!.gallery, 
+                          textColor: Helper.isDark
+                          ? AppColors.white.withOpacity(0.8)
+                          : AppColors.black,  
+                        ),
                       ],
                     ),
                   ),
@@ -325,4 +351,5 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       return AppStrings.emptyString;
     }
   }
+
 }

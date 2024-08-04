@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_strings.dart';
 import '../constants/app_color.dart';
@@ -12,6 +13,7 @@ import '../widgets/custom_text.dart';
 mixin Helper {
 
   bool isLoadingVisible = false;
+  static bool isDark = false;
 
   void showSnackBar({
     required BuildContext context, 
@@ -55,7 +57,10 @@ mixin Helper {
                 children: [
                   CustomText(
                     title: title,
-                    textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: color ?? AppColors.red),
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppSize.s14,
+                      color: color ?? AppColors.red
+                    ),
                   ),
                   Visibility(
                     visible: message != null,
@@ -99,7 +104,9 @@ mixin Helper {
                 filter: ImageFilter.blur(
                   sigmaX: 2.5,sigmaY: 2.5,
                 ),
-                child: const Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
+                child: const Center(
+                  child: CircularProgressIndicator(color: AppColors.primaryColor)
+                ),
               ),
             ),
           );
@@ -122,26 +129,44 @@ mixin Helper {
   Future<bool> confirmationDialog({
     required BuildContext context,
     required String title,
-    required String content
+    required String content,
+    required AppLocalizations localizations
   }) async {
     return await showDialog(
       context: context, 
       builder: (_) => AlertDialog(
-        title: CustomText(title: title, textStyle: getBoldStyle(color: AppColors.black)),
-        content: CustomText(title: content, textStyle: getSemiBoldStyle(color: AppColors.black)),
+        backgroundColor: Helper.isDark 
+        ? AppColors.dialogColorDark 
+        : AppColors.white,
+        title: CustomText(
+          title: title, textStyle: 
+          getBoldStyle(
+            color: Helper.isDark 
+            ? AppColors.white.withOpacity(0.9) 
+            : AppColors.black
+          ),
+        ),
+        content: CustomText(
+          title: content, 
+          textStyle: getSemiBoldStyle(
+            color: Helper.isDark 
+            ? AppColors.white.withOpacity(0.9) 
+            : AppColors.black
+          ),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: CustomText(
-              title: AppStrings.cancel, 
+              title: localizations.cancel, 
               textStyle: getSemiBoldStyle(color: AppColors.red)
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true), 
             child: CustomText(
-              title: AppStrings.yes, 
+              title: localizations.yes, 
               textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
             ),
           ),

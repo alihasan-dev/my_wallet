@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_color.dart';
-import '../../constants/app_style.dart';
+import 'package:my_wallet/utils/helper.dart';
+import '../constants/app_color.dart';
+import '../constants/app_style.dart';
 import '../constants/app_size.dart';
 
 class CustomText extends StatelessWidget {
@@ -26,8 +27,8 @@ class CustomText extends StatelessWidget {
       textAlign: textAlign ?? TextAlign.start,
       style: textStyle ?? getRegularStyle(
         fontSize: textSize ?? AppSize.s14,
-        color: textColor ?? AppColors.white
-      ),
+        color: textColor ?? (Helper.isDark ? AppColors.white : AppColors.black)
+      )
     );
   }
 }

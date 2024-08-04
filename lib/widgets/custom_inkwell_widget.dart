@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomInkWellWidget extends StatelessWidget {
+
   final Widget widget;
   final Function()? onTap;
 
@@ -11,10 +12,11 @@ class CustomInkWellWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: widget,
     );
   }
+
 }

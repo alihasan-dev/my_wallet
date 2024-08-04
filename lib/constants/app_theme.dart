@@ -26,7 +26,6 @@ ThemeData get getAppTheme {
       shadowColor: Colors.grey,
       titleTextStyle: getRegularStyle(color: Colors.white),
     ),
-
     //Buttom theme
     bottomSheetTheme: const BottomSheetThemeData(
       shape: StadiumBorder(),

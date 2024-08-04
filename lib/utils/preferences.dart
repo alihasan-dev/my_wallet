@@ -7,7 +7,7 @@ class Preferences {
 
   static Future<SharedPreferences> get _instance async => _sharedPreferences ?? await SharedPreferences.getInstance();
 
-  static Future<void> init() async => _sharedPreferences = await _instance;
+  Future<void> init() async => _sharedPreferences = await _instance;
 
   ///set string value
   static void setString({required String key, required String value}) => _sharedPreferences!.setString(key, value);
@@ -18,7 +18,6 @@ class Preferences {
   static void setBool({required String key, required bool value}) => _sharedPreferences!.setBool(key, value);
   ///get bool value
   static bool getBool({required String key}) => _sharedPreferences!.getBool(key) ?? false;
-  
   ///clear data using key
   static Future<bool> clearPreferences({required String key}) async => await _sharedPreferences!.remove(key);
 }

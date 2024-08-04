@@ -11,4 +11,12 @@ class AppColors {
   static const Color green = Colors.green;
   static const Color amber = Colors.amber;
   static const Color transparent = Colors.transparent;
+
+  ///Dark Theme Color
+  static const Color headerColorDark = Color(0xFF3A3A3C);
+  static const Color backgroundColorDark = Color(0xFF212121);
+  static const Color topDarkColor = Color.fromARGB(255, 40, 40, 40);
+  static const Color contentColorDark = Color(0xFF2C2C2E);
+  static const Color dialogColorDark = Color(0xFF303030);
+  
 }

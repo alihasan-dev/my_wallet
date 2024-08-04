@@ -1,6 +1,6 @@
 part of 'dashboard_bloc.dart';
 
-sealed class DashboardEvent {}
+abstract class DashboardEvent {}
 
 class DashboardInitialEvent extends DashboardEvent {}
 

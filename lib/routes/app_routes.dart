@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../features/transaction/application/bloc/transaction_bloc.dart';
 import '../features/forgot_password/application/bloc/forgot_password_bloc.dart';
 import '../features/home/application/bloc/home_bloc.dart';
 import '../features/login/application/bloc/login_bloc.dart';
@@ -11,6 +13,7 @@ import '../constants/app_strings.dart';
 import '../features/login/application/login_screen.dart';
 import '../features/signup/application/signup_screen.dart';
 import '../features/transaction/application/transaction_screen.dart';
+import '../utils/helper.dart';
 import '../utils/preferences.dart';
 
 class AppRoutes {
@@ -23,17 +26,28 @@ class AppRoutes {
   static const String homeScreen = '/home_screen';
   static const String transactionScreen = '/transaction_screen';
   static const String forgotPasswordScreen = '/forgot_password_screen';
+  static const String appearanceScreen = '/appearance_screen';
 
   static final GoRouter router = GoRouter(
+    redirect: (context, state) {
+      var brightness = Theme.of(context).brightness;
+      if(brightness == Brightness.dark){
+        Helper.isDark = true;
+      } else {
+        Helper.isDark = false;
+      }
+      return null;
+    },
+    observers: [RouteObserver()],
     routes: [
       GoRoute(
         path: initialRoute,
-        builder: (_, __) {
+        builder: (BuildContext context, GoRouterState state) {
           if(Preferences.getString(key: AppStrings.prefUserId).isNotEmpty) {
             Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: true);
-            return const HomeScreen();
+            return BlocProvider(create: (_) => HomeBloc(), child: const HomeScreen());
           } else {
-            return const LoginScreen();
+            return BlocProvider(create: (_) => LoginBloc(), child: const LoginScreen());
           }
         }
       ),
@@ -57,10 +71,22 @@ class AppRoutes {
         path: transactionScreen,
         builder: (_, state) {
           var data = state.extra as UserModel;
-          return TransactionScreen(userModel: data);
+          return BlocProvider(create: (_) => TransactionBloc(userName: data.name, friendId: data.userId), child: TransactionScreen(userModel: data));
         }
-      ),
+      )
     ],
   );
 
+}
+
+class RouteObserver extends NavigatorObserver {
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    ///implement didPop
+  }
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    ///implement didPush
+  }
 }

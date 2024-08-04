@@ -21,7 +21,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final String friendId;
   bool amountAscending = true;
   bool typeAscending = true;
-  bool dateAscending = true;
+  bool dateAscending = false;
   String userId = '';
 
   TransactionBloc({required this.userName, required this.friendId}) : super(TransactionInitialState()){
@@ -61,6 +61,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _allTransactionData(event, emit){
+    if(listTransactionResult.isNotEmpty){
+      listTransactionResult.sort((a,b) => a.date.compareTo(b.date));
+    }
     emit(AllTransactionState(listTransaction: listTransactionResult));
   }
 
@@ -68,11 +71,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionDateChangeState(false));
   }
 
-  void _changeTransactionType(event, emit){
+  void _changeTransactionType(TransactionTypeChangeEvent event, Emitter emit){
     emit(TransactionTypeChangeState(event.type));
   }
 
-  void _onAmountChange(event, emit){
+  void _onAmountChange(TransactionAmountChangeEvent event, Emitter emit){
     if(event.amount.isEmpty){
       emit(TransactionAmountFieldState(isAmountEmpty: true));
     }else{
@@ -129,17 +132,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  Future<bool> validation(Emitter<TransactionState> emit, {required String userName, DateTime? date, required String amount}) async {
-    if(amount.isBlank){
+  Future<bool> validation(Emitter emit, {required String userName, DateTime? date, required String amount}) async {
+    if(amount.isBlank) {
       emit(TransactionAmountFieldState(isAmountEmpty: true));
       return false;
-    } else if (date == null){
+    } else if (date == null) {
       emit(TransactionDateChangeState(true));
       return false;
-    } else if (userName.isBlank){
+    } else if (userName.isBlank) {
       emit(TransactionUserNameFieldState(userNameMessage: AppStrings.emptyName));
       return false;
-    } else if (!await checkConnectivity.hasConnection){
+    } else if (!await checkConnectivity.hasConnection) {
       emit(TransactionFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
     }

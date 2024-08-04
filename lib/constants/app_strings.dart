@@ -1,6 +1,6 @@
 class AppStrings {
   AppStrings._();
-  ///Name Constants
+
   static const String appName = 'My Wallet';
   static const String emptyString = '';
   static const String login = 'Login';
@@ -54,6 +54,9 @@ class AppStrings {
   static const String reAuthenticate = 'Re-Authenticate';
   static const String profileUpdatedMsg = 'Profile updated successfully';
   static const String deleteUser = 'Delete User';
+  static const String language = 'Language';
+  static const String english = 'English';
+  static const String hindi = 'Hindi';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
@@ -64,7 +67,6 @@ class AppStrings {
   static const String emptyEmail = 'Please provide email';
   static const String emptyName = 'Please provide name';
   static const String invalidEmail = 'Please provide valid email';
-  static const String invalidPhone = 'Please provide valid phone number';
   static const String emptyPassword = 'Please provide password';
   static const String invalidPassword = 'Weak password, Length of password should be atleast 8 character';
   static const String dialogShowingMessage = 'Loading dialog already showing';
@@ -73,6 +75,7 @@ class AppStrings {
   static const String emailAlreadyExist = 'Email already exist';
   static const String deleteUserMsg = 'Are you sure you want to delete';
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
+  static const String invalidPhone = "Plase provide valid phone number";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';
@@ -83,7 +86,9 @@ class AppStrings {
   static const String prefBiometric = 'PREF_BIOMETRIC';
   static const String prefBiometricAuthentication = 'PREF_BIOMETRIC_AUTHENTICATION';
   static const String prefProfileImg = 'PREF_PROFILE_IMG';
+  static const String prefLanguage = 'PREF_LANGUAGE';
+  static const String prefTheme = 'PREF_THEME';
 
-  ///Default Profile Image
+  ///sample image
   static const String sampleImg = "https://images.unsplash.com/photo-1613891188927-14c2774fb8d7?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTh8fGh1bWluZyUyMGJpcmR8ZW58MHx8MHx8fDA%3D";
 }

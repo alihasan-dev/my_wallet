@@ -39,6 +39,7 @@ class AllTransactionEvent extends TransactionEvent {
 class TransactionDateSortEvent extends TransactionEvent {}
 
 class TransactionAmountSortEvent extends TransactionEvent {}
+
 class TransactionTypeSortEvent extends TransactionEvent {}
 
 class TransactionScrollEvent extends TransactionEvent {
