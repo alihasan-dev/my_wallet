@@ -1,4 +1,4 @@
-.build
+build/
 .dart_tool
-.flutter_plugins
+.flutter-plugins
 .flutter-plugins-dependencies
