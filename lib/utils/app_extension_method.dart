@@ -52,7 +52,6 @@ extension StringExtension on String {
     }
   }
 }
-
 extension ScreenBuildContext on BuildContext {
 
   double get screenWidth => MediaQuery.of(this).size.width;

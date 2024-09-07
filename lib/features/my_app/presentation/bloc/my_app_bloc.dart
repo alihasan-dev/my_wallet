@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/app_strings.dart';
+import '../../../../features/my_app/presentation/bloc/my_app_event.dart';
+import '../../../../features/my_app/presentation/bloc/my_app_state.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/preferences.dart';
-part 'my_app_event.dart';
-part 'my_app_state.dart';
 
 class MyAppBloc extends Bloc<MyAppEvent, MyAppState>{
 

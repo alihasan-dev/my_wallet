@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../constants/app_images.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
@@ -9,6 +10,8 @@ import '../../../constants/app_size.dart';
 import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../widgets/custom_inkwell_widget.dart';
 import '../../../features/login/application/bloc/login_bloc.dart';
+import '../../../features/login/application/bloc/login_event.dart';
+import '../../../features/login/application/bloc/login_state.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/helper.dart';
 import '../../../utils/preferences.dart';
@@ -98,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
             padding: const EdgeInsets.all(AppSize.s28),
             children: [
               const SizedBox(height: AppSize.s10),
-              // Center(child: Image.asset(AppImages.appImage, height: 80, width: 80)),
+              Center(child: Image.asset(AppImages.appImage, height: 80, width: 80)),
               const SizedBox(height: AppSize.s20),
               CustomTextField(
                 // title: AppStrings.email,
@@ -133,27 +136,23 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
                         onChange: (value) => context.read<LoginBloc>().add(LoginRememberMeEvent(value: value!))
                       ),
                       const SizedBox(width: AppSize.s10),
-                      CustomText(
-                        title: _localizations!.rememberMe, 
-                        textStyle: getMediumStyle(
-                          color: Helper.isDark 
-                          ? AppColors.white.withOpacity(0.8) 
-                          : AppColors.black
-                        ),
-                      ),
+                      CustomText(title: _localizations!.rememberMe, textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black))
                     ],
                   ),
+                  // InkWell(
+                  //   onTap: () => context.push(AppRoutes.forgotPasswordScreen),
+                  //   child: CustomText(
+                  //     title: AppStrings.forgotPassword, 
+                  //     textStyle: getMediumStyle(color: AppColors.black)
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: AppSize.s26),
               CustomButton(
                 title: _localizations!.login,
                 titleSize: AppSize.s16, 
-                onTap: () => context.read<LoginBloc>().add(LoginSubmitEvent(
-                  email: emailTextController.text, 
-                  password: passwordTextController.text, 
-                  isRememberMe: isRememberMe
-                ))
+                onTap: () => context.read<LoginBloc>().add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe))
               ),
               const SizedBox(height: AppSize.s20),
               Row(
@@ -162,20 +161,13 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
                 children: [
                   CustomText(
                     title: '${_localizations!.dontHaveAccount}  ', 
-                    textStyle: getMediumStyle(
-                      color: Helper.isDark 
-                      ? AppColors.white.withOpacity(0.8) 
-                      : AppColors.black
-                    ),
+                    textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black)
                   ),
                   CustomInkWellWidget(
                     onTap: () => context.push(AppRoutes.signupScreen), 
                     widget: CustomText(
                       title: _localizations!.signup, 
-                      textStyle: getSemiBoldStyle(
-                        fontSize: AppSize.s14, 
-                        color: AppColors.primaryColor
-                      ),
+                      textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: AppColors.primaryColor)
                     ),
                   ),
                 ],

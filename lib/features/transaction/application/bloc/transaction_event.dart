@@ -1,5 +1,3 @@
-part of 'transaction_bloc.dart';
-
 sealed class TransactionEvent {}
 
 class TransactionInitialEvent extends TransactionEvent {}
@@ -46,3 +44,5 @@ class TransactionScrollEvent extends TransactionEvent {
   double appbarSize;
   TransactionScrollEvent({required this.appbarSize});
 }
+
+class TransactionExportPDFEvent extends TransactionEvent {}

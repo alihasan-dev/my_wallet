@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/app_strings.dart';
+import '../../../../features/profile/application/bloc/profile_event.dart';
+import '../../../../features/profile/application/bloc/profile_state.dart';
 import '../../../../utils/preferences.dart';
 import '../../../../utils/check_connectivity.dart';
-part 'profile_event.dart';
-part 'profile_state.dart';
 
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
+class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   bool idVisible = false;
   late DocumentReference firebaseDocReference;
@@ -19,11 +20,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
   var profileData = <String, dynamic>{};
   late CheckConnectivity checkConnectivity;
   String selectedImagePath = '';
+  String userId;
 
-  ProfileBloc() : super(ProfileInitialState()){
+  ProfileBloc({this.userId = ''}) : super(ProfileInitialState()) {
+    log('User Id => $userId');
     ///Initilize instance variable here
     checkConnectivity = CheckConnectivity();
-    firebaseDocReference = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
+    var userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
+    firebaseDocReference = userId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(userId);
     firebaseStorage = FirebaseStorage.instance.ref();
 
     ///Register Event Here
@@ -36,6 +40,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
 
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
       profileData = event.data() as Map<String, dynamic>;
+      if(profileData['user_id'] == null) {
+        profileData['user_id'] = userId;
+      }
       add(ProfileDataEvent());
     });
   }
@@ -47,7 +54,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
   }
 
   void _onNameChange(ProfileNameChangeEvent event, Emitter emit) {
-    if(event.text.isEmpty) {
+    if(event.text.isEmpty){
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
     } else {
       emit(ProfileErrorNameState(message: AppStrings.emptyString));
@@ -55,7 +62,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
   }
 
   void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
-    if(event.text.isNotEmpty) {
+    if(event.text.isNotEmpty){
       if(event.text.length < 10){
         emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
       } else {
@@ -77,7 +84,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
       if(selectedImagePath.isNotEmpty){
         emit(ProfileLoadingState());
         try {
-          final mountainImagesRef = firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg");
+          final mountainImagesRef = userId.isEmpty 
+          ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
+          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$userId.jpg");
           await mountainImagesRef.putFile(File(selectedImagePath)).then((value) async {
             await mountainImagesRef.getDownloadURL().then((value) {
               updatedImageUrl = value;
@@ -95,7 +104,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
         'address': event.profileData['address'],
         'profile_img': updatedImageUrl.isEmpty ? event.profileData['profile_img'] : updatedImageUrl
       });
-      Preferences.setString(key: AppStrings.prefFullName, value: event.profileData['name']);
     } 
   }
 
@@ -132,5 +140,4 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>{
       return true;
     }
   }
-  
 }

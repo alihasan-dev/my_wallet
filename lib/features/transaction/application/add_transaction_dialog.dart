@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../constants/app_color.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
+import '../../../features/transaction/application/bloc/transaction_event.dart';
+import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_button.dart';
@@ -25,16 +27,9 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
   bool isFirst = true;
   DateTime? transactionDate;
   String transactionType = AppStrings.transfer;
-  late TextEditingController amountTextController;
-  late TextEditingController dateTextController;
+  var amountTextController = TextEditingController();
+  var dateTextController = TextEditingController();
   AppLocalizations? _localizations;
-
-  @override
-  void initState() {
-    amountTextController = TextEditingController();
-    dateTextController = TextEditingController();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,14 +133,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       hintText: AppStrings.emptyDate,
                       label: Text('${_localizations!.date} *'),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
                     ),
                   ),
                   const SizedBox(height: AppSize.s20),

@@ -1,5 +1,3 @@
-part of 'login_bloc.dart';
-
 sealed class LoginEvent {}
 
 class LoginInitialEvent extends LoginEvent {}
@@ -8,12 +6,7 @@ class LoginSubmitEvent extends LoginEvent {
   String email;
   String password;
   bool isRememberMe;
-  
-  LoginSubmitEvent({
-    required this.email, 
-    required this.password,
-    required this.isRememberMe
-  });
+  LoginSubmitEvent({required this.email, required this.password,required this.isRememberMe});
 }
 
 class LoginEmailChangeEvent extends LoginEvent {

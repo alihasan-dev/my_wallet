@@ -1,4 +1,4 @@
-part of 'dashboard_bloc.dart';
+import '../../../../features/dashboard/domain/user_model.dart';
 
 abstract class DashboardState {}
 

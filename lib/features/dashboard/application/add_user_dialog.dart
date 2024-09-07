@@ -2,37 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/dashboard_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../utils/helper.dart';
 import '../../../widgets/custom_button.dart';
+import '../../../features/dashboard/application/bloc/dashboard_event.dart';
+import '../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_text.dart';
+import '../../../utils/helper.dart';
 
 
 class AddUserDialog extends StatefulWidget {
-
   const AddUserDialog({super.key});
 
   @override
-  State createState() => _AddUserDialogState();
+  State<AddUserDialog> createState() => _AddUserDialogState();
 }
 
 class _AddUserDialogState extends State<AddUserDialog> {
 
-  late TextEditingController emailTextController;
-  late TextEditingController nameTextController;
+  var emailTextController = TextEditingController();
+  var nameTextController = TextEditingController();
   String errorName = '';
   String errorEmail = '';
   bool isFirstOpen = true;
   AppLocalizations? _localizations;
-
-  @override
-  void initState() {
-    emailTextController = TextEditingController();
-    nameTextController = TextEditingController();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +73,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
                     ),
                   ),
                   const SizedBox(height: AppSize.s10),
@@ -105,23 +92,13 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
                     ),
                   ),
                   const SizedBox(height: AppSize.s10),
                   CustomButton(
                     title: _localizations!.addUser, 
-                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
-                      name: nameTextController.text, 
-                      email: emailTextController.text
-                    ))
+                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(name: nameTextController.text, email: emailTextController.text))
                   ),
                 ],
               ),

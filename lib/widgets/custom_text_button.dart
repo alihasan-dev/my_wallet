@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wallet/utils/helper.dart';
+import '../utils/helper.dart';
 import '../constants/app_color.dart';
 import '../constants/app_size.dart';
 import '../constants/app_style.dart';
@@ -9,23 +9,26 @@ class CustomTextButton extends StatelessWidget {
 
   final Function()? onPressed;
   final String title;
-  final IconData icon;
+  final IconData? icon;
   final bool? isSelected;
   final bool? showBorder;
   final Color? borderColor;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final MainAxisAlignment? mainAxisAlignment;
+   
 
   const CustomTextButton({
     super.key,
     required this.title,
-    required this.icon,
+    this.icon,
     this.isSelected,
     this.onPressed,
     this.showBorder,
     this.borderColor,
     this.backgroundColor,
-    this.foregroundColor
+    this.foregroundColor,
+    this.mainAxisAlignment
   });
 
   @override
@@ -44,15 +47,23 @@ class CustomTextButton extends StatelessWidget {
         : backgroundColor ?? AppColors.primaryColor.withOpacity(0.2),
       ), 
       child: Row(
+        mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
         children: [
-          Icon(
-            icon, 
-            size: AppSize.s22, 
-            color: isSelected == null || !isSelected! 
-            ? Helper.isDark ? AppColors.grey : AppColors.black 
-            : foregroundColor ?? AppColors.primaryColor
+          Visibility(
+            visible: icon == null ? false : true,
+            child: Row(
+              children: [
+                Icon(
+                 icon, 
+                  size: AppSize.s22, 
+                  color: isSelected == null || !isSelected! 
+                  ? Helper.isDark ? AppColors.grey : AppColors.black 
+                  : foregroundColor ?? AppColors.primaryColor
+                ),
+                const SizedBox(width: AppSize.s14),
+              ],
+            ),
           ),
-          const SizedBox(width: AppSize.s14),
           CustomText(
             title: title, 
             textStyle: getMediumStyle(

@@ -18,6 +18,8 @@ class Preferences {
   static void setBool({required String key, required bool value}) => _sharedPreferences!.setBool(key, value);
   ///get bool value
   static bool getBool({required String key}) => _sharedPreferences!.getBool(key) ?? false;
+
   ///clear data using key
   static Future<bool> clearPreferences({required String key}) async => await _sharedPreferences!.remove(key);
+  
 }

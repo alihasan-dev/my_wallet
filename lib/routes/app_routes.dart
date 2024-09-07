@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../features/appearance/application/appearance_screen.dart';
+import '../features/profile/application/profile_screen.dart';
 import '../features/transaction/application/bloc/transaction_bloc.dart';
 import '../features/forgot_password/application/bloc/forgot_password_bloc.dart';
 import '../features/home/application/bloc/home_bloc.dart';
@@ -17,7 +19,7 @@ import '../utils/helper.dart';
 import '../utils/preferences.dart';
 
 class AppRoutes {
-
+  
   AppRoutes._();
 
   static const String initialRoute = '/';
@@ -27,6 +29,7 @@ class AppRoutes {
   static const String transactionScreen = '/transaction_screen';
   static const String forgotPasswordScreen = '/forgot_password_screen';
   static const String appearanceScreen = '/appearance_screen';
+  static const String profileScreen = '/profile_screen';
 
   static final GoRouter router = GoRouter(
     redirect: (context, state) {
@@ -38,7 +41,6 @@ class AppRoutes {
       }
       return null;
     },
-    observers: [RouteObserver()],
     routes: [
       GoRoute(
         path: initialRoute,
@@ -68,6 +70,14 @@ class AppRoutes {
         builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
       ),
       GoRoute(
+        path: appearanceScreen,
+        builder: (_, __) => const AppearanceScreen()
+      ),
+      GoRoute(
+        path: profileScreen,
+        builder: (_, state) => ProfileScreen(userId: state.extra as String)
+      ),
+      GoRoute(
         path: transactionScreen,
         builder: (_, state) {
           var data = state.extra as UserModel;
@@ -77,16 +87,4 @@ class AppRoutes {
     ],
   );
 
-}
-
-class RouteObserver extends NavigatorObserver {
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    ///implement didPop
-  }
-
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    ///implement didPush
-  }
 }

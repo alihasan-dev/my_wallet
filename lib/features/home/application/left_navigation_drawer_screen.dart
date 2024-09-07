@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../../../utils/helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../utils/helper.dart';
 import '../domain/left_navigation_icon_title_model.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -26,11 +26,11 @@ class LeftNavigationDrawerScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    var _localizations = AppLocalizations.of(context)!;
+    var localizations = AppLocalizations.of(context)!;
     final drawerList = <LeftNavigationIconTitleModel>[
-      LeftNavigationIconTitleModel(icon: AppIcons.dashboardIcon, title: _localizations.dashboard),
-      LeftNavigationIconTitleModel(icon: AppIcons.accountCircleIcon, title: _localizations.profile),
-      LeftNavigationIconTitleModel(icon: AppIcons.appearanceIcon, title: _localizations.appearance),
+      LeftNavigationIconTitleModel(icon: AppIcons.dashboardIcon, title: localizations.dashboard),
+      LeftNavigationIconTitleModel(icon: AppIcons.accountCircleIcon, title: localizations.profile),
+      LeftNavigationIconTitleModel(icon: AppIcons.appearanceIcon, title: localizations.appearance),
     ];
     var imageUrl = Preferences.getString(key: AppStrings.prefProfileImg);
     return Drawer(
@@ -101,15 +101,9 @@ class LeftNavigationDrawerScreen extends StatelessWidget {
                       onPressed: () => onPressed(index),
                       icon: data.icon,
                       title: data.title,
-                      foregroundColor: Helper.isDark 
-                      ? AppColors.white 
-                      : AppColors.primaryColor,
-                      backgroundColor: Helper.isDark 
-                      ? AppColors.primaryColor 
-                      : AppColors.primaryColor.withOpacity(0.2),
-                      isSelected: selectedIndex == index 
-                      ? true 
-                      : false,
+                      foregroundColor: Helper.isDark ? AppColors.white : AppColors.primaryColor,
+                      backgroundColor: Helper.isDark ? AppColors.primaryColor : AppColors.primaryColor.withOpacity(0.2),
+                      isSelected: selectedIndex == index ? true : false,
                     );
                   }
                 ),
@@ -120,7 +114,7 @@ class LeftNavigationDrawerScreen extends StatelessWidget {
               child: CustomTextButton(
                 onPressed: () => onPressed(-1),
                 icon: AppIcons.logoutIcon,
-                title: _localizations.logout,
+                title: localizations.logout,
                 isSelected: true,
                 backgroundColor: AppColors.red.withOpacity(0.2),
                 foregroundColor: AppColors.red,
@@ -129,7 +123,7 @@ class LeftNavigationDrawerScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      )
     );
   }
 }

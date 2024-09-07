@@ -1,4 +1,6 @@
-part of 'transaction_bloc.dart';
+import '../../../../features/dashboard/domain/user_model.dart';
+import '../../../../constants/app_strings.dart';
+import '../../domain/transaction_model.dart';
 
 sealed class TransactionState {}
 
@@ -49,4 +51,11 @@ class AllTransactionState extends TransactionState {
 class TransactionScrollState extends TransactionState {
   double appbarSize;
   TransactionScrollState({required this.appbarSize});
+}
+
+class TransactionExportPDFState extends TransactionState {
+  String message;
+  bool isSuccess;
+
+  TransactionExportPDFState({this.message = '',this.isSuccess = false});
 }

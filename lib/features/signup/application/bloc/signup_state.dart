@@ -1,5 +1,3 @@
-part of 'signup_bloc.dart';
-
 sealed class SignupState {}
 
 class SignupInitialState extends SignupState {}

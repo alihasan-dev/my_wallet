@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import '../../home/application/bloc/home_bloc.dart';
 import '../domain/appearance_theme_model.dart';
 import '../domain/apperance_language_model.dart';
 import '../../../features/appearance/application/bloc/appearance_bloc.dart';
+import '../../../features/appearance/application/bloc/appearance_event.dart';
+import '../../../features/appearance/application/bloc/appearance_state.dart';
 import '../../../constants/app_icons.dart';
 import '../../../features/my_app/presentation/bloc/my_app_bloc.dart';
+import '../../../features/my_app/presentation/bloc/my_app_event.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_style.dart';
@@ -47,63 +49,70 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ApperanceBloc(),
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<ApperanceBloc, ApperanceState>(
-            builder: (context, state) {
-              switch (state.runtimeType) {
-                case ApperanceThemeChangeState:
-                  state = state as ApperanceThemeChangeState;
-                  context.read<HomeBloc>().add(HomeDrawerItemEvent(index: 2));
-                  break;
-                default:
-              }
-              appearanceItemList.clear();
-              appearanceItemList.add(AppearanceModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-              appearanceItemList.add(AppearanceModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-              return ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(left: AppSize.s8),
-                children: List.generate(
-                  appearanceItemList.length, 
-                  (index) {
-                    var data = appearanceItemList[index];
-                    return InkWell(
-                      onTap: () => onClickItem(context: context, index: index),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSize.s20,
-                          vertical: AppSize.s15
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              title: data.title, 
-                              textStyle: getMediumStyle(
-                                fontSize: AppSize.s16,
-                                color: Helper.isDark 
-                                ? AppColors.white 
-                                : AppColors.black
+  Widget build(BuildContext bContent) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: CustomText(
+          title: _localizations!.appearance, 
+          textStyle: getBoldStyle(color: AppColors.white)
+        ),
+        iconTheme: const IconThemeData(color: AppColors.white),
+        backgroundColor: AppColors.primaryColor
+      ),
+      body: BlocProvider(
+        create: (context) => ApperanceBloc(),
+        child: Builder(
+          builder: (context) {
+            return BlocBuilder<ApperanceBloc, ApperanceState>(
+              builder: (context, state) {
+                switch (state.runtimeType) {
+                  case ApperanceThemeChangeState:
+                    state = state as ApperanceThemeChangeState;
+                    // bContent.read<HomeBloc>().add(HomeDrawerItemEvent(index: 2));
+                    break;
+                  default:
+                }
+                appearanceItemList.clear();
+                appearanceItemList.add(AppearanceModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+                appearanceItemList.add(AppearanceModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+                return ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: List.generate(
+                    appearanceItemList.length, 
+                    (index) {
+                      var data = appearanceItemList[index];
+                      return InkWell(
+                        onTap: () => onClickItem(context: context, index: index),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSize.s20,
+                            vertical: AppSize.s15
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                title: data.title, 
+                                textStyle: getMediumStyle(
+                                  color: Helper.isDark 
+                                  ? AppColors.white 
+                                  : AppColors.black
+                                ),
                               ),
-                            ),
-                            CustomText(
-                              title: data.subTitle.capitalize, 
-                              textColor: AppColors.grey
-                            )
-                          ],
+                              CustomText(title: data.subTitle.capitalize, textColor: AppColors.grey)
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                ),
-              );
-            }
-          );
-        }
+                      );
+                    }
+                  ),
+                );
+              }
+            );
+          }
+        ),
       ),
     );
   }

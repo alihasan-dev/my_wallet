@@ -1,13 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
-import 'left_navigation_drawer_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../features/appearance/application/appearance_screen.dart';
 import '../../../features/dashboard/application/dashboard_screen.dart';
 import '../../../features/home/application/bloc/home_bloc.dart';
+import '../../../features/home/application/bloc/home_event.dart';
+import '../../../features/home/application/bloc/home_state.dart';
 import '../../../features/home/domain/drawer_widget_title_model.dart';
 import '../../../features/profile/application/profile_screen.dart';
 import '../../../routes/app_routes.dart';
@@ -32,28 +33,14 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
   late LocalAuthentication _localAuthentication;
   final _widgetTitleList = <WidgetTitleModel>[];
 
-
   @override
   void initState() {
     _localAuthentication = LocalAuthentication();
-    ///Checking for biometric
-    _checkBiometrics();
-    ///Old Code
-    // if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)){
+    // if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)) {
     //   openBiometricDialog();
     //   Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
     // }
     super.initState();
-  }
-
-  Future<void> _checkBiometrics() async {
-    final bool canAuthenticateWithBiometrics = await _localAuthentication.canCheckBiometrics;
-    if(canAuthenticateWithBiometrics) {
-      if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)) {
-        openBiometricDialog();
-        Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
-      }
-    }
   }
 
   @override
@@ -62,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
     _widgetTitleList.clear();
     _widgetTitleList.add(WidgetTitleModel(screenWidget: const DashboardScreen(), title: _localizations!.dashboard));
     _widgetTitleList.add(WidgetTitleModel(screenWidget: const ProfileScreen(), title: _localizations!.profile));
-    _widgetTitleList.add(WidgetTitleModel(screenWidget: const AppearanceScreen(), title: _localizations!.appearance));
     super.didChangeDependencies();
   }
 
@@ -71,10 +57,10 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
     return BlocProvider(
       create: (_) => HomeBloc(),
       child: Builder(
-        builder: (context){
+        builder: (context) {
           return WillPopScope(
             onWillPop: () => onPressBack(context, _localizations!),
-            child: BlocConsumer<HomeBloc, HomeState>(
+            child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state){
                 switch (state.runtimeType) {
                   case HomeDrawerItemState:
@@ -96,27 +82,58 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                     ),
                     iconTheme: const IconThemeData(color: AppColors.white),
                     actions: [
-                      IconButton(onPressed: () => debugPrint('Click here to search for user'), icon: const Icon(Icons.search))
-                    ],
+                      PopupMenuButton<String>(
+                        padding: EdgeInsets.zero,
+                        position: PopupMenuPosition.under,
+                        itemBuilder: (_) {
+                          return <PopupMenuEntry<String>> [
+                            const PopupMenuItem<String>(
+                              value: AppStrings.settings,
+                              child: ListTile(
+                                leading: Icon(Icons.settings),
+                                title: Text(AppStrings.settings),
+                              ),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: AppStrings.logout,
+                              child: ListTile(
+                                leading: Icon(Icons.login_outlined),
+                                title: Text(AppStrings.logout),
+                              ),
+                            ),
+                          ];
+                        },
+                        onSelected: (value) {
+                          log(value);
+                          switch (value) {
+                            case AppStrings.settings:
+                              context.push(AppRoutes.appearanceScreen);
+                              break;
+                            case AppStrings.logout:
+                              onClickLogout(context: context, localizations: _localizations!);
+                              break;
+                          }
+                        },
+                      )
+                    ]
                   ),
-                  drawer: LeftNavigationDrawerScreen(
-                    onPressed: (value){
-                      switch (value) {
-                        case -1:
-                          context.pop();
-                          onClickLogout(context: context, localizations: _localizations!);
-                          break;
-                        default:
-                          context.pop();
-                          context.read<HomeBloc>().add(HomeDrawerItemEvent(index: value));
-                      }
-                    },
-                    selectedIndex: pageIndex,
+                  bottomNavigationBar: BottomNavigationBar(
+                    currentIndex: pageIndex,
+                    onTap: (index) => context.read<HomeBloc>().add(HomeDrawerItemEvent(index: index)),
+                    items: [
+                      BottomNavigationBarItem(
+                        label: _localizations!.dashboard,
+                        icon: const Icon(Icons.home)
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.person),
+                        label: _localizations!.profile
+                      )
+                    ],
                   ),
                   body: _widgetTitleList[pageIndex].screenWidget
                 );
-              },  
-              listener: (context, state){}
+              }
             ),
           );
         }
@@ -125,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
   }
 
   Future<bool> onPressBack(BuildContext context, AppLocalizations localizations) async {
-    if(pageIndex == 0){
+    if(pageIndex == 0) {
       return await confirmationDialog(
         context: context, 
         title: localizations.exit, 
@@ -202,10 +219,6 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
     }
   }
 
-  bool onChange() {
-    return true;
-  }
-
   ///method used to handle the biometric and FaceID authentication
   Future<bool> biometricAuthentication() async {
     var data = true;
@@ -213,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
       try {
         data =  await _localAuthentication.authenticate(
           localizedReason: AppStrings.biometricMessage,
-          options: const AuthenticationOptions()
+          options: const AuthenticationOptions(biometricOnly: true)
         );
       } catch (e) {
         if(context.mounted){

@@ -1,37 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../features/signup/application/bloc/signup_event.dart';
+import '../../../../features/signup/application/bloc/signup_state.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
-part 'signup_event.dart';
-part 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState>{
   
-  late CheckConnectivity checkConnectivity;
-  late FirebaseAuth authInstance;
-  late CollectionReference collectionReference;
+  late CheckConnectivity _checkConnectivity;
+  late FirebaseAuth _authInstance;
+  late CollectionReference _collectionReference;
 
   SignupBloc() : super(SignupInitialState()){
     ///create instance of connectivity class;
-    authInstance = FirebaseAuth.instance;
-    collectionReference = FirebaseFirestore.instance.collection('users');
-    checkConnectivity = CheckConnectivity();
-    on<SignupSubmitEvent>(_onSignupSubmit);
+    _authInstance = FirebaseAuth.instance;
+    _collectionReference = FirebaseFirestore.instance.collection('users');
+    _checkConnectivity = CheckConnectivity();
+    on<SignupSubmitEvent>(onSignupSubmit);
     on<SignupEmailChangeEvent>(_onEmailChange);
     on<SignupNameChangeEvent>(_onNameChange);
     on<SignupPasswordChangeEvent>(_onPasswordChange);
     on<SignupShowPasswordEvent>(_onShowHidePassword);
   }
 
-  Future<void> _onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {
+  Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {
     if(await validation(emit, name: event.name, email: event.email, password: event.password)){
       ///Show loading dialog
       emit(SignupLoadingState());
       try {
-        var userCredential = await authInstance.createUserWithEmailAndPassword(email: event.email, password: event.password);
+        var userCredential = await _authInstance.createUserWithEmailAndPassword(email: event.email, password: event.password);
         var user = userCredential.user;
         if (user != null) {
           Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
@@ -40,7 +40,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
           Preferences.setBool(key: AppStrings.prefRememberMe,value: false);
           Preferences.setString(key: AppStrings.prefFullName, value: event.name);
           ///store user in firebase firestore
-          await collectionReference.doc(user.uid).set({
+          await _collectionReference.doc(user.uid).set({
             'name': event.name,
             'email': event.email,
             'user_id': user.uid,
@@ -74,7 +74,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     }
   }
 
-  void _onPasswordChange(SignupPasswordChangeEvent event, Emitter emit){
+  void _onPasswordChange(SignupPasswordChangeEvent event, Emitter emit) {
     if(event.password.toString().isBlank) {
       emit(SignupPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
     } else  if(event.password.toString().length < 8) {
@@ -105,7 +105,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     } else if(password.length < 8) {
       emit(SignupPasswordFieldState(passwordMessage: AppStrings.invalidPassword));
       return false;
-    } else if(!await checkConnectivity.hasConnection) {
+    } else if(!await _checkConnectivity.hasConnection) {
       emit(SignupFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
     } else {

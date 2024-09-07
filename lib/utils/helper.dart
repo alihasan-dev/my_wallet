@@ -57,10 +57,7 @@ mixin Helper {
                 children: [
                   CustomText(
                     title: title,
-                    textStyle: getSemiBoldStyle(
-                      fontSize: AppSize.s14,
-                      color: color ?? AppColors.red
-                    ),
+                    textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: color ?? AppColors.red),
                   ),
                   Visibility(
                     visible: message != null,
@@ -104,9 +101,7 @@ mixin Helper {
                 filter: ImageFilter.blur(
                   sigmaX: 2.5,sigmaY: 2.5,
                 ),
-                child: const Center(
-                  child: CircularProgressIndicator(color: AppColors.primaryColor)
-                ),
+                child: const Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
               ),
             ),
           );

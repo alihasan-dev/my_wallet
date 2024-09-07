@@ -1,4 +1,4 @@
-part of 'appearance_bloc.dart';
+import 'package:flutter/material.dart';
 
 sealed class ApperanceState {}
 

@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/app_strings.dart';
+import '../../../../features/login/application/bloc/login_event.dart';
+import '../../../../features/login/application/bloc/login_state.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
-part 'login_event.dart';
-part 'login_state.dart';
 
 ///The business logic layer's responsibilities is to respond to input from the presentation layer with new states.
 ///This layer can depend on one or more repositories to reterieve data needed to build up the aplication state.
@@ -61,7 +61,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
     }
   }
 
-  void _onRememberMe(event, emit) => emit(LoginRememberMeState(event.value));
+  void _onRememberMe(LoginRememberMeEvent event, Emitter emit) => emit(LoginRememberMeState(event.value));
 
   void _onEmailChange(LoginEmailChangeEvent event, Emitter emit) {
     if(event.email.isEmpty) {
@@ -73,7 +73,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
     }
   }
 
-  void _onPasswordChange(LoginPasswordChangeEvent event, Emitter emit){
+  void _onPasswordChange(LoginPasswordChangeEvent event, Emitter emit) {
     if(event.password.toString().isBlank) {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
     } else  if(event.password.toString().length < 8) {

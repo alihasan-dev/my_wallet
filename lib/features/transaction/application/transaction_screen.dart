@@ -12,6 +12,8 @@ import '../../../constants/app_size.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../features/transaction/application/add_transaction_dialog.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
+import '../../../features/transaction/application/bloc/transaction_event.dart';
+import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_text.dart';
@@ -29,20 +31,20 @@ class TransactionScreen extends StatefulWidget {
   State createState() => _TransactionScreenState();
 }
 
-class _TransactionScreenState extends State<TransactionScreen> {
+class _TransactionScreenState extends State<TransactionScreen> with Helper {
 
-  String email = AppStrings.emptyString;
-  String name = AppStrings.emptyString;
-  String friendId = AppStrings.emptyString;
-  bool errorAmount = false;
-  bool errorDate = false;
+  var email = AppStrings.emptyString;
+  var name = AppStrings.emptyString;
+  var friendId = AppStrings.emptyString;
+  var errorAmount = false;
+  var errorDate = false;
   var transactionDataList = <TransactionModel>[];
   late ScrollController _scrollController;
-  double appBarHeight = AppBar().preferredSize.height;
-  double appBarSize = 0.0;
-  Color headerColor = Helper.isDark ? AppColors.backgroundColorDark : AppColors.white;
-  Color textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black;
-  bool isLoading = true;
+  var appBarHeight = AppBar().preferredSize.height;
+  var appBarSize = 0.0;
+  var headerColor = Helper.isDark ? AppColors.backgroundColorDark : AppColors.white;
+  var textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black;
+  var isLoading = true;
   late DateFormat dateFormat;
   AppLocalizations? _localizations;
 
@@ -65,24 +67,28 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return BlocConsumer<TransactionBloc, TransactionState>(
       builder: (context, state) {
-        switch (state.runtimeType) {
-          case AllTransactionState:
-            state = state as AllTransactionState;
+        switch (state) {
+          case AllTransactionState _:
             transactionDataList.clear();
             transactionDataList.addAll(state.listTransaction);
             break;
-          case TransactionScrollState:
-            state = state as TransactionScrollState;
+          case TransactionScrollState _:
             appBarSize = state.appbarSize;
             if(appBarSize == appBarHeight){
-              headerColor = Helper.isDark ? AppColors.backgroundColorDark : AppColors.white;
-              textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black;
+              headerColor = Helper.isDark 
+              ? AppColors.backgroundColorDark 
+              : AppColors.white;
+              textColor = Helper.isDark 
+              ? AppColors.white.withOpacity(0.9) 
+              : AppColors.black;
             } else {
               headerColor = AppColors.primaryColor;
-              textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.white;
+              textColor = Helper.isDark 
+              ? AppColors.white.withOpacity(0.9) 
+              : AppColors.white;
             }
             break;
           default:
@@ -104,27 +110,40 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 decoration: const BoxDecoration(
                   color: AppColors.primaryColor,
                   boxShadow: <BoxShadow>[
-                  BoxShadow(
+                    BoxShadow(
                       color: Colors.black54,
                       blurRadius: AppSize.s15,
                       offset: Offset(0.0, 1.0)
-                  )
-                ],
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
                       onPressed: () => context.pop(),
-                      icon: const Icon(AppIcons.backArrowIcon, color: AppColors.white),
+                      icon: const Icon(
+                        AppIcons.backArrowIcon, 
+                        color: AppColors.white
+                      ),
                     ),
                     CustomText(
                       title: name, 
                       textStyle: getBoldStyle(color: AppColors.white)
                     ),
-                    IconButton(
-                      onPressed: () => showAddUserSheet(bloc: context.read<TransactionBloc>()),
-                      icon: const Icon(AppIcons.addIcon, color: AppColors.white)
+                    Row(
+                      children: [
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () => showAddUserSheet(bloc: context.read<TransactionBloc>()),
+                          icon: const Icon(AppIcons.addIcon, color: AppColors.white)
+                        ),
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () => context.read<TransactionBloc>().add(TransactionExportPDFEvent()),
+                          icon: const Icon(AppIcons.downloadIcon, color: AppColors.white)
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -173,7 +192,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   ),
                                   InkWell(
                                     onTap: () => context.read<TransactionBloc>().add(TransactionDateSortEvent()),
-                                    child: Icon(AppIcons.swapIcon, size: AppSize.s18, color: textColor),
+                                    child: Icon(
+                                      AppIcons.swapIcon, 
+                                      size: AppSize.s18, 
+                                      color: textColor
+                                    ),
                                   ),
                                 ],
                               ),
@@ -389,9 +412,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
         );
       },
       listener: (context, state){
-        switch (state.runtimeType) {
-          case AllTransactionState:
+        switch (state) {
+          case AllTransactionState _:
             isLoading = false;
+            break;
+          case TransactionExportPDFState _:
+            if(state.isSuccess) {
+              showSnackBar(context: context, title: state.message, color: AppColors.green);
+            } else {
+              showSnackBar(context: context, title: state.message);
+            }
             break;
           default:
         }
@@ -407,4 +437,5 @@ class _TransactionScreenState extends State<TransactionScreen> {
       builder: (_) => AddTransactionDialog(userName: name, friendId: friendId)
     );
   }
+
 }

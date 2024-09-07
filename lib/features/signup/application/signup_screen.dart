@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../features/signup/application/bloc/signup_bloc.dart';
+import '../../../features/signup/application/bloc/signup_event.dart';
+import '../../../features/signup/application/bloc/signup_state.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_color.dart';

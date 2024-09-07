@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-part 'appearance_event.dart';
-part 'appearance_state.dart';
+import 'package:my_wallet/features/appearance/application/bloc/appearance_event.dart';
+import 'package:my_wallet/features/appearance/application/bloc/appearance_state.dart';
 
 class ApperanceBloc extends Bloc<AppearanceEvent, ApperanceState>{
 

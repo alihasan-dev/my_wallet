@@ -1,4 +1,4 @@
-part of 'my_app_bloc.dart';
+import 'package:flutter/material.dart';
 
 sealed class MyAppEvent {}
 

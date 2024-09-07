@@ -11,6 +11,8 @@ import '../../../constants/app_size.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../features/profile/application/bloc/profile_bloc.dart';
+import '../../../features/profile/application/bloc/profile_event.dart';
+import '../../../features/profile/application/bloc/profile_state.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_button.dart';
@@ -19,10 +21,11 @@ import '../../../utils/preferences.dart';
 import '../../../widgets/custom_text.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String userId;
+  const ProfileScreen({super.key, this.userId = ''});
 
   @override
-  State createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> with Helper {
@@ -68,178 +71,190 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc(),
-      child: BlocConsumer<ProfileBloc, ProfileState>(
-        builder: (context, state){
-          switch (state.runtimeType) {
-            case ProfileShowIdState:
-              state = state as ProfileShowIdState;
-              showProfileId = state.isIdVisible;
-              break;
-            case ProfileErrorIdState:
-              state = state as ProfileErrorIdState;
-              errorUserId = state.message;
-              break;
-            case ProfileErrorEmailState:
-              state = state as ProfileErrorEmailState;
-              errorEmail = state.message;
-              break;
-            case ProfileErrorNameState:
-              state = state as ProfileErrorNameState;
-              errorName = state.message;
-              break;
-            case ProfileErrorPhoneState:
-              state = state as ProfileErrorPhoneState;
-              errorPhone = state.message;
-              break;
-            case ProfileErrorAddressState:
-              state = state as ProfileErrorAddressState;
-              errorAddress = state.message;
-              break;
-            case ProfileChooseImageState:
-              state = state as ProfileChooseImageState;
-              imageUrl = state.imagePath.isEmpty ? AppStrings.sampleImg : state.imagePath;
-              break;
-            case ProfileSuccessState:
-              ///hideLoadingDialog(context: context);
-              state = state as ProfileSuccessState;
-              var profileData = state.profileData;
-              userIdTextController.text = profileData['user_id'] ?? '';
-              emailTextController.text = profileData['email'] ?? '';
-              nameTextController.text = profileData['name'] ?? '';
-              phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
-              addressTextController.text = profileData['address'] ?? '';
-              imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
-              Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
-              break;
-            default:
-          }
-          return ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(AppSize.s20),
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(AppSize.s2),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primaryColor, width: AppSize.s2)
-                    ),
-                    child: ClipOval(
-                      child: SizedBox.fromSize(
-                        size: const Size.fromRadius(AppSize.s50), // Image radius
-                        child: imageUrl.isEmpty
-                        ? const Center(child: Icon(AppIcons.personIcon, size: AppSize.s60))
-                        : imageUrl.isNetworkImage
-                          ? Image.network(
-                             imageUrl,
-                             loadingBuilder: (context, child, loading){
-                              if(loading == null){
-                                return child;
-                              } else {
-                                return const Center(child: CircularProgressIndicator(strokeWidth: AppSize.s2));
-                              }
-                             }, 
-                             fit: BoxFit.cover
-                            )
-                          : Image.file(File(imageUrl), fit: BoxFit.cover)
-                      ),
-                    )
-                  ),
-                  Positioned(
-                    bottom: 15,
-                    right: context.screenWidth / 2 - 80,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(AppSize.s30),
-                      onTap: () => showImagePickerSheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(AppSize.s6),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
-                          boxShadow: const [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
-                        ),
-                        child: const Icon(Icons.edit, size: AppSize.s18),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSize.s15),
-              CustomTextField(
-                title: _localizations!.userId, 
-                isPasswordField: !showProfileId, 
-                textEditingController: userIdTextController,
-                readOnly: true,
-                isMandatory: true,
-                onShowPassword: () => context.read<ProfileBloc>().add(ProfileShowIdEvent()),
-                errorText: errorUserId,
-              ),
-              CustomTextField(
-                title: _localizations!.email, 
-                isPasswordField: false, 
-                isEnabled: false,
-                isMandatory: true,
-                textEditingController: emailTextController,
-                errorText: errorEmail,
-              ),
-              CustomTextField(
-                title: _localizations!.name, 
-                isPasswordField: false, 
-                isMandatory: true,
-                textEditingController: nameTextController,
-                errorText: errorName,
-                onChange: (value) => context.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
-              ),
-              CustomTextField(
-                title: _localizations!.phone, 
-                isPasswordField: false, 
-                textEditingController: phoneTextController,
-                errorText: errorPhone,
-                maxLength: 12,
-                textInputFormatter: [maskFormatter],
-                onChange: (value) => context.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
-              ),
-              CustomTextField(
-                title: _localizations!.address, 
-                isPasswordField: false, 
-                textEditingController: addressTextController,
-                errorText: errorAddress
-              ),
-              const SizedBox(height: AppSize.s8),
-              CustomButton(
-                title: _localizations!.update, 
-                onTap: () => context.read<ProfileBloc>().add(ProfileUpdateEvent(profileData: {
-                  'user_id': userIdTextController.text,
-                  'email': emailTextController.text,
-                  'name': nameTextController.text,
-                  'phone':  maskFormatter.unmaskText(phoneTextController.text),
-                  'address': addressTextController.text,
-                  'profile_img': imageUrl
-                }))
-              ),
-            ],
-          );
-        },
-        listener: (context, state){
-          switch (state.runtimeType) {
-            case ProfileLoadingState:
-              showLoadingDialog(context: context);
-              break;
-            case ProfileSuccessState:
-              hideLoadingDialog(context: context);
-              if(isFetchProfileData) {
-                showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
-              } else {
-                isFetchProfileData = true;
+      create: (_) => ProfileBloc(userId: widget.userId),
+      child: Builder(
+        builder: (context) {
+          return BlocConsumer<ProfileBloc, ProfileState>(
+            builder: (context, state){
+              switch (state) {
+                case ProfileShowIdState _:
+                  showProfileId = state.isIdVisible;
+                  break;
+                case ProfileErrorIdState _:
+                  errorUserId = state.message;
+                  break;
+                case ProfileErrorEmailState _:
+                  errorEmail = state.message;
+                  break;
+                case ProfileErrorNameState _:
+                  errorName = state.message;
+                  break;
+                case ProfileErrorPhoneState _:
+                  errorPhone = state.message;
+                  break;
+                case ProfileErrorAddressState _:
+                  errorAddress = state.message;
+                  break;
+                case ProfileChooseImageState _:
+                  imageUrl = state.imagePath.isEmpty ? AppStrings.sampleImg : state.imagePath;
+                  break;
+                case ProfileSuccessState _:
+                  var profileData = state.profileData;
+                  userIdTextController.text = profileData['user_id'] ?? '';
+                  emailTextController.text = profileData['email'] ?? '';
+                  nameTextController.text = profileData['name'] ?? '';
+                  phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
+                  addressTextController.text = profileData['address'] ?? '';
+                  imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
+                  Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
+                  break;
+                default:
               }
-              break;
-            default:
-          }
+              return widget.userId.isEmpty
+              ? mainWidget(bContext: context)
+              : Scaffold(
+                appBar: AppBar(
+                  centerTitle: true, 
+                  backgroundColor: AppColors.primaryColor,
+                  title: CustomText(
+                    title: _localizations!.profile, 
+                    textStyle: getBoldStyle(color: AppColors.white)
+                  ),
+                  iconTheme: const IconThemeData(color: AppColors.white),
+                ),
+                body: mainWidget(bContext: context),
+              );
+            },
+            listener: (context, state){
+              switch (state.runtimeType) {
+                case ProfileLoadingState:
+                  showLoadingDialog(context: context);
+                  break;
+                case ProfileSuccessState:
+                  hideLoadingDialog(context: context);
+                  if(isFetchProfileData) {
+                    showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
+                  } else {
+                    isFetchProfileData = true;
+                  }
+                  break;
+                default:
+              }
+            }
+          );
         }
       )
+    );
+  }
+
+  Widget mainWidget({required BuildContext bContext}) {
+    return ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(AppSize.s20),
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppSize.s2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.primaryColor, width: AppSize.s2)
+              ),
+              child: ClipOval(
+                child: SizedBox.fromSize(
+                  size: const Size.fromRadius(AppSize.s50), // Image radius
+                  child: imageUrl.isEmpty
+                  ? const Center(child: Icon(AppIcons.personIcon, size: AppSize.s60))
+                  : imageUrl.isNetworkImage
+                    ? Image.network(
+                        imageUrl,
+                        loadingBuilder: (context, child, loading){
+                        if(loading == null){
+                          return child;
+                        } else {
+                          return const Center(child: CircularProgressIndicator(strokeWidth: AppSize.s2));
+                        }
+                        }, 
+                        fit: BoxFit.cover
+                      )
+                    : Image.file(File(imageUrl), fit: BoxFit.cover)
+                ),
+              )
+            ),
+            Positioned(
+              bottom: 15,
+              right: context.screenWidth / 2 - 80,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(AppSize.s30),
+                onTap: () => showImagePickerSheet(bContext),
+                child: Container(
+                  padding: const EdgeInsets.all(AppSize.s6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
+                    boxShadow: const [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+                  ),
+                  child: const Icon(Icons.edit, size: AppSize.s18),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSize.s15),
+        CustomTextField(
+          title: _localizations!.userId, 
+          isPasswordField: !showProfileId, 
+          textEditingController: userIdTextController,
+          readOnly: true,
+          isMandatory: true,
+          onShowPassword: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
+          errorText: errorUserId,
+        ),
+        CustomTextField(
+          title: _localizations!.email, 
+          isPasswordField: false, 
+          isEnabled: false,
+          isMandatory: true,
+          textEditingController: emailTextController,
+          errorText: errorEmail,
+        ),
+        CustomTextField(
+          title: _localizations!.name, 
+          isPasswordField: false, 
+          isMandatory: true,
+          textEditingController: nameTextController,
+          errorText: errorName,
+          onChange: (value) => bContext.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
+        ),
+        CustomTextField(
+          title: _localizations!.phone, 
+          isPasswordField: false, 
+          textEditingController: phoneTextController,
+          errorText: errorPhone,
+          maxLength: 12,
+          textInputFormatter: [maskFormatter],
+          onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
+        ),
+        CustomTextField(
+          title: _localizations!.address, 
+          isPasswordField: false, 
+          textEditingController: addressTextController,
+          errorText: errorAddress
+        ),
+        const SizedBox(height: AppSize.s8),
+        CustomButton(
+          title: _localizations!.update, 
+          onTap: () => bContext.read<ProfileBloc>().add(ProfileUpdateEvent(profileData: {
+            'user_id': userIdTextController.text,
+            'email': emailTextController.text,
+            'name': nameTextController.text,
+            'phone':  maskFormatter.unmaskText(phoneTextController.text),
+            'address': addressTextController.text,
+            'profile_img': imageUrl
+          }))
+        ),
+      ],
     );
   }
 
@@ -303,7 +318,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                   InkWell(
                     onTap: () async {
                       context.pop();
-                      String data = await pickImage(imageSource: ImageSource.gallery);
+                      var data = await pickImage(imageSource: ImageSource.gallery);
                       if(data.isNotEmpty && context.mounted){
                         mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                       }
@@ -342,7 +357,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
   Future<String> pickImage({required ImageSource imageSource}) async {
     try {
       var pickImage = await ImagePicker().pickImage(source: imageSource);
-      if(pickImage != null){
+      if(pickImage != null) {
         return pickImage.path;
       } else {
         return AppStrings.emptyString;
@@ -351,5 +366,4 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       return AppStrings.emptyString;
     }
   }
-
 }

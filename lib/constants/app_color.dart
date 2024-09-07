@@ -18,5 +18,4 @@ class AppColors {
   static const Color topDarkColor = Color.fromARGB(255, 40, 40, 40);
   static const Color contentColorDark = Color(0xFF2C2C2E);
   static const Color dialogColorDark = Color(0xFF303030);
-  
 }

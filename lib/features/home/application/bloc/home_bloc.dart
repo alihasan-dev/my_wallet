@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-part 'home_event.dart';
-part 'home_state.dart';
+import '../../../../features/home/application/bloc/home_event.dart';
+import '../../../../features/home/application/bloc/home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
-  HomeBloc() : super(HomeInitialState()){
-
+  HomeBloc() : super(HomeInitialState()) {
     on<HomeDrawerItemEvent>(_onDrawerItemClick);
     on<HomeBackPressEvent>(_onBackPress);
   }

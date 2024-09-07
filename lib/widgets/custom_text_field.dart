@@ -73,7 +73,6 @@ class CustomTextField extends StatelessWidget {
           style: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black),
           textInputAction: textInputAction,
           readOnly: readOnly == null || !readOnly! ? false : true,
-          // maxLines: maxLines,
           maxLength: maxLength,
           inputFormatters: textInputFormatter,
           decoration: InputDecoration(
@@ -82,7 +81,7 @@ class CustomTextField extends StatelessWidget {
             hintStyle: getRegularStyle(color: Helper.isDark ? AppColors.grey : AppColors.black),
             isDense: true,
             enabled: isEnabled == null || isEnabled! ? true : false,
-            contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s14, horizontal: AppSize.s10),
+            contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s12, horizontal: AppSize.s10),
             border: const OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05)),
             enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black)),
             suffixIcon: onShowPassword == null

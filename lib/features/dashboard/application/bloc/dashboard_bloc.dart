@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wallet/features/home/application/bloc/home_bloc.dart';
+import '../../../../features/dashboard/application/bloc/dashboard_event.dart';
+import '../../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
-part 'dashboard_event.dart';
-part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
@@ -19,20 +18,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   var listUser = <UserModel>[];
   var userId = '';
 
-  late HomeBloc homeBloc;
-  late StreamSubscription homeStreamSubscription;
-
   DashboardBloc() : super(DashboardInitialState()){
-    homeBloc = HomeBloc();
     ///create instance of connectivity class;
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users');
     checkConnectivity = CheckConnectivity();
     userId = Preferences.getString(key: AppStrings.prefUserId);
-
-    ////listen for state changes in home bloc
-    homeStreamSubscription = homeBloc.stream.listen((event){
-      print('Check home event $event');
-    });
 
     on<DashboardAllUserEvent>(_onGetAllUser);
     on<DashboardAddUserEvent>(_onAddUser);
@@ -45,7 +35,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       for(var item in event.docs){
         var mapData = item.data();
         if(mapData.isNotEmpty){
-          listUser.add(UserModel(userId: item.id, name: mapData['name'], email: mapData['email']));
+          listUser.add(UserModel(
+            userId: item.id, 
+            name: mapData['name'], 
+            email: mapData['email'], 
+            phone: mapData['phone'],
+            profileImg: mapData['profile_img'] ?? '',
+          ));
         }
       }
       add(DashboardAllUserEvent());
@@ -55,33 +51,20 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   @override
   Future<void> close() {
     streamDocumentSnapshot.cancel();
-    homeStreamSubscription.cancel();
     return super.close();
   }
 
   void _onGetAllUser(event, emit) => emit(DashboardAllUserState(allUser: listUser));
 
-  Future<void> _onAddUser(DashboardAddUserEvent event, emit) async {
+  Future<void> _onAddUser(event, emit) async {
     if(await validation(emit, name: event.name, email: event.email)){
       await firebaseStoreInstance.doc(userId).collection('friends').add({
         'name': event.name,
-        'email': event.email
+        'email': event.email,
+        'phone': '',
+        'address': '',
+        'profile_img': '',
       });
-      // try {
-      //   // await firebaseStoreInstance.doc('users').collection('all_users').doc(Preferences.getString(key: AppStrings.prefUserId)).update({
-      //   //   'my_users': FieldValue.arrayUnion([{
-      //   //     'name': event.name,
-      //   //     'email': event.email
-      //   //   }])
-      //   // });
-      // } on FirebaseException catch (_) {
-      //   // await firebaseStoreInstance.doc('users').collection('all_users').doc(Preferences.getString(key: AppStrings.prefUserId)).set({
-      //   //   'my_users': FieldValue.arrayUnion([{
-      //   //     'name': event.name,
-      //   //     'email': event.email
-      //   //   }])
-      //   // });
-      // }
     }
   }
 
@@ -91,37 +74,37 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   Future<bool> validation(Emitter<DashboardState> emit, {required String name, required String email}) async {
-    if(name.isBlank) {
+    if(name.isBlank){
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
       return false;
-    } else if (email.isEmpty) {
+    } else if (email.isEmpty){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyEmail));
       return false;
-    } else if (!email.isValidEmail) {
+    } else if (!email.isValidEmail){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
       return false;
-    } else if (listUser.any((element) => element.email == email)) {
+    } else if (listUser.any((element) => element.email == email)){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.emailAlreadyExist));
       return false;
-    } else if (!await checkConnectivity.hasConnection) {
+    } else if (!await checkConnectivity.hasConnection){
       emit(DashboardFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
     }
     return true;
   }
 
-  void _onEmailChange(DashboardEmailChangeEvent event, Emitter emit) {
-    if(event.email.isEmpty) {
+  void _onEmailChange(event, emit) {
+    if(event.email.isEmpty){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyEmail));
-    } else if(!event.email.toString().isValidEmail) {
+    } else if(!event.email.toString().isValidEmail){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
     } else {
       emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyString));
     }
   }
 
-  void _onNameChange(DashboardNameChangeEvent event, Emitter emit){
-    if(event.name.isEmpty) {
+  void _onNameChange(event, emit){
+    if(event.name.isEmpty){
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
     } else {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyString));

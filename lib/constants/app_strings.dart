@@ -57,6 +57,8 @@ class AppStrings {
   static const String language = 'Language';
   static const String english = 'English';
   static const String hindi = 'Hindi';
+  static const String settings = 'Settings';
+  static const String viewProfile = 'View Profile';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
