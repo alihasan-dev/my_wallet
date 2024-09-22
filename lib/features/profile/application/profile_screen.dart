@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:my_wallet/widgets/custom_image_widget.dart';
+import '../../../widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_size.dart';
@@ -183,12 +183,12 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 onTap: () => showImagePickerSheet(bContext),
                 child: Container(
                   padding: const EdgeInsets.all(AppSize.s8),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
-                    boxShadow: const [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+                    color: AppColors.primaryColor,
+                    boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
                   ),
-                  child: const Icon(Icons.edit, size: AppSize.s16),
+                  child: const Icon(Icons.edit, size: AppSize.s16, color: AppColors.white),
                 ),
               ),
             ),

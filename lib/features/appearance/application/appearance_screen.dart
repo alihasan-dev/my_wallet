@@ -23,7 +23,6 @@ import '../../../constants/app_size.dart';
 
 class AppearanceScreen extends StatefulWidget {
   const AppearanceScreen({super.key});
-
   @override
   State createState() => _AppearanceScreenState();
 }
@@ -163,7 +162,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
           ? AppColors.dialogColorDark 
           : AppColors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSize.s12),
+          contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -173,7 +172,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                 var data = themeModeList[index];
                 return InkWell(
                   onTap: () { 
-                    BlocProvider.of<MyAppBloc>(context).add(MyAppChangeThemeEvent(themeMode: data.themeMode));
+                    context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
                     context.pop();
                   },
                   child: Container(
@@ -226,7 +225,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
           ? AppColors.dialogColorDark 
           : AppColors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSize.s12),
+          contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -236,7 +235,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                 var data = languageList[index];
                 return InkWell(
                   onTap: () { 
-                    BlocProvider.of<MyAppBloc>(context).add(MyAppChangeLanguageEvent(locale: data.locale));
+                    context.read<MyAppBloc>().add(MyAppChangeLanguageEvent(locale: data.locale));
                     context.pop();
                   },
                   child: Container(

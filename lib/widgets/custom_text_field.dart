@@ -42,7 +42,8 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override 
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,9 +53,7 @@ class CustomTextField extends StatelessWidget {
               TextSpan(
                 text: '  $title', 
                 style: TextStyle(
-                  color: Helper.isDark 
-                  ? AppColors.white.withOpacity(0.8) 
-                  : AppColors.black
+                  color: textTheme.bodyLarge!.color
                 ),
               ),
               TextSpan(

@@ -45,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
     if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)) {
       openBiometricDialog();
       Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+    } else {
+      isBioAuthenticated = true;
     }
     super.initState();
   }
