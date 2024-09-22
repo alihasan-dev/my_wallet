@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:my_wallet/widgets/custom_image_widget.dart';
+import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
@@ -31,7 +31,6 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
   bool isLoading = true;
   bool showUnverified = true;
 
-  // AppLocalizations? _localizations;
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
     filter: {"#": RegExp(r'[0-9]')}
@@ -41,7 +40,6 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
   @override
   void didChangeDependencies() {
     dateFormat = DateFormat.yMMMd();
-    // _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
   }
 
@@ -110,11 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                                               children: [
                                                 CustomText(
                                                   title: data.name, 
-                                                  textStyle: getSemiBoldStyle(
-                                                    color: Helper.isDark 
-                                                    ? AppColors.white.withOpacity(0.9) 
-                                                    : AppColors.black
-                                                  ),
+                                                  textStyle: getSemiBoldStyle(),
                                                 ),
                                                 Visibility(
                                                   visible: !data.isUserVerified,
@@ -122,11 +116,11 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                                                     margin: const EdgeInsets.only(left: AppSize.s8),
                                                     padding: const EdgeInsets.symmetric(
                                                       vertical: 1.8,
-                                                      horizontal: 5.0
+                                                      horizontal: AppSize.s5
                                                     ),
                                                     decoration: BoxDecoration(
                                                       color: Colors.amber.withOpacity(0.1),
-                                                      borderRadius: BorderRadius.circular(4.0)
+                                                      borderRadius: BorderRadius.circular(AppSize.s4)
                                                     ),
                                                     child: CustomText(
                                                       title: 'Test',

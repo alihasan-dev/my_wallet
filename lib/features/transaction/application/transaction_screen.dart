@@ -18,6 +18,7 @@ import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/helper.dart';
+import '../../../widgets/custom_image_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_verticle_divider.dart';
 
@@ -127,51 +128,38 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const SizedBox(width: AppSize.s2),
-                          IconButton(
-                            onPressed: () => context.pop(),
-                            visualDensity: VisualDensity.compact,
-                            icon: Row(
-                              children: [
-                                const Icon(
-                                  AppIcons.backArrowIcon, 
-                                  color: AppColors.white,
-                                  size: 22,
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.all(1.4),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: AppColors.primaryColor, width: AppSize.s1)
-                                  ),
-                                  child: ClipOval(
-                                    child: SizedBox.fromSize(
-                                      size: const Size.fromRadius(AppSize.s16),
-                                      child: Image.network(
-                                        AppStrings.sampleImg,
-                                        loadingBuilder: (context, child, loading){
-                                        if(loading == null){
-                                          return child;
-                                        } else {
-                                          return const Center(
-                                            child: Padding(
-                                              padding: EdgeInsets.all(AppSize.s6),
-                                              child: CircularProgressIndicator(strokeWidth: AppSize.s1)
-                                            ),
-                                          );
-                                        }
-                                        }, 
-                                        fit: BoxFit.cover
-                                      ),
+                          const SizedBox(width: AppSize.s10),
+                          Material(
+                            color: AppColors.transparent,
+                            child: InkWell(
+                              onTap: () => context.pop(),
+                              borderRadius: BorderRadius.circular(30),
+                              child: Ink(
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      AppIcons.backArrowIcon, 
+                                      color: AppColors.white,
+                                      size: 22,
                                     ),
-                                  ),
-                                )
-                              ],
+
+                                    CustomImageWidget(
+                                      imageUrl: widget.userModel!.profileImg, 
+                                      imageSize: AppSize.s18,
+                                      circularPadding: AppSize.s5,
+                                      strokeWidth: AppSize.s1,
+                                      padding: 1.5,
+                                      borderWidth: 0,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: AppSize.s6),
@@ -195,14 +183,19 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     Row(
                       children: [
                         IconButton(
-                          visualDensity: VisualDensity.compact,
                           onPressed: () => showAddUserSheet(bloc: _transactionBloc),
-                          icon: const Icon(AppIcons.addIcon, color: AppColors.white)
+                          icon: const Icon(
+                            AppIcons.addIcon, 
+                            color: AppColors.white, 
+                            size: AppSize.s26
+                          ),
                         ),
                         IconButton(
-                          visualDensity: VisualDensity.compact,
                           onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
-                          icon: const Icon(AppIcons.downloadIcon, color: AppColors.white)
+                          icon: const Icon(
+                            AppIcons.downloadIcon, 
+                            color: AppColors.white
+                          ),
                         ),
                       ],
                     ),

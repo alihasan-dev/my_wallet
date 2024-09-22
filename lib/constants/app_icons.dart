@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppIcons {
 
+  AppIcons._();
+  
   static const IconData accountWallet = Icons.account_balance_wallet;
   static const IconData logoutIcon = Icons.logout;
   static const IconData addIcon = Icons.add;
@@ -18,4 +20,5 @@ class AppIcons {
   static const IconData checkIcon = Icons.radio_button_checked;
   static const IconData downloadIcon = Icons.download;
   static const IconData homeIcon = Icons.home;
+  static const IconData settingsIcon = Icons.settings;
 }

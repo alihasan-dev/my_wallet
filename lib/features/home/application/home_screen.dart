@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_icons.dart';
+import 'package:my_wallet/constants/app_size.dart';
 import '../../../features/dashboard/application/dashboard_screen.dart';
 import '../../../features/home/application/bloc/home_bloc.dart';
 import '../../../features/home/application/bloc/home_event.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
   @override
   void initState() {
     _localAuthentication = LocalAuthentication();
+    //Uncomment below line to enable biometric feature
     // if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)) {
     //   openBiometricDialog();
     //   Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
@@ -82,19 +84,23 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                       PopupMenuButton<String>(
                         padding: EdgeInsets.zero,
                         position: PopupMenuPosition.under,
+                        menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
                         itemBuilder: (_) {
                           return <PopupMenuEntry<String>> [
                             const PopupMenuItem<String>(
                               value: AppStrings.settings,
                               child: ListTile(
-                                leading: Icon(Icons.settings),
+                                visualDensity: VisualDensity.compact,
+                                leading: Icon(AppIcons.settingsIcon),
                                 title: Text(AppStrings.settings),
                               ),
                             ),
                             const PopupMenuItem<String>(
                               value: AppStrings.logout,
                               child: ListTile(
-                                leading: Icon(Icons.login_outlined),
+                                visualDensity: VisualDensity.compact,
+                                leading: Icon(AppIcons.logoutIcon),
                                 title: Text(AppStrings.logout),
                               ),
                             ),
@@ -111,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                               break;
                           }
                         },
-                      )
+                      ),
                     ]
                   ),
                   bottomNavigationBar: BottomNavigationBar(
