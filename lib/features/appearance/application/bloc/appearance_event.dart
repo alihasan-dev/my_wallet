@@ -7,3 +7,11 @@ class ApperanceChangeThemeEvent extends AppearanceEvent {
 
   ApperanceChangeThemeEvent({required this.themeMode});
 }
+
+class ApperanceUserDetailsEvent extends AppearanceEvent {}
+
+class ApperanceOnChangeVerifiedEvent extends AppearanceEvent {
+  bool isVerified;
+
+  ApperanceOnChangeVerifiedEvent({this.isVerified = false});
+}

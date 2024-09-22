@@ -20,10 +20,10 @@ mixin Helper {
     required String title,
     String? message, 
     Color? color
-  }){
+  }) {
     var snackBar = SnackBar(
       behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
       padding: EdgeInsets.zero,
       elevation: 0,
       backgroundColor: Colors.white,
@@ -82,13 +82,13 @@ mixin Helper {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void showLoadingDialog({required BuildContext context}){
+  void showLoadingDialog({required BuildContext context}) {
     if(!isLoadingVisible) {
       isLoadingVisible = true;
       showDialog(
         context: context, 
         barrierColor: AppColors.transparent,
-        builder: (_){
+        builder: (_) {
           return AlertDialog(
             elevation: 0.0,
             contentPadding: EdgeInsets.zero,

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/constants/app_icons.dart';
 import '../../../features/dashboard/application/dashboard_screen.dart';
 import '../../../features/home/application/bloc/home_bloc.dart';
 import '../../../features/home/application/bloc/home_event.dart';
@@ -62,17 +63,13 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
             onWillPop: () => onPressBack(context, _localizations!),
             child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state){
-                switch (state.runtimeType) {
-                  case HomeDrawerItemState:
-                    state = state as HomeDrawerItemState;
+                switch (state) {
+                  case HomeDrawerItemState _:
                     pageIndex = state.index;
                     break;
                   default:
                 }
                 return Scaffold(
-                  backgroundColor: Helper.isDark 
-                  ? AppColors.backgroundColorDark 
-                  : AppColors.white,
                   appBar: AppBar(
                     centerTitle: true, 
                     backgroundColor: AppColors.primaryColor,
@@ -119,16 +116,17 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                   ),
                   bottomNavigationBar: BottomNavigationBar(
                     currentIndex: pageIndex,
+                    selectedItemColor: AppColors.primaryColor,
                     onTap: (index) => context.read<HomeBloc>().add(HomeDrawerItemEvent(index: index)),
                     items: [
                       BottomNavigationBarItem(
                         label: _localizations!.dashboard,
-                        icon: const Icon(Icons.home)
+                        icon: const Icon(AppIcons.homeIcon)
                       ),
                       BottomNavigationBarItem(
-                        icon: const Icon(Icons.person),
+                        icon: const Icon(AppIcons.personIcon),
                         label: _localizations!.profile
-                      )
+                      ),
                     ],
                   ),
                   body: _widgetTitleList[pageIndex].screenWidget

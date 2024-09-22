@@ -1,3 +1,5 @@
+import 'package:my_wallet/features/dashboard/domain/user_model.dart';
+
 abstract class DashboardEvent {}
 
 class DashboardInitialEvent extends DashboardEvent {}
@@ -24,4 +26,10 @@ class DashboardAddUserEvent extends DashboardEvent {
 class DashboardDeleteUserEvent extends DashboardEvent {
   String docId;
   DashboardDeleteUserEvent({required this.docId});
+}
+
+class DashboardUserDetailsEvent extends DashboardEvent {
+  UserModel userModel;
+
+  DashboardUserDetailsEvent(this.userModel);
 }

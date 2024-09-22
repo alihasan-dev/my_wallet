@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,8 +22,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   String userId;
 
   ProfileBloc({this.userId = ''}) : super(ProfileInitialState()) {
-    log('User Id => $userId');
-    ///Initilize instance variable here
     checkConnectivity = CheckConnectivity();
     var userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
     firebaseDocReference = userId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(userId);
@@ -37,6 +34,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileNameChangeEvent>(_onNameChange);
     on<ProfilePhoneChangeEvent>(_onPhoneChange);
     on<ProfileChooseImageEvent>(_onChooseImage);
+    on<ProfileDeleteUserEvent>(_onDeleteUser);
 
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
       profileData = event.data() as Map<String, dynamic>;
@@ -105,6 +103,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         'profile_img': updatedImageUrl.isEmpty ? event.profileData['profile_img'] : updatedImageUrl
       });
     } 
+  }
+
+  Future<void> _onDeleteUser(ProfileDeleteUserEvent event, Emitter emit) async {
+    if(event.isConfirmed) {
+      emit(ProfileLoadingState());
+      await firebaseDocReference.delete();
+      emit(ProfileDeleteUserState(isDeleted: true));
+    } else {
+      emit(ProfileDeleteUserState());
+    }
   }
 
   void _getProfileData(ProfileDataEvent event, Emitter emit) {

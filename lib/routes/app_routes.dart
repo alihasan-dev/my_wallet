@@ -34,7 +34,7 @@ class AppRoutes {
   static final GoRouter router = GoRouter(
     redirect: (context, state) {
       var brightness = Theme.of(context).brightness;
-      if(brightness == Brightness.dark){
+      if(brightness == Brightness.dark) {
         Helper.isDark = true;
       } else {
         Helper.isDark = false;
@@ -44,12 +44,18 @@ class AppRoutes {
     routes: [
       GoRoute(
         path: initialRoute,
-        builder: (BuildContext context, GoRouterState state) {
+        builder: (context, state) {
           if(Preferences.getString(key: AppStrings.prefUserId).isNotEmpty) {
             Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: true);
-            return BlocProvider(create: (_) => HomeBloc(), child: const HomeScreen());
+            return BlocProvider(
+              create: (_) => HomeBloc(), 
+              child: const HomeScreen()
+            );
           } else {
-            return BlocProvider(create: (_) => LoginBloc(), child: const LoginScreen());
+            return BlocProvider(
+              create: (_) => LoginBloc(), 
+              child: const LoginScreen()
+            );
           }
         }
       ),
@@ -80,10 +86,16 @@ class AppRoutes {
       GoRoute(
         path: transactionScreen,
         builder: (_, state) {
-          var data = state.extra as UserModel;
-          return BlocProvider(create: (_) => TransactionBloc(userName: data.name, friendId: data.userId), child: TransactionScreen(userModel: data));
+          var data = state.extra == null ? null : state.extra as UserModel;
+          return BlocProvider(
+            create: (_) => TransactionBloc(
+              userName: data == null ? '' : data.name, 
+              friendId: data == null ? '' : data.userId
+            ), 
+            child: TransactionScreen(userModel: data)
+          );
         }
-      )
+      ),
     ],
   );
 

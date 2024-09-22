@@ -17,4 +17,5 @@ class AppIcons {
   static const IconData uncheckIcon = Icons.radio_button_unchecked;
   static const IconData checkIcon = Icons.radio_button_checked;
   static const IconData downloadIcon = Icons.download;
+  static const IconData homeIcon = Icons.home;
 }

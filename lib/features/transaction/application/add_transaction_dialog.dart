@@ -43,17 +43,14 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
         content: BlocConsumer<TransactionBloc, TransactionState>(
           builder: (context, state){
-            switch (state.runtimeType) {
-              case TransactionAmountFieldState:
-                state = state as TransactionAmountFieldState;
+            switch (state) {
+              case TransactionAmountFieldState _:
                 errorAmount = state.isAmountEmpty;
                 break;
-              case TransactionTypeChangeState:
-                state = state as TransactionTypeChangeState;
+              case TransactionTypeChangeState _:
                 transactionType = state.type;
                 break;
-              case TransactionDateChangeState:
-                state = state as TransactionDateChangeState;
+              case TransactionDateChangeState _:
                 errorDate = state.isEmpty;
                 break;
               default:
@@ -152,8 +149,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
             );
           },
           listener: (context, state) {
-            switch (state.runtimeType) {
-              case AllTransactionState:
+            switch (state) {
+              case AllTransactionState _:
                 if(!isFirst) {
                   Navigator.pop(context);
                 } else {

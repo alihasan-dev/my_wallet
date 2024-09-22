@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_size.dart';
@@ -15,7 +15,8 @@ import '../../../features/profile/application/bloc/profile_event.dart';
 import '../../../features/profile/application/bloc/profile_state.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../utils/helper.dart';
-import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_outlined_button.dart';
+import '../../../widgets/custom_text_button.dart';
 import '../../../widgets/custom_text_field.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_text.dart';
@@ -126,16 +127,25 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               );
             },
             listener: (context, state){
-              switch (state.runtimeType) {
-                case ProfileLoadingState:
+              switch (state) {
+                case ProfileLoadingState _:
                   showLoadingDialog(context: context);
                   break;
-                case ProfileSuccessState:
+                case ProfileSuccessState _:
                   hideLoadingDialog(context: context);
                   if(isFetchProfileData) {
                     showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
                   } else {
                     isFetchProfileData = true;
+                  }
+                  break;
+                case ProfileDeleteUserState _:
+                  if(state.isDeleted) {
+                    hideLoadingDialog(context: context);
+                    context.pop();
+                    context.pop();
+                  } else {
+                    onUserDelete(nameTextController.text, context);
                   }
                   break;
                 default:
@@ -147,6 +157,12 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
     );
   }
 
+  Future<void> onUserDelete(String name, BuildContext bContext) async {
+    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: "${_localizations!.deleteUserMsg} $name", localizations: _localizations!)) {
+      bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
+    }
+  }
+
   Widget mainWidget({required BuildContext bContext}) {
     return ListView(
       shrinkWrap: true,
@@ -155,53 +171,30 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
         Stack(
           alignment: Alignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(AppSize.s2),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primaryColor, width: AppSize.s2)
-              ),
-              child: ClipOval(
-                child: SizedBox.fromSize(
-                  size: const Size.fromRadius(AppSize.s50), // Image radius
-                  child: imageUrl.isEmpty
-                  ? const Center(child: Icon(AppIcons.personIcon, size: AppSize.s60))
-                  : imageUrl.isNetworkImage
-                    ? Image.network(
-                        imageUrl,
-                        loadingBuilder: (context, child, loading){
-                        if(loading == null){
-                          return child;
-                        } else {
-                          return const Center(child: CircularProgressIndicator(strokeWidth: AppSize.s2));
-                        }
-                        }, 
-                        fit: BoxFit.cover
-                      )
-                    : Image.file(File(imageUrl), fit: BoxFit.cover)
-                ),
-              )
+            CustomImageWidget(
+              imageUrl: imageUrl,
+              imageSize: AppSize.s45,
             ),
             Positioned(
-              bottom: 15,
-              right: context.screenWidth / 2 - 80,
+              bottom: 10,
+              right: context.screenWidth / 2 - 75,
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppSize.s30),
                 onTap: () => showImagePickerSheet(bContext),
                 child: Container(
-                  padding: const EdgeInsets.all(AppSize.s6),
+                  padding: const EdgeInsets.all(AppSize.s8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
                     boxShadow: const [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
                   ),
-                  child: const Icon(Icons.edit, size: AppSize.s18),
+                  child: const Icon(Icons.edit, size: AppSize.s16),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: AppSize.s15),
+        const SizedBox(height: AppSize.s12),
         CustomTextField(
           title: _localizations!.userId, 
           isPasswordField: !showProfileId, 
@@ -242,18 +235,48 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
           textEditingController: addressTextController,
           errorText: errorAddress
         ),
-        const SizedBox(height: AppSize.s8),
-        CustomButton(
-          title: _localizations!.update, 
-          onTap: () => bContext.read<ProfileBloc>().add(ProfileUpdateEvent(profileData: {
-            'user_id': userIdTextController.text,
-            'email': emailTextController.text,
-            'name': nameTextController.text,
-            'phone':  maskFormatter.unmaskText(phoneTextController.text),
-            'address': addressTextController.text,
-            'profile_img': imageUrl
-          }))
-        ),
+        const SizedBox(height: AppSize.s4),
+        Row(
+          children: [
+            Visibility(
+              visible: !widget.userId.isBlank,
+              child: Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomOutlinedButton(
+                        onPressed: () => bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent()),
+                        title: _localizations!.deleteUser, 
+                        icon: AppIcons.deleteIcon,
+                        isSelected: true,
+                        foregroundColor: AppColors.red,
+                        backgroundColor: AppColors.red.withOpacity(0.2),
+                      ),
+                    ),
+                    const SizedBox(width: AppSize.s8),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: CustomTextButton(
+                onPressed: () => bContext.read<ProfileBloc>().add(ProfileUpdateEvent(profileData: {
+                  'user_id': userIdTextController.text,
+                  'email': emailTextController.text,
+                  'name': nameTextController.text,
+                  'phone':  maskFormatter.unmaskText(phoneTextController.text),
+                  'address': addressTextController.text,
+                  'profile_img': imageUrl
+                })),
+                title: _localizations!.update,
+                isSelected: true,
+                foregroundColor: AppColors.white,
+                backgroundColor: AppColors.primaryColor,
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+          ],
+        )
       ],
     );
   }

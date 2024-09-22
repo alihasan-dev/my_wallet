@@ -24,3 +24,8 @@ class ProfileChooseImageEvent extends ProfileEvent {
   String imagePath;
   ProfileChooseImageEvent({required this.imagePath});
 }
+
+class ProfileDeleteUserEvent extends ProfileEvent {
+  bool isConfirmed;
+  ProfileDeleteUserEvent({this.isConfirmed = false});
+}

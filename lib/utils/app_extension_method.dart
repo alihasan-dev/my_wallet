@@ -51,6 +51,18 @@ extension StringExtension on String {
       return this;
     }
   }
+
+  String amountFormat({required String type}) {
+    try {
+      if(type == 'Transfer') {
+        return '- ₹$this'; 
+      }
+      return '+ ₹$this';
+    } catch (e) {
+      return '₹${toString()}';
+    }
+  }
+  
 }
 extension ScreenBuildContext on BuildContext {
 
@@ -60,4 +72,18 @@ extension ScreenBuildContext on BuildContext {
 
   double get statusBarHeight => MediaQuery.of(this).padding.top;
 
+}
+
+extension NumberExtension on num {
+
+  String get balanceFormat {
+    try {
+      if(isNegative) {
+        return '- ₹${abs()}'; 
+      }
+      return '₹${toString()}';
+    } catch (e) {
+      return '₹${toString()}';
+    }
+  }
 }

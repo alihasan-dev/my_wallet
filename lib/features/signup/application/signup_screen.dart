@@ -47,19 +47,18 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
       create: (_) => SignupBloc(),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0, backgroundColor: AppColors.primaryColor),
-        backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
+        // backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
         body: BlocConsumer<SignupBloc, SignupState>(
           listener: (context, state) {
-            switch (state.runtimeType) {
-              case SignupFailedState:
+            switch (state) {
+              case SignupFailedState _:
                 hideLoadingDialog(context: context);
-                state = state as SignupFailedState;
                 showSnackBar(context: context, title: state.title, message: state.message);
                 break;
-              case SignupLoadingState:
+              case SignupLoadingState _:
                 showLoadingDialog(context: context);
                 break;
-              case SignupSuccessState:
+              case SignupSuccessState _:
                 hideLoadingDialog(context: context);
                 context.go(AppRoutes.homeScreen);
                 break;
@@ -67,21 +66,17 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
             }
           },
           builder: (context, state) {
-            switch (state.runtimeType) {
-              case SignupEmailFieldState:
-                state = state as SignupEmailFieldState;
+            switch (state) {
+              case SignupEmailFieldState _:
                 errorEmail = state.emailMessage;
                 break;
-              case SignupPasswordFieldState:
-                state = state as SignupPasswordFieldState;
+              case SignupPasswordFieldState _:
                 errorPassword = state.passwordMessage;
                 break;
-              case SignupPasswordVisibilityState:
-                state = state as SignupPasswordVisibilityState;
+              case SignupPasswordVisibilityState _:
                 showPassword = state.isVisible;
                 break;
-              case SignupNameFieldState:
-                state = state as SignupNameFieldState;
+              case SignupNameFieldState _:
                 errorName = state.nameMessage;
                 break;
               default:
@@ -89,9 +84,8 @@ class _SignupScreenState extends State<SignupScreen> with Helper {
             return ListView(
               padding: const EdgeInsets.all(AppSize.s28),
               children: [
+                Center(child: Image.asset(AppImages.appImage, height: 90, width: 90)),
                 const SizedBox(height: AppSize.s10),
-                Center(child: Image.asset(AppImages.appImage, height: 80, width: 80)),
-                const SizedBox(height: AppSize.s20),
                 CustomTextField(
                   title: _localizations!.name,
                   isPasswordField: false,

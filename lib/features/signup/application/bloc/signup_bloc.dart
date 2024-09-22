@@ -15,7 +15,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   late CollectionReference _collectionReference;
 
   SignupBloc() : super(SignupInitialState()){
-    ///create instance of connectivity class;
     _authInstance = FirebaseAuth.instance;
     _collectionReference = FirebaseFirestore.instance.collection('users');
     _checkConnectivity = CheckConnectivity();
@@ -28,7 +27,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
 
   Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {
     if(await validation(emit, name: event.name, email: event.email, password: event.password)){
-      ///Show loading dialog
       emit(SignupLoadingState());
       try {
         var userCredential = await _authInstance.createUserWithEmailAndPassword(email: event.email, password: event.password);
@@ -44,7 +42,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'name': event.name,
             'email': event.email,
             'user_id': user.uid,
-            'profile_img': AppStrings.sampleImg
+            'profile_img': AppStrings.sampleImg,
+            'showUnverified': true
           });
           emit(SignupSuccessState());
         } else {

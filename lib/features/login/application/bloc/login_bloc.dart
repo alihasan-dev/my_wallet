@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/app_strings.dart';
@@ -15,11 +14,11 @@ import '../../../../utils/preferences.dart';
 ///Business logic layer is notified of events/actions from the presentation layer and then communicates with 
 ///repository in order to build a new state for the presentation layer to consume.
 
-class LoginBloc extends Bloc<LoginEvent, LoginState>{
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth authInstance;
-  late DocumentReference firebaseDocumentReference;
+  // late DocumentReference firebaseDocumentReference;
 
   LoginBloc() : super(LoginInitialState()){
     authInstance = FirebaseAuth.instance;
@@ -32,25 +31,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
   }
 
   Future<void> _onLoginSubmit(LoginSubmitEvent event, Emitter<LoginState> emit) async {
-    if(await validation(emit, email: event.email, password: event.password)){
+    if(await validation(emit, email: event.email, password: event.password)) {
       emit(LoginLoadingState());
       try {
         var userCredential = await authInstance.signInWithEmailAndPassword(email: event.email, password: event.password);
         var user = userCredential.user;
         if (user != null) {
-          firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
+          // firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
           Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
           Preferences.setString(key: AppStrings.prefEmail, value: event.email);
           Preferences.setBool(key: AppStrings.prefRememberMe,value: event.isRememberMe);
-          if(event.isRememberMe){
+          if(event.isRememberMe) {
             Preferences.setString(key: AppStrings.prefPassword, value: event.password);
           }
-          await firebaseDocumentReference.get().then((data){
-            var mapData = data.data() as Map;
-            if(mapData.isNotEmpty){
-              Preferences.setString(key: AppStrings.prefFullName, value: mapData['name']);
-            }
-          });
+          // await firebaseDocumentReference.get().then((data) {
+          //   var mapData = data.data() as Map;
+          //   if(mapData.isNotEmpty) {
+          //     Preferences.setString(key: AppStrings.prefFullName, value: mapData['name']);
+          //   }
+          // });
           emit(LoginSuccessState());
         } else {
           emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
@@ -76,8 +75,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
   void _onPasswordChange(LoginPasswordChangeEvent event, Emitter emit) {
     if(event.password.toString().isBlank) {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
-    } else  if(event.password.toString().length < 8) {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.invalidPassword));
     } else {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyString));
     }
@@ -99,9 +96,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       return false;
     } else if(password.isBlank) {
       emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
-      return false;
-    } else if(password.length < 8) {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.invalidPassword));
       return false;
     } else if(!await checkConnectivity.hasConnection) {
       emit(LoginFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wallet/constants/app_color.dart';
 import '../constants/app_font.dart';
 import '../constants/app_style.dart';
 import 'app_size.dart';
@@ -43,7 +44,7 @@ ThemeData get getAppTheme {
       displayMedium: getMediumStyle(color: Colors.grey, fontSize: AppFontSize.s16),
       displaySmall: getRegularStyle(color: Colors.grey, fontSize: AppFontSize.s14),
       bodySmall: getRegularStyle(color: Colors.grey)
-    ),
+    ).apply(bodyColor: AppColors.black),
     //input decoration theme(text form field)
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(AppSize.s8),

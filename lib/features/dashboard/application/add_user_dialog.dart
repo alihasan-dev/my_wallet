@@ -42,13 +42,11 @@ class _AddUserDialogState extends State<AddUserDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
         content: BlocConsumer<DashboardBloc, DashboardState>(
           builder: (context, state){
-            switch (state.runtimeType) {
-              case DashboardEmailFieldState:
-                state = state as DashboardEmailFieldState;
+            switch (state) {
+              case DashboardEmailFieldState _:
                 errorEmail = state.emailMessage;
                 break;
-              case DashboardNameFieldState:
-                state = state as DashboardNameFieldState;
+              case DashboardNameFieldState _:
                 errorName = state.nameMessage;
                 break;
               default:
@@ -105,8 +103,8 @@ class _AddUserDialogState extends State<AddUserDialog> {
             );
           }, 
           listener: (_, state){
-            switch (state.runtimeType) {
-              case DashboardAllUserState:
+            switch (state) {
+              case DashboardAllUserState _:
                 if(!isFirstOpen){
                   Navigator.pop(context);
                 }

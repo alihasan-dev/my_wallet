@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -33,6 +34,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
   var themeModeList = <AppearanceThemeModel>[];
   var languageList = <ApperanceLanguageModel>[];
   AppLocalizations? _localizations;
+  bool showUnverified = false;
 
   @override
   void didChangeDependencies() {
@@ -66,16 +68,19 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
           builder: (context) {
             return BlocBuilder<ApperanceBloc, ApperanceState>(
               builder: (context, state) {
-                switch (state.runtimeType) {
-                  case ApperanceThemeChangeState:
-                    state = state as ApperanceThemeChangeState;
+                switch (state) {
+                  case ApperanceThemeChangeState _:
                     // bContent.read<HomeBloc>().add(HomeDrawerItemEvent(index: 2));
+                    break;
+                  case ApperanceUserDetailsState _:
+                    showUnverified = state.userModel.isUserVerified;
                     break;
                   default:
                 }
                 appearanceItemList.clear();
                 appearanceItemList.add(AppearanceModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
                 appearanceItemList.add(AppearanceModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+                appearanceItemList.add(AppearanceModel(title: 'Show Unverified user', subTitle: showUnverified ? 'Yes' : 'No'));
                 return ListView(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
@@ -84,24 +89,41 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                     (index) {
                       var data = appearanceItemList[index];
                       return InkWell(
-                        onTap: () => onClickItem(context: context, index: index),
+                        onTap: index == 2
+                        ? null
+                        : () => onClickItem(context: context, index: index),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSize.s20,
                             vertical: AppSize.s15
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomText(
-                                title: data.title, 
-                                textStyle: getMediumStyle(
-                                  color: Helper.isDark 
-                                  ? AppColors.white 
-                                  : AppColors.black
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    title: data.title, 
+                                    textStyle: getMediumStyle(
+                                      color: Helper.isDark 
+                                      ? AppColors.white 
+                                      : AppColors.black
+                                    ),
+                                  ),
+                                  CustomText(title: data.subTitle.capitalize, textColor: AppColors.grey)
+                                ],
+                              ),
+                              Visibility(
+                                visible: index == 2,
+                                child: Transform.scale(
+                                  scale: 0.8,
+                                  child: CupertinoSwitch(
+                                    value: showUnverified, 
+                                    onChanged: (value) => context.read<ApperanceBloc>().add(ApperanceOnChangeVerifiedEvent(isVerified: value))
+                                  ),
                                 ),
                               ),
-                              CustomText(title: data.subTitle.capitalize, textColor: AppColors.grey)
                             ],
                           ),
                         ),

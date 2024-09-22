@@ -29,9 +29,8 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return BlocBuilder<MyAppBloc, MyAppState>(
       builder: (context, state) {
-        switch (state.runtimeType) {
-          case MyAppInitialState:
-            state = state as MyAppInitialState;
+        switch (state) {
+          case MyAppInitialState _:
             themeMode = state.themeMode;
             locale = state.locale;
             break;
@@ -45,10 +44,11 @@ class _MyAppState extends State<MyApp> {
           locale: locale,
           theme: getAppTheme,
           darkTheme: ThemeData(
-            scaffoldBackgroundColor: Colors.black,
+            scaffoldBackgroundColor: AppColors.backgroundColorDark,
             colorScheme: const ColorScheme.dark(primary: AppColors.primaryColor),
-            appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
-            useMaterial3: true
+            appBarTheme: const AppBarTheme(backgroundColor: AppColors.backgroundColorDark),
+            useMaterial3: true,
+            textTheme: const TextTheme().apply(bodyColor: AppColors.white.withOpacity(0.9))
           ),
           themeMode: themeMode,
           routerConfig: AppRoutes.router

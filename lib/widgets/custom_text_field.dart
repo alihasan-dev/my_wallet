@@ -58,7 +58,9 @@ class CustomTextField extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: isMandatory == null || !isMandatory! ? '' : ' *', 
+                text: isMandatory == null || !isMandatory! 
+                ? '' 
+                : ' *', 
                 style: const TextStyle(color: AppColors.red)
               ),
             ],
@@ -70,7 +72,11 @@ class CustomTextField extends StatelessWidget {
           obscuringCharacter: '●',
           controller: textEditingController,
           cursorWidth: 1.5,
-          style: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black),
+          style: getMediumStyle(
+            color: Helper.isDark 
+            ? AppColors.white.withOpacity(0.9) 
+            : AppColors.black
+          ),
           textInputAction: textInputAction,
           readOnly: readOnly == null || !readOnly! ? false : true,
           maxLength: maxLength,
@@ -78,27 +84,48 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: title,
             counterText: '',
-            hintStyle: getRegularStyle(color: Helper.isDark ? AppColors.grey : AppColors.black),
+            hintStyle: getRegularStyle(
+              color: Helper.isDark 
+              ? AppColors.grey 
+              : AppColors.black
+            ),
             isDense: true,
             enabled: isEnabled == null || isEnabled! ? true : false,
-            contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s12, horizontal: AppSize.s10),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: AppSize.s12, 
+              horizontal: AppSize.s10
+            ),
             border: const OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05)),
-            enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black)),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: AppSize.s05, 
+                color: Helper.isDark 
+                ? AppColors.grey 
+                : AppColors.black
+              )
+            ),
             suffixIcon: onShowPassword == null
             ? null
             : InkWell(
               onTap: onShowPassword,
-              child: Icon(isPasswordField ? Icons.visibility : Icons.visibility_off),
+              child: Icon(
+                isPasswordField 
+                ? Icons.visibility 
+                : Icons.visibility_off
+              ),
             ),
           ),
           onChanged: onChange,
           onSubmitted: onSubmitted
         ),
         Padding(
-          padding: const EdgeInsets.only(left: AppSize.s10, top: AppSize.s2),
+          padding: const EdgeInsets.only(
+            left: AppSize.s10, 
+            top: AppSize.s2
+          ),
           child: CustomText(
             title: errorText ?? '',
-            textStyle: getRegularStyle(color: AppColors.red),
+            textStyle: getRegularStyle(color: AppColors.red)
           ),
         ),
       ],

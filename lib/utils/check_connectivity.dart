@@ -16,16 +16,19 @@ class CheckConnectivity {
   ///method used to check the internet connection
   Future<bool> get hasConnection async {
     var connectionResult = await (Connectivity().checkConnectivity());
-    switch (connectionResult) {
-      case ConnectivityResult.wifi:
-      case ConnectivityResult.mobile:
-      case ConnectivityResult.bluetooth:
-      case ConnectivityResult.ethernet:
-      case ConnectivityResult.vpn:
-        return true;
-      default:
-        return false;
+    for(var item in connectionResult) {
+      switch (item) {
+        case ConnectivityResult.wifi:
+        case ConnectivityResult.mobile:
+        case ConnectivityResult.bluetooth:
+        case ConnectivityResult.ethernet:
+        case ConnectivityResult.vpn:
+          return true;
+        default:
+          return false;
+      }
     }
+    return false;
   }
 
 }

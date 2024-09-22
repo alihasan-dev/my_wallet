@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import '../../../widgets/custom_text_button.dart';
-import '../../../features/dashboard/application/bloc/dashboard_event.dart';
+import 'package:my_wallet/widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/app_extension_method.dart';
-import '../../../widgets/custom_outlined_button.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_strings.dart';
@@ -21,7 +17,6 @@ import '../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
-import '../../../widgets/custom_text_field.dart';
 import 'add_user_dialog.dart';
 
 class DashboardScreen extends StatefulWidget{
@@ -33,17 +28,20 @@ class DashboardScreen extends StatefulWidget{
 class _DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   List<UserModel> allUsers = [];
-  var isLoading = true;
-  AppLocalizations? _localizations;
-  late DashboardBloc _dashboardBloc;//US Phone Number Format
+  bool isLoading = true;
+  bool showUnverified = true;
+
+  // AppLocalizations? _localizations;
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
     filter: {"#": RegExp(r'[0-9]')}
   );
+  late DateFormat dateFormat;
 
   @override
   void didChangeDependencies() {
-    _localizations = AppLocalizations.of(context)!;
+    dateFormat = DateFormat.yMMMd();
+    // _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
   }
 
@@ -53,33 +51,25 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
       create: (_) => DashboardBloc(),
       child: Builder(
         builder: (context) {
-          _dashboardBloc = context.read<DashboardBloc>();
           return BlocConsumer<DashboardBloc, DashboardState>(
             listener: (context, state) {
-              switch (state.runtimeType) {
-                case DashboardFailedState:
+              switch (state) {
+                case DashboardFailedState _:
                   hideLoadingDialog(context: context);
-                  state = state as DashboardFailedState;
                   showSnackBar(context: context, title: state.title, message: state.message);
                   break;
-                case DashboardAllUserState:
+                case DashboardAllUserState _:
                   isLoading = false;
+                  allUsers.clear();
+                  allUsers.addAll(state.allUser);
                   break;
-                case DashboardSuccessState:
+                case DashboardSuccessState _:
                   hideLoadingDialog(context: context);
                   break;
                 default:
               }
             },
             builder: (context, state) {
-              switch (state.runtimeType) {
-                case DashboardAllUserState:
-                  state = state as DashboardAllUserState;
-                  allUsers.clear();
-                  allUsers.addAll(state.allUser);
-                  break;
-                default:
-              }
               return Stack(
                 children: [
                   isLoading
@@ -104,75 +94,70 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(1.5),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(color: AppColors.primaryColor, width: AppSize.s1)
-                                          ),
-                                          child: ClipOval(
-                                            child: SizedBox.fromSize(
-                                              size: const Size.fromRadius(AppSize.s18),
-                                              child: data.profileImg.isEmpty
-                                              ? const Center(child: Icon(AppIcons.personIcon, size: AppSize.s24, color: AppColors.primaryColor))
-                                              : data.profileImg.isNetworkImage
-                                                ? Image.network(
-                                                    data.profileImg,
-                                                    loadingBuilder: (context, child, loading){
-                                                    if(loading == null){
-                                                      return child;
-                                                    } else {
-                                                      return const Center(
-                                                        child: Padding(
-                                                          padding: EdgeInsets.all(AppSize.s6),
-                                                          child: CircularProgressIndicator(strokeWidth: AppSize.s1)
-                                                        ),
-                                                      );
-                                                    }
-                                                    }, 
-                                                    fit: BoxFit.cover
-                                                  )
-                                                : Image.file(File(data.profileImg), fit: BoxFit.cover)
-                                            ),
-                                          ),
+                                        CustomImageWidget(
+                                          imageUrl: data.profileImg, 
+                                          imageSize: AppSize.s18,
+                                          circularPadding: AppSize.s5,
+                                          strokeWidth: AppSize.s1,
+                                          padding: 1.5,
+                                          borderWidth: 1.5,
                                         ),
                                         const SizedBox(width: AppSize.s10),
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomText(
-                                              title: data.name, 
-                                              textStyle: getSemiBoldStyle(
-                                                color: Helper.isDark 
-                                                ? AppColors.white.withOpacity(0.9) 
-                                                : AppColors.black
-                                              ),
+                                            Row(
+                                              children: [
+                                                CustomText(
+                                                  title: data.name, 
+                                                  textStyle: getSemiBoldStyle(
+                                                    color: Helper.isDark 
+                                                    ? AppColors.white.withOpacity(0.9) 
+                                                    : AppColors.black
+                                                  ),
+                                                ),
+                                                Visibility(
+                                                  visible: !data.isUserVerified,
+                                                  child: Container(
+                                                    margin: const EdgeInsets.only(left: AppSize.s8),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 1.8,
+                                                      horizontal: 5.0
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.amber.withOpacity(0.1),
+                                                      borderRadius: BorderRadius.circular(4.0)
+                                                    ),
+                                                    child: CustomText(
+                                                      title: 'Test',
+                                                      textStyle: getRegularStyle(
+                                                        color: Colors.amber,
+                                                        fontSize: AppSize.s14
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            CustomText(
-                                              title: 'Date Format',
-                                              textStyle: getRegularStyle(color: AppColors.grey)
+                                            Visibility(
+                                              visible: !data.lastTransactionDate.isNegative,
+                                              child: CustomText(
+                                                title: data.lastTransactionDate.isNegative
+                                                ? ''
+                                                : dateFormat.format(DateTime.fromMillisecondsSinceEpoch(data.lastTransactionDate)),
+                                                textStyle: getRegularStyle(color: AppColors.grey)
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      width: AppSize.s40,
-                                      height: AppSize.s40,
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          var deleteStatus = await showUserInfoSheet(context, data);
-                                          if(deleteStatus){
-                                            if(context.mounted && await confirmationDialog(context: context, title: _localizations!.deleteUser, content: "${_localizations!.deleteUserMsg} ${data.name}", localizations: _localizations!)){
-                                              _dashboardBloc.add(DashboardDeleteUserEvent(docId: data.userId));
-                                            }
-                                          }
-                                        },
-                                        icon: const Icon(
-                                          Icons.info_outline_rounded, 
-                                          color: AppColors.primaryColor,
-                                          size: AppSize.s22
-                                        ),
+                                    CustomText(
+                                      title: data.amount.amountFormat(type: data.type),
+                                      textStyle: getMediumStyle(
+                                        color: data.type == AppStrings.transfer
+                                        ? AppColors.red
+                                        : AppColors.green
                                       ),
                                     ),
                                   ],
@@ -195,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
                       right: AppSize.s20,
                       bottom: AppSize.s20,
                       child: InkWell(
-                        onTap: () => addUserDialog(dashboardBloc: context.read<DashboardBloc>()),
+                        onTap: () => addUserDialog(),
                         borderRadius: BorderRadius.circular(AppSize.s30),
                         child: Ink(
                           child: Container(
@@ -223,76 +208,7 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
     );
   }
 
-  Future<bool> showUserInfoSheet(BuildContext mContext, UserModel userData) async {
-    return await showModalBottomSheet(
-      context: mContext, 
-      builder: (_) {
-        return Container(
-          width: context.screenWidth,
-          color: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(AppSize.s16),
-            children: [
-              CustomText(
-                title: _localizations!.userProfile, 
-                textStyle: getMediumStyle(
-                  color: Helper.isDark ? AppColors.white : AppColors.black, 
-                  fontSize: AppSize.s16
-                ),
-              ),
-              const SizedBox(height: AppSize.s18),
-              CustomTextField(
-                title: _localizations!.phone, 
-                isPasswordField: false, 
-                isEnabled: false,
-                isMandatory: true,
-                textInputFormatter: [maskFormatter],
-                textEditingController: TextEditingController(text: maskFormatter.maskText(userData.phone)),
-              ),
-              CustomTextField(
-                title: _localizations!.name, 
-                isPasswordField: false, 
-                isEnabled: false,
-                isMandatory: true,
-                textEditingController: TextEditingController(text: userData.name),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomOutlinedButton(
-                      onPressed: () => context.pop(true),
-                      title: _localizations!.deleteUser, 
-                      icon: AppIcons.deleteIcon,
-                      isSelected: true,
-                      foregroundColor: AppColors.red,
-                      backgroundColor: AppColors.red.withOpacity(0.2),
-                    ),
-                  ),
-                  const SizedBox(width: AppSize.s10),
-                  Expanded(
-                    child: CustomTextButton(
-                        onPressed: () {
-                          context.pop(false);
-                          context.push(AppRoutes.profileScreen, extra: userData.userId);
-                        },
-                        title: _localizations!.viewProfile,
-                        isSelected: true,
-                        foregroundColor: AppColors.white,
-                        backgroundColor: AppColors.primaryColor,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                      ),
-                  )
-                ],
-              ),
-            ],
-          ),
-        );
-      }
-    ) ?? false;
-  }
-
-  void addUserDialog({required DashboardBloc dashboardBloc}) {
+  void addUserDialog() {
     showDialog(
       context: context, 
       builder: (_) => const AddUserDialog()

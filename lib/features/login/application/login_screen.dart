@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
 
   late TextEditingController emailTextController;
   late TextEditingController passwordTextController;
+  late LoginBloc _loginBloc;
   AppLocalizations? _localizations;
   var errorEmail = AppStrings.emptyString;
   var errorPassword = AppStrings.emptyString;
@@ -38,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
 
   @override
   void initState() {
+    _loginBloc = context.read<LoginBloc>();
     emailTextController = TextEditingController();
     passwordTextController = TextEditingController();
     if(Preferences.getBool(key: AppStrings.prefRememberMe)){
@@ -58,19 +60,18 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0, backgroundColor: AppColors.primaryColor),
-      backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
+      // backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
-          switch (state.runtimeType) {
-            case LoginFailedState:
+          switch (state) {
+            case LoginFailedState _:
               hideLoadingDialog(context: context);
-              state = state as LoginFailedState;
               showSnackBar(context: context, title: state.title, message: state.message);
               break;
-            case LoginLoadingState:
+            case LoginLoadingState _:
               showLoadingDialog(context: context);
               break;
-            case LoginSuccessState:
+            case LoginSuccessState _:
               hideLoadingDialog(context: context);
               context.go(AppRoutes.homeScreen);
               break;
@@ -78,21 +79,17 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
           }
         },
         builder: (context, state) {
-          switch (state.runtimeType) {
-            case LoginEmailFieldState:
-              state = state as LoginEmailFieldState;
+          switch (state) {
+            case LoginEmailFieldState _:
               errorEmail = state.emailMessage;
               break;
-            case LoginPasswordFieldState:
-              state = state as LoginPasswordFieldState;
+            case LoginPasswordFieldState _:
               errorPassword = state.passwordMessage;
               break;
-            case LoginPasswordVisibilityState:
-              state = state as LoginPasswordVisibilityState;
+            case LoginPasswordVisibilityState _:
               showPassword = state.isVisible;
               break;
-            case LoginRememberMeState:
-              state = state as LoginRememberMeState;
+            case LoginRememberMeState _:
               isRememberMe = state.isRemmeberMe;
               break;
             default:
@@ -100,17 +97,15 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
           return ListView(
             padding: const EdgeInsets.all(AppSize.s28),
             children: [
+              Center(child: Image.asset(AppImages.appImage, height: 90, width: 90)),
               const SizedBox(height: AppSize.s10),
-              Center(child: Image.asset(AppImages.appImage, height: 80, width: 80)),
-              const SizedBox(height: AppSize.s20),
               CustomTextField(
-                // title: AppStrings.email,
                 title: _localizations!.email,
                 isPasswordField: false,
                 isMandatory: true,
                 textEditingController: emailTextController,
                 errorText: errorEmail,
-                onChange: (value) => context.read<LoginBloc>().add(LoginEmailChangeEvent(email: value)),
+                onChange: (value) => _loginBloc.add(LoginEmailChangeEvent(email: value)),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: AppSize.s10),
@@ -119,13 +114,13 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
                 isPasswordField: showPassword,
                 isMandatory: true,
                 textEditingController: passwordTextController,
-                onShowPassword: () => context.read<LoginBloc>().add(LoginShowPasswordEvent(isVisible: showPassword)),
+                onShowPassword: () => _loginBloc.add(LoginShowPasswordEvent(isVisible: showPassword)),
                 errorText: errorPassword,
-                onChange: (value) => context.read<LoginBloc>().add(LoginPasswordChangeEvent(password: value)),
-                onSubmitted: (_) => context.read<LoginBloc>().add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe)),
+                onChange: (value) => _loginBloc.add(LoginPasswordChangeEvent(password: value)),
+                onSubmitted: (_) => _loginBloc.add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe)),
                 textInputAction: TextInputAction.done,
               ),
-              const SizedBox(height: AppSize.s12),
+              const SizedBox(height: AppSize.s10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -133,26 +128,37 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
                     children: [
                       CustomCheckBoxWidget(
                         value: isRememberMe, 
-                        onChange: (value) => context.read<LoginBloc>().add(LoginRememberMeEvent(value: value!))
+                        onChange: (value) => _loginBloc.add(LoginRememberMeEvent(value: value!))
                       ),
                       const SizedBox(width: AppSize.s10),
-                      CustomText(title: _localizations!.rememberMe, textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black))
+                      CustomText(
+                        title: _localizations!.rememberMe, 
+                        textStyle: getMediumStyle(
+                          color: Helper.isDark 
+                          ? AppColors.white.withOpacity(0.8) 
+                          : AppColors.black
+                        ),
+                      ),
                     ],
                   ),
-                  // InkWell(
-                  //   onTap: () => context.push(AppRoutes.forgotPasswordScreen),
-                  //   child: CustomText(
-                  //     title: AppStrings.forgotPassword, 
-                  //     textStyle: getMediumStyle(color: AppColors.black)
-                  //   ),
-                  // ),
+                  InkWell(
+                    onTap: () => context.push(AppRoutes.forgotPasswordScreen),
+                    child: CustomText(
+                      title: AppStrings.forgotPassword, 
+                      textStyle: getMediumStyle(
+                        color: Helper.isDark 
+                        ? AppColors.white.withOpacity(0.8) 
+                        : AppColors.black
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSize.s26),
               CustomButton(
                 title: _localizations!.login,
                 titleSize: AppSize.s16, 
-                onTap: () => context.read<LoginBloc>().add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe))
+                onTap: () => _loginBloc.add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe))
               ),
               const SizedBox(height: AppSize.s20),
               Row(

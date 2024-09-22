@@ -9,9 +9,9 @@ class ForgotPasswordEmailFieldState extends ForgotPasswordState {
 }
 
 class ForgotPasswordSuccessState extends ForgotPasswordState {
-  String msg;
+  String message;
 
-  ForgotPasswordSuccessState({this.msg = ''});
+  ForgotPasswordSuccessState({this.message = ''});
 }
 
 class ForgotPasswordFailedState extends ForgotPasswordState {

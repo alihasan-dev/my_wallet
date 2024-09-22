@@ -50,3 +50,9 @@ class ProfileChooseImageState extends ProfileState {
   String imagePath;
   ProfileChooseImageState({required this.imagePath});
 }
+
+class ProfileDeleteUserState extends ProfileState {
+  bool isDeleted;
+
+  ProfileDeleteUserState({this.isDeleted = false});
+}

@@ -5,7 +5,9 @@ class UserModel {
   String phone;
   String profileImg;
   String amount;
-  String lastTransactionDate;
+  int lastTransactionDate;
+  String type;
+  bool isUserVerified;
 
   UserModel({
     required this.userId,
@@ -14,6 +16,8 @@ class UserModel {
     required this.phone,
     this.profileImg = '',
     this.amount = '',
-    this.lastTransactionDate = ''
+    this.lastTransactionDate = -1,
+    this.type = '',
+    this.isUserVerified = false
   });
 }

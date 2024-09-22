@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,13 +13,14 @@ import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:device_info_plus/device_info_plus.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-
   // late DateFormat dateFormat;
   late CheckConnectivity checkConnectivity;
   late DocumentReference firebaseStoreInstance;
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
+  final plugin = DeviceInfoPlugin();
   var listTransactionResult = <TransactionModel>[];
   final String userName;
   final String friendId;
@@ -30,10 +30,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late DateFormat dateFormat;
   String userId = '';
 
-  TransactionBloc({required this.userName, required this.friendId}) : super(TransactionInitialState()) {
+  TransactionBloc({required this.userName, required this.friendId})
+      : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
     userId = Preferences.getString(key: AppStrings.prefUserId);
-    firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
+    firebaseStoreInstance = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('friends')
+        .doc(friendId);
     checkConnectivity = CheckConnectivity();
     on<TransactionAddEvent>(_addTransaction);
     on<TransactionDateChangeEvent>(_changeDateStatus);
@@ -46,16 +51,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionScrollEvent>(_onScrollingList);
     on<TransactionExportPDFEvent>(_onExportPDF);
 
-    streamDocumentSnapshot = firebaseStoreInstance.collection('transactions').snapshots().listen((event) {
+    streamDocumentSnapshot = firebaseStoreInstance
+        .collection('transactions')
+        .snapshots()
+        .listen((event) {
       listTransactionResult.clear();
-      for(var item in event.docs) {
+      for (var item in event.docs) {
         var mapData = item.data();
-        if(mapData.isNotEmpty) {
+        if (mapData.isNotEmpty) {
           listTransactionResult.add(TransactionModel(
-            date: DateTime.fromMillisecondsSinceEpoch(mapData['date'].millisecondsSinceEpoch), 
-            type: mapData['type'], 
-            amount: double.parse(mapData['amount'])
-          ));
+              date: DateTime.fromMillisecondsSinceEpoch(
+                  mapData['date'].millisecondsSinceEpoch),
+              type: mapData['type'],
+              amount: double.parse(mapData['amount'])));
         }
       }
       add(AllTransactionEvent());
@@ -73,8 +81,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _allTransactionData(event, emit) {
-    listTransactionResult.sort((a,b) => a.date.compareTo(b.date));
-    emit(AllTransactionState(listTransaction: listTransactionResult));
+    listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
+    double balance = totalBalance(transactionList: listTransactionResult);
+    emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
   }
 
   void _changeDateStatus(event, emit) {
@@ -86,175 +95,209 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _onAmountChange(event, emit) {
-    if(event.amount.isEmpty) {
+    if (event.amount.isEmpty) {
       emit(TransactionAmountFieldState(isAmountEmpty: true));
-    }else{
+    } else {
       emit(TransactionAmountFieldState(isAmountEmpty: false));
     }
   }
 
   void _onTransactionDateSort(TransactionDateSortEvent event, Emitter emit) {
-    if(listTransactionResult.isNotEmpty){
-      if(dateAscending) {
+    if (listTransactionResult.isNotEmpty) {
+      if (dateAscending) {
         dateAscending = !dateAscending;
-        listTransactionResult.sort((a,b) => a.date.compareTo(b.date));
+        listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
       } else {
         dateAscending = !dateAscending;
-        listTransactionResult.sort((a,b) => b.date.compareTo(a.date));
+        listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
       }
-      emit(AllTransactionState(listTransaction: listTransactionResult));
+      double balance = totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
     }
   }
 
-  void _onTransactionAmountSort(TransactionAmountSortEvent event, Emitter emit) {
-    if(listTransactionResult.isNotEmpty){
-      if(amountAscending) {
+  void _onTransactionAmountSort(
+      TransactionAmountSortEvent event, Emitter emit) {
+    if (listTransactionResult.isNotEmpty) {
+      if (amountAscending) {
         amountAscending = !amountAscending;
-        listTransactionResult.sort((a,b) => a.amount.compareTo(b.amount));
+        listTransactionResult.sort((a, b) => a.amount.compareTo(b.amount));
       } else {
         amountAscending = !amountAscending;
-        listTransactionResult.sort((a,b) => b.amount.compareTo(a.amount));
+        listTransactionResult.sort((a, b) => b.amount.compareTo(a.amount));
       }
-      emit(AllTransactionState(listTransaction: listTransactionResult));
+      double balance = totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
     }
   }
 
   void _onTransactionTypeSort(TransactionTypeSortEvent event, Emitter emit) {
-    if(listTransactionResult.isNotEmpty) {
-      if(typeAscending){
+    if (listTransactionResult.isNotEmpty) {
+      if (typeAscending) {
         typeAscending = !typeAscending;
-        listTransactionResult.sort((a,b) => a.type.compareTo(b.type));
+        listTransactionResult.sort((a, b) => a.type.compareTo(b.type));
       } else {
         typeAscending = !typeAscending;
-        listTransactionResult.sort((a,b) => b.type.compareTo(a.type));
+        listTransactionResult.sort((a, b) => b.type.compareTo(a.type));
       }
-      emit(AllTransactionState(listTransaction: listTransactionResult));
+      double balance = totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
     }
   }
 
-  Future<void> _addTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
-    if(await validation(emit, userName: event.userName, date: event.date, amount: event.amount)) {
-      firebaseStoreInstance.collection('transactions').add({
-        'date': event.date,
+  double totalBalance({required List<TransactionModel> transactionList}) {
+    double totalBalance = listTransactionResult.fold(0.0, (temp, item) => item.type == AppStrings.transfer ? temp - item.amount : temp + item.amount);
+    return totalBalance;
+  }
+
+  Future<void> _addTransaction(
+      TransactionAddEvent event, Emitter<TransactionState> emit) async {
+    if (await validation(emit,
+        userName: event.userName, date: event.date, amount: event.amount)) {
+      firebaseStoreInstance.collection('transactions').add(
+          {'date': event.date, 'amount': event.amount, 'type': event.type});
+
+      firebaseStoreInstance.update({
+        'lastTransactionTime': event.date,
         'amount': event.amount,
         'type': event.type
       });
     }
   }
 
-  Future<bool> validation(Emitter<TransactionState> emit, {required String userName, DateTime? date, required String amount}) async {
-    if(amount.isBlank) {
+  Future<bool> validation(Emitter<TransactionState> emit,
+      {required String userName,
+      DateTime? date,
+      required String amount}) async {
+    if (amount.isBlank) {
       emit(TransactionAmountFieldState(isAmountEmpty: true));
       return false;
     } else if (date == null) {
       emit(TransactionDateChangeState(true));
       return false;
     } else if (userName.isBlank) {
-      emit(TransactionUserNameFieldState(userNameMessage: AppStrings.emptyName));
+      emit(
+          TransactionUserNameFieldState(userNameMessage: AppStrings.emptyName));
       return false;
     } else if (!await checkConnectivity.hasConnection) {
-      emit(TransactionFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
+      emit(TransactionFailedState(
+          title: AppStrings.noInternetConnection,
+          message: AppStrings.noInternetConnectionMessage));
       return false;
     }
     return true;
   }
 
   Future<void> _onExportPDF(TransactionExportPDFEvent event, Emitter emit) async {
-    if(listTransactionResult.isNotEmpty) {
-      if(await _checkStoragePermission()) {
+    if (listTransactionResult.isNotEmpty) {
+      emit(TransactionLoadingState());
+      if (await _checkStoragePermission()) {
         try {
           var labelList = <String>['Date', 'Type', 'Amount'];
           final pdf = pw.Document();
           int pageCount = 0;
-          if(listTransactionResult.length%23 == 0) {
-            pageCount = listTransactionResult.length~/23;
+          if (listTransactionResult.length % 23 == 0) {
+            pageCount = listTransactionResult.length ~/ 23;
           } else {
-            pageCount = (listTransactionResult.length~/23 + 1);
+            pageCount = (listTransactionResult.length ~/ 23 + 1);
           }
           int start = 0;
           int end = 0;
           int totalLength = listTransactionResult.length;
           int count = 1;
-          while(pageCount > 0) {
-            if(!(totalLength - 23).isNegative) {
+          while (pageCount > 0) {
+            if (!(totalLength - 23).isNegative) {
               end = end + (24 + 1 - count);
-              totalLength-=23;
+              totalLength -= 23;
             } else {
-              if(end == 0){
+              if (end == 0) {
                 end = end + totalLength + 1;
               } else {
-                end+=totalLength;
+                end += totalLength;
               }
             }
-            // late pw.Widget pwWidget;
             List<pw.TableRow> tableRowList = [];
             for (var i = start; i < end; i++) {
-              tableRowList.add(pw.TableRow(
+              tableRowList.add(
+                pw.TableRow(
                   decoration: pw.BoxDecoration(
-                    color: i == start 
+                    color: i == start
                     ? const PdfColor.fromInt(0xFF283593)
                     : PdfColors.white,
                     border: const pw.Border(right: pw.BorderSide(color: PdfColor.fromInt(0xFF000000)))
                   ),
                   children: List.generate(
-                    3, 
-                    (subIndex) => i == start 
-                    ? pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          labelList[subIndex],
-                          style: pw.TextStyle(color: i == start ? PdfColors.white : PdfColors.black)
-                        )
-                      )
-                    : pw.Padding(
-                      padding: const pw.EdgeInsets.all(8.0),
-                      child: subIndex == 0
-                      ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
-                      : subIndex == 1
-                        ? pw.Text(listTransactionResult[i - 1].type)
-                        : pw.Text(listTransactionResult[i - 1].amount.toString())
-                    ),
+                    3,
+                    (subIndex) => i == start
+                        ? pw.Padding(
+                            padding: const pw.EdgeInsets.all(8.0),
+                            child: pw.Text(
+                              labelList[subIndex],
+                              style: pw.TextStyle(
+                                  color: i == start
+                                      ? PdfColors.white
+                                      : PdfColors.black),
+                            ),
+                          )
+                        : pw.Padding(
+                            padding: const pw.EdgeInsets.all(8.0),
+                            child: subIndex == 0
+                                ? pw.Text(dateFormat
+                                    .format(listTransactionResult[i - 1].date))
+                                : subIndex == 1
+                                    ? pw.Text(listTransactionResult[i - 1].type)
+                                    : pw.Text(listTransactionResult[i - 1]
+                                        .amount
+                                        .toString())),
                   ),
-                )
+                ),
               );
             }
             pdf.addPage(pw.Page(
               pageFormat: PdfPageFormat.a4,
               build: (pw.Context context) => pw.Table(
-                border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),
-                children: tableRowList
-              )
+                  border: pw.TableBorder.all(
+                      color: const PdfColor.fromInt(0xFF000000)),
+                  children: tableRowList),
             ));
-            pageCount-=1;
+            pageCount -= 1;
             start = end - 1;
-            count+=1;
+            count += 1;
           }
           var dateTime = DateTime.now();
           var first = userName.replaceAll(' ', '');
-          var last = dateTime.toString().substring(0,10).replaceAll('-','');
+          var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
           first = '${first}_$last.pdf';
           File file2 = File("/storage/emulated/0/Download/$first");
           await file2.writeAsBytes(await pdf.save());
-          emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
-        } catch(e) {
-          emit(TransactionExportPDFState(message: 'Something went wrong while exporting your transaction report'));
+          emit(TransactionExportPDFState(
+              message: 'File downloaded successfully', isSuccess: true));
+        } catch (e) {
+          emit(TransactionExportPDFState(
+              message:
+                  'Something went wrong while exporting your transaction report'));
         }
       } else {
-        emit(TransactionExportPDFState(message: 'Please allow storage permission to export your transaction report'));
+        emit(TransactionExportPDFState(
+            message:
+                'Please allow storage permission to export your transaction report'));
       }
     }
   }
 
   Future<bool> _checkStoragePermission() async {
     var status = await Permission.storage.status;
-    if(status.isGranted) {
+    if (status.isGranted) {
       return true;
     }
     var requestStatus = await Permission.storage.request();
-    if(requestStatus.isGranted) {
+    final android = await plugin.androidInfo;
+    if (android.version.sdkInt >= 33) {
+      requestStatus = PermissionStatus.granted;
+    }
+    if (requestStatus.isGranted) {
       return true;
     }
     return false;
   }
-
 }
