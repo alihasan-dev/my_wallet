@@ -43,8 +43,9 @@
   "light": "Light",
   "dark": "Dark",
   "biometricAuthFailed": "Biometric Authentication Failed",
-  "biometricAuthFailedMessage": "My Wallet protects your data to avoid unauthorized access.",
+  "biometricAuthFailedMessage": "MyWallet protects your data to avoid unauthorized access.",
   "bioAuthFailedTooManyAttemptMessage": "Biometric authentication failed because the API is locked out due to too many attempts. This occurs after 5 failed attempts",
   "reAuthenticate": "Re-Authenticate",
-  "viewProfile": "View Profile"
+  "viewProfile": "View Profile",
+  "settings": "Settings"
 }

@@ -43,7 +43,6 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     themeModeList.add(AppearanceThemeModel(title: _localizations!.systemDefault, theme: "system", themeMode: ThemeMode.system));
     themeModeList.add(AppearanceThemeModel(title: _localizations!.light, theme: "light", themeMode: ThemeMode.light));
     themeModeList.add(AppearanceThemeModel(title: _localizations!.dark, theme: "dark", themeMode: ThemeMode.dark));
-
     languageList.clear();
     languageList.add(ApperanceLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(ApperanceLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
@@ -56,7 +55,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: CustomText(
-          title: _localizations!.appearance, 
+          title: _localizations!.settings, 
           textStyle: getBoldStyle(color: AppColors.white)
         ),
         iconTheme: const IconThemeData(color: AppColors.white),
@@ -69,9 +68,6 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
             return BlocBuilder<ApperanceBloc, ApperanceState>(
               builder: (context, state) {
                 switch (state) {
-                  case ApperanceThemeChangeState _:
-                    // bContent.read<HomeBloc>().add(HomeDrawerItemEvent(index: 2));
-                    break;
                   case ApperanceUserDetailsState _:
                     showUnverified = state.userModel.isUserVerified;
                     break;
@@ -179,7 +175,6 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                   onTap: () { 
                     BlocProvider.of<MyAppBloc>(context).add(MyAppChangeThemeEvent(themeMode: data.themeMode));
                     context.pop();
-                    Future.delayed(const Duration(milliseconds: 500), () => context.read<ApperanceBloc>().add(ApperanceChangeThemeEvent(themeMode: data.themeMode)));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(

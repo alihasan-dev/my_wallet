@@ -7,3 +7,8 @@ class HomeDrawerItemState extends HomeState {
   HomeDrawerItemState({required this.index});
 }
 
+class HomeBiometricAuthState extends HomeState {
+  bool isAuthenticated;
+
+  HomeBiometricAuthState({this.isAuthenticated = false});
+}

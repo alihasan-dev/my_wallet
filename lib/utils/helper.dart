@@ -105,14 +105,14 @@ mixin Helper {
               ),
             ),
           );
-        }
+        },
       );
     } else {
       debugPrint(AppStrings.dialogShowingMessage);
     }
   }
 
-  void hideLoadingDialog({required BuildContext context}){
+  void hideLoadingDialog({required BuildContext context}) {
     if(isLoadingVisible) {
       isLoadingVisible = false;
       context.pop();

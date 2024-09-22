@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
+import '../utils/app_extension_method.dart';
 import '../constants/app_color.dart';
 import '../constants/app_icons.dart';
 import '../constants/app_size.dart';
@@ -48,17 +48,6 @@ class CustomImageWidget extends StatelessWidget {
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 fit: BoxFit.cover,
               )
-            // ? Image.network(
-            //     imageUrl,
-            //     loadingBuilder: (context, child, loading){
-            //     if(loading == null) {
-            //       return child;
-            //     } else {
-            //       return const Center(child: CircularProgressIndicator(strokeWidth: AppSize.s2));
-            //     }
-            //     }, 
-            //     fit: BoxFit.cover
-            //   )
             : Image.file(File(imageUrl), fit: BoxFit.cover)
         ),
       )

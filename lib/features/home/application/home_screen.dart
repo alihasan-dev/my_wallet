@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -34,15 +35,17 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
   AppLocalizations? _localizations;
   late LocalAuthentication _localAuthentication;
   final _widgetTitleList = <WidgetTitleModel>[];
+  late HomeBloc _homeBloc;
+  bool isBioAuthenticated = false;
 
   @override
   void initState() {
+    _homeBloc = context.read<HomeBloc>();
     _localAuthentication = LocalAuthentication();
-    //Uncomment below line to enable biometric feature
-    // if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)) {
-    //   openBiometricDialog();
-    //   Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
-    // }
+    if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication)) {
+      openBiometricDialog();
+      Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+    }
     super.initState();
   }
 
@@ -57,87 +60,101 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeBloc(),
-      child: Builder(
-        builder: (context) {
-          return WillPopScope(
-            onWillPop: () => onPressBack(context, _localizations!),
-            child: BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state){
-                switch (state) {
-                  case HomeDrawerItemState _:
-                    pageIndex = state.index;
-                    break;
-                  default:
-                }
-                return Scaffold(
-                  appBar: AppBar(
-                    centerTitle: true, 
-                    backgroundColor: AppColors.primaryColor,
-                    title: CustomText(
-                      title: _widgetTitleList[pageIndex].title, 
-                      textStyle: getBoldStyle(color: AppColors.white)
+    return WillPopScope(
+      onWillPop: () => onPressBack(context, _localizations!),
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state){
+          switch (state) {
+            case HomeDrawerItemState _:
+              pageIndex = state.index;
+              break;
+            case HomeBiometricAuthState _:
+              isBioAuthenticated = state.isAuthenticated;
+              break;
+            default:
+          }
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true, 
+              backgroundColor: AppColors.primaryColor,
+              title: CustomText(
+                title: _widgetTitleList[pageIndex].title, 
+                textStyle: getBoldStyle(color: AppColors.white)
+              ),
+              iconTheme: const IconThemeData(color: AppColors.white),
+              actions: [
+                PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  position: PopupMenuPosition.under,
+                  menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+                  itemBuilder: (_) {
+                    return <PopupMenuEntry<String>> [
+                      const PopupMenuItem<String>(
+                        value: AppStrings.settings,
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          leading: Icon(AppIcons.settingsIcon),
+                          title: Text(AppStrings.settings),
+                        ),
+                      ),
+                      const PopupMenuItem<String>(
+                        value: AppStrings.logout,
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          leading: Icon(AppIcons.logoutIcon),
+                          title: Text(AppStrings.logout),
+                        ),
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    log(value);
+                    switch (value) {
+                      case AppStrings.settings:
+                        context.push(AppRoutes.appearanceScreen);
+                        break;
+                      case AppStrings.logout:
+                        onClickLogout(context: context, localizations: _localizations!);
+                        break;
+                    }
+                  },
+                ),
+              ]
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: pageIndex,
+              selectedItemColor: AppColors.primaryColor,
+              onTap: (index) => context.read<HomeBloc>().add(HomeDrawerItemEvent(index: index)),
+              items: [
+                BottomNavigationBarItem(
+                  label: _localizations!.dashboard,
+                  icon: const Icon(AppIcons.homeIcon)
+                ),
+                BottomNavigationBarItem(
+                  icon: const Icon(AppIcons.personIcon),
+                  label: _localizations!.profile
+                ),
+              ],
+            ),
+            body: Stack(
+              children: [
+                _widgetTitleList[pageIndex].screenWidget,
+                Visibility(
+                  visible: !isBioAuthenticated,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 800),
+                    height: isBioAuthenticated ? 0 : double.maxFinite,
+                    width: isBioAuthenticated ? 0 : double.maxFinite,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.2),
+                      ),
                     ),
-                    iconTheme: const IconThemeData(color: AppColors.white),
-                    actions: [
-                      PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        position: PopupMenuPosition.under,
-                        menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
-                        itemBuilder: (_) {
-                          return <PopupMenuEntry<String>> [
-                            const PopupMenuItem<String>(
-                              value: AppStrings.settings,
-                              child: ListTile(
-                                visualDensity: VisualDensity.compact,
-                                leading: Icon(AppIcons.settingsIcon),
-                                title: Text(AppStrings.settings),
-                              ),
-                            ),
-                            const PopupMenuItem<String>(
-                              value: AppStrings.logout,
-                              child: ListTile(
-                                visualDensity: VisualDensity.compact,
-                                leading: Icon(AppIcons.logoutIcon),
-                                title: Text(AppStrings.logout),
-                              ),
-                            ),
-                          ];
-                        },
-                        onSelected: (value) {
-                          log(value);
-                          switch (value) {
-                            case AppStrings.settings:
-                              context.push(AppRoutes.appearanceScreen);
-                              break;
-                            case AppStrings.logout:
-                              onClickLogout(context: context, localizations: _localizations!);
-                              break;
-                          }
-                        },
-                      ),
-                    ]
                   ),
-                  bottomNavigationBar: BottomNavigationBar(
-                    currentIndex: pageIndex,
-                    selectedItemColor: AppColors.primaryColor,
-                    onTap: (index) => context.read<HomeBloc>().add(HomeDrawerItemEvent(index: index)),
-                    items: [
-                      BottomNavigationBarItem(
-                        label: _localizations!.dashboard,
-                        icon: const Icon(AppIcons.homeIcon)
-                      ),
-                      BottomNavigationBarItem(
-                        icon: const Icon(AppIcons.personIcon),
-                        label: _localizations!.profile
-                      ),
-                    ],
-                  ),
-                  body: _widgetTitleList[pageIndex].screenWidget
-                );
-              }
+                ),
+              ],
             ),
           );
         }
@@ -175,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
 
   ///method used to open the biometric failed info dialog
   Future<void> openBiometricDialog() async {
-    if(!await biometricAuthentication() && context.mounted){
+    if(!await biometricAuthentication() && context.mounted) {
       showDialog(
         context: context,
         barrierDismissible: false, 
@@ -226,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
   ///method used to handle the biometric and FaceID authentication
   Future<bool> biometricAuthentication() async {
     var data = true;
-    if(await _localAuthentication.isDeviceSupported()){
+    if(await _localAuthentication.isDeviceSupported()) {
       try {
         data =  await _localAuthentication.authenticate(
           localizedReason: AppStrings.biometricMessage,
@@ -272,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
         }
       }
     }
+    _homeBloc.add(HomeBiometricAuthEvent(isAuthenticated: data));
     return data;
   }
 

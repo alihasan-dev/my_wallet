@@ -43,8 +43,9 @@
   "light": "रोशनी",
   "dark": "अँधेरा",
   "biometricAuthFailed": "बायोमेट्रिक प्रमाणीकरण विफल",
-  "biometricAuthFailedMessage": "My Wallet अनधिकृत पहुंच से बचने के लिए आपके डेटा की सुरक्षा करता है।",
+  "biometricAuthFailedMessage": "MyWallet अनधिकृत पहुंच से बचने के लिए आपके डेटा की सुरक्षा करता है।",
   "bioAuthFailedTooManyAttemptMessage": "बायोमेट्रिक प्रमाणीकरण विफल रहा क्योंकि बहुत अधिक प्रयासों के कारण एपीआई लॉक हो गया है। ऐसा 5 असफल प्रयासों के बाद होता है",
   "reAuthenticate": "पुन: प्रमाणीकृत",
-  "viewProfile": "व्यू प्रोफाइल"
+  "viewProfile": "व्यू प्रोफाइल",
+  "settings": "सेटिंग्स"
 }
