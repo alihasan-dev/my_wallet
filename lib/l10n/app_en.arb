@@ -9,6 +9,7 @@
   "logout": "Logout",
   "cancel": "Cancel",
   "yes": "Yes",
+  "no": "No",
   "logoutMsg": "Are you sure you want to logout?",
   "exit": "Exit",
   "exitMsg": "Are you sure you want to exit?",
@@ -47,5 +48,6 @@
   "bioAuthFailedTooManyAttemptMessage": "Biometric authentication failed because the API is locked out due to too many attempts. This occurs after 5 failed attempts",
   "reAuthenticate": "Re-Authenticate",
   "viewProfile": "View Profile",
-  "settings": "Settings"
+  "settings": "Settings",
+  "showUnverifiedUser": "Show Unverified User"
 }

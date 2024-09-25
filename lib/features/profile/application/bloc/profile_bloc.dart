@@ -77,9 +77,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<void> _onProfileUpdate(ProfileUpdateEvent event, Emitter emit) async {
-    if(await fieldValidation(event, emit)){
+    if(await fieldValidation(event, emit)) {
       var updatedImageUrl = '';
-      if(selectedImagePath.isNotEmpty){
+      if(selectedImagePath.isNotEmpty) {
         emit(ProfileLoadingState());
         try {
           final mountainImagesRef = userId.isEmpty 

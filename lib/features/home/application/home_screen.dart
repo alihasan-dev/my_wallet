@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -92,26 +91,25 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
                   itemBuilder: (_) {
                     return <PopupMenuEntry<String>> [
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: AppStrings.settings,
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
-                          leading: Icon(AppIcons.settingsIcon),
-                          title: Text(AppStrings.settings),
+                          leading: const Icon(AppIcons.settingsIcon),
+                          title: Text(_localizations!.settings),
                         ),
                       ),
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: AppStrings.logout,
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
-                          leading: Icon(AppIcons.logoutIcon),
-                          title: Text(AppStrings.logout),
+                          leading: const Icon(AppIcons.logoutIcon),
+                          title: Text(_localizations!.logout),
                         ),
                       ),
                     ];
                   },
                   onSelected: (value) {
-                    log(value);
                     switch (value) {
                       case AppStrings.settings:
                         context.push(AppRoutes.appearanceScreen);
@@ -127,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: pageIndex,
               selectedItemColor: AppColors.primaryColor,
-              onTap: (index) => context.read<HomeBloc>().add(HomeDrawerItemEvent(index: index)),
+              onTap: (index) => _homeBloc.add(HomeDrawerItemEvent(index: index)),
               items: [
                 BottomNavigationBarItem(
                   label: _localizations!.dashboard,
@@ -145,13 +143,13 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                 Visibility(
                   visible: !isBioAuthenticated,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 800),
+                    duration: const Duration(milliseconds: 1000),
                     height: isBioAuthenticated ? 0 : double.maxFinite,
                     width: isBioAuthenticated ? 0 : double.maxFinite,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                       child: Container(
-                        color: Colors.black.withOpacity(0.2),
+                        color: AppColors.black.withOpacity(0.2),
                       ),
                     ),
                   ),
@@ -173,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
         localizations: localizations
       );
     } else {
-      context.read<HomeBloc>().add(HomeBackPressEvent(pageIndex: 0));
+      _homeBloc.add(HomeBackPressEvent(pageIndex: 0));
       return false;
     }
   }
@@ -194,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
 
   ///method used to open the biometric failed info dialog
   Future<void> openBiometricDialog() async {
-    if(!await biometricAuthentication() && context.mounted) {
+    if(!await biometricAuthentication()) {
       showDialog(
         context: context,
         barrierDismissible: false, 

@@ -45,6 +45,10 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     languageList.clear();
     languageList.add(ApperanceLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(ApperanceLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
+    appearanceItemList.clear();
+    appearanceItemList.add(AppearanceModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+    appearanceItemList.add(AppearanceModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    appearanceItemList.add(AppearanceModel(title: _localizations!.showUnverifiedUser, subTitle: '--'));
     super.didChangeDependencies();
   }
 
@@ -69,13 +73,11 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                 switch (state) {
                   case ApperanceUserDetailsState _:
                     showUnverified = state.userModel.isUserVerified;
+                    appearanceItemList[2].subTitle = showUnverified ? _localizations!.yes : _localizations!.no;
                     break;
                   default:
                 }
-                appearanceItemList.clear();
-                appearanceItemList.add(AppearanceModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-                appearanceItemList.add(AppearanceModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-                appearanceItemList.add(AppearanceModel(title: 'Show Unverified user', subTitle: showUnverified ? 'Yes' : 'No'));
+                
                 return ListView(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
@@ -134,7 +136,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     );
   }
 
-  void onClickItem({required BuildContext context, required int index}){
+  void onClickItem({required BuildContext context, required int index}) {
     switch (index) {
       case 0:
         showLanguageDialog(context: context);

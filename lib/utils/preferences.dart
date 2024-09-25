@@ -5,9 +5,9 @@ class Preferences {
 
   static SharedPreferences? _sharedPreferences;
 
-  static Future<SharedPreferences> get _instance async => _sharedPreferences ?? await SharedPreferences.getInstance();
+  static Future<SharedPreferences> get _instance async => await SharedPreferences.getInstance();
 
-  Future<void> init() async => _sharedPreferences = await _instance;
+  Future<void> init() async => _sharedPreferences ??= await _instance;
 
   ///set string value
   static void setString({required String key, required String value}) => _sharedPreferences!.setString(key, value);
