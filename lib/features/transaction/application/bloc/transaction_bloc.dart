@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../features/transaction/application/bloc/transaction_event.dart';
 import '../../../../features/transaction/application/bloc/transaction_state.dart';
@@ -30,15 +31,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late DateFormat dateFormat;
   String userId = '';
 
-  TransactionBloc({required this.userName, required this.friendId})
-      : super(TransactionInitialState()) {
+  TransactionBloc({required this.userName, required this.friendId}) : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
     userId = Preferences.getString(key: AppStrings.prefUserId);
-    firebaseStoreInstance = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('friends')
-        .doc(friendId);
+    firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
     checkConnectivity = CheckConnectivity();
     on<TransactionAddEvent>(_addTransaction);
     on<TransactionDateChangeEvent>(_changeDateStatus);
@@ -51,19 +47,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionScrollEvent>(_onScrollingList);
     on<TransactionExportPDFEvent>(_onExportPDF);
 
-    streamDocumentSnapshot = firebaseStoreInstance
-        .collection('transactions')
-        .snapshots()
-        .listen((event) {
+    streamDocumentSnapshot = firebaseStoreInstance.collection('transactions').snapshots().listen((event) {
       listTransactionResult.clear();
       for (var item in event.docs) {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
           listTransactionResult.add(TransactionModel(
-              date: DateTime.fromMillisecondsSinceEpoch(
-                  mapData['date'].millisecondsSinceEpoch),
-              type: mapData['type'],
-              amount: double.parse(mapData['amount'])));
+            date: DateTime.fromMillisecondsSinceEpoch(
+            mapData['date'].millisecondsSinceEpoch),
+            type: mapData['type'],
+            amount: double.parse(mapData['amount'])
+          ));
         }
       }
       add(AllTransactionEvent());
@@ -116,8 +110,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  void _onTransactionAmountSort(
-      TransactionAmountSortEvent event, Emitter emit) {
+  void _onTransactionAmountSort(TransactionAmountSortEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
       if (amountAscending) {
         amountAscending = !amountAscending;
@@ -150,13 +143,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return totalBalance;
   }
 
-  Future<void> _addTransaction(
-      TransactionAddEvent event, Emitter<TransactionState> emit) async {
-    if (await validation(emit,
-        userName: event.userName, date: event.date, amount: event.amount)) {
-      firebaseStoreInstance.collection('transactions').add(
-          {'date': event.date, 'amount': event.amount, 'type': event.type});
-
+  Future<void> _addTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
+    if (await validation(emit, userName: event.userName, date: event.date, amount: event.amount)) {
+      firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
       firebaseStoreInstance.update({
         'lastTransactionTime': event.date,
         'amount': event.amount,
@@ -165,10 +154,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  Future<bool> validation(Emitter<TransactionState> emit,
-      {required String userName,
-      DateTime? date,
-      required String amount}) async {
+  Future<bool> validation(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
     if (amount.isBlank) {
       emit(TransactionAmountFieldState(isAmountEmpty: true));
       return false;
@@ -176,13 +162,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(TransactionDateChangeState(true));
       return false;
     } else if (userName.isBlank) {
-      emit(
-          TransactionUserNameFieldState(userNameMessage: AppStrings.emptyName));
+      emit(TransactionUserNameFieldState(userNameMessage: AppStrings.emptyName));
       return false;
     } else if (!await checkConnectivity.hasConnection) {
-      emit(TransactionFailedState(
-          title: AppStrings.noInternetConnection,
-          message: AppStrings.noInternetConnectionMessage));
+      emit(TransactionFailedState(title: AppStrings.noInternetConnection,message: AppStrings.noInternetConnectionMessage));
       return false;
     }
     return true;
@@ -229,36 +212,28 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                   children: List.generate(
                     3,
                     (subIndex) => i == start
-                        ? pw.Padding(
-                            padding: const pw.EdgeInsets.all(8.0),
-                            child: pw.Text(
-                              labelList[subIndex],
-                              style: pw.TextStyle(
-                                  color: i == start
-                                      ? PdfColors.white
-                                      : PdfColors.black),
-                            ),
-                          )
-                        : pw.Padding(
-                            padding: const pw.EdgeInsets.all(8.0),
-                            child: subIndex == 0
-                                ? pw.Text(dateFormat
-                                    .format(listTransactionResult[i - 1].date))
-                                : subIndex == 1
-                                    ? pw.Text(listTransactionResult[i - 1].type)
-                                    : pw.Text(listTransactionResult[i - 1]
-                                        .amount
-                                        .toString())),
+                    ? pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text(
+                          labelList[subIndex],
+                          style: pw.TextStyle(color: i == start ? PdfColors.white : PdfColors.black),
+                        ),
+                      )
+                    : pw.Padding(
+                      padding: const pw.EdgeInsets.all(8.0),
+                      child: subIndex == 0
+                      ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
+                      : subIndex == 1
+                        ? pw.Text(listTransactionResult[i - 1].type)
+                        : pw.Text(listTransactionResult[i - 1].amount.toString())
+                    ),
                   ),
                 ),
               );
             }
             pdf.addPage(pw.Page(
               pageFormat: PdfPageFormat.a4,
-              build: (pw.Context context) => pw.Table(
-                  border: pw.TableBorder.all(
-                      color: const PdfColor.fromInt(0xFF000000)),
-                  children: tableRowList),
+              build: (pw.Context context) => pw.Table(border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),children: tableRowList),
             ));
             pageCount -= 1;
             start = end - 1;
@@ -268,19 +243,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           var first = userName.replaceAll(' ', '');
           var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
           first = '${first}_$last.pdf';
-          File file2 = File("/storage/emulated/0/Download/$first");
+          late File file2;
+          if(Platform.isIOS) {
+            Directory? directory = await getApplicationDocumentsDirectory();
+            file2 = File('${directory.path}/$first');
+          } else {
+           file2 = File("/storage/emulated/0/Download/$first");
+          }
           await file2.writeAsBytes(await pdf.save());
-          emit(TransactionExportPDFState(
-              message: 'File downloaded successfully', isSuccess: true));
+          emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
         } catch (e) {
-          emit(TransactionExportPDFState(
-              message:
-                  'Something went wrong while exporting your transaction report'));
+          emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
         }
       } else {
-        emit(TransactionExportPDFState(
-            message:
-                'Please allow storage permission to export your transaction report'));
+        emit(TransactionExportPDFState(message: 'Please allow storage permission to export your transaction report'));
       }
     }
   }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>976324609510-j7a4pjpefgm3kfu9rrb3o2cqnggshn0k.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.976324609510-j7a4pjpefgm3kfu9rrb3o2cqnggshn0k</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>976324609510-n7chclp3jhe9j9vfv508a7ah1h7b0tp8.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCD7uOuBBuFpNHTDaRerpv1_GqRMF4HlqQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>976324609510</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.traversal.myWallet</string>
+	<key>PROJECT_ID</key>
+	<string>my-wallet-99fdf</string>
+	<key>STORAGE_BUCKET</key>
+	<string>my-wallet-99fdf.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:976324609510:ios:645e97196636cfdde4c227</string>
+	<key>DATABASE_URL</key>
+	<string>https://my-wallet-99fdf-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

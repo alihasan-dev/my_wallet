@@ -77,7 +77,6 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                     break;
                   default:
                 }
-                
                 return ListView(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,

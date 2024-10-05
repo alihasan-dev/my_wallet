@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -148,7 +149,6 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                       color: AppColors.white,
                                       size: 22,
                                     ),
-
                                     CustomImageWidget(
                                       imageUrl: widget.userModel!.profileImg, 
                                       imageSize: AppSize.s18,
@@ -183,7 +183,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () => showAddUserSheet(bloc: _transactionBloc),
+                          onPressed: () => showAddUserSheet(),
                           icon: const Icon(
                             AppIcons.addIcon, 
                             color: AppColors.white, 
@@ -451,7 +451,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                   color: Helper.isDark 
                                   ? AppColors.white.withOpacity(0.9) 
                                   : AppColors.black
-                                )
+                                ),
                               ),
                             ),
                           ),
@@ -482,6 +482,14 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         ],
                       ),
                     ),
+                    Visibility(
+                      visible: Platform.isIOS,
+                      child: Container(
+                        height: AppSize.s30, 
+                        width: double.maxFinite, 
+                        color: AppColors.white
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -489,7 +497,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
           ),
         );
       },
-      listener: (context, state){
+      listener: (context, state) {
         switch (state) {
           case TransactionLoadingState _:
             showLoadingDialog(context: context);
@@ -511,7 +519,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     );
   }
 
-  void showAddUserSheet({required TransactionBloc bloc}){
+  void showAddUserSheet(){
     errorAmount = false;
     errorDate = false;
     showDialog(

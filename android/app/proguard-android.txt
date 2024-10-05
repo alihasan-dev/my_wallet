@@ -1,0 +1,4 @@
+-keep class com.traversal.my_wallet { *; }
+-keepclassmembers class com.traversal.my_wallet {
+    public <init>(android.content.Context);
+}

@@ -5,4 +5,6 @@ build/
 .idea
 .vscode
 .DS_Store
+android/app/.DS_Store
+assets/.DS_Store
 pubspec.lock
