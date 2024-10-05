@@ -107,7 +107,10 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                                       : AppColors.black
                                     ),
                                   ),
-                                  CustomText(title: data.subTitle.capitalize, textColor: AppColors.grey)
+                                  CustomText(
+                                    title: data.subTitle.capitalize, 
+                                    textColor: AppColors.grey
+                                  ),
                                 ],
                               ),
                               Visibility(
@@ -147,11 +150,11 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     }
   }
 
-  void showThemeDialog({required BuildContext context}){
+  void showThemeDialog({required BuildContext context}) {
     showDialog(
       context: context,
       builder: (_) {
-        return AlertDialog.adaptive(
+        return AlertDialog(
           title: CustomText(
             title: _localizations!.theme,
             textStyle: getMediumStyle(
@@ -210,11 +213,11 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     );
   }
 
-  void showLanguageDialog({required BuildContext context}){
+  void showLanguageDialog({required BuildContext context}) {
     showDialog(
       context: context,
       builder: (_) {
-        return AlertDialog.adaptive(
+        return AlertDialog(
           title: CustomText(
             title: _localizations!.language,
             textStyle: getMediumStyle(

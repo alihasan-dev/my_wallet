@@ -8,6 +8,7 @@ class AppIcons {
   static const IconData logoutIcon = Icons.logout;
   static const IconData addIcon = Icons.add;
   static const IconData backArrowIcon = Icons.arrow_back; 
+  static const IconData backArrowIconIOS = Icons.arrow_back_ios; 
   static const IconData personIcon = Icons.person;
   static const IconData filterIcon = Icons.filter_list;
   static const IconData swapIcon = Icons.swap_vert_outlined;

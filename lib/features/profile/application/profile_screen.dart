@@ -77,6 +77,56 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
         builder: (context) {
           return BlocConsumer<ProfileBloc, ProfileState>(
             builder: (context, state){
+              // switch (state) {
+              //   case ProfileShowIdState _:
+              //     showProfileId = state.isIdVisible;
+              //     break;
+              //   case ProfileErrorIdState _:
+              //     errorUserId = state.message;
+              //     break;
+              //   case ProfileErrorEmailState _:
+              //     errorEmail = state.message;
+              //     break;
+              //   case ProfileErrorNameState _:
+              //     errorName = state.message;
+              //     break;
+              //   case ProfileErrorPhoneState _:
+              //     errorPhone = state.message;
+              //     break;
+              //   case ProfileErrorAddressState _:
+              //     errorAddress = state.message;
+              //     break;
+              //   case ProfileChooseImageState _:
+              //     imageUrl = state.imagePath.isEmpty ? AppStrings.sampleImg : state.imagePath;
+              //     break;
+              //   case ProfileSuccessState _:
+              //     var profileData = state.profileData;
+              //     userIdTextController.text = profileData['user_id'] ?? '';
+              //     emailTextController.text = profileData['email'] ?? '';
+              //     nameTextController.text = profileData['name'] ?? '';
+              //     phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
+              //     addressTextController.text = profileData['address'] ?? '';
+              //     imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
+              //     Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
+              //     break;
+              //   default:
+              // }
+              return widget.userId.isEmpty
+              ? mainWidget(bContext: context)
+              : Scaffold(
+                appBar: AppBar(
+                  centerTitle: true, 
+                  backgroundColor: AppColors.primaryColor,
+                  title: CustomText(
+                    title: _localizations!.profile, 
+                    textStyle: getBoldStyle(color: AppColors.white)
+                  ),
+                  iconTheme: const IconThemeData(color: AppColors.white),
+                ),
+                body: mainWidget(bContext: context),
+              );
+            },
+            listener: (context, state){
               switch (state) {
                 case ProfileShowIdState _:
                   showProfileId = state.isIdVisible;
@@ -108,36 +158,15 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                   addressTextController.text = profileData['address'] ?? '';
                   imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
                   Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
-                  break;
-                default:
-              }
-              return widget.userId.isEmpty
-              ? mainWidget(bContext: context)
-              : Scaffold(
-                appBar: AppBar(
-                  centerTitle: true, 
-                  backgroundColor: AppColors.primaryColor,
-                  title: CustomText(
-                    title: _localizations!.profile, 
-                    textStyle: getBoldStyle(color: AppColors.white)
-                  ),
-                  iconTheme: const IconThemeData(color: AppColors.white),
-                ),
-                body: mainWidget(bContext: context),
-              );
-            },
-            listener: (context, state){
-              switch (state) {
-                case ProfileLoadingState _:
-                  showLoadingDialog(context: context);
-                  break;
-                case ProfileSuccessState _:
                   hideLoadingDialog(context: context);
                   if(isFetchProfileData) {
                     showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
                   } else {
                     isFetchProfileData = true;
                   }
+                  break;
+                case ProfileLoadingState _:
+                  showLoadingDialog(context: context);
                   break;
                 case ProfileDeleteUserState _:
                   if(state.isDeleted) {

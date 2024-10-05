@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
+import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_strings.dart';
@@ -47,6 +47,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   double appBarHeight = AppBar().preferredSize.height;
   double appBarSize = 0.0;
   Color headerColor = Helper.isDark ? AppColors.backgroundColorDark : AppColors.white;
+  double animatedBorderSide = 0.0;
   Color textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black;
   bool isLoading = true;
   double availableBalance = 0.0;
@@ -79,30 +80,6 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   Widget build(BuildContext context) {
     return BlocConsumer<TransactionBloc, TransactionState>(
       builder: (context, state) {
-        switch (state) {
-          case AllTransactionState _:
-            availableBalance = state.totalBalance;
-            transactionDataList.clear();
-            transactionDataList.addAll(state.listTransaction);
-            break;
-          case TransactionScrollState _:
-            appBarSize = state.appbarSize;
-            if(appBarSize == appBarHeight){
-              headerColor = Helper.isDark 
-              ? AppColors.backgroundColorDark 
-              : AppColors.white;
-              textColor = Helper.isDark 
-              ? AppColors.white.withOpacity(0.9) 
-              : AppColors.black;
-            } else {
-              headerColor = AppColors.primaryColor;
-              textColor = Helper.isDark 
-              ? AppColors.white.withOpacity(0.9) 
-              : AppColors.white;
-            }
-            break;
-          default:
-        }
         return Scaffold(
           appBar: AppBar(
             toolbarHeight: 0, 
@@ -144,8 +121,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               child: Ink(
                                 child: Row(
                                   children: [
-                                    const Icon(
-                                      AppIcons.backArrowIcon, 
+                                    Icon(
+                                      Platform.isIOS
+                                      ? AppIcons.backArrowIconIOS
+                                      : AppIcons.backArrowIcon, 
                                       color: AppColors.white,
                                       size: 22,
                                     ),
@@ -226,7 +205,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         color: headerColor,
                         border: Border(
                           top: BorderSide(
-                            width: AppSize.s05, 
+                            width: animatedBorderSide, 
                             color: AppColors.white.withOpacity(0.8)
                           ),
                         ),
@@ -234,30 +213,30 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSize.s10, 
-                                vertical: AppSize.s15
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomText(
-                                    title: _localizations!.date, 
-                                    textStyle: getSemiBoldStyle(
-                                      color: textColor, 
-                                      fontSize: AppSize.s14
+                            child: InkWell(
+                              onTap: () => _transactionBloc.add(TransactionDateSortEvent()),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSize.s10, 
+                                  vertical: AppSize.s15
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomText(
+                                      title: _localizations!.date, 
+                                      textStyle: getSemiBoldStyle(
+                                        color: textColor, 
+                                        fontSize: AppSize.s14
+                                      ),
                                     ),
-                                  ),
-                                  InkWell(
-                                    onTap: () => _transactionBloc.add(TransactionDateSortEvent()),
-                                    child: Icon(
+                                    Icon(
                                       AppIcons.swapIcon, 
                                       size: AppSize.s18, 
                                       color: textColor
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -270,27 +249,27 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                           ),
                           Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSize.s10, 
-                                vertical: AppSize.s15
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomText(
-                                    title: _localizations!.type, 
-                                    textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
-                                  ),
-                                  InkWell(
-                                    onTap: () => _transactionBloc.add(TransactionTypeSortEvent()),
-                                    child: Icon(
+                            child: InkWell(
+                              onTap: () => _transactionBloc.add(TransactionTypeSortEvent()),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSize.s10, 
+                                  vertical: AppSize.s15
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomText(
+                                      title: _localizations!.type, 
+                                      textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                    ),
+                                    Icon(
                                       AppIcons.swapIcon, 
                                       size: AppSize.s18, 
                                       color: textColor
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -303,27 +282,27 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                           ),
                           Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSize.s10, 
-                                vertical: AppSize.s15
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomText(
-                                    title: _localizations!.amount, 
-                                    textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
-                                  ),
-                                  InkWell(
-                                    onTap: () => _transactionBloc.add(TransactionAmountSortEvent()),
-                                    child: Icon(
+                            child: InkWell(
+                              onTap: () => _transactionBloc.add(TransactionAmountSortEvent()),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSize.s10, 
+                                  vertical: AppSize.s15
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomText(
+                                      title: _localizations!.amount, 
+                                      textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                    ),
+                                    Icon(
                                       AppIcons.swapIcon, 
                                       size: AppSize.s18, 
                                       color: textColor
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -419,91 +398,103 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         ),
                       ),
                     ),
-                    Container(
-                      height: AppSize.s50,
-                      decoration: BoxDecoration(
-                        color: Helper.isDark 
-                        ? AppColors.backgroundColorDark 
-                        : AppColors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: AppColors.grey, 
-                            blurRadius: AppSize.s2, 
-                            offset: Offset(0, -0.5)
-                          ),
-                        ]
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSize.s10, 
-                                vertical: AppSize.s15
-                              ),
-                              color: Helper.isDark 
-                              ? AppColors.backgroundColorDark 
-                              : AppColors.white, 
-                              child: CustomText(
-                                title: _localizations!.availableBalance, 
-                                textStyle: getSemiBoldStyle(
-                                  color: Helper.isDark 
-                                  ? AppColors.white.withOpacity(0.9) 
-                                  : AppColors.black
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            color: AppColors.grey,
-                            width: AppSize.s05,
-                            height: double.maxFinite,
-                          ),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSize.s10, 
-                                vertical: AppSize.s15
-                              ),
-                              color: Helper.isDark 
-                              ? AppColors.backgroundColorDark
-                              : AppColors.white, 
-                              child: CustomText(
-                                title: availableBalance.balanceFormat,
-                                textStyle: getSemiBoldStyle(
-                                  color: availableBalance.isNegative
-                                  ? AppColors.red
-                                  : AppColors.green
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Visibility(
-                      visible: Platform.isIOS,
-                      child: Container(
-                        height: AppSize.s30, 
-                        width: double.maxFinite, 
-                        color: AppColors.white
-                      ),
-                    ),
                   ],
                 ),
               ),
             ],
           ),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.only(
+              left: AppSize.s15,
+              right: AppSize.s15,
+              bottom: AppSize.s18,
+            ),
+            decoration: BoxDecoration(
+              color: Helper.isDark 
+              ? AppColors.backgroundColorDark 
+              : AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.grey.withOpacity(0.5), 
+                  blurRadius: AppSize.s2, 
+                  offset: const Offset(0, -0.5)
+                ),
+              ]
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSize.s10, 
+                      vertical: AppSize.s15
+                    ),
+                    color: Helper.isDark 
+                    ? AppColors.backgroundColorDark 
+                    : AppColors.white, 
+                    child: CustomText(
+                      title: _localizations!.availableBalance, 
+                      textStyle: getSemiBoldStyle(
+                        color: Helper.isDark 
+                        ? AppColors.white.withOpacity(0.9) 
+                        : AppColors.black
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSize.s10, 
+                      vertical: AppSize.s15
+                    ),
+                    color: Helper.isDark 
+                    ? AppColors.backgroundColorDark
+                    : AppColors.white, 
+                    child: CustomText(
+                      title: availableBalance.balanceFormat,
+                      textStyle: getSemiBoldStyle(
+                        color: availableBalance.isNegative
+                        ? AppColors.red
+                        : AppColors.green
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ),
         );
       },
       listener: (context, state) {
         switch (state) {
-          case TransactionLoadingState _:
-            showLoadingDialog(context: context);
-            break;
           case AllTransactionState _:
             isLoading = false;
+            availableBalance = state.totalBalance;
+            transactionDataList.clear();
+            transactionDataList.addAll(state.listTransaction);
+            break;
+          case TransactionScrollState _:
+            appBarSize = state.appbarSize;
+            if(appBarSize == appBarHeight) {
+              animatedBorderSide = AppSize.s0;
+              headerColor = Helper.isDark 
+              ? AppColors.backgroundColorDark 
+              : AppColors.white;
+              textColor = Helper.isDark 
+              ? AppColors.white.withOpacity(0.9) 
+              : AppColors.black;
+            } else {
+              animatedBorderSide = AppSize.s05;
+              headerColor = AppColors.primaryColor;
+              textColor = Helper.isDark 
+              ? AppColors.white.withOpacity(0.9) 
+              : AppColors.white;
+            }
+            break;
+          case TransactionLoadingState _:
+            showLoadingDialog(context: context);
             break;
           case TransactionExportPDFState _:
             hideLoadingDialog(context: context);
@@ -519,7 +510,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     );
   }
 
-  void showAddUserSheet(){
+  void showAddUserSheet() {
     errorAmount = false;
     errorDate = false;
     showDialog(

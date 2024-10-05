@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:my_wallet/constants/app_icons.dart';
-import 'package:my_wallet/constants/app_size.dart';
+import '../../../constants/app_icons.dart';
+import '../../../constants/app_size.dart';
 import '../../../features/dashboard/application/dashboard_screen.dart';
 import '../../../features/home/application/bloc/home_bloc.dart';
 import '../../../features/home/application/bloc/home_event.dart';
@@ -250,44 +250,43 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
           options: const AuthenticationOptions(biometricOnly: true, stickyAuth: true)
         );
       } catch (e) {
-        print('Check the biometric authentication error');
-        // if(context.mounted){
-        //   showDialog(
-        //     context: context,
-        //     barrierDismissible: false, 
-        //     builder: (_) {
-        //       return WillPopScope(
-        //         onWillPop: () => Future.value(false),
-        //         child: AlertDialog(
-        //           title: CustomText(
-        //             //title: "",
-        //             title: _localizations!.biometricAuthFailed,
-        //             textStyle: getBoldStyle(
-        //               color: Helper.isDark 
-        //               ? AppColors.white.withOpacity(0.9) 
-        //               : AppColors.black
-        //             ),
-        //           ),
-        //           content: CustomText(
-        //             title: _localizations!.bioAuthFailedTooManyAttemptMessage, 
-        //             textColor: Helper.isDark 
-        //             ? AppColors.white.withOpacity(0.9) 
-        //             : AppColors.black
-        //           ),
-        //           actions: [
-        //             TextButton(
-        //               onPressed: () => exit(0),
-        //               child: CustomText(
-        //                 title: _localizations!.cancel,
-        //                 textStyle: getBoldStyle(color: AppColors.red),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       );
-        //     }
-        //   );
-        // }
+        if(context.mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false, 
+            builder: (_) {
+              return WillPopScope(
+                onWillPop: () => Future.value(false),
+                child: AlertDialog(
+                  title: CustomText(
+                    //title: "",
+                    title: _localizations!.biometricAuthFailed,
+                    textStyle: getBoldStyle(
+                      color: Helper.isDark 
+                      ? AppColors.white.withOpacity(0.9) 
+                      : AppColors.black
+                    ),
+                  ),
+                  content: CustomText(
+                    title: _localizations!.bioAuthFailedTooManyAttemptMessage, 
+                    textColor: Helper.isDark 
+                    ? AppColors.white.withOpacity(0.9) 
+                    : AppColors.black
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => exit(0),
+                      child: CustomText(
+                        title: _localizations!.cancel,
+                        textStyle: getBoldStyle(color: AppColors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          );
+        }
       }
     }
     _homeBloc.add(HomeBiometricAuthEvent(isAuthenticated: data));
