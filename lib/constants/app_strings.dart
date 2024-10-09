@@ -1,7 +1,7 @@
 class AppStrings {
   AppStrings._();
 
-  static const String appName = 'My Wallet';
+  static const String appName = 'MyWallet';
   static const String emptyString = '';
   static const String login = 'Login';
   static const String signup = 'Signup';

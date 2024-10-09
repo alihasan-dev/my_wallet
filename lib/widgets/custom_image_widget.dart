@@ -14,6 +14,7 @@ class CustomImageWidget extends StatelessWidget {
   final double strokeWidth;
   final double padding;
   final double borderWidth;
+  final bool fromProfile;
 
   const CustomImageWidget({
     required this.imageUrl,
@@ -22,6 +23,7 @@ class CustomImageWidget extends StatelessWidget {
     this.circularPadding = AppSize.s10,
     this.strokeWidth = AppSize.s2,
     this.borderWidth = AppSize.s2,
+    this.fromProfile = true,
     super.key
   });
 
@@ -37,7 +39,12 @@ class CustomImageWidget extends StatelessWidget {
         child: SizedBox.fromSize(
           size: Size.fromRadius(imageSize),
           child: imageUrl.isEmpty
-          ? const Center(child: Icon(AppIcons.personIcon, size: AppSize.s60))
+          ? Center(
+              child: Icon(
+                AppIcons.personIcon, 
+                size: fromProfile ? AppSize.s60 : AppSize.s30
+              ),
+            )
           : imageUrl.isNetworkImage
             ? CachedNetworkImage(
                 imageUrl: imageUrl,

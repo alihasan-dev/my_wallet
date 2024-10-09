@@ -176,4 +176,22 @@ mixin Helper {
     AppStrings.receive
   ];
 
+  bool compareProfileMap(Map<String, dynamic> firstMap, Map<String, dynamic> secondMap) {
+    if(firstMap['profile_img'] ==
+    secondMap['profile_img'] &&
+    firstMap['address'] ==
+    secondMap['address'] &&
+    firstMap['phone'] ==
+    secondMap['phone'] &&
+    firstMap['user_id'] ==
+    secondMap['user_id'] &&
+    firstMap['name'] ==
+    secondMap['name'] &&
+    firstMap['email'] ==
+    secondMap['email']) {
+      return false;
+    }
+    return true;
+  }
+
 }

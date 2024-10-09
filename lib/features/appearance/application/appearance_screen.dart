@@ -34,9 +34,11 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
   var languageList = <ApperanceLanguageModel>[];
   AppLocalizations? _localizations;
   bool showUnverified = false;
+  late ApperanceBloc _apperanceBloc;
 
   @override
   void didChangeDependencies() {
+    _apperanceBloc = context.read<ApperanceBloc>();
     _localizations = AppLocalizations.of(context)!;
     themeModeList.clear();
     themeModeList.add(AppearanceThemeModel(title: _localizations!.systemDefault, theme: "system", themeMode: ThemeMode.system));
@@ -64,76 +66,70 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
         iconTheme: const IconThemeData(color: AppColors.white),
         backgroundColor: AppColors.primaryColor
       ),
-      body: BlocProvider(
-        create: (context) => ApperanceBloc(),
-        child: Builder(
-          builder: (context) {
-            return BlocBuilder<ApperanceBloc, ApperanceState>(
-              builder: (context, state) {
-                switch (state) {
-                  case ApperanceUserDetailsState _:
-                    showUnverified = state.userModel.isUserVerified;
-                    appearanceItemList[2].subTitle = showUnverified ? _localizations!.yes : _localizations!.no;
-                    break;
-                  default:
-                }
-                return ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  children: List.generate(
-                    appearanceItemList.length, 
-                    (index) {
-                      var data = appearanceItemList[index];
-                      return InkWell(
-                        onTap: index == 2
-                        ? null
-                        : () => onClickItem(context: context, index: index),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSize.s20,
-                            vertical: AppSize.s15
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    title: data.title, 
-                                    textStyle: getMediumStyle(
-                                      color: Helper.isDark 
-                                      ? AppColors.white 
-                                      : AppColors.black
-                                    ),
-                                  ),
-                                  CustomText(
-                                    title: data.subTitle.capitalize, 
-                                    textColor: AppColors.grey
-                                  ),
-                                ],
+      body: BlocBuilder<ApperanceBloc, ApperanceState>(
+        builder: (context, state) {
+          switch (state) {
+            case ApperanceUserDetailsState _:
+              showUnverified = state.userModel.isUserVerified;
+              appearanceItemList[2].subTitle = showUnverified ? _localizations!.yes : _localizations!.no;
+              appearanceItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
+              break;
+            default:
+          }
+          return ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            children: List.generate(
+              appearanceItemList.length, 
+              (index) {
+                var data = appearanceItemList[index];
+                return InkWell(
+                  onTap: index == 2
+                  ? null
+                  : () => onClickItem(context: context, index: index),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSize.s20,
+                      vertical: AppSize.s15
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              title: data.title, 
+                              textStyle: getMediumStyle(
+                                color: Helper.isDark 
+                                ? AppColors.white 
+                                : AppColors.black
                               ),
-                              Visibility(
-                                visible: index == 2,
-                                child: Transform.scale(
-                                  scale: 0.8,
-                                  child: CupertinoSwitch(
-                                    value: showUnverified, 
-                                    onChanged: (value) => context.read<ApperanceBloc>().add(ApperanceOnChangeVerifiedEvent(isVerified: value))
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
+                            CustomText(
+                              title: data.subTitle.capitalize, 
+                              textColor: AppColors.grey
+                            ),
+                          ],
+                        ),
+                        Visibility(
+                          visible: index == 2,
+                          child: Transform.scale(
+                            scale: 0.8,
+                            child: CupertinoSwitch(
+                              value: showUnverified, 
+                              onChanged: (value) => context.read<ApperanceBloc>().add(ApperanceOnChangeVerifiedEvent(isVerified: value))
+                            ),
                           ),
                         ),
-                      );
-                    }
+                      ],
+                    ),
                   ),
                 );
               }
-            );
-          }
-        ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -177,6 +173,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                 return InkWell(
                   onTap: () { 
                     context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
+                    _apperanceBloc.add(ApperanceUserDetailsEvent());
                     context.pop();
                   },
                   child: Container(

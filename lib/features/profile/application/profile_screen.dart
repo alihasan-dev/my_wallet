@@ -76,41 +76,13 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       child: Builder(
         builder: (context) {
           return BlocConsumer<ProfileBloc, ProfileState>(
-            builder: (context, state){
-              // switch (state) {
-              //   case ProfileShowIdState _:
-              //     showProfileId = state.isIdVisible;
-              //     break;
-              //   case ProfileErrorIdState _:
-              //     errorUserId = state.message;
-              //     break;
-              //   case ProfileErrorEmailState _:
-              //     errorEmail = state.message;
-              //     break;
-              //   case ProfileErrorNameState _:
-              //     errorName = state.message;
-              //     break;
-              //   case ProfileErrorPhoneState _:
-              //     errorPhone = state.message;
-              //     break;
-              //   case ProfileErrorAddressState _:
-              //     errorAddress = state.message;
-              //     break;
-              //   case ProfileChooseImageState _:
-              //     imageUrl = state.imagePath.isEmpty ? AppStrings.sampleImg : state.imagePath;
-              //     break;
-              //   case ProfileSuccessState _:
-              //     var profileData = state.profileData;
-              //     userIdTextController.text = profileData['user_id'] ?? '';
-              //     emailTextController.text = profileData['email'] ?? '';
-              //     nameTextController.text = profileData['name'] ?? '';
-              //     phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
-              //     addressTextController.text = profileData['address'] ?? '';
-              //     imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
-              //     Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
-              //     break;
-              //   default:
-              // }
+            listenWhen: (previous, current) {
+              if(previous is ProfileSuccessState && current is ProfileSuccessState) {
+                return compareProfileMap(previous.profileData, current.profileData);
+              }
+              return true;
+            },
+            builder: (context, state) {
               return widget.userId.isEmpty
               ? mainWidget(bContext: context)
               : Scaffold(
@@ -126,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 body: mainWidget(bContext: context),
               );
             },
-            listener: (context, state){
+            listener: (context, state) {
               switch (state) {
                 case ProfileShowIdState _:
                   showProfileId = state.isIdVisible;

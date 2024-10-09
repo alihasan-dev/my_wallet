@@ -129,12 +129,15 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                       size: 22,
                                     ),
                                     CustomImageWidget(
-                                      imageUrl: widget.userModel!.profileImg, 
+                                      imageUrl: widget.userModel == null
+                                      ? ''
+                                      : widget.userModel!.profileImg, 
                                       imageSize: AppSize.s18,
                                       circularPadding: AppSize.s5,
                                       strokeWidth: AppSize.s1,
-                                      padding: 1.5,
+                                      padding: 1.2,
                                       borderWidth: 0,
+                                      fromProfile: false,
                                     ),
                                   ],
                                 ),
@@ -143,15 +146,23 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           ),
                           const SizedBox(width: AppSize.s6),
                           Expanded(
-                            child: InkWell(
-                              onTap: () => context.push(
-                                AppRoutes.profileScreen, 
-                                extra: widget.userModel!.userId
-                              ),
-                              child: SizedBox(
-                                child: CustomText(
-                                  title: name, 
-                                  textStyle: getBoldStyle(color: AppColors.white)
+                            child: Material(
+                              color: AppColors.transparent,
+                              child: InkWell(
+                                onTap: () => context.push(
+                                  AppRoutes.profileScreen, 
+                                  extra: widget.userModel!.userId
+                                ),
+                                child: SizedBox(
+                                  height: double.maxFinite,
+                                  child: Row(
+                                    children: [
+                                      CustomText(
+                                        title: name, 
+                                        textStyle: getBoldStyle(color: AppColors.white)
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -313,10 +324,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     Expanded(
                       child: NotificationListener<ScrollNotification>(
                         onNotification: (notification) {
-                          if(_scrollController.position.userScrollDirection != ScrollDirection.idle){
-                            if(_scrollController.position.userScrollDirection == ScrollDirection.forward && appBarSize != appBarHeight){
+                          if(_scrollController.position.userScrollDirection != ScrollDirection.idle) {
+                            if(_scrollController.position.userScrollDirection == ScrollDirection.forward && appBarSize != appBarHeight) {
                               _transactionBloc.add(TransactionScrollEvent(appbarSize: appBarHeight));
-                            } else if(_scrollController.position.userScrollDirection == ScrollDirection.reverse && _scrollController.offset > 180.0){
+                            } else if(_scrollController.position.userScrollDirection == ScrollDirection.reverse && _scrollController.offset > 180.0) {
                               _transactionBloc.add(TransactionScrollEvent(appbarSize: 0.0));
                             }
                           }
@@ -326,9 +337,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           shrinkWrap: true,
                           controller: _scrollController,
                           itemCount: transactionDataList.length + 1,
-                          itemBuilder: (context, index){
+                          itemBuilder: (context, index) {
                             if(index == transactionDataList.length){
-                              return const Divider(color: AppColors.grey, thickness: AppSize.s05, height: AppSize.s05);
+                              return const Divider(
+                                color: AppColors.grey, 
+                                thickness: AppSize.s05, 
+                                height: AppSize.s05
+                              );
                             } else {
                               var subData = transactionDataList[index];
                               return Container(
@@ -363,7 +378,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                         ? AppColors.backgroundColorDark 
                                         : AppColors.white, 
                                         child: CustomText(
-                                          title: subData.type == AppStrings.transfer ? _localizations!.transfer : _localizations!.receive, 
+                                          title: subData.type == AppStrings.transfer 
+                                          ? _localizations!.transfer 
+                                          : _localizations!.receive, 
                                           textColor: subData.type == AppStrings.transfer 
                                           ? AppColors.red 
                                           : AppColors.green
@@ -373,7 +390,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     const CustomVerticalDivider(),
                                     Expanded(
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: AppSize.s10, vertical: AppSize.s15),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: AppSize.s10, 
+                                          vertical: AppSize.s15
+                                        ),
                                         color: Helper.isDark 
                                         ? AppColors.backgroundColorDark 
                                         : AppColors.white, 
@@ -404,10 +424,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             ],
           ),
           bottomNavigationBar: Container(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               left: AppSize.s15,
               right: AppSize.s15,
-              bottom: AppSize.s18,
+              bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
             ),
             decoration: BoxDecoration(
               color: Helper.isDark 
