@@ -93,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                     return <PopupMenuEntry<String>> [
                       PopupMenuItem<String>(
                         value: AppStrings.settings,
+                        padding: const EdgeInsets.only(left: AppSize.s14, right: AppSize.s45),
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
                           leading: const Icon(AppIcons.settingsIcon),
@@ -101,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                       ),
                       PopupMenuItem<String>(
                         value: AppStrings.logout,
+                        padding: const EdgeInsets.only(left: AppSize.s14, right: AppSize.s45),
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
                           leading: const Icon(AppIcons.logoutIcon),

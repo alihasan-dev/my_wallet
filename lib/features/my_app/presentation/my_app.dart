@@ -48,7 +48,14 @@ class _MyAppState extends State<MyApp> {
             colorScheme: const ColorScheme.dark(primary: AppColors.primaryColor),
             appBarTheme: const AppBarTheme(backgroundColor: AppColors.backgroundColorDark),
             useMaterial3: true,
-            textTheme: const TextTheme().apply(bodyColor: AppColors.white.withOpacity(0.9))
+            textTheme: const TextTheme().apply(bodyColor: AppColors.white.withOpacity(0.9)),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: <TargetPlatform, PageTransitionsBuilder>{
+                TargetPlatform.android: ZoomPageTransitionsBuilder(
+                  allowEnterRouteSnapshotting: false
+                )
+              }
+            )
           ),
           themeMode: themeMode,
           routerConfig: AppRoutes.router

@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
                   InkWell(
                     onTap: () => context.push(AppRoutes.forgotPasswordScreen),
                     child: CustomText(
-                      title: AppStrings.forgotPassword, 
+                      title: _localizations!.forgotPassword, 
                       textStyle: getMediumStyle(
                         color: Helper.isDark 
                         ? AppColors.white.withOpacity(0.8) 

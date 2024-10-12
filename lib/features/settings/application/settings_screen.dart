@@ -3,54 +3,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import '../domain/appearance_theme_model.dart';
-import '../domain/apperance_language_model.dart';
-import '../../../features/appearance/application/bloc/appearance_bloc.dart';
-import '../../../features/appearance/application/bloc/appearance_event.dart';
-import '../../../features/appearance/application/bloc/appearance_state.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
+import 'bloc/settings_bloc.dart';
+import '../domain/settings_language_model.dart';
+import '../domain/settings_model.dart';
+import '../domain/settings_theme_model.dart';
 import '../../../constants/app_icons.dart';
-import '../../../features/my_app/presentation/bloc/my_app_bloc.dart';
-import '../../../features/my_app/presentation/bloc/my_app_event.dart';
+import '../../my_app/presentation/bloc/my_app_bloc.dart';
+import '../../my_app/presentation/bloc/my_app_event.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_style.dart';
-import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_strings.dart';
-import '../../../features/appearance/domain/appearance_model.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
 
-class AppearanceScreen extends StatefulWidget {
-  const AppearanceScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
   @override
-  State createState() => _AppearanceScreenState();
+  State createState() => _SettingsScreenState();
 }
 
-class _AppearanceScreenState extends State<AppearanceScreen> {
+class _SettingsScreenState extends State<SettingsScreen> {
 
-  var appearanceItemList = <AppearanceModel>[];
-  var themeModeList = <AppearanceThemeModel>[];
-  var languageList = <ApperanceLanguageModel>[];
+  var settingItemList = <SettingModel>[];
+  var themeModeList = <SettingThemeModel>[];
+  var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
   bool showUnverified = false;
-  late ApperanceBloc _apperanceBloc;
+  late SettingsBloc _settingBloc;
 
   @override
   void didChangeDependencies() {
-    _apperanceBloc = context.read<ApperanceBloc>();
+    _settingBloc = context.read<SettingsBloc>();
     _localizations = AppLocalizations.of(context)!;
     themeModeList.clear();
-    themeModeList.add(AppearanceThemeModel(title: _localizations!.systemDefault, theme: "system", themeMode: ThemeMode.system));
-    themeModeList.add(AppearanceThemeModel(title: _localizations!.light, theme: "light", themeMode: ThemeMode.light));
-    themeModeList.add(AppearanceThemeModel(title: _localizations!.dark, theme: "dark", themeMode: ThemeMode.dark));
+    themeModeList.add(SettingThemeModel(title: _localizations!.systemDefault, theme: "system", themeMode: ThemeMode.system));
+    themeModeList.add(SettingThemeModel(title: _localizations!.light, theme: "light", themeMode: ThemeMode.light));
+    themeModeList.add(SettingThemeModel(title: _localizations!.dark, theme: "dark", themeMode: ThemeMode.dark));
     languageList.clear();
-    languageList.add(ApperanceLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
-    languageList.add(ApperanceLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
-    appearanceItemList.clear();
-    appearanceItemList.add(AppearanceModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-    appearanceItemList.add(AppearanceModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-    appearanceItemList.add(AppearanceModel(title: _localizations!.showUnverifiedUser, subTitle: '--'));
+    languageList.add(SettingLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
+    languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
+    settingItemList.clear();
+    settingItemList.add(SettingModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+    settingItemList.add(SettingModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(title: _localizations!.showUnverifiedUser, subTitle: '--'));
     super.didChangeDependencies();
   }
 
@@ -66,13 +64,13 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
         iconTheme: const IconThemeData(color: AppColors.white),
         backgroundColor: AppColors.primaryColor
       ),
-      body: BlocBuilder<ApperanceBloc, ApperanceState>(
+      body: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
           switch (state) {
-            case ApperanceUserDetailsState _:
+            case SettingsUserDetailsState _:
               showUnverified = state.userModel.isUserVerified;
-              appearanceItemList[2].subTitle = showUnverified ? _localizations!.yes : _localizations!.no;
-              appearanceItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
+              settingItemList[2].subTitle = showUnverified ? _localizations!.yes : _localizations!.no;
+              settingItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
               break;
             default:
           }
@@ -80,9 +78,9 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             children: List.generate(
-              appearanceItemList.length, 
+              settingItemList.length, 
               (index) {
-                var data = appearanceItemList[index];
+                var data = settingItemList[index];
                 return InkWell(
                   onTap: index == 2
                   ? null
@@ -118,7 +116,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                             scale: 0.8,
                             child: CupertinoSwitch(
                               value: showUnverified, 
-                              onChanged: (value) => context.read<ApperanceBloc>().add(ApperanceOnChangeVerifiedEvent(isVerified: value))
+                              onChanged: (value) => context.read<SettingsBloc>().add(SettingsOnChangeVerifiedEvent(isVerified: value))
                             ),
                           ),
                         ),
@@ -173,7 +171,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                 return InkWell(
                   onTap: () { 
                     context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
-                    _apperanceBloc.add(ApperanceUserDetailsEvent());
+                    _settingBloc.add(SettingsUserDetailsEvent());
                     context.pop();
                   },
                   child: Container(

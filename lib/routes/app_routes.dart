@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/features/appearance/application/bloc/appearance_bloc.dart';
-import '../features/appearance/application/appearance_screen.dart';
+import 'package:my_wallet/features/settings/application/bloc/settings_bloc.dart';
+import '../features/settings/application/settings_screen.dart';
 import '../features/profile/application/profile_screen.dart';
 import '../features/transaction/application/bloc/transaction_bloc.dart';
 import '../features/forgot_password/application/bloc/forgot_password_bloc.dart';
@@ -78,7 +78,7 @@ class AppRoutes {
       ),
       GoRoute(
         path: appearanceScreen,
-        builder: (_, state) => BlocProvider(create: (_) => ApperanceBloc(), child: const AppearanceScreen())
+        builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
       ),
       GoRoute(
         path: profileScreen,

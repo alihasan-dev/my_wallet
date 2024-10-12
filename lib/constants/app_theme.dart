@@ -59,6 +59,14 @@ ThemeData get getAppTheme {
       //   borderSide: BorderSide(color: Colors.grey, width: AppSize.s4),
       //   borderRadius: BorderRadius.all(Radius.circular(AppSize.s8))
       // )
+      
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: <TargetPlatform, PageTransitionsBuilder>{
+        TargetPlatform.android: ZoomPageTransitionsBuilder(
+          allowEnterRouteSnapshotting: false
+        )
+      }
     )
   );
 }

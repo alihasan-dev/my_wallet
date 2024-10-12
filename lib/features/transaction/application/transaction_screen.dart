@@ -224,29 +224,32 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                       child: Row(
                         children: [
                           Expanded(
-                            child: InkWell(
-                              onTap: () => _transactionBloc.add(TransactionDateSortEvent()),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSize.s10, 
-                                  vertical: AppSize.s15
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomText(
-                                      title: _localizations!.date, 
-                                      textStyle: getSemiBoldStyle(
-                                        color: textColor, 
-                                        fontSize: AppSize.s14
+                            child: Material(
+                              color: AppColors.transparent,
+                              child: InkWell(
+                                onTap: () => _transactionBloc.add(TransactionDateSortEvent()),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSize.s10, 
+                                    vertical: AppSize.s15
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText(
+                                        title: _localizations!.date, 
+                                        textStyle: getSemiBoldStyle(
+                                          color: textColor, 
+                                          fontSize: AppSize.s14
+                                        ),
                                       ),
-                                    ),
-                                    Icon(
-                                      AppIcons.swapIcon, 
-                                      size: AppSize.s18, 
-                                      color: textColor
-                                    ),
-                                  ],
+                                      Icon(
+                                        AppIcons.swapIcon, 
+                                        size: AppSize.s18, 
+                                        color: textColor
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -260,26 +263,29 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                           ),
                           Expanded(
-                            child: InkWell(
-                              onTap: () => _transactionBloc.add(TransactionTypeSortEvent()),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSize.s10, 
-                                  vertical: AppSize.s15
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomText(
-                                      title: _localizations!.type, 
-                                      textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
-                                    ),
-                                    Icon(
-                                      AppIcons.swapIcon, 
-                                      size: AppSize.s18, 
-                                      color: textColor
-                                    ),
-                                  ],
+                            child: Material(
+                              color: AppColors.transparent,
+                              child: InkWell(
+                                onTap: () => _transactionBloc.add(TransactionTypeSortEvent()),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSize.s10, 
+                                    vertical: AppSize.s15
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText(
+                                        title: _localizations!.type, 
+                                        textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                      ),
+                                      Icon(
+                                        AppIcons.swapIcon, 
+                                        size: AppSize.s18, 
+                                        color: textColor
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -293,26 +299,29 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                           ),
                           Expanded(
-                            child: InkWell(
-                              onTap: () => _transactionBloc.add(TransactionAmountSortEvent()),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSize.s10, 
-                                  vertical: AppSize.s15
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomText(
-                                      title: _localizations!.amount, 
-                                      textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
-                                    ),
-                                    Icon(
-                                      AppIcons.swapIcon, 
-                                      size: AppSize.s18, 
-                                      color: textColor
-                                    ),
-                                  ],
+                            child: Material(
+                              color: AppColors.transparent,
+                              child: InkWell(
+                                onTap: () => _transactionBloc.add(TransactionAmountSortEvent()),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSize.s10, 
+                                    vertical: AppSize.s15
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText(
+                                        title: _localizations!.amount, 
+                                        textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                      ),
+                                      Icon(
+                                        AppIcons.swapIcon, 
+                                        size: AppSize.s18, 
+                                        color: textColor
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

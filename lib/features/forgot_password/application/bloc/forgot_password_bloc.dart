@@ -16,7 +16,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
   late StreamSubscription<QuerySnapshot> _streamSubscription;
   List<String> userEmails = [];
   
-  ForgotPasswordBloc() : super(ForgotPasswordInitialState()){
+  ForgotPasswordBloc() : super(ForgotPasswordInitialState()) {
     checkConnectivity = CheckConnectivity();
     _firebaseAuth = FirebaseAuth.instance;
     _firestoreInstance = FirebaseFirestore.instance.collection('users');
@@ -32,6 +32,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
         }
       }
     });
+    
   }
 
   Future<void> _onForgotPassword(ForgotPasswordSubmitEvent event, Emitter emit) async {
@@ -46,7 +47,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
     if(email.isEmpty) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.emptyEmail));
       return false;
-    } else  if(!email.isValidEmail) {
+    } else if(!email.isValidEmail) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.invalidEmail));
       return false;
     } else if(!userEmails.any((item) => item == email)) {
@@ -61,10 +62,10 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
     }
   }
 
-  void _onEmailChange(ForgotPasswordEmailChangeEvent event, Emitter emit){
+  void _onEmailChange(ForgotPasswordEmailChangeEvent event, Emitter emit) {
     if(event.value.isEmpty) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.emptyEmail));
-    } else  if(!event.value.toString().isValidEmail) {
+    } else if(!event.value.toString().isValidEmail) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.invalidEmail));
     } else {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.emptyString));

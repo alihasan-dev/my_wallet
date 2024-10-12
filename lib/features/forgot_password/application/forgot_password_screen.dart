@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../constants/app_icons.dart';
 import '../../../constants/app_style.dart';
 import '../../../utils/helper.dart';
 import '../../../features/forgot_password/application/bloc/forgot_password_event.dart';
@@ -27,12 +29,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
   late TextEditingController _emailTextController;
   String errorEmail = '';
   late ForgotPasswordBloc _forgotPasswordBloc;
+  AppLocalizations? _localizations;
 
   @override
   void initState() {
     _forgotPasswordBloc = context.read<ForgotPasswordBloc>();
     _emailTextController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _localizations = AppLocalizations.of(context)!;
+    super.didChangeDependencies();
   }
 
   @override
@@ -75,7 +84,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
                     offset: const Offset(-8, 0),
                     child: IconButton(
                       onPressed: () => context.pop(), 
-                      icon: const Icon(Icons.arrow_back),
+                      icon: const Icon(AppIcons.backArrowIcon),
                       style: IconButton.styleFrom(
                         backgroundColor: AppColors.grey.withOpacity(0.2)
                       ),
@@ -85,7 +94,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
               ),
               Center(child: Image.asset(AppImages.appImage, height: 90, width: 90)),
               CustomText(
-                title: AppStrings.forgotPassword, 
+                title: _localizations!.forgotPassword, 
                 textStyle: getSemiBoldStyle(
                   color: Helper.isDark
                   ? AppColors.white.withOpacity(0.9)
@@ -96,7 +105,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
               ),
               const SizedBox(height: AppSize.s8),
               CustomText(
-                title: AppStrings.forgotPasswordMsg, 
+                title: _localizations!.forgotPasswordMsg, 
                 textColor: Helper.isDark
                 ? AppColors.white.withOpacity(0.9)
                 : AppColors.black,
@@ -104,7 +113,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
               ),
               const SizedBox(height: AppSize.s20),
               CustomTextField(
-                title: AppStrings.email,
+                title: _localizations!.email,
                 isPasswordField: false,
                 isMandatory: true,
                 textEditingController: _emailTextController,
@@ -115,7 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
               ),
               const SizedBox(height: AppSize.s12),
               CustomButton(
-                title: AppStrings.continueString,
+                title: _localizations!.send,
                 titleSize: AppSize.s16, 
                 onTap: () => _forgotPasswordBloc.add(ForgotPasswordSubmitEvent(email: _emailTextController.text))
               ),

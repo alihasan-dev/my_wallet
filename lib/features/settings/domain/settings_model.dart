@@ -1,8 +1,8 @@
-class AppearanceModel {
+class SettingModel {
   String title;
   String subTitle;
 
-  AppearanceModel({
+  SettingModel({
     required this.title,
     this.subTitle = ""
   });

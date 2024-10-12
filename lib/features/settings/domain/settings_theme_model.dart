@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AppearanceThemeModel {
+class SettingThemeModel {
 
   String title;
   String theme;
   ThemeMode themeMode;
 
-  AppearanceThemeModel({
+  SettingThemeModel({
     required this.title,
     required this.theme,
     required this.themeMode

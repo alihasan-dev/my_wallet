@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ApperanceLanguageModel {
+class SettingLanguageModel {
 
   String title;
   String selectedLanguage;
   Locale locale;
 
-  ApperanceLanguageModel({
+  SettingLanguageModel({
     required this.title,
     required this.selectedLanguage,
     required this.locale

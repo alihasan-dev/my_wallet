@@ -49,5 +49,8 @@
   "reAuthenticate": "Re-Authenticate",
   "viewProfile": "View Profile",
   "settings": "Settings",
-  "showUnverifiedUser": "Show Unverified User"
+  "showUnverifiedUser": "Show Unverified User",
+  "forgotPassword": "Forgot Password",
+  "forgotPasswordMsg": "Enter the email address associated with your account and we'll send you a link to reset your password",
+  "send": "Send"
 }
