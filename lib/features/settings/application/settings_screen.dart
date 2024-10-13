@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:my_wallet/routes/app_routes.dart';
 import 'package:my_wallet/utils/app_extension_method.dart';
+import '../../about/about_screen.dart';
 import 'bloc/settings_bloc.dart';
 import '../domain/settings_language_model.dart';
 import '../domain/settings_model.dart';
@@ -47,9 +49,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     languageList.add(SettingLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
     settingItemList.clear();
-    settingItemList.add(SettingModel(title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-    settingItemList.add(SettingModel(title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-    settingItemList.add(SettingModel(title: _localizations!.showUnverifiedUser, subTitle: '--'));
+    settingItemList.add(SettingModel(icon: Icons.language_outlined, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+    settingItemList.add(SettingModel(icon: Icons.contrast_outlined, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser));
+    settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: 'About MyWallet'));
     super.didChangeDependencies();
   }
 
@@ -94,20 +97,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            CustomText(
-                              title: data.title, 
-                              textStyle: getMediumStyle(
-                                color: Helper.isDark 
-                                ? AppColors.white 
-                                : AppColors.black
-                              ),
-                            ),
-                            CustomText(
-                              title: data.subTitle.capitalize, 
-                              textColor: AppColors.grey
+                            Icon(data.icon, color: AppColors.grey),
+                            const SizedBox(width: AppSize.s12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  title: data.title, 
+                                  textStyle: getMediumStyle(
+                                    color: Helper.isDark 
+                                    ? AppColors.white 
+                                    : AppColors.black
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: data.subTitle.isNotEmpty,
+                                  child: CustomText(
+                                    title: data.subTitle.capitalize, 
+                                    textColor: AppColors.grey
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -130,11 +142,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           );
         }
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        },
-        child: const Icon(Icons.download),
-      ),
     );
   }
 
@@ -146,8 +153,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 1:
         showThemeDialog(context: context);
         break;
+      case 3:
+        showAboutAppDialog(context: context);
+        break;
       default:
     }
+  }
+
+  void showAboutAppDialog({required BuildContext context}) {
+    showDialog(
+      context: context, 
+      builder: (context) => const AboutScreen()
+    );
   }
 
   void showThemeDialog({required BuildContext context}) {

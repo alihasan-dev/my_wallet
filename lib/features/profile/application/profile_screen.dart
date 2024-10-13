@@ -172,9 +172,12 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
         Stack(
           alignment: Alignment.center,
           children: [
-            CustomImageWidget(
-              imageUrl: imageUrl,
-              imageSize: AppSize.s45,
+            Hero(
+              tag: 'profile',
+              child: CustomImageWidget(
+                imageUrl: imageUrl,
+                imageSize: AppSize.s45,
+              ),
             ),
             Positioned(
               bottom: 10,

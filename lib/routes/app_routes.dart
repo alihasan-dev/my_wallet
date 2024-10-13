@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/features/settings/application/bloc/settings_bloc.dart';
+import '../features/settings/application/bloc/settings_bloc.dart';
 import '../features/settings/application/settings_screen.dart';
 import '../features/profile/application/profile_screen.dart';
 import '../features/transaction/application/bloc/transaction_bloc.dart';
@@ -96,7 +96,7 @@ class AppRoutes {
             child: TransactionScreen(userModel: data)
           );
         }
-      ),
+      )
     ],
   );
 

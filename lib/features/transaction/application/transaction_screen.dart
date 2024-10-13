@@ -128,16 +128,19 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                       color: AppColors.white,
                                       size: 22,
                                     ),
-                                    CustomImageWidget(
-                                      imageUrl: widget.userModel == null
-                                      ? ''
-                                      : widget.userModel!.profileImg, 
-                                      imageSize: AppSize.s18,
-                                      circularPadding: AppSize.s5,
-                                      strokeWidth: AppSize.s1,
-                                      padding: 1.2,
-                                      borderWidth: 0,
-                                      fromProfile: false,
+                                    Hero(
+                                      tag: 'profile',
+                                      child: CustomImageWidget(
+                                        imageUrl: widget.userModel == null
+                                        ? ''
+                                        : widget.userModel!.profileImg, 
+                                        imageSize: AppSize.s18,
+                                        circularPadding: AppSize.s5,
+                                        strokeWidth: AppSize.s1,
+                                        padding: 1.2,
+                                        borderWidth: 0,
+                                        fromProfile: false,
+                                      ),
                                     ),
                                   ],
                                 ),
