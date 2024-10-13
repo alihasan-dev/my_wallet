@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../utils/preferences.dart';
 import '../constants/app_strings.dart';
 
@@ -52,18 +53,28 @@ extension StringExtension on String {
     }
   }
 
+  String get currencyFormat {
+    try {
+      final oCcy =  NumberFormat("##,##,##,###", "en_IN");
+      return oCcy.format(double.parse(this));
+    } catch (e) {
+      return this;
+    }
+  }
+
   String amountFormat({required String type}) {
     try {
       if(type == 'Transfer') {
-        return '- ₹$this'; 
+        return '- ₹$currencyFormat'; 
       }
-      return '+ ₹$this';
+      return '+ ₹$currencyFormat';
     } catch (e) {
       return '₹${toString()}';
     }
   }
   
 }
+
 extension ScreenBuildContext on BuildContext {
 
   double get screenWidth => MediaQuery.of(this).size.width;
@@ -79,11 +90,13 @@ extension NumberExtension on num {
   String get balanceFormat {
     try {
       if(isNegative) {
-        return '- ₹${abs()}'; 
+        var temp = '${abs()}'.currencyFormat; 
+        return '- ₹$temp';
       }
-      return '₹${toString()}';
+      return '₹${toString().currencyFormat}';
     } catch (e) {
-      return '₹${toString()}';
+      return '₹${toString().currencyFormat}';
     }
   }
+
 }

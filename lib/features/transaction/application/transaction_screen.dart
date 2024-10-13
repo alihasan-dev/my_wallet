@@ -407,7 +407,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                         ? AppColors.backgroundColorDark 
                                         : AppColors.white, 
                                         child: CustomText(
-                                          title: subData.amount.toString(), 
+                                          title: subData.amount.toString().currencyFormat, 
                                           textColor: Helper.isDark 
                                           ? AppColors.white.withOpacity(0.9) 
                                           : AppColors.black

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:my_wallet/utils/app_extension_method.dart';
 import 'bloc/settings_bloc.dart';
 import '../domain/settings_language_model.dart';
@@ -128,6 +129,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           );
         }
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+        },
+        child: const Icon(Icons.download),
       ),
     );
   }
