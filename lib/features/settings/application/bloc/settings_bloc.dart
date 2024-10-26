@@ -20,6 +20,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
     on<SettingsChangeThemeEvent>(_onLanguageChangeEvent);
     on<SettingsUserDetailsEvent>(_onUserDetails);
     on<SettingsOnChangeVerifiedEvent>(_onChangeVerifiedUser);
+    on<SettingsOnChangeBiometricEvent>(_onChangeEnableBiometric);
 
     _streamSubscription = _firebaseDocumentRef.snapshots().listen((event) {
       var userData = event.data() as Map;
@@ -28,6 +29,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
         _userModel.email = userData['email'];
         _userModel.name = userData['name'];
         _userModel.isUserVerified = userData['showUnverified'] ?? false;
+        _userModel.enableBiometric = userData['enableBiometric'] ?? false;
+        Preferences.setBool(key: AppStrings.prefEnableBiometric, value: userData['enableBiometric'] ?? false);
       }
       add(SettingsUserDetailsEvent());
     });
@@ -36,6 +39,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
   Future<void> _onChangeVerifiedUser(SettingsOnChangeVerifiedEvent event, Emitter emit) async {
     await _firebaseDocumentRef.update({
       'showUnverified': event.isVerified
+    });
+  }
+
+  Future<void> _onChangeEnableBiometric(SettingsOnChangeBiometricEvent event, Emitter emit) async {
+    await _firebaseDocumentRef.update({
+      'enableBiometric': event.enableBiometric
     });
   }
 

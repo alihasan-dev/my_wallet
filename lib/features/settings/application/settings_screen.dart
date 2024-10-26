@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:my_wallet/routes/app_routes.dart';
 import 'package:my_wallet/utils/app_extension_method.dart';
 import '../../about/about_screen.dart';
 import 'bloc/settings_bloc.dart';
@@ -51,7 +49,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     settingItemList.clear();
     settingItemList.add(SettingModel(icon: Icons.language_outlined, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
     settingItemList.add(SettingModel(icon: Icons.contrast_outlined, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-    settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser));
+    settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser, showSwitch: true));
+    settingItemList.add(SettingModel(icon: Icons.fingerprint, title: 'Enable Biometric', subTitle: 'App unlock with biometric', showSwitch: true));
     settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: 'About MyWallet'));
     super.didChangeDependencies();
   }
@@ -73,7 +72,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           switch (state) {
             case SettingsUserDetailsState _:
               showUnverified = state.userModel.isUserVerified;
-              settingItemList[2].subTitle = showUnverified ? _localizations!.yes : _localizations!.no;
+              settingItemList[2].switchValue = state.userModel.isUserVerified;
+              settingItemList[3].switchValue = state.userModel.enableBiometric;
+              settingItemList[2].subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
               settingItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
               break;
             default:
@@ -86,7 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               (index) {
                 var data = settingItemList[index];
                 return InkWell(
-                  onTap: index == 2
+                  onTap: data.showSwitch
                   ? null
                   : () => onClickItem(context: context, index: index),
                   child: Container(
@@ -124,12 +125,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         Visibility(
-                          visible: index == 2,
+                          visible: data.showSwitch,
                           child: Transform.scale(
                             scale: 0.8,
                             child: CupertinoSwitch(
-                              value: showUnverified, 
-                              onChanged: (value) => context.read<SettingsBloc>().add(SettingsOnChangeVerifiedEvent(isVerified: value))
+                              value: data.switchValue, 
+                              onChanged: (value) => onChangeSwith(index: index, value: value)
                             ),
                           ),
                         ),
@@ -145,6 +146,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void onChangeSwith({required int index, required bool value}) {
+    switch (index) {
+      case 2:
+        context.read<SettingsBloc>().add(SettingsOnChangeVerifiedEvent(isVerified: value));
+        break;
+      case 3: 
+        context.read<SettingsBloc>().add(SettingsOnChangeBiometricEvent(enableBiometric: value));
+        break;
+      default:
+    }
+  }
+
   void onClickItem({required BuildContext context, required int index}) {
     switch (index) {
       case 0:
@@ -153,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 1:
         showThemeDialog(context: context);
         break;
-      case 3:
+      case 4:
         showAboutAppDialog(context: context);
         break;
       default:

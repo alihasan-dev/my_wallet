@@ -86,6 +86,7 @@ class AppStrings {
   static const String prefRememberMe = 'PREF_REMEMBER_ME';
   static const String prefUserId = 'PREF_USER_ID';
   static const String prefBiometric = 'PREF_BIOMETRIC';
+  static const String prefEnableBiometric = 'PREF_ENABLE_BIOMETRIC';
   static const String prefBiometricAuthentication = 'PREF_BIOMETRIC_AUTHENTICATION';
   static const String prefProfileImg = 'PREF_PROFILE_IMG';
   static const String prefLanguage = 'PREF_LANGUAGE';

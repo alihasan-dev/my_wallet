@@ -8,6 +8,7 @@ class UserModel {
   int lastTransactionDate;
   String type;
   bool isUserVerified;
+  bool enableBiometric;
 
   UserModel({
     required this.userId,
@@ -18,6 +19,7 @@ class UserModel {
     this.amount = '',
     this.lastTransactionDate = -1,
     this.type = '',
-    this.isUserVerified = false
+    this.isUserVerified = false,
+    this.enableBiometric = false
   });
 }

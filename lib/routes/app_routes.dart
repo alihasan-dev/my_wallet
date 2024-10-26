@@ -47,7 +47,8 @@ class AppRoutes {
         path: initialRoute,
         builder: (context, state) {
           if(Preferences.getString(key: AppStrings.prefUserId).isNotEmpty) {
-            Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: true);
+            final enableBiometric = Preferences.getBool(key: AppStrings.prefEnableBiometric);
+            Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: enableBiometric);
             return BlocProvider(
               create: (_) => HomeBloc(), 
               child: const HomeScreen()

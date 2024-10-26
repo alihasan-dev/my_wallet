@@ -43,8 +43,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'email': event.email,
             'user_id': user.uid,
             'profile_img': AppStrings.sampleImg,
-            'showUnverified': true
+            'showUnverified': true,
+            'enableBiometric': false
           });
+          Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           emit(SignupSuccessState());
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));

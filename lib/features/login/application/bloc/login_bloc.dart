@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/app_strings.dart';
@@ -18,7 +19,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth authInstance;
-  // late DocumentReference firebaseDocumentReference;
+  late DocumentReference firebaseDocumentReference;
 
   LoginBloc() : super(LoginInitialState()){
     authInstance = FirebaseAuth.instance;
@@ -37,19 +38,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         var userCredential = await authInstance.signInWithEmailAndPassword(email: event.email, password: event.password);
         var user = userCredential.user;
         if (user != null) {
-          // firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
+          firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
           Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
           Preferences.setString(key: AppStrings.prefEmail, value: event.email);
           Preferences.setBool(key: AppStrings.prefRememberMe,value: event.isRememberMe);
           if(event.isRememberMe) {
             Preferences.setString(key: AppStrings.prefPassword, value: event.password);
           }
-          // await firebaseDocumentReference.get().then((data) {
-          //   var mapData = data.data() as Map;
-          //   if(mapData.isNotEmpty) {
-          //     Preferences.setString(key: AppStrings.prefFullName, value: mapData['name']);
-          //   }
-          // });
+          await firebaseDocumentReference.get().then((data) {
+            var mapData = data.data() as Map;
+            if(mapData.isNotEmpty) {
+              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric']);
+            }
+          });
           emit(LoginSuccessState());
         } else {
           emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
