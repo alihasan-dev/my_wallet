@@ -145,6 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                     hideLoadingDialog(context: context);
                     context.pop();
                     context.pop();
+                    showSnackBar(context: context, title: AppStrings.success, message: AppStrings.userDeletedMsg, color: AppColors.green);
                   } else {
                     onUserDelete(nameTextController.text, context);
                   }
@@ -314,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                   InkWell(
                     onTap: () async {
                       context.pop();
-                      var data = await pickImage(imageSource: ImageSource.camera);
+                      var data = await pickImage(imageSource: ImageSource.camera, context: context);
                       if(data.isNotEmpty && context.mounted){
                         mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                       }
@@ -345,7 +346,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                   InkWell(
                     onTap: () async {
                       context.pop();
-                      var data = await pickImage(imageSource: ImageSource.gallery);
+                      var data = await pickImage(imageSource: ImageSource.gallery, context: context);
                       if(data.isNotEmpty && context.mounted){
                         mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                       }
@@ -403,10 +404,15 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
     );
   }
 
-  Future<String> pickImage({required ImageSource imageSource}) async {
+  Future<String> pickImage({required ImageSource imageSource, required BuildContext context}) async {
     try {
       var pickImage = await ImagePicker().pickImage(source: imageSource);
       if(pickImage != null) {
+        final imageLength = await pickImage.length();
+        if(imageLength > 2000000 && context.mounted) {
+          showSnackBar(context: context, title: AppStrings.error, message: AppStrings.imageSizeMsg);
+          return AppStrings.emptyString;
+        }
         return pickImage.path;
       } else {
         return AppStrings.emptyString;

@@ -59,6 +59,7 @@ class AppStrings {
   static const String hindi = 'Hindi';
   static const String settings = 'Settings';
   static const String viewProfile = 'View Profile';
+  static const String success = 'Success';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
@@ -79,6 +80,7 @@ class AppStrings {
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
   static const String invalidPhone = "Plase provide valid phone number";
   static const String imageSizeMsg = "Image size should not be more than 2MB";
+  static const String userDeletedMsg = "User has been deleted successfully";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';
