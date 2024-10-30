@@ -66,6 +66,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           ));
         }
       }
+      originalUserList.sort((a, b) => b.lastTransactionDate.compareTo(a.lastTransactionDate));
       add(DashboardAllUserEvent());
     });
 

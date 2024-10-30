@@ -183,11 +183,14 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             size: AppSize.s26
                           ),
                         ),
-                        IconButton(
-                          onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
-                          icon: const Icon(
-                            AppIcons.downloadIcon, 
-                            color: AppColors.white
+                        Offstage(
+                          offstage: availableBalance == 0.0 ? true : false,
+                          child: IconButton(
+                            onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
+                            icon: const Icon(
+                              AppIcons.downloadIcon, 
+                              color: AppColors.white
+                            ),
                           ),
                         ),
                       ],
@@ -435,67 +438,70 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               ),
             ],
           ),
-          bottomNavigationBar: Container(
-            padding: EdgeInsets.only(
-              left: AppSize.s15,
-              right: AppSize.s15,
-              bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
-            ),
-            decoration: BoxDecoration(
-              color: Helper.isDark 
-              ? AppColors.backgroundColorDark 
-              : AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey.withOpacity(0.5), 
-                  blurRadius: AppSize.s2, 
-                  offset: const Offset(0, -0.5)
-                ),
-              ]
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSize.s10, 
-                      vertical: AppSize.s15
-                    ),
-                    color: Helper.isDark 
-                    ? AppColors.backgroundColorDark 
-                    : AppColors.white, 
-                    child: CustomText(
-                      title: _localizations!.availableBalance, 
-                      textStyle: getSemiBoldStyle(
-                        color: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.9) 
-                        : AppColors.black
+          bottomNavigationBar: Offstage(
+            offstage: availableBalance == 0.0 ? true : false,
+            child: Container(
+              padding: EdgeInsets.only(
+                left: AppSize.s15,
+                right: AppSize.s15,
+                bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
+              ),
+              decoration: BoxDecoration(
+                color: Helper.isDark 
+                ? AppColors.backgroundColorDark 
+                : AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.grey.withOpacity(0.5), 
+                    blurRadius: AppSize.s2, 
+                    offset: const Offset(0, -0.5)
+                  ),
+                ]
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSize.s10, 
+                        vertical: AppSize.s15
+                      ),
+                      color: Helper.isDark 
+                      ? AppColors.backgroundColorDark 
+                      : AppColors.white, 
+                      child: CustomText(
+                        title: _localizations!.availableBalance, 
+                        textStyle: getSemiBoldStyle(
+                          color: Helper.isDark 
+                          ? AppColors.white.withOpacity(0.9) 
+                          : AppColors.black
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSize.s10, 
-                      vertical: AppSize.s15
-                    ),
-                    color: Helper.isDark 
-                    ? AppColors.backgroundColorDark
-                    : AppColors.white, 
-                    child: CustomText(
-                      title: availableBalance.balanceFormat,
-                      textStyle: getSemiBoldStyle(
-                        color: availableBalance.isNegative
-                        ? AppColors.red
-                        : AppColors.green
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSize.s10, 
+                        vertical: AppSize.s15
+                      ),
+                      color: Helper.isDark 
+                      ? AppColors.backgroundColorDark
+                      : AppColors.white, 
+                      child: CustomText(
+                        title: availableBalance.balanceFormat,
+                        textStyle: getSemiBoldStyle(
+                          color: availableBalance.isNegative
+                          ? AppColors.red
+                          : AppColors.green
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
+            ),
           ),
         );
       },

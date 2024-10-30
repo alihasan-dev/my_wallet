@@ -119,7 +119,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         if(context.mounted){
                           context.read<TransactionBloc>().add(TransactionDateChangeEvent(isError: false));
                         }
-                        transactionDate = date;
+                        final currentTime = DateTime.now();
+                        transactionDate = DateTime(date.year, date.month, date.day, currentTime.hour, currentTime.minute, currentTime.second);
                         dateTextController.text = date.toString().substring(0,10).split('-').reversed.join('-');
                       }
                     },

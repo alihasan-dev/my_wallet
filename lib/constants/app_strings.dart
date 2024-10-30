@@ -78,6 +78,7 @@ class AppStrings {
   static const String deleteUserMsg = 'Are you sure you want to delete';
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
   static const String invalidPhone = "Plase provide valid phone number";
+  static const String imageSizeMsg = "Image size should not be more than 2MB";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';

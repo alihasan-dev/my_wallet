@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,6 @@ import '../../../features/forgot_password/application/bloc/forgot_password_state
 import '../../../constants/app_color.dart';
 import '../../../constants/app_images.dart';
 import '../../../constants/app_size.dart';
-import '../../../constants/app_strings.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
@@ -84,7 +84,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
                     offset: const Offset(-8, 0),
                     child: IconButton(
                       onPressed: () => context.pop(), 
-                      icon: const Icon(AppIcons.backArrowIcon),
+                      icon: Transform.translate(
+                        offset: Offset(Platform.isAndroid ? 0 : 4, 0),
+                        child: Icon(
+                          Platform.isAndroid
+                          ? AppIcons.backArrowIcon
+                          : AppIcons.backArrowIconIOS
+                        ),
+                      ),
                       style: IconButton.styleFrom(
                         backgroundColor: AppColors.grey.withOpacity(0.2)
                       ),

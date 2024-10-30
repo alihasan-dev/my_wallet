@@ -307,7 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                   fontSize: AppSize.s16
                 ),
               ),
-              const SizedBox(height: AppSize.s20),
+              const SizedBox(height: AppSize.s18),
               Row(
                 children: [
                   const SizedBox(width: AppSize.s10),
@@ -373,6 +373,28 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: AppSize.s10),
+              Container(
+                padding: const EdgeInsets.all(AppSize.s5),
+                decoration: BoxDecoration(
+                  color: AppColors.amber.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSize.s4)
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      AppIcons.warningIcon, 
+                      color: AppColors.amber, 
+                      size: AppSize.s20
+                    ),
+                    const SizedBox(width: AppSize.s5),
+                    CustomText(
+                      title: _localizations!.imageSizeMsg, 
+                      textColor: AppColors.amber
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

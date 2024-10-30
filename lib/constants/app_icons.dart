@@ -23,4 +23,5 @@ class AppIcons {
   static const IconData homeIcon = Icons.home;
   static const IconData settingsIcon = Icons.settings;
   static const IconData openInNewIcon = Icons.open_in_new_rounded;
+  static const IconData warningIcon = Icons.warning_rounded;
 }

@@ -64,6 +64,7 @@ extension StringExtension on String {
 
   String amountFormat({required String type}) {
     try {
+      if(type.isEmpty) return '₹0';
       if(type == 'Transfer') {
         return '- ₹$currencyFormat'; 
       }
