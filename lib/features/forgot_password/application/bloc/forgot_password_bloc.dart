@@ -72,6 +72,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
     }
   }
 
+
   @override
   Future<void> close() {
     _streamSubscription.cancel();
