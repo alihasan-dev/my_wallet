@@ -32,3 +32,9 @@ To develop this application, we’ll use the following technologies:
 
 
 ## Application Screenshots
+
+
+
+<img src="https://github.com/alihasan-dev/my_wallet/blob/main/screenshot/LoginScreen.png" alt="Login" width="300"/>       <img src="https://github.com/alihasan-dev/my_wallet/blob/main/screenshot/SignupScreen.png" alt="Signup" width="300"/>        <img src="https://github.com/alihasan-dev/my_wallet/blob/main/screenshot/ForgotPassword.png" alt="Forgot Password" width="300"/>
+
+<img src="https://github.com/alihasan-dev/my_wallet/blob/main/screenshot/Dashboard.png" alt="Dashboard" width="300"/>       <img src="https://github.com/alihasan-dev/my_wallet/blob/main/screenshot/Transaction.png" alt="Transaction" width="300"/>       <img src="https://github.com/alihasan-dev/my_wallet/blob/main/screenshot/Settings.png" alt="Settings" width="300"/>
