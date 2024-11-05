@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../features/my_app/presentation/bloc/my_app_bloc.dart';
 import '../utils/preferences.dart';
-import 'features/my_app/presentation/my_app.dart';
+import '../features/my_app/presentation/my_app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
