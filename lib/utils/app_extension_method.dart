@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:my_wallet/utils/helper.dart';
 import '../utils/preferences.dart';
 import '../constants/app_strings.dart';
 
@@ -97,6 +98,17 @@ extension NumberExtension on num {
       return '₹${toString().currencyFormat}';
     } catch (e) {
       return '₹${toString().currencyFormat}';
+    }
+  }
+
+  ScreenType get screenDimension {
+    var dimension = this;
+    if(dimension < 600) {
+      return ScreenType.mobile;
+    } else if(dimension >= 600 && dimension <= 720) {
+      return ScreenType.tablet;
+    } else {
+      return ScreenType.web;
     }
   }
 

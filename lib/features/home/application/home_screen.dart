@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -77,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
           return Scaffold(
             appBar: AppBar(
               centerTitle: true, 
+              toolbarHeight: kIsWeb ? 0 : kToolbarHeight,
               backgroundColor: AppColors.primaryColor,
               title: CustomText(
                 title: _widgetTitleList[pageIndex].title, 

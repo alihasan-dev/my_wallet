@@ -12,6 +12,7 @@ class CustomButton extends StatelessWidget {
   final Color? buttonColor;
   final Color? titleColor;
   final double? titleSize;
+  final double? verticalPadding;
 
   const CustomButton({
     required this.title,
@@ -19,16 +20,17 @@ class CustomButton extends StatelessWidget {
     this.buttonColor,
     this.titleColor,
     this.titleSize,
+    this.verticalPadding,
     super.key
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return CustomInkWellWidget(
       onTap: onTap,
       widget: Ink(
         width: double.maxFinite,
-        padding: const EdgeInsets.symmetric(vertical: AppSize.s12),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding ?? AppSize.s12),
         decoration: BoxDecoration(
           color: buttonColor ?? AppColors.primaryColor,
           borderRadius: BorderRadius.circular(AppSize.s4)

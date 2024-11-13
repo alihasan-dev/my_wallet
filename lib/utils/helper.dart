@@ -10,6 +10,12 @@ import '../constants/app_style.dart';
 import '../constants/app_size.dart';
 import '../widgets/custom_text.dart';
 
+enum ScreenType {
+  mobile,
+  tablet,
+  web
+}
+
 mixin Helper {
 
   bool isLoadingVisible = false;

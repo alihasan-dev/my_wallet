@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
 import '../../../constants/app_images.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
@@ -18,20 +19,21 @@ import '../../../utils/preferences.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
+part 'login_mobile_view.dart';
+part 'login_web_view.dart';
 
 class LoginScreen extends StatefulWidget{
   const LoginScreen({super.key});
 
   @override
-  State createState() => _LoginScreenState();
+  State createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>  with Helper{
+class LoginScreenState extends State<LoginScreen>  with Helper{
 
   late TextEditingController emailTextController;
   late TextEditingController passwordTextController;
   late LoginBloc _loginBloc;
-  AppLocalizations? _localizations;
   var errorEmail = AppStrings.emptyString;
   var errorPassword = AppStrings.emptyString;
   bool showPassword = true;
@@ -51,16 +53,9 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
   }
 
   @override
-  void didChangeDependencies() {
-    _localizations = AppLocalizations.of(context)!;
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0, backgroundColor: AppColors.primaryColor),
-      // backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           switch (state) {
@@ -75,11 +70,6 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
               hideLoadingDialog(context: context);
               context.go(AppRoutes.homeScreen);
               break;
-            default:
-          }
-        },
-        builder: (context, state) {
-          switch (state) {
             case LoginEmailFieldState _:
               errorEmail = state.emailMessage;
               break;
@@ -94,91 +84,24 @@ class _LoginScreenState extends State<LoginScreen>  with Helper{
               break;
             default:
           }
-          return ListView(
-            padding: const EdgeInsets.all(AppSize.s28),
-            children: [
-              Center(child: Image.asset(AppImages.appImage, height: 90, width: 90)),
-              const SizedBox(height: AppSize.s10),
-              CustomTextField(
-                title: _localizations!.email,
-                isPasswordField: false,
-                isMandatory: true,
-                textEditingController: emailTextController,
-                errorText: errorEmail,
-                onChange: (value) => _loginBloc.add(LoginEmailChangeEvent(email: value)),
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: AppSize.s10),
-              CustomTextField(
-                title: _localizations!.password,
-                isPasswordField: showPassword,
-                isMandatory: true,
-                textEditingController: passwordTextController,
-                onShowPassword: () => _loginBloc.add(LoginShowPasswordEvent(isVisible: showPassword)),
-                errorText: errorPassword,
-                onChange: (value) => _loginBloc.add(LoginPasswordChangeEvent(password: value)),
-                onSubmitted: (_) => _loginBloc.add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe)),
-                textInputAction: TextInputAction.done,
-              ),
-              const SizedBox(height: AppSize.s10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      CustomCheckBoxWidget(
-                        value: isRememberMe, 
-                        onChange: (value) => _loginBloc.add(LoginRememberMeEvent(value: value!))
-                      ),
-                      const SizedBox(width: AppSize.s10),
-                      CustomText(
-                        title: _localizations!.rememberMe, 
-                        textStyle: getMediumStyle(
-                          color: Helper.isDark 
-                          ? AppColors.white.withOpacity(0.8) 
-                          : AppColors.black
-                        ),
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () => context.push(AppRoutes.forgotPasswordScreen),
-                    child: CustomText(
-                      title: _localizations!.forgotPassword, 
-                      textStyle: getMediumStyle(
-                        color: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.8) 
-                        : AppColors.black
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSize.s26),
-              CustomButton(
-                title: _localizations!.login,
-                titleSize: AppSize.s16, 
-                onTap: () => _loginBloc.add(LoginSubmitEvent(email: emailTextController.text, password: passwordTextController.text, isRememberMe: isRememberMe))
-              ),
-              const SizedBox(height: AppSize.s20),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomText(
-                    title: '${_localizations!.dontHaveAccount}  ', 
-                    textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black)
-                  ),
-                  CustomInkWellWidget(
-                    onTap: () => context.push(AppRoutes.signupScreen), 
-                    widget: CustomText(
-                      title: _localizations!.signup, 
-                      textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: AppColors.primaryColor)
-                    ),
-                  ),
-                ],
-              ),
-            ],
+        },
+        builder: (context, state) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              switch (constraints.maxWidth.screenDimension) {
+                case ScreenType.mobile:
+                case ScreenType.tablet:
+                  return LoginMobileView(
+                    loginBloc: _loginBloc,
+                    loginScreenState: this
+                  );
+                default:
+                  return LoginWebView(
+                    loginBloc: _loginBloc, 
+                    loginScreenState: this
+                  );
+              }
+            }
           );
         }
       ),
