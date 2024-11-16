@@ -24,18 +24,87 @@ class DashboardWebView extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: kToolbarHeight - 5,
+            height: kToolbarHeight - 10,
             width: double.maxFinite,
             color: AppColors.primaryColor,
-            padding: const EdgeInsets.symmetric(horizontal: AppSize.s16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomText(
                   title: 'Contacts',
-                  textStyle: getSemiBoldStyle(),
+                  textStyle: getSemiBoldStyle(fontSize: AppSize.s14),
                 ),
-                const SizedBox()
+                PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  offset: const Offset(-130, 0),
+                  position: PopupMenuPosition.under,
+                  menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+                  itemBuilder: (_) {
+                    return <PopupMenuEntry<String>> [
+                      PopupMenuItem<String>(
+                        value: AppStrings.settings,
+                        padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          leading: const Icon(AppIcons.settingsIcon),
+                          title: CustomText(title: 'Settings', textStyle: getMediumStyle()),
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: AppStrings.logout,
+                        padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          leading: const Icon(AppIcons.logoutIcon),
+                          title: CustomText(title: 'Logout', textStyle: getMediumStyle()),
+                        ),
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    switch (value) {
+                      case AppStrings.settings:
+                        context.go('/dashboard/settings');
+                        break;
+                      case AppStrings.logout:
+                        // onClickLogout(context: context, localizations: _localizations!);
+                        break;
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+          Container(
+            width: double.maxFinite,
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSize.s10,
+              vertical: AppSize.s6
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSize.s8,
+              vertical: AppSize.s5
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.headerColorDark,
+              borderRadius: BorderRadius.circular(6)
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.search, size: AppSize.s18, color: AppColors.grey),
+                const SizedBox(width: AppSize.s10),
+                Expanded(
+                  child: TextField(
+                    controller: TextEditingController(),
+                    decoration: const InputDecoration.collapsed(
+                      hintText: 'Search',
+                      hintStyle: TextStyle(color: AppColors.grey, fontSize: AppSize.s14),
+                    ),
+                    style: const TextStyle(color: AppColors.white, fontSize: AppSize.s14)
+                  ),
+                ),
               ],
             ),
           ),

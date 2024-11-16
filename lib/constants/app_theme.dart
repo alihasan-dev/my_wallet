@@ -6,7 +6,7 @@ import 'app_size.dart';
 
 abstract class MyAppTheme {
 
-  static const double columnWidth = 360.0;
+  static const double columnWidth = 380.0;
 
   static const double navRailWidth = 64.0;
 

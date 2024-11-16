@@ -23,7 +23,13 @@ import '../../../widgets/custom_text.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
-  const ProfileScreen({super.key, this.userId = ''});
+  final Widget? closeButton;
+
+  const ProfileScreen({
+    super.key, 
+    this.userId = '',
+    this.closeButton  
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -88,6 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               : Scaffold(
                 appBar: AppBar(
                   centerTitle: true, 
+                  leading: widget.closeButton ?? const Center(child: BackButton()),
                   backgroundColor: AppColors.primaryColor,
                   title: CustomText(
                     title: _localizations!.profile, 

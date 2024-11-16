@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                   onSelected: (value) {
                     switch (value) {
                       case AppStrings.settings:
-                        context.push(AppRoutes.appearanceScreen);
+                        context.push(AppRoutes.settingsScreen);
                         break;
                       case AppStrings.logout:
                         onClickLogout(context: context, localizations: _localizations!);

@@ -14,8 +14,7 @@ class TwoColumnLayout extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+    // final theme = Theme.of(context);
     return ScaffoldMessenger(
       child: Scaffold(
         body: Row(
@@ -27,8 +26,8 @@ class TwoColumnLayout extends StatelessWidget {
               child: mainView,
             ),
             Container(
-              width: 0.5,
-              color: theme.dividerColor,
+              width: 0.05,
+              color: Colors.grey,
             ),
             Expanded(
               child: ClipRRect(

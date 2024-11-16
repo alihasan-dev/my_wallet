@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/constants/app_theme.dart';
+import 'package:my_wallet/features/transaction/application/transaction_details.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -18,7 +20,6 @@ import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../features/transaction/application/bloc/transaction_event.dart';
 import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
-import '../../../routes/app_routes.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../widgets/custom_text.dart';
@@ -26,10 +27,11 @@ import '../../../widgets/custom_verticle_divider.dart';
 
 class TransactionScreen extends StatefulWidget {
   final UserModel? userModel;
-
+  final TransactionDetailsState transactionDetailsState;
   const TransactionScreen({
     super.key,
-    required this.userModel
+    required this.userModel,
+    required this.transactionDetailsState
   });
 
   @override
@@ -58,7 +60,6 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
 
   @override
   void initState() {
-    print('initState is calling from transaction');
     _transactionBloc = context.read<TransactionBloc>();
     dateFormat = DateFormat.yMMMd();
     appBarSize = appBarHeight;
@@ -124,7 +125,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      kIsWeb
+                                      !kIsWeb && Platform.isIOS
                                       ? AppIcons.backArrowIconIOS
                                       : AppIcons.backArrowIcon, 
                                       color: AppColors.white,
@@ -154,10 +155,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: Material(
                               color: AppColors.transparent,
                               child: InkWell(
-                                onTap: () => context.push(
-                                  AppRoutes.profileScreen, 
-                                  extra: widget.userModel!.userId
-                                ),
+                                onTap: () => MyAppTheme.isThreeColumnMode(context)
+                                ? widget.transactionDetailsState.toggleDisplayProfileColumn()
+                                : context.go('/dashboard/${widget.userModel!.userId}/profile', extra: widget.userModel),
                                 child: SizedBox(
                                   height: double.maxFinite,
                                   child: Row(
@@ -446,7 +446,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               padding: EdgeInsets.only(
                 left: AppSize.s15,
                 right: AppSize.s15,
-                // bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
+                bottom: !kIsWeb && Platform.isIOS ? AppSize.s18 : AppSize.s4,
               ),
               decoration: BoxDecoration(
                 color: Helper.isDark 

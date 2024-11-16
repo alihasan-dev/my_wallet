@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
 import 'package:my_wallet/features/dashboard/application/dashboard_screen.dart';
-import 'package:my_wallet/features/splash/initial_route.dart';
+import 'package:my_wallet/features/profile/application/bloc/profile_bloc.dart';
+import 'package:my_wallet/features/transaction/application/transaction_details.dart';
 import 'package:my_wallet/widgets/two_column_layout.dart';
 import '../features/settings/application/bloc/settings_bloc.dart';
 import '../features/settings/application/settings_screen.dart';
@@ -36,7 +37,7 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String transactionScreen = '/transaction';
   static const String forgotPasswordScreen = 'forgotPassword';
-  static const String appearanceScreen = '/settings';
+  static const String settingsScreen = '/settings';
   static const String profileScreen = '/profile';
 
   static final GoRouter router = kIsWeb
@@ -102,18 +103,34 @@ class AppRoutes {
                   return defaultPageBuilder(
                     context,
                     state,
-                    BlocProvider(
+                    TransactionDetails(
                       key: Key(data == null ? '' : data.userId),
-                      create: (_) => TransactionBloc(
-                        userName: data == null ? '' : data.name, 
-                        friendId: data == null ? '' : data.userId
-                      ), 
-                      child: TransactionScreen(userModel: data)
-                    ),
+                      userModel: data!
+                    )
+                    // BlocProvider(
+                    //   key: Key(data == null ? '' : data.userId),
+                    //   create: (_) => TransactionBloc(
+                    //     userName: data == null ? '' : data.name, 
+                    //     friendId: data == null ? '' : data.userId
+                    //   ), 
+                    //   child: TransactionScreen(userModel: data)
+                    // ),
                   );
                 },
-                // redirect: loggedOutRedirect,
-              ),
+                routes: [
+                  GoRoute(
+                    path: 'profile',
+                    pageBuilder: (context, state) { 
+                      var data = state.extra == null ? null : state.extra as UserModel;
+                      return defaultPageBuilder(
+                        context,
+                        state,
+                        BlocProvider(create: (_) => ProfileBloc(userId: data == null ? '' : data.userId), child: ProfileScreen(userId: data == null ? '' : data.userId)),
+                      );
+                    }
+                  )
+                ]
+              )
             ]
           ),
         ]
@@ -123,26 +140,26 @@ class AppRoutes {
       //   builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
       // ),
       GoRoute(
-        path: appearanceScreen,
+        path: settingsScreen,
         builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
       ),
       GoRoute(
         path: profileScreen,
         builder: (_, state) => ProfileScreen(userId: state.extra as String)
       ),
-      GoRoute(
-        path: transactionScreen,
-        builder: (_, state) {
-          var data = state.extra == null ? null : state.extra as UserModel;
-          return BlocProvider(
-            create: (_) => TransactionBloc(
-              userName: data == null ? '' : data.name, 
-              friendId: data == null ? '' : data.userId
-            ), 
-            child: TransactionScreen(userModel: data)
-          );
-        }
-      )
+      // GoRoute(
+      //   path: transactionScreen,
+      //   builder: (_, state) {
+      //     var data = state.extra == null ? null : state.extra as UserModel;
+      //     return BlocProvider(
+      //       create: (_) => TransactionBloc(
+      //         userName: data == null ? '' : data.name, 
+      //         friendId: data == null ? '' : data.userId
+      //       ), 
+      //       child: TransactionScreen(userModel: data)
+      //     );
+      //   }
+      // )
     ],
   );
 
@@ -192,26 +209,26 @@ class AppRoutes {
         builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
       ),
       GoRoute(
-        path: appearanceScreen,
+        path: settingsScreen,
         builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
       ),
       GoRoute(
         path: profileScreen,
         builder: (_, state) => ProfileScreen(userId: state.extra as String)
       ),
-      GoRoute(
-        path: transactionScreen,
-        builder: (_, state) {
-          var data = state.extra == null ? null : state.extra as UserModel;
-          return BlocProvider(
-            create: (_) => TransactionBloc(
-              userName: data == null ? '' : data.name, 
-              friendId: data == null ? '' : data.userId
-            ), 
-            child: TransactionScreen(userModel: data)
-          );
-        }
-      )
+      // GoRoute(
+      //   path: transactionScreen,
+      //   builder: (_, state) {
+      //     var data = state.extra == null ? null : state.extra as UserModel;
+      //     return BlocProvider(
+      //       create: (_) => TransactionBloc(
+      //         userName: data == null ? '' : data.name, 
+      //         friendId: data == null ? '' : data.userId
+      //       ), 
+      //       child: TransactionScreen(userModel: data)
+      //     );
+      //   }
+      // )
     ],
   );
 
