@@ -68,7 +68,7 @@ class LoginScreenState extends State<LoginScreen>  with Helper{
               break;
             case LoginSuccessState _:
               hideLoadingDialog(context: context);
-              context.go(AppRoutes.homeScreen);
+              context.go(AppRoutes.dashboard);
               break;
             case LoginEmailFieldState _:
               errorEmail = state.emailMessage;

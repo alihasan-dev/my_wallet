@@ -103,6 +103,7 @@ extension NumberExtension on num {
 
   ScreenType get screenDimension {
     var dimension = this;
+    print('Width => $dimension');
     if(dimension < 600) {
       return ScreenType.mobile;
     } else if(dimension >= 600 && dimension <= 720) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -46,51 +47,56 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   }
 
   @override
-  Widget build(BuildContext context){
-    return BlocProvider(
+  Widget build(BuildContext context) {
+    return kIsWeb
+    ? Scaffold(body: mainContent(context: context))
+    : BlocProvider(
       create: (_) => DashboardBloc(),
       child: Builder(
-        builder: (context) {
-          return BlocConsumer<DashboardBloc, DashboardState>(
-            listener: (context, state) {
-              switch (state) {
-                case DashboardFailedState _:
-                  hideLoadingDialog(context: context);
-                  showSnackBar(context: context, title: state.title, message: state.message);
-                  break;
-                case DashboardAllUserState _:
-                  isLoading = false;
-                  allUsers.clear();
-                  allUsers.addAll(state.allUser);
-                  break;
-                case DashboardSuccessState _:
-                  hideLoadingDialog(context: context);
-                  break;
-                default:
-              }
-            },
-            builder: (context, state) {
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  switch (constraints.maxWidth.screenDimension) {
-                    case ScreenType.mobile:
-                    case ScreenType.tablet:
-                      return DashboardMobileView(
-                        dashboardBloc: context.read<DashboardBloc>(), 
-                        dashboardScreenState: this
-                      );
-                    default:
-                    return DashboardWebView(
-                      dashboardBloc: context.read<DashboardBloc>(), 
-                      dashboardScreenState: this
-                    );
-                  }
-                },
+        builder: (context) => mainContent(context: context)
+      ),
+    );
+  }
+
+  Widget mainContent({required BuildContext context}) {
+    return BlocConsumer<DashboardBloc, DashboardState>(
+      listener: (context, state) {
+        switch (state) {
+          case DashboardFailedState _:
+            hideLoadingDialog(context: context);
+            showSnackBar(context: context, title: state.title, message: state.message);
+            break;
+          case DashboardAllUserState _:
+            isLoading = false;
+            allUsers.clear();
+            allUsers.addAll(state.allUser);
+            break;
+          case DashboardSuccessState _:
+            hideLoadingDialog(context: context);
+            break;
+          default:
+        }
+      },
+      builder: (context, state) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // print(context.screenWidth);
+            switch (context.screenWidth.screenDimension) {
+              case ScreenType.mobile:
+              case ScreenType.tablet:
+                return DashboardMobileView(
+                  dashboardBloc: context.read<DashboardBloc>(), 
+                  dashboardScreenState: this
+                );
+              default:
+              return DashboardWebView(
+                dashboardBloc: context.read<DashboardBloc>(), 
+                dashboardScreenState: this
               );
             }
-          );
-        }
-      ),
+          },
+        );
+      }
     );
   }
 

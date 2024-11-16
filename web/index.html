@@ -29,7 +29,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>my_wallet</title>
+  <title>MyWallet</title>
   <link rel="manifest" href="manifest.json">
 
   <script>
@@ -38,10 +38,32 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-analytics.js"></script>
+  <script>
+    // Add Firebase configuration here
+    const firebaseConfig = {
+      apiKey: "AIzaSyCTEJGQgG_CoNSfD8LaZpQj7uKFhFwYlY8",
+      authDomain: "my-wallet-99fdf.firebaseapp.com",
+      databaseURL: "https://my-wallet-99fdf-default-rtdb.firebaseio.com",
+      projectId: "my-wallet-99fdf",
+      storageBucket: "my-wallet-99fdf.appspot.com",
+      messagingSenderId: "976324609510",
+      appId: "1:976324609510:web:4d119a5ba6befc59e4c227",
+      measurementId: "G-TXX98KWH2B"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
   <script>
-    window.addEventListener('load', function(ev) {
+    window.addEventListener('load', async function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {

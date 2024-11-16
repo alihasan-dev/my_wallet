@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +58,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
 
   @override
   void initState() {
+    print('initState is calling from transaction');
     _transactionBloc = context.read<TransactionBloc>();
     dateFormat = DateFormat.yMMMd();
     appBarSize = appBarHeight;
@@ -74,7 +76,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     }
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +124,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Platform.isIOS
+                                      kIsWeb
                                       ? AppIcons.backArrowIconIOS
                                       : AppIcons.backArrowIcon, 
                                       color: AppColors.white,
@@ -444,7 +446,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               padding: EdgeInsets.only(
                 left: AppSize.s15,
                 right: AppSize.s15,
-                bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
+                // bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
               ),
               decoration: BoxDecoration(
                 color: Helper.isDark 

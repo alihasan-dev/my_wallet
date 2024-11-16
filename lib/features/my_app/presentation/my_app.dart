@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: locale,
-          theme: getAppTheme,
+          theme: MyAppTheme.getAppTheme,
           darkTheme: ThemeData(
             scaffoldBackgroundColor: AppColors.backgroundColorDark,
             colorScheme: const ColorScheme.dark(primary: AppColors.primaryColor),

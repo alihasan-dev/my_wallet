@@ -126,7 +126,9 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                 ),
               ]
             ),
-            bottomNavigationBar: BottomNavigationBar(
+            bottomNavigationBar: kIsWeb
+            ? null
+            : BottomNavigationBar(
               currentIndex: pageIndex,
               selectedItemColor: AppColors.primaryColor,
               onTap: (index) => _homeBloc.add(HomeDrawerItemEvent(index: index)),
@@ -145,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
               children: [
                 _widgetTitleList[pageIndex].screenWidget,
                 Visibility(
-                  visible: !isBioAuthenticated,
+                  visible: !isBioAuthenticated && !kIsWeb,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 1000),
                     height: isBioAuthenticated ? 0 : double.maxFinite,

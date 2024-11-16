@@ -62,7 +62,7 @@ class SignupScreenState extends State<SignupScreen> with Helper {
                 break;
               case SignupSuccessState _:
                 hideLoadingDialog(context: context);
-                context.go(AppRoutes.homeScreen);
+                context.go(AppRoutes.dashboard);
                 break;
               case SignupEmailFieldState _:
                 errorEmail = state.emailMessage;
