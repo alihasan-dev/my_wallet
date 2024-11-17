@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,13 +16,15 @@ import '../../../../utils/preferences.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:my_wallet/utils/mobile_download.dart'
+  if(dart.library.html) 'package:my_wallet/utils/web_download.dart';
+
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   // late DateFormat dateFormat;
   late CheckConnectivity checkConnectivity;
   late DocumentReference firebaseStoreInstance;
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
-  final plugin = DeviceInfoPlugin();
   var listTransactionResult = <TransactionModel>[];
   final String userName;
   final String friendId;
@@ -172,108 +175,115 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   Future<void> _onExportPDF(TransactionExportPDFEvent event, Emitter emit) async {
-    if (listTransactionResult.isNotEmpty) {
+    if(listTransactionResult.isNotEmpty) {
       emit(TransactionLoadingState());
-      if (await _checkStoragePermission()) {
-        try {
-          var labelList = <String>['Date', 'Type', 'Amount'];
-          final pdf = pw.Document();
-          int pageCount = 0;
-          if (listTransactionResult.length % 23 == 0) {
-            pageCount = listTransactionResult.length ~/ 23;
+      try {
+        var labelList = <String>['Date', 'Type', 'Amount'];
+        final pdf = pw.Document();
+        int pageCount = 0;
+        if(listTransactionResult.length % 23 == 0) {
+          pageCount = listTransactionResult.length ~/ 23;
+        } else {
+          pageCount = (listTransactionResult.length ~/ 23 + 1);
+        }
+        int start = 0;
+        int end = 0;
+        int totalLength = listTransactionResult.length;
+        int count = 1;
+        while (pageCount > 0) {
+          if (!(totalLength - 23).isNegative) {
+            end = end + (24 + 1 - count);
+            totalLength -= 23;
           } else {
-            pageCount = (listTransactionResult.length ~/ 23 + 1);
-          }
-          int start = 0;
-          int end = 0;
-          int totalLength = listTransactionResult.length;
-          int count = 1;
-          while (pageCount > 0) {
-            if (!(totalLength - 23).isNegative) {
-              end = end + (24 + 1 - count);
-              totalLength -= 23;
+            if (end == 0) {
+              end = end + totalLength + 1;
             } else {
-              if (end == 0) {
-                end = end + totalLength + 1;
-              } else {
-                end += totalLength;
-              }
+              end += totalLength;
             }
-            List<pw.TableRow> tableRowList = [];
-            for (var i = start; i < end; i++) {
-              tableRowList.add(
-                pw.TableRow(
-                  decoration: pw.BoxDecoration(
-                    color: i == start
-                    ? const PdfColor.fromInt(0xFF283593)
-                    : PdfColors.white,
-                    border: const pw.Border(right: pw.BorderSide(color: PdfColor.fromInt(0xFF000000)))
-                  ),
-                  children: List.generate(
-                    3,
-                    (subIndex) => i == start
-                    ? pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          labelList[subIndex],
-                          style: pw.TextStyle(color: i == start ? PdfColors.white : PdfColors.black),
-                        ),
-                      )
-                    : pw.Padding(
+          }
+          List<pw.TableRow> tableRowList = [];
+          for (var i = start; i < end; i++) {
+            tableRowList.add(
+              pw.TableRow(
+                decoration: pw.BoxDecoration(
+                  color: i == start
+                  ? const PdfColor.fromInt(0xFF283593)
+                  : PdfColors.white,
+                  border: const pw.Border(right: pw.BorderSide(color: PdfColor.fromInt(0xFF000000)))
+                ),
+                children: List.generate(
+                  3,
+                  (subIndex) => i == start
+                  ? pw.Padding(
                       padding: const pw.EdgeInsets.all(8.0),
-                      child: subIndex == 0
-                      ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
-                      : subIndex == 1
-                        ? pw.Text(listTransactionResult[i - 1].type)
-                        : pw.Text(listTransactionResult[i - 1].amount.toString())
-                    ),
+                      child: pw.Text(
+                        labelList[subIndex],
+                        style: pw.TextStyle(color: i == start ? PdfColors.white : PdfColors.black),
+                      ),
+                    )
+                  : pw.Padding(
+                    padding: const pw.EdgeInsets.all(8.0),
+                    child: subIndex == 0
+                    ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
+                    : subIndex == 1
+                      ? pw.Text(listTransactionResult[i - 1].type)
+                      : pw.Text(listTransactionResult[i - 1].amount.toString())
                   ),
                 ),
-              );
-            }
-            pdf.addPage(pw.Page(
-              pageFormat: PdfPageFormat.a4,
-              build: (pw.Context context) => pw.Table(border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),children: tableRowList),
-            ));
-            pageCount -= 1;
-            start = end - 1;
-            count += 1;
+              ),
+            );
           }
-          var dateTime = DateTime.now();
-          var first = userName.replaceAll(' ', '');
-          var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
-          first = '${first}_$last.pdf';
-          late File file2;
-          if(Platform.isIOS) {
-            Directory? directory = await getApplicationDocumentsDirectory();
-            file2 = File('${directory.path}/$first');
-          } else {
-           file2 = File("/storage/emulated/0/Download/$first");
-          }
-          await file2.writeAsBytes(await pdf.save());
-          emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
-        } catch (e) {
-          emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
+          pdf.addPage(pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            build: (pw.Context context) => pw.Table(border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),children: tableRowList),
+          ));
+          pageCount -= 1;
+          start = end - 1;
+          count += 1;
         }
-      } else {
-        emit(TransactionExportPDFState(message: 'Please allow storage permission to export your transaction report'));
+        var dateTime = DateTime.now();
+        var first = userName.replaceAll(' ', '');
+        var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
+        first = '${first}_$last.pdf';
+        ///Remove below for different platform
+        ///
+        await downloadFile(bytes: await pdf.save(), downloadName: first);
+        // late File file2;
+        // if(Platform.isIOS) {
+        //   Directory? directory = await getApplicationDocumentsDirectory();
+        //   file2 = File('${directory.path}/$first');
+        // } else {
+        //  file2 = File("/storage/emulated/0/Download/$first");
+        // }
+        // await file2.writeAsBytes(await pdf.save());
+        emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
+      } catch (e) {
+        emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
       }
+      // else {
+      //   emit(TransactionExportPDFState(message: 'Please allow storage permission to export your transaction report'));
+      // }
     }
   }
 
-  Future<bool> _checkStoragePermission() async {
-    var status = await Permission.storage.status;
-    if (status.isGranted) {
-      return true;
-    }
-    var requestStatus = await Permission.storage.request();
-    final android = await plugin.androidInfo;
-    if (android.version.sdkInt >= 33) {
-      requestStatus = PermissionStatus.granted;
-    }
-    if (requestStatus.isGranted) {
-      return true;
-    }
-    return false;
-  }
+  // void downloadWeb({required List<int> bytes, required String fileName}) {
+  //   final base64 = base64Encode(bytes);
+  //   final anchor = AnchorE
+  // }
+
+  // Future<bool> _checkStoragePermission() async {
+  //   var status = await Permission.storage.status;
+  //   if (status.isGranted) {
+  //     return true;
+  //   }
+  //   var requestStatus = await Permission.storage.request();
+  //   final android = await plugin.androidInfo;
+  //   if (android.version.sdkInt >= 33) {
+  //     requestStatus = PermissionStatus.granted;
+  //   }
+  //   if (requestStatus.isGranted) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }
