@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_color.dart';
@@ -55,7 +56,9 @@ class CustomImageWidget extends StatelessWidget {
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 fit: BoxFit.cover,
               )
-            : Image.file(File(imageUrl), fit: BoxFit.cover)
+            : kIsWeb 
+              ? Image.network(imageUrl, fit: BoxFit.cover) 
+              : Image.file(File(imageUrl), fit: BoxFit.cover)
         ),
       )
     );
