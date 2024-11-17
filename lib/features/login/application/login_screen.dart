@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
+import '../../../constants/app_theme.dart';
 import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../widgets/custom_inkwell_widget.dart';
 import '../../../features/login/application/bloc/login_bloc.dart';

@@ -16,10 +16,10 @@ class SignupWebView extends StatelessWidget {
     var localizations = AppLocalizations.of(context)!;
     return Center(
       child: SizedBox(
-        width: context.screenWidth * 0.25,
+        width: MyAppTheme.columnWidth + AppSize.s30,
         child: ListView(
           shrinkWrap: true,
-          padding: const EdgeInsets.all(AppSize.s28),
+          padding: kIsWeb ? EdgeInsets.zero : const EdgeInsets.all(AppSize.s28),
           children: [
             Center(child: Image.asset(AppImages.appImage, height: 90, width: 90)),
             const SizedBox(height: AppSize.s10),

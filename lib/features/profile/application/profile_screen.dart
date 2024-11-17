@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/constants/app_theme.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -188,8 +189,8 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               ),
             ),
             Positioned(
-              bottom: 10,
-              right: context.screenWidth / 2 - 75,
+              bottom: 8,
+              right: (MyAppTheme.columnWidth / 2) - 75,
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppSize.s30),
                 onTap: () => showImagePickerSheet(bContext),
@@ -298,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       context: mContext, 
       builder: (_) {
         return Container(
-          width: context.screenWidth,
+          // width: context.screenWidth,
           color: Helper.isDark
           ? AppColors.backgroundColorDark
           : AppColors.white,

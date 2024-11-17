@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wallet/utils/app_extension_method.dart';
+import '../../../constants/app_theme.dart';
 import '../../../features/signup/application/bloc/signup_bloc.dart';
 import '../../../features/signup/application/bloc/signup_event.dart';
 import '../../../features/signup/application/bloc/signup_state.dart';
