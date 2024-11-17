@@ -112,7 +112,7 @@ class DashboardWebView extends StatelessWidget {
             child: Stack(
               children: [
                 dashboardScreenState.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator.adaptive())
                 : dashboardScreenState.allUsers.isNotEmpty
                 ? ListView.builder(
                     itemCount: dashboardScreenState.allUsers.length,

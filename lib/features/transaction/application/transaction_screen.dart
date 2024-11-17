@@ -202,7 +202,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               ),
               Expanded(
                 child: isLoading
-                ? const Center(child: CircularProgressIndicator(color: AppColors.primaryColor)) 
+                ? const Center(child: CircularProgressIndicator.adaptive()) 
                 : transactionDataList.isEmpty
                 ? Center(
                   child: Text(

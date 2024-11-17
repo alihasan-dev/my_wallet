@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_strings.dart';
 import '../constants/app_color.dart';
@@ -107,7 +109,7 @@ mixin Helper {
                 filter: ImageFilter.blur(
                   sigmaX: 2.5,sigmaY: 2.5,
                 ),
-                child: const Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
+                child: const Center(child: CircularProgressIndicator.adaptive()),
               ),
             ),
           );
@@ -198,6 +200,24 @@ mixin Helper {
       return false;
     }
     return true;
+  }
+
+  Future<String> pickImage({required ImageSource imageSource, required BuildContext context}) async {
+    try {
+      var pickImage = await ImagePicker().pickImage(source: imageSource);
+      if(pickImage != null) {
+        final imageLength = await pickImage.length();
+        if(imageLength > 2000000 && context.mounted) {
+          showSnackBar(context: context, title: AppStrings.error, message: AppStrings.imageSizeMsg);
+          return AppStrings.emptyString;
+        }
+        return base64Encode(await pickImage.readAsBytes());
+      } else {
+        return AppStrings.emptyString;
+      }
+    } catch (e) {
+      return AppStrings.emptyString;
+    }
   }
 
 }

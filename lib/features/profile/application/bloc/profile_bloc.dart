@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -85,7 +86,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           final mountainImagesRef = userId.isEmpty 
           ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
           : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$userId.jpg");
-          await mountainImagesRef.putFile(File(selectedImagePath)).then((value) async {
+          await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
             await mountainImagesRef.getDownloadURL().then((value) {
               updatedImageUrl = value;
             });

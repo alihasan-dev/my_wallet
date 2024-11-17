@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -34,7 +35,10 @@ class CustomImageWidget extends StatelessWidget {
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.primaryColor, width: borderWidth)
+        border: Border.all(
+          color: AppColors.primaryColor, 
+          width: borderWidth
+        ),
       ),
       child: ClipOval(
         child: SizedBox.fromSize(
@@ -51,13 +55,13 @@ class CustomImageWidget extends StatelessWidget {
                 imageUrl: imageUrl,
                 placeholder: (context, url) => Padding(
                   padding: EdgeInsets.all(circularPadding),
-                  child: CircularProgressIndicator(strokeWidth: strokeWidth)
+                  child: CircularProgressIndicator.adaptive(strokeWidth: strokeWidth)
                 ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 fit: BoxFit.cover,
               )
             : kIsWeb 
-              ? Image.network(imageUrl, fit: BoxFit.cover) 
+              ? Image.memory(base64Decode(imageUrl), fit: BoxFit.cover) 
               : Image.file(File(imageUrl), fit: BoxFit.cover)
         ),
       )
