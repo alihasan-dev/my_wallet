@@ -11,7 +11,6 @@ import 'package:my_wallet/widgets/two_column_layout.dart';
 import '../features/settings/application/bloc/settings_bloc.dart';
 import '../features/settings/application/settings_screen.dart';
 import '../features/profile/application/profile_screen.dart';
-import '../features/transaction/application/bloc/transaction_bloc.dart';
 import '../features/forgot_password/application/bloc/forgot_password_bloc.dart';
 import '../features/home/application/bloc/home_bloc.dart';
 import '../features/login/application/bloc/login_bloc.dart';
@@ -22,7 +21,6 @@ import '../features/home/application/home_screen.dart';
 import '../constants/app_strings.dart';
 import '../features/login/application/login_screen.dart';
 import '../features/signup/application/signup_screen.dart';
-import '../features/transaction/application/transaction_screen.dart';
 import '../utils/helper.dart';
 import '../utils/preferences.dart';
 import '../widgets/empty_page.dart';
@@ -37,7 +35,7 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String transactionScreen = '/transaction';
   static const String forgotPasswordScreen = 'forgotPassword';
-  static const String settingsScreen = '/settings';
+  static const String settingsScreen = 'settings';
   static const String profileScreen = '/profile';
 
   static final GoRouter router = kIsWeb
@@ -104,17 +102,10 @@ class AppRoutes {
                     context,
                     state,
                     TransactionDetails(
-                      key: Key(data == null ? '' : data.userId),
+                      key: Key(data == null ? 'idAWmKkGjZ3JPrz8t7Dq' : data.userId),
                       userModel: data!
                     )
-                    // BlocProvider(
-                    //   key: Key(data == null ? '' : data.userId),
-                    //   create: (_) => TransactionBloc(
-                    //     userName: data == null ? '' : data.name, 
-                    //     friendId: data == null ? '' : data.userId
-                    //   ), 
-                    //   child: TransactionScreen(userModel: data)
-                    // ),
+                    // Container(color: Colors.pink)
                   );
                 },
                 routes: [
@@ -128,9 +119,17 @@ class AppRoutes {
                         BlocProvider(create: (_) => ProfileBloc(userId: data == null ? '' : data.userId), child: ProfileScreen(userId: data == null ? '' : data.userId)),
                       );
                     }
-                  )
+                  ),
                 ]
-              )
+              ),
+              GoRoute(
+                path: settingsScreen,
+                pageBuilder: (context, state) => defaultPageBuilder(
+                  context,
+                  state,
+                  BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+                )
+              ),
             ]
           ),
         ]
@@ -139,10 +138,10 @@ class AppRoutes {
       //   path: forgotPasswordScreen,
       //   builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
       // ),
-      GoRoute(
-        path: settingsScreen,
-        builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
-      ),
+      // GoRoute(
+      //   path: settingsScreen,
+      //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+      // ),
       GoRoute(
         path: profileScreen,
         builder: (_, state) => ProfileScreen(userId: state.extra as String)
@@ -208,10 +207,10 @@ class AppRoutes {
         path: forgotPasswordScreen,
         builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
       ),
-      GoRoute(
-        path: settingsScreen,
-        builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
-      ),
+      // GoRoute(
+      //   path: settingsScreen,
+      //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+      // ),
       GoRoute(
         path: profileScreen,
         builder: (_, state) => ProfileScreen(userId: state.extra as String)
