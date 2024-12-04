@@ -95,6 +95,14 @@ class AppRoutes {
             ),
             routes: [
               GoRoute(
+                path: settingsScreen,
+                pageBuilder: (context, state) => defaultPageBuilder(
+                  context,
+                  state,
+                  BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+                ),
+              ),
+              GoRoute(
                 path: ':userId',
                 pageBuilder: (context, state) {
                   var data = state.extra == null ? null : state.extra as UserModel;
@@ -105,7 +113,7 @@ class AppRoutes {
                       key: Key(data == null ? 'idAWmKkGjZ3JPrz8t7Dq' : data.userId),
                       userModel: data!
                     )
-                    // Container(color: Colors.pink)
+                    //  Container(color: Colors.pink)
                   );
                 },
                 routes: [
@@ -122,18 +130,14 @@ class AppRoutes {
                   ),
                 ]
               ),
-              GoRoute(
-                path: settingsScreen,
-                pageBuilder: (context, state) => defaultPageBuilder(
-                  context,
-                  state,
-                  BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
-                )
-              ),
             ]
           ),
         ]
       ),
+      // GoRoute(
+      //   path: settingsScreen,
+      //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+      // ),
       // GoRoute(
       //   path: forgotPasswordScreen,
       //   builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())

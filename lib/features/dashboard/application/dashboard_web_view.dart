@@ -97,12 +97,21 @@ class DashboardWebView extends StatelessWidget {
                 const SizedBox(width: AppSize.s10),
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController(),
+                    controller: dashboardScreenState.searchTextController,
                     decoration: const InputDecoration.collapsed(
                       hintText: 'Search',
                       hintStyle: TextStyle(color: AppColors.grey, fontSize: AppSize.s14),
                     ),
-                    style: const TextStyle(color: AppColors.white, fontSize: AppSize.s14)
+                    style: const TextStyle(color: AppColors.white, fontSize: AppSize.s14),
+                    onChanged: (value) => dashboardBloc.add(DashboardSearchEvent(text: value)),
+                  ),
+                ),
+                InkWell(
+                  onTap: () => dashboardBloc.add(DashboardCancelSearchEvent()),
+                  child: const Icon(
+                    Icons.cancel,
+                    size: AppSize.s18,
+                    color: AppColors.grey,
                   ),
                 ),
               ],
@@ -217,7 +226,7 @@ class DashboardWebView extends StatelessWidget {
                     label: const CustomText(title: "New User"),
                     icon: const Icon(Icons.add, color: AppColors.white),
                   ),
-                )
+                ),
               ],
             ),
           ),

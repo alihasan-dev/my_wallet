@@ -33,3 +33,11 @@ class DashboardUserDetailsEvent extends DashboardEvent {
 
   DashboardUserDetailsEvent(this.userModel);
 }
+
+class DashboardCancelSearchEvent extends DashboardEvent {}
+
+class DashboardSearchEvent extends DashboardEvent {
+  String text;
+
+  DashboardSearchEvent({required this.text});
+}

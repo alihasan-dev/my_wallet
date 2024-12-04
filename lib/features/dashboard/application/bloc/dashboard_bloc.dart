@@ -32,6 +32,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardNameChangeEvent>(_onNameChange);
     on<DashboardDeleteUserEvent>(_onDeleteUser);
     on<DashboardUserDetailsEvent>(_onFetchUserDetails);
+    on<DashboardCancelSearchEvent>(_onCancelSearchEvent);
+    on<DashboardSearchEvent>(_onSearchEvent);
 
     _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event){
       var userData = event.data() as Map;
@@ -77,6 +79,26 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     _streamDocumentSnapshot.cancel();
     _streamSubscription.cancel();
     return super.close();
+  }
+
+  void _onCancelSearchEvent(DashboardCancelSearchEvent event, Emitter emit) {
+    listUser.clear();
+    listUser.addAll(originalUserList);
+    emit(DashboardAllUserState(allUser: listUser, isCancelSearch: true));
+  }
+
+  void _onSearchEvent(DashboardSearchEvent event, Emitter emit) {
+    listUser.clear();
+    if(event.text.isEmpty) {
+      listUser.addAll(originalUserList);
+    } else {
+      for(var item in originalUserList) {
+        if(item.name.toLowerCase().contains(event.text.toLowerCase())) {
+          listUser.add(item);
+        }
+      }
+    }
+    emit(DashboardAllUserState(allUser: listUser));
   }
 
   void _onFetchUserDetails(DashboardUserDetailsEvent event, Emitter emit) {

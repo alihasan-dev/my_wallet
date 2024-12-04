@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,7 +51,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     settingItemList.add(SettingModel(icon: Icons.language_outlined, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
     settingItemList.add(SettingModel(icon: Icons.contrast_outlined, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
     settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser, showSwitch: true));
-    settingItemList.add(SettingModel(icon: Icons.fingerprint, title: 'Enable Biometric', subTitle: 'App unlock with biometric', showSwitch: true));
+    if(!kIsWeb) {
+      settingItemList.add(SettingModel(icon: Icons.fingerprint, title: 'Enable Biometric', subTitle: 'App unlock with biometric', showSwitch: true));
+    }
     settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: 'About MyWallet'));
     super.didChangeDependencies();
   }

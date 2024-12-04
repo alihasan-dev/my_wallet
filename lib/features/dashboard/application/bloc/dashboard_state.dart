@@ -10,7 +10,8 @@ class DashboardSuccessState extends DashboardState{
 
 class DashboardAllUserState extends DashboardState {
   List<UserModel> allUser;
-  DashboardAllUserState({required this.allUser});
+  bool isCancelSearch;
+  DashboardAllUserState({required this.allUser, this.isCancelSearch = false});
 }
 
 class DashboardFailedState extends DashboardState{

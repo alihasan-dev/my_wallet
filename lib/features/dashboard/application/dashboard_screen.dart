@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/features/dashboard/application/bloc/dashboard_event.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/app_extension_method.dart';
@@ -33,6 +34,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   List<UserModel> allUsers = [];
   bool isLoading = true;
   bool showUnverified = true;
+  late TextEditingController searchTextController;
 
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
@@ -42,6 +44,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   @override
   void didChangeDependencies() {
+    searchTextController = TextEditingController();
     dateFormat = DateFormat.yMMMd();
     super.didChangeDependencies();
   }
@@ -70,6 +73,9 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
             isLoading = false;
             allUsers.clear();
             allUsers.addAll(state.allUser);
+            if(state.isCancelSearch) {
+              searchTextController.clear();
+            }
             break;
           case DashboardSuccessState _:
             hideLoadingDialog(context: context);
