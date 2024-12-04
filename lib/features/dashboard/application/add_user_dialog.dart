@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wallet/constants/app_theme.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
 import 'bloc/dashboard_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../widgets/custom_button.dart';
@@ -52,7 +54,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
               default:
             }
             return SizedBox(
-              width: double.maxFinite,
+              width: MyAppTheme.columnWidth,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

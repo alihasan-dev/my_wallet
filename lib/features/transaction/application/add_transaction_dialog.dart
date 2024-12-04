@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/constants/app_theme.dart';
 import '../../../constants/app_color.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../features/transaction/application/bloc/transaction_event.dart';
@@ -56,7 +57,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
               default:
             }
             return SizedBox(
-              width: double.maxFinite,
+              width: MyAppTheme.columnWidth,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

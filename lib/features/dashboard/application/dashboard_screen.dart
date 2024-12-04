@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:my_wallet/features/dashboard/application/bloc/dashboard_event.dart';
+import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/app_extension_method.dart';
@@ -19,6 +21,7 @@ import '../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'add_user_dialog.dart';
 part 'dashboard_mobile_view.dart';
 part 'dashboard_web_view.dart';
@@ -35,6 +38,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   bool isLoading = true;
   bool showUnverified = true;
   late TextEditingController searchTextController;
+  AppLocalizations? _localizations;
 
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
@@ -44,6 +48,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   @override
   void didChangeDependencies() {
+    _localizations = AppLocalizations.of(context)!;
     searchTextController = TextEditingController();
     dateFormat = DateFormat.yMMMd();
     super.didChangeDependencies();
@@ -86,9 +91,8 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
       builder: (context, state) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            // print(context.screenWidth);
             switch (context.screenWidth.screenDimension) {
-              case ScreenType.mobile:
+              // case ScreenType.mobile:
               case ScreenType.tablet:
                 return DashboardMobileView(
                   dashboardBloc: context.read<DashboardBloc>(), 
@@ -111,6 +115,20 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
       context: context, 
       builder: (_) => const AddUserDialog()
     );
+  }
+
+  Future<void> onClickLogout({required BuildContext context}) async {
+    if(await confirmationDialog(context: context, title: _localizations!.logout, content: _localizations!.logoutMsg, localizations: _localizations!)) {
+      Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+      await Preferences.clearPreferences(key: AppStrings.prefUserId);
+      await Preferences.clearPreferences(key: AppStrings.prefBiometric);
+      if(context.mounted){
+        while (GoRouter.of(context).canPop()) {
+          GoRouter.of(context).pop();
+        }
+        GoRouter.of(context).pushReplacement(AppRoutes.loginScreen);
+      }
+    }
   }
   
 }

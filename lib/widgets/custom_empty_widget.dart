@@ -23,11 +23,10 @@ class CustomEmptyWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, size: AppSize.s60),
+          Icon(icon, size: AppSize.s55),
           CustomText(
             title: title, 
             textStyle: getSemiBoldStyle(
-              color: AppColors.black, 
               fontSize: AppSize.s20
             ),
           ),

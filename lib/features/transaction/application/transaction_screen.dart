@@ -129,7 +129,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                       ? AppIcons.backArrowIconIOS
                                       : AppIcons.backArrowIcon, 
                                       color: AppColors.white,
-                                      size: 22,
+                                      size: AppSize.s22,
                                     ),
                                     Hero(
                                       tag: 'profile',
@@ -220,10 +220,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
+                      height: appBarHeight,
                       decoration: BoxDecoration(
                         color: headerColor,
                         border: Border(
-                          top: BorderSide(
+                          top: kIsWeb
+                          ? BorderSide.none
+                          : BorderSide(
                             width: animatedBorderSide, 
                             color: AppColors.white.withOpacity(0.8)
                           ),
@@ -355,7 +358,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           controller: _scrollController,
                           itemCount: transactionDataList.length + 1,
                           itemBuilder: (context, index) {
-                            if(index == transactionDataList.length){
+                            if(index == transactionDataList.length) {
                               return const Divider(
                                 color: AppColors.grey, 
                                 thickness: AppSize.s05, 

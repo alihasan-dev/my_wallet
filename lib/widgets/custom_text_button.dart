@@ -45,6 +45,7 @@ class CustomTextButton extends StatelessWidget {
         backgroundColor: isSelected == null || !isSelected! 
         ? AppColors.transparent 
         : backgroundColor ?? AppColors.primaryColor.withOpacity(0.2),
+        padding: const EdgeInsets.symmetric(vertical: AppSize.s8)
       ), 
       child: Row(
         mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,

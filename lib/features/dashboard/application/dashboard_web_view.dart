@@ -24,7 +24,7 @@ class DashboardWebView extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: kToolbarHeight - 10,
+            height: AppBar().preferredSize.height,
             width: double.maxFinite,
             color: AppColors.primaryColor,
             padding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
@@ -33,12 +33,13 @@ class DashboardWebView extends StatelessWidget {
               children: [
                 CustomText(
                   title: 'Contacts',
-                  textStyle: getSemiBoldStyle(fontSize: AppSize.s14),
+                  textStyle: getBoldStyle(color: AppColors.white),
                 ),
                 PopupMenuButton<String>(
                   padding: EdgeInsets.zero,
-                  offset: const Offset(-130, 0),
+                  // offset: const Offset(-130, 0),
                   position: PopupMenuPosition.under,
+                  iconColor: AppColors.white,
                   menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
                   itemBuilder: (_) {
@@ -69,52 +70,25 @@ class DashboardWebView extends StatelessWidget {
                         context.go('/dashboard/settings');
                         break;
                       case AppStrings.logout:
-                        // onClickLogout(context: context, localizations: _localizations!);
+                        dashboardScreenState.onClickLogout(context: context);
                         break;
                     }
                   },
-                )
+                ),
               ],
             ),
           ),
-          Container(
-            width: double.maxFinite,
-            margin: const EdgeInsets.symmetric(
-              horizontal: AppSize.s10,
-              vertical: AppSize.s6
-            ),
+          Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSize.s8,
               vertical: AppSize.s5
             ),
-            decoration: BoxDecoration(
-              color: AppColors.headerColorDark,
-              borderRadius: BorderRadius.circular(6)
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.search, size: AppSize.s18, color: AppColors.grey),
-                const SizedBox(width: AppSize.s10),
-                Expanded(
-                  child: TextField(
-                    controller: dashboardScreenState.searchTextController,
-                    decoration: const InputDecoration.collapsed(
-                      hintText: 'Search',
-                      hintStyle: TextStyle(color: AppColors.grey, fontSize: AppSize.s14),
-                    ),
-                    style: const TextStyle(color: AppColors.white, fontSize: AppSize.s14),
-                    onChanged: (value) => dashboardBloc.add(DashboardSearchEvent(text: value)),
-                  ),
-                ),
-                InkWell(
-                  onTap: () => dashboardBloc.add(DashboardCancelSearchEvent()),
-                  child: const Icon(
-                    Icons.cancel,
-                    size: AppSize.s18,
-                    color: AppColors.grey,
-                  ),
-                ),
-              ],
+            child: CupertinoTheme(
+              data: CupertinoThemeData(brightness: Helper.isDark ? Brightness.dark : Brightness.light),
+              child: CupertinoSearchTextField(
+                controller: dashboardScreenState.searchTextController,
+                onChanged: (value) => dashboardBloc.add(DashboardSearchEvent(text: value)),
+              ),
             ),
           ),
           Expanded(
@@ -219,11 +193,12 @@ class DashboardWebView extends StatelessWidget {
                   )
                 : const CustomEmptyWidget(title: AppStrings.noUserFound,icon: AppIcons.personIcon),
                 Positioned(
-                  bottom: 20.0,
-                  right: 20.0,
+                  bottom: 16.0,
+                  right: 16.0,
                   child: FloatingActionButton.extended(
-                    onPressed: () => debugPrint('Click here to add new user'),
-                    label: const CustomText(title: "New User"),
+                    onPressed: dashboardScreenState.addUserDialog,
+                    backgroundColor: AppColors.primaryColor,
+                    label: CustomText(title: "New User", textStyle: getMediumStyle(fontSize: AppSize.s16, color: AppColors.white)),
                     icon: const Icon(Icons.add, color: AppColors.white),
                   ),
                 ),

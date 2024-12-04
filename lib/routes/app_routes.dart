@@ -110,10 +110,9 @@ class AppRoutes {
                     context,
                     state,
                     TransactionDetails(
-                      key: Key(data == null ? 'idAWmKkGjZ3JPrz8t7Dq' : data.userId),
+                      key: Key(data == null ? '' : data.userId),
                       userModel: data!
                     )
-                    //  Container(color: Colors.pink)
                   );
                 },
                 routes: [
@@ -133,22 +132,6 @@ class AppRoutes {
             ]
           ),
         ]
-      ),
-      // GoRoute(
-      //   path: settingsScreen,
-      //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
-      // ),
-      // GoRoute(
-      //   path: forgotPasswordScreen,
-      //   builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
-      // ),
-      // GoRoute(
-      //   path: settingsScreen,
-      //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
-      // ),
-      GoRoute(
-        path: profileScreen,
-        builder: (_, state) => ProfileScreen(userId: state.extra as String)
       ),
       // GoRoute(
       //   path: transactionScreen,
