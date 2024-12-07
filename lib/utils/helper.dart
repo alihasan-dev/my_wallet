@@ -160,14 +160,14 @@ mixin Helper {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => context.pop(false),
             child: CustomText(
               title: localizations.cancel, 
               textStyle: getSemiBoldStyle(color: AppColors.red)
             ),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true), 
+            onPressed: () => context.pop(true), 
             child: CustomText(
               title: localizations.yes, 
               textStyle: getSemiBoldStyle(color: AppColors.primaryColor)

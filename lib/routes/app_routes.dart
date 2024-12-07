@@ -77,7 +77,7 @@ class AppRoutes {
           state,
           MyAppTheme.isColumnMode(context)
           ? TwoColumnLayout(
-              mainView: BlocProvider(create: (_) => DashboardBloc(), child: const DashboardScreen()), 
+              mainView: BlocProvider(create: (_) => DashboardBloc(), child: DashboardScreen(userId: state.pathParameters['userId'])), 
               sideView: child, 
               displayNavigationRail: false
             )
@@ -91,7 +91,7 @@ class AppRoutes {
               state,
               MyAppTheme.isColumnMode(context)
               ? const EmptyPage()
-              : BlocProvider(create: (_) => DashboardBloc(), child: const DashboardScreen()),
+              : BlocProvider(create: (_) => DashboardBloc(), child: DashboardScreen(userId: state.pathParameters['userId'])),
             ),
             routes: [
               GoRoute(
@@ -104,6 +104,7 @@ class AppRoutes {
               ),
               GoRoute(
                 path: ':userId',
+                redirect: (context, state) => state.extra == null ? dashboard : null,
                 pageBuilder: (context, state) {
                   var data = state.extra == null ? null : state.extra as UserModel;
                   return defaultPageBuilder(

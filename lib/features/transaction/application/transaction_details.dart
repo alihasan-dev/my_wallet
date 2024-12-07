@@ -30,7 +30,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
     super.initState();
   }
 
-  void toggleDisplayProfileColumn() async {
+  void toggleDisplayProfileColumn() {
     _displayProfileColumn.value = !_displayProfileColumn.value;
   } 
 

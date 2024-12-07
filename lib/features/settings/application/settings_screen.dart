@@ -169,6 +169,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 1:
         showThemeDialog(context: context);
         break;
+      case 3:
       case 4:
         showAboutAppDialog(context: context);
         break;

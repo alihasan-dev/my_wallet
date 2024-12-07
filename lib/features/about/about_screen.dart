@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wallet/constants/app_theme.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_images.dart';
 import '../../constants/app_strings.dart';
@@ -20,7 +21,7 @@ class AboutScreen extends StatelessWidget {
       insetPadding: EdgeInsets.zero,
       contentPadding: const EdgeInsets.all(AppSize.s15),
       content: Container(
-        width: MediaQuery.of(context).size.width * 0.78,
+        width: MyAppTheme.columnWidth,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppSize.s10)
         ),

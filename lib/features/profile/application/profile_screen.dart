@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -194,6 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               right: (MyAppTheme.columnWidth / 2) - 75,
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppSize.s30),
+                // onTap: () => showModalBottomSheet(context: bContext, builder: (context) => Text('sdf')),
                 onTap: () => showImagePickerSheet(bContext),
                 child: Container(
                   padding: const EdgeInsets.all(AppSize.s8),
@@ -300,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       context: mContext, 
       builder: (_) {
         return Container(
-          // width: context.screenWidth,
+          width: context.screenWidth,
           color: Helper.isDark
           ? AppColors.backgroundColorDark
           : AppColors.white,

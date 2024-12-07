@@ -27,7 +27,8 @@ part 'dashboard_mobile_view.dart';
 part 'dashboard_web_view.dart';
 
 class DashboardScreen extends StatefulWidget{
-  const DashboardScreen({super.key});
+  final String? userId;
+  const DashboardScreen({super.key, this.userId});
   @override
   State<DashboardScreen> createState() => DashboardScreenState();
 }
@@ -39,6 +40,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   bool showUnverified = true;
   late TextEditingController searchTextController;
   AppLocalizations? _localizations;
+  String? selectedUserId;
 
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
@@ -56,6 +58,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   @override
   Widget build(BuildContext context) {
+    selectedUserId = widget.userId;
     return kIsWeb
     ? Scaffold(body: mainContent(context: context))
     : BlocProvider(
@@ -84,6 +87,9 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
             break;
           case DashboardSuccessState _:
             hideLoadingDialog(context: context);
+            break;
+          case DashboardSelectedUserState _:
+            selectedUserId = state.userId;
             break;
           default:
         }

@@ -41,3 +41,9 @@ class DashboardSearchEvent extends DashboardEvent {
 
   DashboardSearchEvent({required this.text});
 }
+
+class DashboardSelectedUserEvent extends DashboardEvent {
+  String userId;
+
+  DashboardSelectedUserEvent({this.userId = ''});
+}

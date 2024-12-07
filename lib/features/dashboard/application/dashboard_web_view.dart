@@ -37,7 +37,6 @@ class DashboardWebView extends StatelessWidget {
                 ),
                 PopupMenuButton<String>(
                   padding: EdgeInsets.zero,
-                  // offset: const Offset(-130, 0),
                   position: PopupMenuPosition.under,
                   iconColor: AppColors.white,
                   menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
@@ -68,6 +67,7 @@ class DashboardWebView extends StatelessWidget {
                     switch (value) {
                       case AppStrings.settings:
                         context.go('/dashboard/settings');
+                        dashboardBloc.add(DashboardSelectedUserEvent());
                         break;
                       case AppStrings.logout:
                         dashboardScreenState.onClickLogout(context: context);
@@ -105,12 +105,18 @@ class DashboardWebView extends StatelessWidget {
                       return Column(
                         children: [
                           InkWell(
-                            onTap: () => context.go('/dashboard/${data.userId}', extra: data),
+                            onTap: () {
+                              context.go('/dashboard/${data.userId}', extra: data);
+                              dashboardBloc.add(DashboardSelectedUserEvent(userId: data.userId));
+                            },
                             child: Ink(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSize.s16,
                                 vertical: AppSize.s14
                               ),
+                              color: dashboardScreenState.selectedUserId == null || data.userId != dashboardScreenState.selectedUserId
+                              ? null  
+                              : AppColors.grey.withOpacity(0.2),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [

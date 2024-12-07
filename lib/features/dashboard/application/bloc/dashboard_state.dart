@@ -41,3 +41,9 @@ class DashboardPasswordVisibilityState extends DashboardState{
   bool isVisible;
   DashboardPasswordVisibilityState(this.isVisible);
 }
+
+class DashboardSelectedUserState extends DashboardState {
+  String userId;
+
+  DashboardSelectedUserState({this.userId = ''});
+}
