@@ -12,8 +12,6 @@ import '../../../constants/app_size.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../features/profile/application/bloc/profile_bloc.dart';
-import '../../../features/profile/application/bloc/profile_event.dart';
-import '../../../features/profile/application/bloc/profile_state.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_outlined_button.dart';

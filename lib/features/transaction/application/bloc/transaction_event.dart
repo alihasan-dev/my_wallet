@@ -46,3 +46,10 @@ class TransactionScrollEvent extends TransactionEvent {
 }
 
 class TransactionExportPDFEvent extends TransactionEvent {}
+
+class TransactionProfileUpdateEvent extends TransactionEvent {
+  String userName;
+  String profileImage;
+
+  TransactionProfileUpdateEvent({this.userName = '', this.profileImage = ''});
+}

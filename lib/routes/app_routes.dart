@@ -91,7 +91,7 @@ class AppRoutes {
               state,
               MyAppTheme.isColumnMode(context)
               ? const EmptyPage()
-              : BlocProvider(create: (_) => DashboardBloc(), child: DashboardScreen(userId: state.pathParameters['userId'])),
+              : DashboardScreen(userId: state.pathParameters['userId']),
             ),
             routes: [
               GoRoute(
@@ -112,7 +112,8 @@ class AppRoutes {
                     state,
                     TransactionDetails(
                       key: Key(data == null ? '' : data.userId),
-                      userModel: data!
+                      userModel: data!,
+                      dashboardBloc: context.read<DashboardBloc>(),
                     )
                   );
                 },

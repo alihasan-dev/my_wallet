@@ -1,6 +1,6 @@
-import '../../../../features/dashboard/domain/user_model.dart';
+part of 'dashboard_bloc.dart';
 
-abstract class DashboardState {}
+sealed class DashboardState {}
 
 class DashboardInitialState extends DashboardState {}
 

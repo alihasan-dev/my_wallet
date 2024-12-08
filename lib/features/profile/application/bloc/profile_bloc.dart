@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/app_strings.dart';
-import '../../../../features/profile/application/bloc/profile_event.dart';
-import '../../../../features/profile/application/bloc/profile_state.dart';
 import '../../../../utils/preferences.dart';
 import '../../../../utils/check_connectivity.dart';
+part 'profile_state.dart';
+part 'profile_event.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wallet/constants/app_theme.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
 import 'bloc/dashboard_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../features/dashboard/application/bloc/dashboard_event.dart';
-import '../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';

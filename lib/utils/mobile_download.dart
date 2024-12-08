@@ -11,7 +11,7 @@ Future<void> downloadFile({required List<int> bytes, required String downloadNam
       Directory? directory = await getApplicationDocumentsDirectory();
       file2 = File('${directory.path}/$downloadName');
     } else {
-    file2 = File("/storage/emulated/0/Download/$downloadName");
+      file2 = File("/storage/emulated/0/Download/$downloadName");
     }
     await file2.writeAsBytes(bytes);
   }

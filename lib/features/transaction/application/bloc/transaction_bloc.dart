@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../../../features/transaction/application/bloc/transaction_event.dart';
 import '../../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../../features/transaction/domain/transaction_model.dart';
@@ -15,10 +11,9 @@ import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:my_wallet/utils/mobile_download.dart'
   if(dart.library.html) 'package:my_wallet/utils/web_download.dart';
-
+import '../../../dashboard/application/bloc/dashboard_bloc.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   // late DateFormat dateFormat;
@@ -27,14 +22,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
   var listTransactionResult = <TransactionModel>[];
   final String userName;
+  final DashboardBloc dashboardBloc;
   final String friendId;
   bool amountAscending = true;
   bool typeAscending = true;
   bool dateAscending = false;
   late DateFormat dateFormat;
   String userId = '';
+  bool isInitialized = true;
 
-  TransactionBloc({required this.userName, required this.friendId}) : super(TransactionInitialState()) {
+  TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
     userId = Preferences.getString(key: AppStrings.prefUserId);
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
@@ -49,6 +46,18 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionTypeSortEvent>(_onTransactionTypeSort);
     on<TransactionScrollEvent>(_onScrollingList);
     on<TransactionExportPDFEvent>(_onExportPDF);
+    on<TransactionProfileUpdateEvent>(_onUpdateProfileEvent);
+
+    dashboardBloc.stream.listen((event) {
+      if(event is DashboardAllUserState && !isInitialized) {
+        final userState = event;
+        var userEvent = userState.allUser.where((item) => item.userId == friendId).toList();
+        if(userEvent.isNotEmpty) {
+          add(TransactionProfileUpdateEvent(userName: userEvent.first.name, profileImage: userEvent.first.profileImg));
+        }
+      }
+      isInitialized = false;
+    });
 
     streamDocumentSnapshot = firebaseStoreInstance.collection('transactions').snapshots().listen((event) {
       listTransactionResult.clear();
@@ -69,6 +78,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onScrollingList(TransactionScrollEvent event, Emitter emit) {
     emit(TransactionScrollState(appbarSize: event.appbarSize));
+  }
+
+  void _onUpdateProfileEvent(TransactionProfileUpdateEvent event, Emitter emit) {
+    emit(TransactionProfileUpdateState(userName: event.userName, profileImage: event.profileImage));
   }
 
   @override

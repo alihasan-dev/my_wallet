@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:my_wallet/features/dashboard/application/bloc/dashboard_event.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
@@ -17,7 +16,6 @@ import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
-import '../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
@@ -61,12 +59,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
     selectedUserId = widget.userId;
     return kIsWeb
     ? Scaffold(body: mainContent(context: context))
-    : BlocProvider(
-      create: (_) => DashboardBloc(),
-      child: Builder(
-        builder: (context) => mainContent(context: context)
-      ),
-    );
+    : mainContent(context: context);
   }
 
   Widget mainContent({required BuildContext context}) {

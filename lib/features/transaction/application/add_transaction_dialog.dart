@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_theme.dart';
+import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../constants/app_color.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../features/transaction/application/bloc/transaction_event.dart';
@@ -36,7 +37,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
   Widget build(BuildContext context) {
     _localizations = AppLocalizations.of(context)!;
     return BlocProvider<TransactionBloc>(
-      create: (_) => TransactionBloc(userName: widget.userName, friendId: widget.friendId),
+      create: (_) => TransactionBloc(userName: widget.userName, friendId: widget.friendId, dashboardBloc: context.read<DashboardBloc>()),
       child: AlertDialog(
         contentPadding: const EdgeInsets.all(AppSize.s15),
         insetPadding: const EdgeInsets.symmetric(horizontal: AppSize.s15),

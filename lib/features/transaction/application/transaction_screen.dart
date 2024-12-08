@@ -42,6 +42,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
 
   String email = AppStrings.emptyString;
   String name = AppStrings.emptyString;
+  String profileImg = AppStrings.emptyString;
   String friendId = AppStrings.emptyString;
   bool errorAmount = false;
   bool errorDate = false;
@@ -74,6 +75,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       email = data!.email;
       name = data.name;
       friendId = data.userId;
+      profileImg = data.profileImg;
     }
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
@@ -134,9 +136,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     Hero(
                                       tag: 'profile',
                                       child: CustomImageWidget(
-                                        imageUrl: widget.userModel == null
-                                        ? ''
-                                        : widget.userModel!.profileImg, 
+                                        imageUrl: profileImg, 
                                         imageSize: AppSize.s18,
                                         circularPadding: AppSize.s5,
                                         strokeWidth: AppSize.s1,
@@ -535,6 +535,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               ? AppColors.white.withOpacity(0.9) 
               : AppColors.white;
             }
+            break;
+          case TransactionProfileUpdateState _:
+            name = state.userName;
+            profileImg = state.profileImage;
             break;
           case TransactionLoadingState _:
             showLoadingDialog(context: context);

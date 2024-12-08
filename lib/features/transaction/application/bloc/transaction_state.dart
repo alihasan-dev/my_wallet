@@ -10,11 +10,6 @@ class DashboardSuccessState extends TransactionState {
   DashboardSuccessState();
 }
 
-class DashboardAllUserState extends TransactionState {
-  List<UserModel> allUser;
-  DashboardAllUserState({required this.allUser});
-}
-
 class TransactionFailedState extends TransactionState {
   String message;
   String title;
@@ -59,4 +54,11 @@ class TransactionExportPDFState extends TransactionState {
   bool isSuccess;
 
   TransactionExportPDFState({this.message = '', this.isSuccess = false});
+}
+
+class TransactionProfileUpdateState extends TransactionState {
+  String userName;
+  String profileImage;
+
+  TransactionProfileUpdateState({this.userName = '', this.profileImage = ''});
 }

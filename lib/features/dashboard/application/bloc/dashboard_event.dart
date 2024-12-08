@@ -1,6 +1,6 @@
-import 'package:my_wallet/features/dashboard/domain/user_model.dart';
+part of 'dashboard_bloc.dart';
 
-abstract class DashboardEvent {}
+sealed class DashboardEvent {}
 
 class DashboardInitialEvent extends DashboardEvent {}
 

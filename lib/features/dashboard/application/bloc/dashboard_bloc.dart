@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../features/dashboard/application/bloc/dashboard_event.dart';
-import '../../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
+
+part 'dashboard_state.dart';
+part 'dashboard_event.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 

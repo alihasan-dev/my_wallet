@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wallet/constants/app_theme.dart';
+import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
 import 'package:my_wallet/features/dashboard/domain/user_model.dart';
 import 'package:my_wallet/features/profile/application/profile_screen.dart';
 import 'package:my_wallet/features/transaction/application/transaction_screen.dart';
@@ -8,10 +9,11 @@ import 'package:my_wallet/features/transaction/application/transaction_screen.da
 import 'bloc/transaction_bloc.dart';
 
 class TransactionDetails extends StatefulWidget {
-
+  final DashboardBloc dashboardBloc;
   final UserModel userModel;
 
   const TransactionDetails({
+    required this.dashboardBloc,
     required this.userModel,
     super.key
   });
@@ -42,7 +44,8 @@ class TransactionDetailsState extends State<TransactionDetails> {
           child: BlocProvider(
             create: (_) => TransactionBloc(
               userName: widget.userModel.name, 
-              friendId: widget.userModel.userId
+              friendId: widget.userModel.userId,
+              dashboardBloc: widget.dashboardBloc
             ), 
             child: TransactionScreen(userModel: widget.userModel, transactionDetailsState:  this)
           )
