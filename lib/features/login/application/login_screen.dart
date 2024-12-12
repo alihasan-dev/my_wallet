@@ -46,7 +46,7 @@ class LoginScreenState extends State<LoginScreen>  with Helper{
     _loginBloc = context.read<LoginBloc>();
     emailTextController = TextEditingController();
     passwordTextController = TextEditingController();
-    if(Preferences.getBool(key: AppStrings.prefRememberMe)){
+    if(Preferences.getBool(key: AppStrings.prefRememberMe)) {
       emailTextController.text = Preferences.getString(key: AppStrings.prefEmail);
       passwordTextController.text = Preferences.getString(key: AppStrings.prefPassword);
       isRememberMe = true;

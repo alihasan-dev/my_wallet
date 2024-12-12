@@ -10,6 +10,7 @@ class AppIcons {
   static const IconData backArrowIcon = Icons.arrow_back; 
   static const IconData backArrowIconIOS = Icons.arrow_back_ios; 
   static const IconData personIcon = Icons.person;
+  static const IconData userNotFoundIcon = Icons.account_circle_sharp;
   static const IconData filterIcon = Icons.filter_list;
   static const IconData swapIcon = Icons.swap_vert_outlined;
   static const IconData accountCircleIcon = Icons.account_circle_outlined;

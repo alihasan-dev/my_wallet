@@ -52,9 +52,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     settingItemList.add(SettingModel(icon: Icons.contrast_outlined, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
     settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser, showSwitch: true));
     if(!kIsWeb) {
-      settingItemList.add(SettingModel(icon: Icons.fingerprint, title: 'Enable Biometric', subTitle: 'App unlock with biometric', showSwitch: true));
+      settingItemList.add(SettingModel(icon: Icons.fingerprint, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
     }
-    settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: 'About MyWallet'));
+    settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
   }
 

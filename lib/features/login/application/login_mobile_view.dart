@@ -78,7 +78,11 @@ class LoginMobileView extends StatelessWidget {
         CustomButton(
           title: localizations.login,
           titleSize: AppSize.s16, 
-          onTap: () => loginBloc.add(LoginSubmitEvent(email: loginScreenState.emailTextController.text, password: loginScreenState.passwordTextController.text, isRememberMe: loginScreenState.isRememberMe))
+          onTap: () => loginBloc.add(LoginSubmitEvent(
+            email: loginScreenState.emailTextController.text, 
+            password: loginScreenState.passwordTextController.text, 
+            isRememberMe: loginScreenState.isRememberMe
+          ))
         ),
         const SizedBox(height: AppSize.s20),
         Row(
@@ -87,7 +91,11 @@ class LoginMobileView extends StatelessWidget {
           children: [
             CustomText(
               title: '${localizations.dontHaveAccount}  ', 
-              textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black)
+              textStyle: getMediumStyle(
+                color: Helper.isDark 
+                ? AppColors.white.withOpacity(0.8) 
+                : AppColors.black
+              ),
             ),
             CustomInkWellWidget(
               onTap: () => context.push(AppRoutes.signupScreen), 

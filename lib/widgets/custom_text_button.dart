@@ -29,7 +29,7 @@ class CustomTextButton extends StatelessWidget {
     this.onPressed,
     this.showBorder,
     this.isShapeStadium = false,
-    this.verticalPadding = AppSize.s8,
+    this.verticalPadding = AppSize.s10,
     this.horizontalPadding = AppSize.s0,
     this.borderColor,
     this.backgroundColor,

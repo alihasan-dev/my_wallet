@@ -34,7 +34,16 @@
   "addTransaction": "Add Transaction",
   "userProfile": "User Profile",
   "deleteUser": "Delete User",
-  "deleteUserMsg": "Are you sure you want to delete",
+  "deleteUserMsg": "Are you sure you want to delete {name}",
+  "@deleteUserMsg": {
+    "description": "Delete user message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ali Hasan"
+      }
+    }
+  },
   "selectImg": "Select Image",
   "gallery": "Gallery",
   "camera": "Camera",
@@ -54,10 +63,11 @@
   "forgotPasswordMsg": "Enter the email address associated with your account and we'll send you a link to reset your password",
   "send": "Send",
   "imageSizeMsg": "Image size should not be more than 2MB",
-
   "contacts" : "Contacts",
   "aboutMyWallet": "About MyWallet",
   "addUser": "Add User",
   "backToLogin": "Back to Login",
-  "noUserFound": "No user found"
+  "noUserFound": "No user found",
+  "enableBiometric": "Enable Biometric",
+  "enableBiometricMsg": "App unlock using biometric"
 }

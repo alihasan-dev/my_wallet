@@ -36,7 +36,7 @@ class AppRoutes {
   static const String transactionScreen = '/transaction';
   static const String forgotPasswordScreen = 'forgotPassword';
   static const String settingsScreen = 'settings';
-  static const String profileScreen = '/profile';
+  static const String profileScreen = 'profile';
 
   static final GoRouter router = kIsWeb
   ? webRoutes
@@ -72,6 +72,12 @@ class AppRoutes {
         builder: (_, __) => BlocProvider(create: (_) => SignupBloc(), child: const SignupScreen())
       ),
       ShellRoute(
+        redirect: (context, state) {
+          if(Preferences.getString(key: AppStrings.prefUserId).isEmpty && (state.fullPath == dashboard)) {
+            return loginScreen;
+          }
+          return null;
+        },
         pageBuilder: (context, state, child) => defaultPageBuilder(
           context,
           state,
@@ -95,6 +101,16 @@ class AppRoutes {
             ),
             routes: [
               GoRoute(
+                path: profileScreen,
+                pageBuilder: (context, state) { 
+                  return defaultPageBuilder(
+                    context,
+                    state,
+                    BlocProvider(create: (_) => ProfileBloc(), child: const ProfileScreen()),
+                  );
+                }
+              ),
+              GoRoute(
                 path: settingsScreen,
                 pageBuilder: (context, state) => defaultPageBuilder(
                   context,
@@ -114,7 +130,7 @@ class AppRoutes {
                       key: Key(data == null ? '' : data.userId),
                       userModel: data!,
                       dashboardBloc: context.read<DashboardBloc>(),
-                    )
+                    ),
                   );
                 },
                 routes: [
@@ -200,10 +216,10 @@ class AppRoutes {
       //   path: settingsScreen,
       //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
       // ),
-      GoRoute(
-        path: profileScreen,
-        builder: (_, state) => ProfileScreen(userId: state.extra as String)
-      ),
+      // GoRoute(
+      //   path: profileScreen,
+      //   builder: (_, state) => ProfileScreen(userId: state.extra as String)
+      // ),
       // GoRoute(
       //   path: transactionScreen,
       //   builder: (_, state) {

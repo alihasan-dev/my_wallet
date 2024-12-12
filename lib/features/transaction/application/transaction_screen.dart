@@ -331,7 +331,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     children: [
                                       CustomText(
                                         title: _localizations!.amount, 
-                                        textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                        textStyle: getSemiBoldStyle(
+                                          color: textColor, 
+                                          fontSize: AppSize.s14
+                                        ),
                                       ),
                                       Icon(
                                         AppIcons.swapIcon, 

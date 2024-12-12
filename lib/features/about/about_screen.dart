@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import '../../constants/app_icons.dart';
@@ -21,10 +22,8 @@ class AboutScreen extends StatelessWidget {
       insetPadding: EdgeInsets.zero,
       contentPadding: const EdgeInsets.all(AppSize.s15),
       content: Container(
-        width: MyAppTheme.columnWidth,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSize.s10)
-        ),
+        width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s40),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),
         child: ListView(
           shrinkWrap: true,
           children: [

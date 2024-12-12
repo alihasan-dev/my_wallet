@@ -13,6 +13,7 @@ class DashboardWebView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Container(
       width: double.maxFinite,
       decoration: const BoxDecoration(
@@ -32,7 +33,7 @@ class DashboardWebView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomText(
-                  title: 'Contacts',
+                  title: localizations.contacts,
                   textStyle: getBoldStyle(color: AppColors.white),
                 ),
                 PopupMenuButton<String>(
@@ -44,12 +45,21 @@ class DashboardWebView extends StatelessWidget {
                   itemBuilder: (_) {
                     return <PopupMenuEntry<String>> [
                       PopupMenuItem<String>(
+                        value: AppStrings.profile,
+                        padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          leading: const Icon(AppIcons.personIcon),
+                          title: CustomText(title: localizations.profile, textStyle: getMediumStyle()),
+                        ),
+                      ),
+                      PopupMenuItem<String>(
                         value: AppStrings.settings,
                         padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
                           leading: const Icon(AppIcons.settingsIcon),
-                          title: CustomText(title: 'Settings', textStyle: getMediumStyle()),
+                          title: CustomText(title: localizations.settings, textStyle: getMediumStyle()),
                         ),
                       ),
                       PopupMenuItem<String>(
@@ -58,13 +68,17 @@ class DashboardWebView extends StatelessWidget {
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
                           leading: const Icon(AppIcons.logoutIcon),
-                          title: CustomText(title: 'Logout', textStyle: getMediumStyle()),
+                          title: CustomText(title: localizations.logout, textStyle: getMediumStyle()),
                         ),
                       ),
                     ];
                   },
                   onSelected: (value) {
                     switch (value) {
+                      case AppStrings.profile:
+                        context.go('/dashboard/profile');
+                        dashboardBloc.add(DashboardSelectedUserEvent());
+                        break;
                       case AppStrings.settings:
                         context.go('/dashboard/settings');
                         dashboardBloc.add(DashboardSelectedUserEvent());
@@ -197,14 +211,14 @@ class DashboardWebView extends StatelessWidget {
                       );
                     },
                   )
-                : const CustomEmptyWidget(title: AppStrings.noUserFound,icon: AppIcons.personIcon),
+                : const CustomEmptyWidget(title: AppStrings.noUserFound,icon: AppIcons.userNotFoundIcon),
                 Positioned(
                   bottom: 16.0,
                   right: 16.0,
                   child: FloatingActionButton.extended(
                     onPressed: dashboardScreenState.addUserDialog,
                     backgroundColor: AppColors.primaryColor,
-                    label: CustomText(title: "New User", textStyle: getMediumStyle(fontSize: AppSize.s16, color: AppColors.white)),
+                    label: CustomText(title: localizations.addUser, textStyle: getMediumStyle(fontSize: AppSize.s16, color: AppColors.white)),
                     icon: const Icon(Icons.add, color: AppColors.white),
                   ),
                 ),

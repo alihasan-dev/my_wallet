@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import '../widgets/custom_text.dart';
-import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
 
@@ -23,11 +22,11 @@ class CustomEmptyWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, size: AppSize.s55),
+          Icon(icon, size: AppSize.s50),
           CustomText(
             title: title, 
             textStyle: getSemiBoldStyle(
-              fontSize: AppSize.s20
+              fontSize: AppSize.s18
             ),
           ),
         ],

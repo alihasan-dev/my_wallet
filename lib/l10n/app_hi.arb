@@ -34,7 +34,16 @@
   "addTransaction": "लेन-देन जोड़ें",
   "userProfile": "उपभोक्ता प्रोफ़ाइल",
   "deleteUser": "उपभोक्ता मिटायें",
-  "deleteUserMsg": "क्या आप आश्वस्त है कि आपको डिलीट करना है",
+  "deleteUserMsg": "क्या आप वाकई {name} को हटाना चाहते हैं?",
+  "@deleteUserMsg": {
+    "description": "Delete user message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ali Hasan"
+      }
+    }
+  },
   "selectImg": "चित्र चुनें",
   "gallery": "गैलरी",
   "camera": "कैमरा",
@@ -54,9 +63,11 @@
   "forgotPasswordMsg": "अपने खाते से संबद्ध ईमेल पता दर्ज करें और हम आपको आपका पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे",
   "send": "भेजें",
   "imageSizeMsg": "फोटो का आकार 2MB से अधिक नहीं होना चाहिए",
-  "contacts" : "Contacts",
-  "aboutMyWallet": "About MyWallet",
-  "addUser": "Add User",
-  "backToLogin": "Back to Login",
-  "noUserFound": "No user found"
+  "contacts" : "संपर्क",
+  "aboutMyWallet": "मायवॉलेट के बारे में",
+  "addUser": "यूजर जोड़ें",
+  "backToLogin": "लॉगिन पर वापस जाएं",
+  "noUserFound": "कोई यूजर नहीं मिला",
+  "enableBiometric": "बायोमेट्रिक सक्षम करें",
+  "enableBiometricMsg": "बायोमेट्रिक का उपयोग करके ऐप अनलॉक करें"
 }

@@ -89,9 +89,10 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
               return true;
             },
             builder: (context, state) {
-              return widget.userId.isEmpty
-              ? mainWidget(bContext: context)
-              : Scaffold(
+              // return widget.userId.isNotEmpty
+              // ? mainWidget(bContext: context)
+              // : 
+              return Scaffold(
                 backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
                 appBar: AppBar(
                   centerTitle: true, 
@@ -168,7 +169,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   Future<void> onUserDelete(String name, BuildContext bContext) async {
-    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: "${_localizations!.deleteUserMsg} $name", localizations: _localizations!)) {
+    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: _localizations!.deleteUserMsg(name), localizations: _localizations!)) {
       bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
     }
   }
@@ -176,7 +177,13 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   Widget mainWidget({required BuildContext bContext}) {
     return ListView(
       shrinkWrap: true,
-      padding: const EdgeInsets.all(AppSize.s20),
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSize.s20,
+        horizontal: !kIsWeb 
+        ? AppSize.s20
+        : AppSize.s20
+        // : context.screenWidth * 0.18
+      ),
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
