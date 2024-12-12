@@ -118,34 +118,37 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(width: AppSize.s10),
-                          Material(
-                            color: AppColors.transparent,
-                            child: InkWell(
-                              onTap: () => context.pop(),
-                              borderRadius: BorderRadius.circular(30),
-                              child: Ink(
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      !kIsWeb && Platform.isIOS
-                                      ? AppIcons.backArrowIconIOS
-                                      : AppIcons.backArrowIcon, 
-                                      color: AppColors.white,
-                                      size: AppSize.s22,
-                                    ),
-                                    Hero(
-                                      tag: 'profile',
-                                      child: CustomImageWidget(
-                                        imageUrl: profileImg, 
-                                        imageSize: AppSize.s18,
-                                        circularPadding: AppSize.s5,
-                                        strokeWidth: AppSize.s1,
-                                        padding: 1.2,
-                                        borderWidth: 0,
-                                        fromProfile: false,
+                          Tooltip(
+                            message: AppStrings.back,
+                            child: Material(
+                              color: AppColors.transparent,
+                              child: InkWell(
+                                onTap: () => context.pop(),
+                                borderRadius: BorderRadius.circular(30),
+                                child: Ink(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        !kIsWeb && (Platform.isIOS || Platform.isMacOS)
+                                        ? AppIcons.backArrowIconIOS
+                                        : AppIcons.backArrowIcon, 
+                                        color: AppColors.white,
+                                        size: AppSize.s22,
                                       ),
-                                    ),
-                                  ],
+                                      Hero(
+                                        tag: 'profile',
+                                        child: CustomImageWidget(
+                                          imageUrl: profileImg, 
+                                          imageSize: AppSize.s40,
+                                          circularPadding: AppSize.s5,
+                                          strokeWidth: AppSize.s1,
+                                          padding: 1.2,
+                                          borderWidth: 0,
+                                          fromProfile: false,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -178,6 +181,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     Row(
                       children: [
                         IconButton(
+                          tooltip: AppStrings.addTransaction,
                           onPressed: () => showAddUserSheet(),
                           icon: const Icon(
                             AppIcons.addIcon, 
@@ -185,14 +189,17 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             size: AppSize.s26
                           ),
                         ),
-                        Offstage(
-                          offstage: availableBalance == 0.0 ? true : false,
-                          child: IconButton(
-                            onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
-                            icon: const Icon(
-                              AppIcons.downloadIcon, 
-                              color: AppColors.white
-                            ),
+                        AnimatedSize(
+                          duration: MyAppTheme.animationDuration,
+                          child: availableBalance == 0.0
+                          ? const SizedBox.shrink()
+                          : IconButton(
+                              tooltip: 'Export Report',
+                              onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
+                              icon: const Icon(
+                                AppIcons.downloadIcon, 
+                                color: AppColors.white
+                              ),
                           ),
                         ),
                       ],

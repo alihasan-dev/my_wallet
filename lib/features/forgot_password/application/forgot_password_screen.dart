@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:my_wallet/utils/app_extension_method.dart';
+import 'package:my_wallet/widgets/custom_text_button.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_style.dart';
 import '../../../utils/helper.dart';
@@ -161,8 +162,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
         CustomButton(
           title: _localizations!.send,
           titleSize: AppSize.s16, 
-          onTap: () => _forgotPasswordBloc.add(ForgotPasswordSubmitEvent(email: _emailTextController.text))
+          verticalPadding: AppSize.s10,
+          onTap: errorEmail.isNotEmpty || _emailTextController.text.isBlank
+          ? null
+          : () => _forgotPasswordBloc.add(ForgotPasswordSubmitEvent(email: _emailTextController.text))
         ),
+        const SizedBox(height: AppSize.s18),
+        Offstage(
+          offstage: kIsWeb ? false : true,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomTextButton(
+                title: 'Back to Login',
+                onPressed: context.pop,
+                isShapeStadium: true,
+                foregroundColor: AppColors.primaryColor,
+                backgroundColor: AppColors.transparent,
+                horizontalPadding: AppSize.s12,
+                isSelected: true,
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

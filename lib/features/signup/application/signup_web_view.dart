@@ -62,6 +62,7 @@ class SignupWebView extends StatelessWidget {
             CustomButton(
               title: localizations.signup,
               titleSize: AppSize.s16, 
+              verticalPadding: AppSize.s10,
               onTap: () => context.read<SignupBloc>().add(SignupSubmitEvent(
                 name: signupScreenState.nameTextController.text, 
                 email: signupScreenState.emailTextController.text, 

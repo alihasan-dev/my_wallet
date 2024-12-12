@@ -53,5 +53,10 @@
   "forgotPassword": "पासवर्ड भूल गए",
   "forgotPasswordMsg": "अपने खाते से संबद्ध ईमेल पता दर्ज करें और हम आपको आपका पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे",
   "send": "भेजें",
-  "imageSizeMsg": "फोटो का आकार 2MB से अधिक नहीं होना चाहिए"
+  "imageSizeMsg": "फोटो का आकार 2MB से अधिक नहीं होना चाहिए",
+  "contacts" : "Contacts",
+  "aboutMyWallet": "About MyWallet",
+  "addUser": "Add User",
+  "backToLogin": "Back to Login",
+  "noUserFound": "No user found"
 }

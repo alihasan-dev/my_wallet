@@ -83,7 +83,7 @@ class LoginWebView extends StatelessWidget {
             CustomButton(
               title: localizations.login,
               titleSize: AppSize.s15, 
-              verticalPadding: AppSize.s8,
+              verticalPadding: AppSize.s10,
               onTap: () => loginBloc.add(LoginSubmitEvent(
                 email: loginScreenState.emailTextController.text, 
                 password: loginScreenState.passwordTextController.text, 

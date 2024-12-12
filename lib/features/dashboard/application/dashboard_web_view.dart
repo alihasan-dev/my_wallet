@@ -124,7 +124,7 @@ class DashboardWebView extends StatelessWidget {
                                     children: [
                                       CustomImageWidget(
                                         imageUrl: data.profileImg, 
-                                        imageSize: AppSize.s18,
+                                        imageSize: AppSize.s40,
                                         circularPadding: AppSize.s5,
                                         strokeWidth: AppSize.s1,
                                         padding: 1.5,

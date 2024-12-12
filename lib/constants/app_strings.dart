@@ -60,6 +60,7 @@ class AppStrings {
   static const String settings = 'Settings';
   static const String viewProfile = 'View Profile';
   static const String success = 'Success';
+  static const String back = 'Back';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -31,10 +32,10 @@ class ProfileScreen extends StatefulWidget {
   });
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with Helper {
+class ProfileScreenState extends State<ProfileScreen> with Helper {
   
   late TextEditingController emailTextController;
   late TextEditingController nameTextController;
@@ -91,9 +92,10 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               return widget.userId.isEmpty
               ? mainWidget(bContext: context)
               : Scaffold(
+                backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
                 appBar: AppBar(
                   centerTitle: true, 
-                  leading: widget.closeButton ?? const Center(child: BackButton()),
+                  leading: widget.closeButton ?? const Center(child: Tooltip(message: AppStrings.back ,child: BackButton())),
                   backgroundColor: AppColors.primaryColor,
                   title: CustomText(
                     title: _localizations!.profile, 
@@ -176,32 +178,40 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
       shrinkWrap: true,
       padding: const EdgeInsets.all(AppSize.s20),
       children: [
-        Stack(
-          alignment: Alignment.center,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Hero(
-              tag: 'profile',
-              child: CustomImageWidget(
-                imageUrl: imageUrl,
-                imageSize: AppSize.s45,
-              ),
-            ),
-            Positioned(
-              bottom: 8,
-              right: (MyAppTheme.columnWidth / 2) - 75,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AppSize.s30),
-                // onTap: () => showModalBottomSheet(context: bContext, builder: (context) => Text('sdf')),
-                onTap: () => showImagePickerSheet(bContext),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSize.s8),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+            SizedBox(
+              width: 85,
+              height: 85,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Hero(
+                    tag: 'profile',
+                    child: CustomImageWidget(
+                      imageUrl: imageUrl,
+                      imageSize: 85,
+                    ),
                   ),
-                  child: const Icon(Icons.edit, size: AppSize.s16, color: AppColors.white),
-                ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(AppSize.s30),
+                      onTap: () => showImagePickerSheet(bContext),
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSize.s8),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primaryColor,
+                          boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+                        ),
+                        child: const Icon(Icons.edit, size: AppSize.s16, color: AppColors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -294,117 +304,125 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   void showImagePickerSheet(BuildContext mContext) {
-    showModalBottomSheet(
+    showDialog(
       context: mContext, 
       builder: (_) {
-        return Container(
-          width: context.screenWidth,
-          color: Helper.isDark
-          ? AppColors.backgroundColorDark
-          : AppColors.white,
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(AppSize.s20),
-            children: [
-              CustomText(
-                title: _localizations!.selectImg, 
-                textStyle: getMediumStyle(
-                  color: Helper.isDark
-                  ? AppColors.white.withOpacity(0.8)
-                  : AppColors.black, 
-                  fontSize: AppSize.s16
-                ),
-              ),
-              const SizedBox(height: AppSize.s18),
-              Row(
-                children: [
-                  const SizedBox(width: AppSize.s10),
-                  InkWell(
-                    onTap: () async {
-                      context.pop();
-                      var data = await pickImage(imageSource: ImageSource.camera, context: context);
-                      if(data.isNotEmpty && context.mounted){
-                        mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: AppSize.s26,
-                          child: Icon(
-                            Icons.camera, 
-                            size: AppSize.s28, 
-                            color: Helper.isDark
-                            ? AppColors.white.withOpacity(0.8)
-                            : AppColors.primaryColor
-                          ),
-                        ),
-                        const SizedBox(height: AppSize.s4),
-                        CustomText(
-                          title: _localizations!.camera, 
-                          textColor: Helper.isDark
-                          ? AppColors.white.withOpacity(0.8)
-                          : AppColors.black,
-                        ),
-                      ],
-                    ),
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          insetPadding: const EdgeInsets.only(bottom: kIsWeb ? AppSize.s0 : AppSize.s18),
+          alignment: kIsWeb ? Alignment.center : Alignment.bottomCenter,
+          content: Container(
+            width: MyAppTheme.columnWidth,
+            decoration: BoxDecoration(
+              color: Helper.isDark
+              ? AppColors.backgroundColorDark
+              : AppColors.white,
+              borderRadius: BorderRadius.circular(AppSize.s10)
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(AppSize.s20),
+              children: [
+                CustomText(
+                  title: _localizations!.selectImg, 
+                  textStyle: getMediumStyle(
+                    color: Helper.isDark
+                    ? AppColors.white.withOpacity(0.8)
+                    : AppColors.black, 
+                    fontSize: AppSize.s16
                   ),
-                  const SizedBox(width: AppSize.s30),
-                  InkWell(
-                    onTap: () async {
-                      context.pop();
-                      var data = await pickImage(imageSource: ImageSource.gallery, context: context);
-                      if(data.isNotEmpty && context.mounted){
-                        mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: AppSize.s26,
-                          child: Icon(
-                            Icons.photo, 
-                            size: AppSize.s28, 
-                            color: Helper.isDark
-                            ? AppColors.white.withOpacity(0.8)
-                            : AppColors.primaryColor
-                          ),
-                        ),
-                        const SizedBox(height: AppSize.s4),
-                        CustomText(
-                          title: _localizations!.gallery, 
-                          textColor: Helper.isDark
-                          ? AppColors.white.withOpacity(0.8)
-                          : AppColors.black,  
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSize.s10),
-              Container(
-                padding: const EdgeInsets.all(AppSize.s5),
-                decoration: BoxDecoration(
-                  color: AppColors.amber.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppSize.s4)
                 ),
-                child: Row(
+                const SizedBox(height: AppSize.s18),
+                Row(
                   children: [
-                    const Icon(
-                      AppIcons.warningIcon, 
-                      color: AppColors.amber, 
-                      size: AppSize.s20
+                    const SizedBox(width: AppSize.s10),
+                    InkWell(
+                      onTap: () async {
+                        context.pop();
+                        var data = await pickImage(imageSource: ImageSource.camera, context: context);
+                        if(data.isNotEmpty && context.mounted){
+                          mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                        }
+                      },
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: AppSize.s26,
+                            child: Icon(
+                              Icons.camera, 
+                              size: AppSize.s28, 
+                              color: Helper.isDark
+                              ? AppColors.white.withOpacity(0.8)
+                              : AppColors.primaryColor
+                            ),
+                          ),
+                          const SizedBox(height: AppSize.s4),
+                          CustomText(
+                            title: _localizations!.camera, 
+                            textColor: Helper.isDark
+                            ? AppColors.white.withOpacity(0.8)
+                            : AppColors.black,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: AppSize.s5),
-                    CustomText(
-                      title: _localizations!.imageSizeMsg, 
-                      textColor: AppColors.amber
+                    const SizedBox(width: AppSize.s30),
+                    InkWell(
+                      onTap: () async {
+                        context.pop();
+                        var data = await pickImage(imageSource: ImageSource.gallery, context: context);
+                        if(data.isNotEmpty && context.mounted){
+                          mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                        }
+                      },
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: AppSize.s26,
+                            child: Icon(
+                              Icons.photo, 
+                              size: AppSize.s28, 
+                              color: Helper.isDark
+                              ? AppColors.white.withOpacity(0.8)
+                              : AppColors.primaryColor
+                            ),
+                          ),
+                          const SizedBox(height: AppSize.s4),
+                          CustomText(
+                            title: _localizations!.gallery, 
+                            textColor: Helper.isDark
+                            ? AppColors.white.withOpacity(0.8)
+                            : AppColors.black,  
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSize.s10),
+                Container(
+                  padding: const EdgeInsets.all(AppSize.s5),
+                  decoration: BoxDecoration(
+                    color: AppColors.amber.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(AppSize.s4)
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        AppIcons.warningIcon, 
+                        color: AppColors.amber, 
+                        size: AppSize.s20
+                      ),
+                      const SizedBox(width: AppSize.s5),
+                      CustomText(
+                        title: _localizations!.imageSizeMsg, 
+                        textColor: AppColors.amber
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       }

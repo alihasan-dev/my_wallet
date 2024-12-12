@@ -32,6 +32,8 @@ class CustomImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: imageSize,
+      height: imageSize,
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         shape: BoxShape.circle,

@@ -62,7 +62,7 @@ class LoginMobileView extends StatelessWidget {
               ],
             ),
             InkWell(
-              onTap: () => context.push(AppRoutes.forgotPasswordScreen),
+              onTap: () => context.go('/login/forgotPassword'),
               child: CustomText(
                 title: localizations.forgotPassword, 
                 textStyle: getMediumStyle(

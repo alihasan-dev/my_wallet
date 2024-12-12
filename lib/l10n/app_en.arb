@@ -38,7 +38,7 @@
   "selectImg": "Select Image",
   "gallery": "Gallery",
   "camera": "Camera",
-  "appearance": "Appearance",
+  "appearance": "Appearaance",
   "theme": "Theme",
   "systemDefault": "System default",
   "light": "Light",
@@ -53,5 +53,11 @@
   "forgotPassword": "Forgot Password",
   "forgotPasswordMsg": "Enter the email address associated with your account and we'll send you a link to reset your password",
   "send": "Send",
-  "imageSizeMsg": "Image size should not be more than 2MB"
+  "imageSizeMsg": "Image size should not be more than 2MB",
+
+  "contacts" : "Contacts",
+  "aboutMyWallet": "About MyWallet",
+  "addUser": "Add User",
+  "backToLogin": "Back to Login",
+  "noUserFound": "No user found"
 }

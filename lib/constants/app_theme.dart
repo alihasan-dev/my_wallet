@@ -16,6 +16,7 @@ abstract class MyAppTheme {
 
   static bool isThreeColumnMode(BuildContext context) => MediaQuery.of(context).size.width > MyAppTheme.columnWidth * 3.5;
 
+  static const Duration animationDuration = Duration(milliseconds: 250);
 
   static ThemeData get getAppTheme {
     return ThemeData(

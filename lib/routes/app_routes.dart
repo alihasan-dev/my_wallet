@@ -40,7 +40,7 @@ class AppRoutes {
 
   static final GoRouter router = kIsWeb
   ? webRoutes
-  : mobileRoutes;
+  : webRoutes;
 
   static final GoRouter webRoutes = GoRouter(
     redirect: (context, state) {

@@ -29,7 +29,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   bool dateAscending = false;
   late DateFormat dateFormat;
   String userId = '';
-  bool isInitialized = true;
 
   TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
@@ -49,14 +48,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionProfileUpdateEvent>(_onUpdateProfileEvent);
 
     dashboardBloc.stream.listen((event) {
-      if(event is DashboardAllUserState && !isInitialized) {
+      if(event is DashboardAllUserState) {
         final userState = event;
         var userEvent = userState.allUser.where((item) => item.userId == friendId).toList();
         if(userEvent.isNotEmpty) {
           add(TransactionProfileUpdateEvent(userName: userEvent.first.name, profileImage: userEvent.first.profileImg));
         }
       }
-      isInitialized = false;
     });
 
     streamDocumentSnapshot = firebaseStoreInstance.collection('transactions').snapshots().listen((event) {

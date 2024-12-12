@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wallet/constants/app_strings.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
 import 'package:my_wallet/features/dashboard/domain/user_model.dart';
 import 'package:my_wallet/features/profile/application/profile_screen.dart';
 import 'package:my_wallet/features/transaction/application/transaction_screen.dart';
-
 import 'bloc/transaction_bloc.dart';
 
 class TransactionDetails extends StatefulWidget {
@@ -51,7 +51,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
           )
         ),
         AnimatedSize(
-          duration: const Duration(milliseconds: 250),
+          duration: MyAppTheme.animationDuration,
           child: ValueListenableBuilder(
             valueListenable: _displayProfileColumn,
             builder: (context, displayChatDetailsColumn, _) {
@@ -75,6 +75,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
                 child: ProfileScreen(
                   userId: widget.userModel.userId,
                   closeButton: IconButton(
+                    tooltip: AppStrings.close,
                     onPressed: toggleDisplayProfileColumn, 
                     icon: const Icon(Icons.close)
                   ),
