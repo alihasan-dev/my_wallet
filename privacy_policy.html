@@ -3,22 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms and Services</title>
+  <title>MyWallet - Transaction Tracking Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1em 0;
+      text-align: center;
+    }
+    main {
+      padding: 2em;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    h1, h2, h3 {
+      color: #007bff;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 0.5em;
+    }
+    footer {
+      text-align: center;
+      padding: 1em 0;
+      background: #007bff;
+      color: white;
+      margin-top: 2em;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Terms and Services</h1>
+    <h1>MyWallet</h1>
+    <p>A Powerful Mobile Tool for Tracking Transactions</p>
   </header>
-  <section>
-    <h2>Introduction</h2>
-    <p>Welcome to our website! Please read the following terms and conditions carefully.</p>
-  </section>
-  <section>
-    <h2>Terms of Use</h2>
-    <p>By using this site, you agree to the following terms...</p>
-  </section>
+  <main>
+    <section>
+      <h2>Overview</h2>
+      <p>The application we'll discuss is designed to be a powerful yet user-friendly mobile tool for tracking user transactions. This app allows users to record and view their income and expenses, categorize transactions, and review historical data to better understand spending habits.</p>
+      <p>Using Firebase as the backend platform allows us to manage user data securely and efficiently while leveraging features like real-time data sync, authentication, and cloud storage.</p>
+    </section>
+    <section>
+      <h2>Key Features of the Application</h2>
+      <ul>
+        <li><strong>User Authentication:</strong> Secure login and sign-up options using Firebase Authentication, with support for email-based authentication.</li>
+        <li><strong>Transaction Entry:</strong> Users can add new transactions, specifying details like amount, category, and date.</li>
+        <li><strong>Real-Time Sync:</strong> Firebase’s real-time database keeps transaction data up to date across all of the user’s devices.</li>
+        <li><strong>Categorization and Filtering:</strong> Users can filter transactions by type (income/expense) and category (e.g., Food, Rent, Transportation), allowing them to get insights into specific spending areas.</li>
+        <li><strong>Data Storage and Security:</strong> All data is stored securely on Firebase Cloud Firestore, providing both offline capabilities and robust data storage.</li>
+        <li><strong>Data Analytics and Insights:</strong> Users can view basic analytics (e.g., monthly spending, income versus expenses) to gain insights into their financial habits.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Basic Workflow of the Application</h2>
+      <ol>
+        <li><strong>User Registration/Login:</strong> When users first open the app, they’ll be prompted to register or log in using Firebase Authentication.</li>
+        <li><strong>Add Transaction:</strong> After authentication, users can add transaction details such as amount, category, date, and description.</li>
+        <li><strong>Data Storage:</strong> Transaction data is saved to Firebase Cloud Firestore, making it available on all synced devices in real time.</li>
+        <li><strong>View and Manage Transactions:</strong> Users can browse their past transactions, filter by category, and view monthly or weekly spending summaries.</li>
+        <li><strong>Insights and Analytics:</strong> The app provides insights, allowing users to track spending habits, identify major spending categories, and better understand their financial situation.</li>
+      </ol>
+    </section>
+    <section>
+      <h2>Key Technologies and Tools</h2>
+      <ul>
+        <li><strong>Frontend Framework:</strong> Flutter.</li>
+        <li><strong>Backend as a Service (BaaS):</strong> Firebase, which provides database, authentication, analytics, and storage services.</li>
+        <li><strong>Cloud Firestore:</strong> Firebase’s NoSQL database to store transaction records.</li>
+        <li><strong>Firebase Authentication:</strong> For managing user registration and login.</li>
+      </ul>
+    </section>
+  </main>
   <footer>
-    <p>&copy; 2024 Your Company</p>
+    <p>&copy; 2024 MyWallet. All Rights Reserved.</p>
   </footer>
 </body>
 </html>
