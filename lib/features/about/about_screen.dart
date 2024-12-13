@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wallet/constants/app_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_images.dart';
 import '../../constants/app_strings.dart';
@@ -50,21 +51,25 @@ class AboutScreen extends StatelessWidget {
               title: '  \u00a9 2024 Traversal Inc.',
               textSize: AppSize.s12,
             ),
-            const InkWell(
+            InkWell(
               onTap: null,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: AppSize.s12),
+                padding: const EdgeInsets.symmetric(vertical: AppSize.s12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomText(
+                    const CustomText(
                       title: '  Terms & Privacy Policy', 
                       textSize: AppSize.s14
                     ),
-                    Icon(
-                      AppIcons.openInNewIcon,
-                      size: AppSize.s20,
-                      color: AppColors.grey
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: launchPolicyUrl, 
+                      icon: const Icon(
+                        AppIcons.openInNewIcon,
+                        size: AppSize.s20,
+                        color: AppColors.grey
+                      )
                     ),
                   ],
                 ),
@@ -74,5 +79,12 @@ class AboutScreen extends StatelessWidget {
         ),
       )
     );
+  }
+
+  Future<void> launchPolicyUrl() async {
+    final Uri uri = Uri.parse("https://alihasan-dev.github.io/my_wallet/privacy_policy.html");
+    if(!await launchUrl(uri)) {
+      debugPrint("Couldn't launch the url");
+    }
   }
 }
