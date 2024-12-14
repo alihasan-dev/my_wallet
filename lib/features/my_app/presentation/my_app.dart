@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     ///set app status bar color
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor));
-    ///set app prefered orientation
+    ///set app preferred orientation
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return BlocBuilder<MyAppBloc, MyAppState>(
       builder: (context, state) {
@@ -35,8 +35,7 @@ class _MyAppState extends State<MyApp> {
             themeMode = state.themeMode;
             locale = state.locale;
             break;
-          default:
-        }
+          }
         return MaterialApp.router(
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},

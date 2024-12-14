@@ -174,7 +174,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomTextButton(
-                title: 'Back to Login',
+                title: _localizations!.backToLogin,
                 onPressed: context.pop,
                 isShapeStadium: true,
                 foregroundColor: AppColors.primaryColor,

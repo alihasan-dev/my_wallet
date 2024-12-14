@@ -97,7 +97,7 @@ class AppRoutes {
               state,
               MyAppTheme.isColumnMode(context)
               ? const EmptyPage()
-              : DashboardScreen(userId: state.pathParameters['userId']),
+              : BlocProvider(create: (_) => DashboardBloc(), child: DashboardScreen(userId: state.pathParameters['userId'])),
             ),
             routes: [
               GoRoute(

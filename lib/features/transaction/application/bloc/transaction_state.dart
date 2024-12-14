@@ -1,4 +1,3 @@
-import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../constants/app_strings.dart';
 import '../../domain/transaction_model.dart';
 

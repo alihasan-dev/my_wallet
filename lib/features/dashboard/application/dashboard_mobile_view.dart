@@ -14,7 +14,7 @@ class DashboardMobileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        dashboardScreenState.isLoading
+        !dashboardScreenState.isLoading
         ? const Center(child: CircularProgressIndicator.adaptive())
         : dashboardScreenState.allUsers.isNotEmpty
         ? ListView.builder(

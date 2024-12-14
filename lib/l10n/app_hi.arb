@@ -34,7 +34,7 @@
   "addTransaction": "लेन-देन जोड़ें",
   "userProfile": "उपभोक्ता प्रोफ़ाइल",
   "deleteUser": "उपभोक्ता मिटायें",
-  "deleteUserMsg": "क्या आप वाकई {name} को हटाना चाहते हैं?",
+  "deleteUserMsg": "क्या आप वाकई मे {name} को हटाना चाहते हैं?",
   "@deleteUserMsg": {
     "description": "Delete user message",
     "placeholders": {

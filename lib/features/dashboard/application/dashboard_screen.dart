@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/constants/app_theme.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
@@ -28,7 +29,7 @@ class DashboardScreen extends StatefulWidget{
   final String? userId;
   const DashboardScreen({super.key, this.userId});
   @override
-  State<DashboardScreen> createState() => DashboardScreenState();
+  State createState() => DashboardScreenState();
 }
 
 class DashboardScreenState extends State<DashboardScreen>  with Helper {
@@ -38,7 +39,10 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   bool showUnverified = true;
   late TextEditingController searchTextController;
   AppLocalizations? _localizations;
+  late DashboardBloc _dashboardBloc;
+  bool searchFieldEnable = false;
   String? selectedUserId;
+  int selectedUserCount = 0;
 
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
@@ -48,6 +52,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   @override
   void didChangeDependencies() {
+    _dashboardBloc = context.read<DashboardBloc>();
     _localizations = AppLocalizations.of(context)!;
     searchTextController = TextEditingController();
     dateFormat = DateFormat.yMMMd();
@@ -77,6 +82,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
             if(state.isCancelSearch) {
               searchTextController.clear();
             }
+            selectedUserCount = allUsers.where((item) => item.isSelected).length;
             break;
           case DashboardSuccessState _:
             hideLoadingDialog(context: context);
@@ -84,26 +90,19 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
           case DashboardSelectedUserState _:
             selectedUserId = state.userId;
             break;
+          case DashboardSearchFieldEnableState _:
+            searchFieldEnable = !searchFieldEnable;
+            break;
+          case DashboardLoadingState _:
+            isLoading = true;
+            break;
           default:
         }
       },
       builder: (context, state) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            switch (context.screenWidth.screenDimension) {
-              // case ScreenType.mobile:
-              case ScreenType.tablet:
-                return DashboardMobileView(
-                  dashboardBloc: context.read<DashboardBloc>(), 
-                  dashboardScreenState: this
-                );
-              default:
-              return DashboardWebView(
-                dashboardBloc: context.read<DashboardBloc>(), 
-                dashboardScreenState: this
-              );
-            }
-          },
+        return DashboardWebView(
+          dashboardBloc: _dashboardBloc,
+          dashboardScreenState: this
         );
       }
     );

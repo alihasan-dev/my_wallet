@@ -9,6 +9,8 @@ class UserModel {
   String type;
   bool isUserVerified;
   bool enableBiometric;
+  bool isSelected;
+  bool isPinned;
 
   UserModel({
     required this.userId,
@@ -20,6 +22,8 @@ class UserModel {
     this.lastTransactionDate = -1,
     this.type = '',
     this.isUserVerified = false,
-    this.enableBiometric = false
+    this.enableBiometric = false,
+    this.isPinned = false,
+    this.isSelected = false
   });
 }

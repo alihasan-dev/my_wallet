@@ -44,6 +44,16 @@ class DashboardSearchEvent extends DashboardEvent {
 
 class DashboardSelectedUserEvent extends DashboardEvent {
   String userId;
-
   DashboardSelectedUserEvent({this.userId = ''});
 }
+
+class DashboardSearchFieldEnableEvent extends DashboardEvent {}
+
+class DashboardSelectedContactEvent extends DashboardEvent {
+  String selectedUserId;
+  DashboardSelectedContactEvent({this.selectedUserId = ''});
+}
+
+class DashboardCancelSelectedContactEvent extends DashboardEvent {}
+
+class DashboardPinnedContactEvent extends DashboardEvent {}

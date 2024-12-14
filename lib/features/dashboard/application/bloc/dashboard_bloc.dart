@@ -6,7 +6,6 @@ import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
-
 part 'dashboard_state.dart';
 part 'dashboard_event.dart';
 
@@ -36,19 +35,23 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardCancelSearchEvent>(_onCancelSearchEvent);
     on<DashboardSearchEvent>(_onSearchEvent);
     on<DashboardSelectedUserEvent>(_onSelectedUserEvent);
+    on<DashboardSearchFieldEnableEvent>(_onSearchFieldEnableEvent);
+    on<DashboardSelectedContactEvent>(_onSelectContactEvent);
+    on<DashboardCancelSelectedContactEvent>(_onCancelSelectedContactEvent);
+    on<DashboardPinnedContactEvent>(_onPinnedContact);
 
     _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event){
       var userData = event.data() as Map;
       if(userData.isNotEmpty) {
         Preferences.setString(key: AppStrings.prefFullName, value: userData['name']);
         showUnverifiedUser = userData['showUnverified'] ?? true;
-        add(DashboardUserDetailsEvent(UserModel(
-          name: userData['name'], 
-          userId: userData['user_id'], 
-          email: userData['email'], 
-          phone: userData['phone'],
-          isUserVerified: userData['showUnverified'] ?? true
-        )));
+        // add(DashboardUserDetailsEvent(UserModel(
+        //   name: userData['name'],
+        //   userId: userData['user_id'],
+        //   email: userData['email'],
+        //   phone: userData['phone'],
+        //   isUserVerified: userData['showUnverified'] ?? true
+        // )));
       }
     });
 
@@ -64,16 +67,19 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             phone: mapData['phone'],
             profileImg: mapData['profile_img'] ?? '',
             amount: mapData['amount'] ?? '',
-            lastTransactionDate: mapData['lastTransactionTime'] == null ? -1 : mapData['lastTransactionTime'].millisecondsSinceEpoch,
+            lastTransactionDate: mapData['lastTransactionTime'] == null
+            ? -1
+            : mapData['lastTransactionTime'].millisecondsSinceEpoch,
             type: mapData['type'] ?? '',
-            isUserVerified: mapData['isVerified'] ?? false
+            isUserVerified: mapData['isVerified'] ?? false,
+            isPinned: mapData['pinned'] ?? false
           ));
         }
       }
       originalUserList.sort((a, b) => b.lastTransactionDate.compareTo(a.lastTransactionDate));
+      originalUserList.sort((a, b) => a.isPinned ? -1 : (b.isPinned ? 1 : 0));
       add(DashboardAllUserEvent());
     });
-
   }
 
   @override
@@ -81,6 +87,43 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     _streamDocumentSnapshot.cancel();
     _streamSubscription.cancel();
     return super.close();
+  }
+
+  Future<void> _onPinnedContact(DashboardPinnedContactEvent event, Emitter emit) async {
+    if(listUser.isNotEmpty) {
+      var tempUserList = [];
+      tempUserList.addAll(listUser);
+      for(int i = 0; i < tempUserList.length; i++) {
+        if(tempUserList[i].isSelected) {
+          await firebaseStoreInstance.doc(userId).collection('friends').doc(tempUserList[i].userId).update({
+            'pinned': !tempUserList[i].isPinned
+          });
+          tempUserList[i].isSelected = false;
+        }
+      }
+    }
+  }
+
+  void _onCancelSelectedContactEvent(DashboardCancelSelectedContactEvent event, Emitter emit) {
+    for(int i = 0; i < listUser.length; i++) {
+      listUser[i].isSelected = false;
+    }
+    emit(DashboardAllUserState(allUser: listUser));
+  }
+
+  void _onSelectContactEvent(DashboardSelectedContactEvent event, Emitter emit) {
+    if(listUser.isNotEmpty) {
+      for(int i = 0; i < listUser.length; i++) {
+        if(listUser[i].userId == event.selectedUserId) {
+          listUser[i].isSelected = !listUser[i].isSelected;
+        }
+      }
+      emit(DashboardAllUserState(allUser: listUser));
+    }
+  }
+
+  void _onSearchFieldEnableEvent(DashboardSearchFieldEnableEvent event, Emitter emit) {
+    emit(DashboardSearchFieldEnableState());
   }
 
   void _onSelectedUserEvent(DashboardSelectedUserEvent event, Emitter emit) {

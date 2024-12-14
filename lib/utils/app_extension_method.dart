@@ -11,7 +11,7 @@ extension StringExtension on String {
   }
 
   bool get isNetworkImage {
-    if(startsWith('http') || startsWith('https')){
+    if(startsWith('http') || startsWith('https')) {
       return true;
     }
     return false;
