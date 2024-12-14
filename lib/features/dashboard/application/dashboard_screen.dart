@@ -62,9 +62,8 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   @override
   Widget build(BuildContext context) {
     selectedUserId = widget.userId;
-    return !kIsWeb
-    ? Scaffold(body: mainContent(context: context), appBar: AppBar(toolbarHeight: 0, elevation: 0))
-    : mainContent(context: context);  
+    return Scaffold(body: mainContent(context: context), appBar: AppBar(toolbarHeight: 0, elevation: 0));
+    // : mainContent(context: context);
   }
 
   Widget mainContent({required BuildContext context}) {

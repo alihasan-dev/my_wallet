@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../constants/app_icons.dart';
@@ -64,7 +65,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      onPressed: launchPolicyUrl, 
+                      onPressed: () => launchPolicyUrl(context: context),
                       icon: const Icon(
                         AppIcons.openInNewIcon,
                         size: AppSize.s20,
@@ -81,10 +82,10 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Future<void> launchPolicyUrl() async {
+  Future<void> launchPolicyUrl({required BuildContext context}) async {
     final Uri uri = Uri.parse("https://alihasan-dev.github.io/my_wallet/privacy_policy.html");
-    if(!await launchUrl(uri)) {
-      debugPrint("Couldn't launch the url");
+    if(await launchUrl(uri) && context.mounted) {
+      context.pop();
     }
   }
 }

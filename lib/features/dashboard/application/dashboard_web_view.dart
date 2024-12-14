@@ -192,10 +192,7 @@ class DashboardWebView extends StatelessWidget {
                                         strokeWidth: AppSize.s1,
                                         padding: 1.5,
                                         borderWidth: 1.5,
-                                        isSelected: data.isSelected,
-                                        onTap: dashboardScreenState.selectedUserCount > 0
-                                        ? () => dashboardBloc.add(DashboardSelectedContactEvent(selectedUserId: data.userId))
-                                        : null
+                                        isSelected: data.isSelected
                                       ),
                                       const SizedBox(width: AppSize.s10),
                                       Column(

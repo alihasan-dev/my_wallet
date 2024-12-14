@@ -38,11 +38,7 @@ class AppRoutes {
   static const String settingsScreen = 'settings';
   static const String profileScreen = 'profile';
 
-  static final GoRouter router = kIsWeb
-  ? webRoutes
-  : webRoutes;
-
-  static final GoRouter webRoutes = GoRouter(
+  static final GoRouter router = GoRouter(
     redirect: (context, state) {
       var brightness = Theme.of(context).brightness;
       if(brightness == Brightness.dark) {
@@ -106,7 +102,8 @@ class AppRoutes {
                   return defaultPageBuilder(
                     context,
                     state,
-                    BlocProvider(create: (_) => ProfileBloc(), child: const ProfileScreen()),
+                    // BlocProvider(create: (_) => ProfileBloc(), child: const ProfileScreen()),
+                    const ProfileScreen()
                   );
                 }
               ),
@@ -141,7 +138,10 @@ class AppRoutes {
                       return defaultPageBuilder(
                         context,
                         state,
-                        BlocProvider(create: (_) => ProfileBloc(userId: data == null ? '' : data.userId), child: ProfileScreen(userId: data == null ? '' : data.userId)),
+                        BlocProvider(
+                          create: (_) => ProfileBloc(userId: data == null ? '' : data.userId),
+                          child: ProfileScreen(userId: data == null ? '' : data.userId)
+                        ),
                       );
                     }
                   ),
@@ -151,107 +151,91 @@ class AppRoutes {
           ),
         ]
       ),
-      // GoRoute(
-      //   path: transactionScreen,
-      //   builder: (_, state) {
-      //     var data = state.extra == null ? null : state.extra as UserModel;
-      //     return BlocProvider(
-      //       create: (_) => TransactionBloc(
-      //         userName: data == null ? '' : data.name, 
-      //         friendId: data == null ? '' : data.userId
-      //       ), 
-      //       child: TransactionScreen(userModel: data)
-      //     );
-      //   }
-      // )
     ],
   );
 
-  static final GoRouter mobileRoutes = GoRouter(
-    redirect: (context, state) {
-      var brightness = Theme.of(context).brightness;
-      if(brightness == Brightness.dark) {
-        Helper.isDark = true;
-      } else {
-        Helper.isDark = false;
-      }
-      return null;
-    },
-    routes: [
-      GoRoute(
-        path: initialRoute,
-        builder: (context, state) {
-          if(Preferences.getString(key: AppStrings.prefUserId).isNotEmpty) {
-            final enableBiometric = Preferences.getBool(key: AppStrings.prefEnableBiometric);
-            Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: enableBiometric);
-            return BlocProvider(
-              create: (_) => HomeBloc(), 
-              child: const HomeScreen()
-            );
-          } else {
-            return BlocProvider(
-              create: (_) => LoginBloc(), 
-              child: const LoginScreen()
-            );
-          }
-        }
-      ),
-      GoRoute(
-        path: loginScreen,
-        builder: (_, __) => BlocProvider(create: (_) => LoginBloc(), child: const LoginScreen())
-      ),
-      GoRoute(
-        path: signupScreen,
-        builder: (_, __) => BlocProvider(create: (_) => SignupBloc(), child: const SignupScreen())
-      ),
-      GoRoute(
-        path: dashboard,
-        builder: (_, __) => BlocProvider(create: (_) => HomeBloc(), child: const HomeScreen())
-      ),
-      GoRoute(
-        path: forgotPasswordScreen,
-        builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
-      ),
-      // GoRoute(
-      //   path: settingsScreen,
-      //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
-      // ),
-      // GoRoute(
-      //   path: profileScreen,
-      //   builder: (_, state) => ProfileScreen(userId: state.extra as String)
-      // ),
-      // GoRoute(
-      //   path: transactionScreen,
-      //   builder: (_, state) {
-      //     var data = state.extra == null ? null : state.extra as UserModel;
-      //     return BlocProvider(
-      //       create: (_) => TransactionBloc(
-      //         userName: data == null ? '' : data.name, 
-      //         friendId: data == null ? '' : data.userId
-      //       ), 
-      //       child: TransactionScreen(userModel: data)
-      //     );
-      //   }
-      // )
-    ],
-  );
+  // static final GoRouter mobileRoutes = GoRouter(
+  //   redirect: (context, state) {
+  //     var brightness = Theme.of(context).brightness;
+  //     if(brightness == Brightness.dark) {
+  //       Helper.isDark = true;
+  //     } else {
+  //       Helper.isDark = false;
+  //     }
+  //     return null;
+  //   },
+  //   routes: [
+  //     GoRoute(
+  //       path: initialRoute,
+  //       builder: (context, state) {
+  //         if(Preferences.getString(key: AppStrings.prefUserId).isNotEmpty) {
+  //           final enableBiometric = Preferences.getBool(key: AppStrings.prefEnableBiometric);
+  //           Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: enableBiometric);
+  //           return BlocProvider(
+  //             create: (_) => HomeBloc(),
+  //             child: const HomeScreen()
+  //           );
+  //         } else {
+  //           return BlocProvider(
+  //             create: (_) => LoginBloc(),
+  //             child: const LoginScreen()
+  //           );
+  //         }
+  //       }
+  //     ),
+  //     GoRoute(
+  //       path: loginScreen,
+  //       builder: (_, __) => BlocProvider(create: (_) => LoginBloc(), child: const LoginScreen())
+  //     ),
+  //     GoRoute(
+  //       path: signupScreen,
+  //       builder: (_, __) => BlocProvider(create: (_) => SignupBloc(), child: const SignupScreen())
+  //     ),
+  //     GoRoute(
+  //       path: dashboard,
+  //       builder: (_, __) => BlocProvider(create: (_) => HomeBloc(), child: const HomeScreen())
+  //     ),
+  //     GoRoute(
+  //       path: forgotPasswordScreen,
+  //       builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
+  //     ),
+  //     // GoRoute(
+  //     //   path: settingsScreen,
+  //     //   builder: (_, state) => BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+  //     // ),
+  //     // GoRoute(
+  //     //   path: profileScreen,
+  //     //   builder: (_, state) => ProfileScreen(userId: state.extra as String)
+  //     // ),
+  //     // GoRoute(
+  //     //   path: transactionScreen,
+  //     //   builder: (_, state) {
+  //     //     var data = state.extra == null ? null : state.extra as UserModel;
+  //     //     return BlocProvider(
+  //     //       create: (_) => TransactionBloc(
+  //     //         userName: data == null ? '' : data.name,
+  //     //         friendId: data == null ? '' : data.userId
+  //     //       ),
+  //     //       child: TransactionScreen(userModel: data)
+  //     //     );
+  //     //   }
+  //     // )
+  //   ],
+  // );
 
-
-  static Page defaultPageBuilder(
-    BuildContext context,
-    GoRouterState state,
-    Widget child,
-  ) =>
-      MyAppTheme.isColumnMode(context)
-          ? NoTransitionPage(
-              key: state.pageKey,
-              restorationId: state.pageKey.value,
-              child: child,
-            )
-          : MaterialPage(
-              key: state.pageKey,
-              restorationId: state.pageKey.value,
-              child: child,
-            );
+  static Page defaultPageBuilder(BuildContext context, GoRouterState state, Widget child) {
+    if(MyAppTheme.isColumnMode(context)) {
+      return NoTransitionPage(
+        key: state.pageKey,
+        restorationId: state.pageKey.value,
+        child: child,
+      );
+    }
+    return MaterialPage(
+      key: state.pageKey,
+      restorationId: state.pageKey.value,
+      child: child,
+    );
+  }
 
 }
