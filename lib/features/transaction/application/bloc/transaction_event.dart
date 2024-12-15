@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 sealed class TransactionEvent {}
 
 class TransactionInitialEvent extends TransactionEvent {}
@@ -52,4 +54,26 @@ class TransactionProfileUpdateEvent extends TransactionEvent {
   String profileImage;
 
   TransactionProfileUpdateEvent({this.userName = '', this.profileImage = ''});
+}
+
+class TransactionFilterEvent extends TransactionEvent {}
+
+class TransactionApplyFilterEvent extends TransactionEvent {
+  DateTimeRange? dateTimeRange;
+  String transactionType;
+  RangeValues? amountRangeValues;
+
+  TransactionApplyFilterEvent({this.dateTimeRange, this.transactionType = '', this.amountRangeValues});
+}
+
+class TransactionChangeAmountRangeEvent extends TransactionEvent {
+  RangeValues rangeAmount;
+
+  TransactionChangeAmountRangeEvent({required this.rangeAmount});
+}
+
+class TransactionClearFilterEvent extends TransactionEvent {
+  bool clearFilter;
+
+  TransactionClearFilterEvent({this.clearFilter = false});
 }

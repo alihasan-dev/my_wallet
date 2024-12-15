@@ -77,6 +77,21 @@ extension StringExtension on String {
   
 }
 
+extension DateTimeFormator on DateTime {
+
+  String get formatDateTime {
+    try {
+      return toString().substring(0,10).split('-').reversed.join('-');
+    } catch(e) {
+      return toString();
+    }
+  }
+
+  bool campareDateOnly(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+}
+
 extension ScreenBuildContext on BuildContext {
 
   double get screenWidth => MediaQuery.of(this).size.width;

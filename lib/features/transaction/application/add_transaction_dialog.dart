@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../features/transaction/application/bloc/transaction_event.dart';
@@ -123,7 +124,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         }
                         final currentTime = DateTime.now();
                         transactionDate = DateTime(date.year, date.month, date.day, currentTime.hour, currentTime.minute, currentTime.second);
-                        dateTextController.text = date.toString().substring(0,10).split('-').reversed.join('-');
+                        dateTextController.text = date.formatDateTime;
                       }
                     },
                     decoration: InputDecoration(

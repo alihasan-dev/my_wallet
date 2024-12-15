@@ -184,6 +184,12 @@ mixin Helper {
     AppStrings.receive
   ];
 
+  static List<String> filterTransactionTypeList = [
+    AppStrings.all,
+    AppStrings.transfer,
+    AppStrings.receive
+  ];
+
   bool compareProfileMap(Map<String, dynamic> firstMap, Map<String, dynamic> secondMap) {
     if(firstMap['profile_img'] ==
     secondMap['profile_img'] &&

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:my_wallet/features/transaction/application/transaction_details.dart';
+import 'package:my_wallet/features/transaction/application/transaction_filter_dialog.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -58,6 +59,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   late DateFormat dateFormat;
   AppLocalizations? _localizations;
   late TransactionBloc _transactionBloc;
+  bool isFilterEnable = false;
+  RangeValues? amountChangeValue;
+  DateTimeRange? initialDateTimeRage;
+  String transactionType = AppStrings.all;
+  int maxAmount = - double.maxFinite.toInt();
+  int minAmount = double.maxFinite.toInt();
 
   @override
   void initState() {
@@ -189,17 +196,31 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             size: AppSize.s26
                           ),
                         ),
+                        Badge(
+                          backgroundColor: AppColors.red,
+                          isLabelVisible: isFilterEnable,
+                          alignment: const Alignment(0.4,- 0.5),
+                          smallSize: AppSize.s10,
+                          child: IconButton(
+                            tooltip: 'Advance Filter',
+                            onPressed: () => _transactionBloc.add(TransactionFilterEvent()),
+                            icon: const Icon(
+                              Icons.filter_alt,
+                              color: AppColors.white
+                            ),
+                          ),
+                        ),
                         AnimatedSize(
                           duration: MyAppTheme.animationDuration,
                           child: availableBalance == 0.0
                           ? const SizedBox.shrink()
                           : IconButton(
-                              tooltip: 'Export Report',
-                              onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
-                              icon: const Icon(
-                                AppIcons.downloadIcon, 
-                                color: AppColors.white
-                              ),
+                            tooltip: 'Export Report',
+                            onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
+                            icon: const Icon(
+                              AppIcons.downloadIcon,
+                              color: AppColors.white
+                            ),
                           ),
                         ),
                       ],
@@ -525,8 +546,14 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
           case AllTransactionState _:
             isLoading = false;
             availableBalance = state.totalBalance;
+            isFilterEnable = state.isFilterEnable;
             transactionDataList.clear();
             transactionDataList.addAll(state.listTransaction);
+            if(!isFilterEnable) {
+              transactionType = AppStrings.all;
+              initialDateTimeRage = null;
+              amountChangeValue = null;
+            }
             break;
           case TransactionScrollState _:
             appBarSize = state.appbarSize;
@@ -550,6 +577,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             name = state.userName;
             profileImg = state.profileImage;
             break;
+          case TransactionFilterState _:
+            showFilterDialog();
+            break;
           case TransactionLoadingState _:
             showLoadingDialog(context: context);
             break;
@@ -561,6 +591,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               showSnackBar(context: context, title: state.message);
             }
             break;
+           case TransactionChangeAmountRangeState _:
+              amountChangeValue = state.rangeAmount;
+              break;
+            case TransactionTypeChangeState _:
+              transactionType = state.type;
+              break;
           default:
         }
       },
@@ -574,6 +610,43 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       context: context, 
       builder: (_) => AddTransactionDialog(userName: name, friendId: friendId)
     );
+  }
+
+  Future<void> showFilterDialog() async {
+    if(maxAmount == - double.maxFinite.toInt()) {
+      for(var item in transactionDataList) {
+        if(maxAmount < item.amount) {
+          maxAmount = item.amount.toInt();
+        }
+        if(minAmount > item.amount) {
+          minAmount = item.amount.toInt();
+        }
+      }
+    }
+    if(maxAmount != - double.maxFinite.toInt()) {
+      var data = await showDialog(
+        context: context,
+        builder: (_) => TransactionFilterDialog(
+          amountChangeValue: amountChangeValue,
+          finalAmountRange: RangeValues(minAmount.toDouble(), maxAmount.toDouble()),
+          transactionBloc: _transactionBloc,
+          initialDateTimeRage: initialDateTimeRage,
+          transactionType: transactionType
+        )
+      );
+      if(data != null) {
+        if(data == 'clear') {
+          _transactionBloc.add(TransactionClearFilterEvent(clearFilter: isFilterEnable));
+        } else {
+          initialDateTimeRage = data.$1;
+          _transactionBloc.add(TransactionApplyFilterEvent(
+            dateTimeRange: data.$1,
+            transactionType: data.$2,
+            amountRangeValues: data.$3
+          ));
+        }
+      }
+    }
   }
 
 }

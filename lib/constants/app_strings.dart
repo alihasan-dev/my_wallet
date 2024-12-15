@@ -11,6 +11,7 @@ class AppStrings {
   static const String continueString = 'Continue';
   static const String dontHaveAccount = "Don't have an account";
   static const String alreadyHaveAccount = 'Already have an account';
+  static const String all = 'All';
   static const String transfer = 'Transfer';
   static const String receive = 'Receive';
   static const String amount = 'Amount';

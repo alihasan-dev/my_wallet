@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../../constants/app_strings.dart';
 import '../../domain/transaction_model.dart';
 
@@ -40,7 +42,8 @@ class TransactionDateChangeState extends TransactionState {
 class AllTransactionState extends TransactionState {
   List<TransactionModel> listTransaction;
   double totalBalance;
-  AllTransactionState({required this.listTransaction, required this.totalBalance});
+  bool isFilterEnable;
+  AllTransactionState({required this.listTransaction, required this.totalBalance, this.isFilterEnable = false});
 }
 
 class TransactionScrollState extends TransactionState {
@@ -61,3 +64,17 @@ class TransactionProfileUpdateState extends TransactionState {
 
   TransactionProfileUpdateState({this.userName = '', this.profileImage = ''});
 }
+
+class TransactionFilterState extends TransactionState {}
+
+class TransactionChangeAmountRangeState extends TransactionState {
+  RangeValues rangeAmount;
+
+  TransactionChangeAmountRangeState({required this.rangeAmount});
+}
+
+// class TransactionFilterDateRangeErrorState extends TransactionState {
+//   String errorMsg;
+
+//   TransactionFilterDateRangeErrorState({this.errorMsg = ''});
+// }

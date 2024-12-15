@@ -21,6 +21,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late DocumentReference firebaseStoreInstance;
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
   var listTransactionResult = <TransactionModel>[];
+  var originalTransactionResultList = <TransactionModel>[];
   final String userName;
   final DashboardBloc dashboardBloc;
   final String friendId;
@@ -46,6 +47,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionScrollEvent>(_onScrollingList);
     on<TransactionExportPDFEvent>(_onExportPDF);
     on<TransactionProfileUpdateEvent>(_onUpdateProfileEvent);
+    on<TransactionFilterEvent>(_onEnableFilterEvent);
+    on<TransactionChangeAmountRangeEvent>(_onChangeAmountRange);
+    on<TransactionApplyFilterEvent>(_onApplyFilterEvent);
+    on<TransactionClearFilterEvent>(_onClearFilterEvent);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -58,13 +63,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     });
 
     streamDocumentSnapshot = firebaseStoreInstance.collection('transactions').snapshots().listen((event) {
-      listTransactionResult.clear();
+      originalTransactionResultList.cast();
       for (var item in event.docs) {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
-          listTransactionResult.add(TransactionModel(
-            date: DateTime.fromMillisecondsSinceEpoch(
-            mapData['date'].millisecondsSinceEpoch),
+          originalTransactionResultList.add(TransactionModel(
+            date: DateTime.fromMillisecondsSinceEpoch(mapData['date'].millisecondsSinceEpoch),
             type: mapData['type'],
             amount: double.parse(mapData['amount'])
           ));
@@ -72,6 +76,26 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
       add(AllTransactionEvent());
     });
+  }
+
+  @override
+  Future<void> close() {
+    streamDocumentSnapshot.cancel();
+    return super.close();
+  }
+
+  void _onClearFilterEvent(TransactionClearFilterEvent event, Emitter emit) {
+    if(event.clearFilter) {
+      listTransactionResult.clear();
+      listTransactionResult.addAll(originalTransactionResultList);
+      listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
+      double balance = totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
+    }
+  }
+
+  void _onChangeAmountRange(TransactionChangeAmountRangeEvent event, Emitter emit) {
+    emit(TransactionChangeAmountRangeState(rangeAmount: event.rangeAmount));
   }
 
   void _onScrollingList(TransactionScrollEvent event, Emitter emit) {
@@ -82,13 +106,33 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionProfileUpdateState(userName: event.userName, profileImage: event.profileImage));
   }
 
-  @override
-  Future<void> close() {
-    streamDocumentSnapshot.cancel();
-    return super.close();
+  void _onEnableFilterEvent(TransactionFilterEvent event, Emitter emit) {
+    emit(TransactionFilterState());
+  }
+
+  void _onApplyFilterEvent(TransactionApplyFilterEvent event, Emitter emit) {
+    listTransactionResult.clear();
+    final startDateTime = event.dateTimeRange?.start;
+    final endDateTime = event.dateTimeRange?.end;
+    for(var item in originalTransactionResultList) {
+      if(event.dateTimeRange != null) {
+        if(((item.date.isAfter(startDateTime!) || item.date.campareDateOnly(startDateTime)) && (item.date.isBefore(endDateTime!) || item.date.campareDateOnly(endDateTime))) && (item.amount >= event.amountRangeValues!.start  && item.amount <= event.amountRangeValues!.end) && (event.transactionType == AppStrings.all ? true : (item.type == event.transactionType))) {
+          listTransactionResult.add(item);
+        }
+      } else {
+        if((item.amount >= event.amountRangeValues!.start  && item.amount <= event.amountRangeValues!.end) && (event.transactionType == AppStrings.all ? true : (item.type == event.transactionType))) {
+          listTransactionResult.add(item);
+        }
+      }
+    }
+    listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
+    double balance = totalBalance(transactionList: listTransactionResult);
+    emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: true));
   }
 
   void _allTransactionData(event, emit) {
+    listTransactionResult.clear();
+    listTransactionResult.addAll(originalTransactionResultList);
     listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
     double balance = totalBalance(transactionList: listTransactionResult);
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
@@ -276,25 +320,4 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       // }
     }
   }
-
-  // void downloadWeb({required List<int> bytes, required String fileName}) {
-  //   final base64 = base64Encode(bytes);
-  //   final anchor = AnchorE
-  // }
-
-  // Future<bool> _checkStoragePermission() async {
-  //   var status = await Permission.storage.status;
-  //   if (status.isGranted) {
-  //     return true;
-  //   }
-  //   var requestStatus = await Permission.storage.request();
-  //   final android = await plugin.androidInfo;
-  //   if (android.version.sdkInt >= 33) {
-  //     requestStatus = PermissionStatus.granted;
-  //   }
-  //   if (requestStatus.isGranted) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 }

@@ -48,7 +48,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           await firebaseDocumentReference.get().then((data) {
             var mapData = data.data() as Map;
             if(mapData.isNotEmpty) {
-              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric']);
+              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
             }
           });
           emit(LoginSuccessState());
