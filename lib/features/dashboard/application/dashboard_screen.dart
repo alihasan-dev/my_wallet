@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -62,8 +63,10 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   @override
   Widget build(BuildContext context) {
     selectedUserId = widget.userId;
-    return Scaffold(body: mainContent(context: context), appBar: AppBar(toolbarHeight: 0, elevation: 0));
-    // : mainContent(context: context);
+    return Scaffold(
+      body: mainContent(context: context), 
+      appBar: AppBar(toolbarHeight: 0, elevation: 0, systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor))
+    );
   }
 
   Widget mainContent({required BuildContext context}) {
