@@ -210,17 +210,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                           ),
                         ),
-                        AnimatedSize(
-                          duration: MyAppTheme.animationDuration,
-                          child: availableBalance == 0.0
-                          ? const SizedBox.shrink()
-                          : IconButton(
-                            tooltip: 'Export Report',
-                            onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
-                            icon: const Icon(
-                              AppIcons.downloadIcon,
-                              color: AppColors.white
-                            ),
+                        IconButton(
+                          tooltip: 'Export Report',
+                          onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
+                          icon: const Icon(
+                            AppIcons.downloadIcon,
+                            color: AppColors.white
                           ),
                         ),
                       ],
@@ -475,7 +470,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             ],
           ),
           bottomNavigationBar: Offstage(
-            offstage: availableBalance == 0.0 ? true : false,
+            offstage: transactionDataList.isEmpty ? true : false,
             child: Container(
               padding: EdgeInsets.only(
                 left: AppSize.s15,
@@ -545,14 +540,29 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         switch (state) {
           case AllTransactionState _:
             isLoading = false;
-            availableBalance = state.totalBalance;
-            isFilterEnable = state.isFilterEnable;
-            transactionDataList.clear();
-            transactionDataList.addAll(state.listTransaction);
-            if(!isFilterEnable) {
-              transactionType = AppStrings.all;
-              initialDateTimeRage = null;
-              amountChangeValue = null;
+            if(state.isTransactionAgainstFilter && initialDateTimeRage != null && (amountChangeValue != null || (maxAmount != - double.maxFinite.toInt()))) {
+              RangeValues? tempAmountChangeValue;
+              if(amountChangeValue == null) {
+                tempAmountChangeValue = RangeValues(minAmount.toDouble(), maxAmount.toDouble());
+              } else {
+                tempAmountChangeValue = RangeValues(amountChangeValue!.start, amountChangeValue!.end);
+              }
+              _transactionBloc.add(TransactionApplyFilterEvent(
+                dateTimeRange: initialDateTimeRage,
+                transactionType: transactionType,
+                amountRangeValues: tempAmountChangeValue
+              ));
+            }
+            if(!state.isTransactionAgainstFilter) {
+              availableBalance = state.totalBalance;
+              isFilterEnable = state.isFilterEnable;
+              transactionDataList.clear();
+              transactionDataList.addAll(state.listTransaction);
+              if(!isFilterEnable) {
+                transactionType = AppStrings.all;
+                initialDateTimeRage = null;
+                amountChangeValue = null;
+              }
             }
             break;
           case TransactionScrollState _:

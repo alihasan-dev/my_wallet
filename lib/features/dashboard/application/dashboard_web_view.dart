@@ -284,7 +284,7 @@ class DashboardWebView extends StatelessWidget {
                 Visibility(
                   visible: !dashboardScreenState.isLoading,
                   child: Positioned(
-                    bottom: 10.0,
+                    bottom: 16.0,
                     right: 16.0,
                     child: FloatingActionButton.extended(
                       onPressed: dashboardScreenState.addUserDialog,

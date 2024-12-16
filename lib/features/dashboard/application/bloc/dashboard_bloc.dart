@@ -45,13 +45,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       if(userData.isNotEmpty) {
         Preferences.setString(key: AppStrings.prefFullName, value: userData['name']);
         showUnverifiedUser = userData['showUnverified'] ?? true;
-        // add(DashboardUserDetailsEvent(UserModel(
-        //   name: userData['name'],
-        //   userId: userData['user_id'],
-        //   email: userData['email'],
-        //   phone: userData['phone'],
-        //   isUserVerified: userData['showUnverified'] ?? true
-        // )));
+        add(DashboardUserDetailsEvent(UserModel(
+          name: userData['name'],
+          userId: userData['user_id'],
+          email: userData['email'],
+          phone: userData['phone'],
+          isUserVerified: userData['showUnverified'] ?? true
+        )));
       }
     });
 

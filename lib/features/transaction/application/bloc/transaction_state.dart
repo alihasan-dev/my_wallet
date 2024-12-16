@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../../constants/app_strings.dart';
 import '../../domain/transaction_model.dart';
 
@@ -43,7 +42,8 @@ class AllTransactionState extends TransactionState {
   List<TransactionModel> listTransaction;
   double totalBalance;
   bool isFilterEnable;
-  AllTransactionState({required this.listTransaction, required this.totalBalance, this.isFilterEnable = false});
+  bool isTransactionAgainstFilter;
+  AllTransactionState({required this.listTransaction, required this.totalBalance, this.isFilterEnable = false, this.isTransactionAgainstFilter = false});
 }
 
 class TransactionScrollState extends TransactionState {
@@ -72,9 +72,3 @@ class TransactionChangeAmountRangeState extends TransactionState {
 
   TransactionChangeAmountRangeState({required this.rangeAmount});
 }
-
-// class TransactionFilterDateRangeErrorState extends TransactionState {
-//   String errorMsg;
-
-//   TransactionFilterDateRangeErrorState({this.errorMsg = ''});
-// }
