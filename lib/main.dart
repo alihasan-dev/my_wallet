@@ -12,8 +12,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Preferences().init();
-  //Previous code
-  // runApp(BlocProvider(create: (_) => MyAppBloc(), child: const MyApp())); 
   runApp(
     MultiBlocProvider(
       providers: [

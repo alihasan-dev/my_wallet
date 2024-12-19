@@ -66,7 +66,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       label: CustomText(
                         title: '${_localizations!.name} *',
                         textColor: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.8)
+                        ? AppColors.white.withValues(alpha: 0.8)
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
@@ -85,7 +85,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       label: CustomText(
                         title: '${_localizations!.email} *',
                         textColor: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.8)
+                        ? AppColors.white.withValues(alpha: 0.8)
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),

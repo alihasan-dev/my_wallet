@@ -73,7 +73,7 @@ class CustomTextField extends StatelessWidget {
           cursorWidth: 1.5,
           style: getMediumStyle(
             color: Helper.isDark 
-            ? AppColors.white.withOpacity(0.9) 
+            ? AppColors.white.withValues(alpha: 0.9) 
             : AppColors.black
           ),
           textInputAction: textInputAction,

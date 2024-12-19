@@ -1,3 +1,5 @@
+part of 'signup_bloc.dart';
+
 sealed class SignupEvent {}
 
 class SignupInitialEvent extends SignupEvent {}

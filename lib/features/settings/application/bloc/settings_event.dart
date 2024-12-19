@@ -1,6 +1,5 @@
 part of 'settings_bloc.dart';
 
-
 sealed class SettingsEvent {}
 
 class SettingsChangeThemeEvent extends SettingsEvent {

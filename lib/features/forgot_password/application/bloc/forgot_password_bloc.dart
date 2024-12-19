@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../features/forgot_password/application/bloc/forgot_password_event.dart';
-import '../../../../features/forgot_password/application/bloc/forgot_password_state.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
+part 'forgot_password_event.dart';
+part 'forgot_password_state.dart';
 
 class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
 

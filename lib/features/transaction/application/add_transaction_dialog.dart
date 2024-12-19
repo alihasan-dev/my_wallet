@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:my_wallet/constants/app_theme.dart';
-import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
+import '../../../constants/app_theme.dart';
+import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
+import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
-import '../../../features/transaction/application/bloc/transaction_event.dart';
-import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_button.dart';
@@ -17,7 +15,12 @@ import '../../../utils/helper.dart';
 class AddTransactionDialog extends StatefulWidget {
   final String userName;
   final String friendId;
-  const AddTransactionDialog({super.key, required this.userName, required this.friendId});
+
+  const AddTransactionDialog({
+    super.key, 
+    required this.userName, 
+    required this.friendId
+  });
 
   @override
   State createState() => _AddTransactionDialogState();

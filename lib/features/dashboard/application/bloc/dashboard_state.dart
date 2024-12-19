@@ -49,9 +49,3 @@ class DashboardSelectedUserState extends DashboardState {
 }
 
 class DashboardSearchFieldEnableState extends DashboardState {}
-
-//
-// class DashboardSelectedContactState extends DashboardState {
-//   String selectedUserId;
-//   DashboardSelectedContactState({this.selectedUserId = ''});
-// }

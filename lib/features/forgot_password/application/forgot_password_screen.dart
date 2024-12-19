@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:my_wallet/constants/app_theme.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
-import 'package:my_wallet/widgets/custom_text_button.dart';
+import '../../../constants/app_theme.dart';
+import '../../../utils/app_extension_method.dart';
+import '../../../widgets/custom_text_button.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_style.dart';
 import '../../../utils/helper.dart';
-import '../../../features/forgot_password/application/bloc/forgot_password_event.dart';
 import '../../../features/forgot_password/application/bloc/forgot_password_bloc.dart';
-import '../../../features/forgot_password/application/bloc/forgot_password_state.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_images.dart';
 import '../../../constants/app_size.dart';
@@ -53,7 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryColor,
-        toolbarHeight: 0
+        toolbarHeight: AppSize.s0
       ),
       body: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
@@ -77,7 +75,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
         },
         builder: (_, state) {
           return LayoutBuilder(
-            builder: (context, constraints){
+            builder: (context, constraints) {
               switch (constraints.maxWidth.screenDimension) {
                 case ScreenType.mobile:
                 case ScreenType.tablet:  
@@ -121,7 +119,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
                     ),
                   ),
                   style: IconButton.styleFrom(
-                    backgroundColor: AppColors.grey.withOpacity(0.2)
+                    backgroundColor: AppColors.grey.withValues(alpha: 0.2)
                   ),
                 ),
               ),
@@ -133,7 +131,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
           title: _localizations!.forgotPassword, 
           textStyle: getSemiBoldStyle(
             color: Helper.isDark
-            ? AppColors.white.withOpacity(0.9)
+            ? AppColors.white.withValues(alpha: 0.9)
             : AppColors.black,
             fontSize: AppSize.s18
           ),
@@ -143,7 +141,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
         CustomText(
           title: _localizations!.forgotPasswordMsg, 
           textColor: Helper.isDark
-          ? AppColors.white.withOpacity(0.9)
+          ? AppColors.white.withValues(alpha: 0.9)
           : AppColors.black,
           textAlign: TextAlign.center
         ),
@@ -184,7 +182,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

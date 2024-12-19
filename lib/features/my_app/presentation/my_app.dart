@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../features/my_app/presentation/bloc/my_app_bloc.dart';
-import '../../../features/my_app/presentation/bloc/my_app_state.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
@@ -51,7 +50,7 @@ class _MyAppState extends State<MyApp> {
             colorScheme: const ColorScheme.dark(primary: AppColors.primaryColor),
             appBarTheme: const AppBarTheme(backgroundColor: AppColors.backgroundColorDark),
             useMaterial3: true,
-            textTheme: const TextTheme().apply(bodyColor: AppColors.white.withOpacity(0.9)),
+            textTheme: const TextTheme().apply(bodyColor: AppColors.white.withValues(alpha: 0.9)),
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: <TargetPlatform, PageTransitionsBuilder>{
                 TargetPlatform.android: ZoomPageTransitionsBuilder(

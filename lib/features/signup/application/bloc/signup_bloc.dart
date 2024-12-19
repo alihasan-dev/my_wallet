@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../features/signup/application/bloc/signup_event.dart';
-import '../../../../features/signup/application/bloc/signup_state.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
+part 'signup_event.dart';
+part 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState>{
   

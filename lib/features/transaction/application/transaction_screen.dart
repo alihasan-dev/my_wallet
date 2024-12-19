@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:my_wallet/constants/app_theme.dart';
-import 'package:my_wallet/features/transaction/application/transaction_details.dart';
-import 'package:my_wallet/features/transaction/application/transaction_filter_dialog.dart';
+import '../../../constants/app_theme.dart';
+import '../../../features/transaction/application/transaction_details.dart';
+import '../../../features/transaction/application/transaction_filter_dialog.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -18,8 +18,6 @@ import '../../../constants/app_size.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../features/transaction/application/add_transaction_dialog.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
-import '../../../features/transaction/application/bloc/transaction_event.dart';
-import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_image_widget.dart';
@@ -53,7 +51,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   double appBarSize = 0.0;
   Color headerColor = Helper.isDark ? AppColors.backgroundColorDark : AppColors.white;
   double animatedBorderSide = 0.0;
-  Color textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black;
+  Color textColor = Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black;
   bool isLoading = true;
   double availableBalance = 0.0;
   late DateFormat dateFormat;
@@ -232,7 +230,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     _localizations!.noTransactionFound,
                     style: TextStyle(
                       color: Helper.isDark 
-                      ? AppColors.white.withOpacity(0.9) 
+                      ? AppColors.white.withValues(alpha: 0.9) 
                       : AppColors.black, 
                       fontSize: AppSize.s18, 
                       fontWeight: FontWeight.bold
@@ -251,7 +249,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           ? BorderSide.none
                           : BorderSide(
                             width: animatedBorderSide, 
-                            color: AppColors.white.withOpacity(0.8)
+                            color: AppColors.white.withValues(alpha: 0.8)
                           ),
                         ),
                       ),
@@ -293,7 +291,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: VerticalDivider(
                               thickness: AppSize.s05, 
                               width: AppSize.s05, 
-                              color: textColor.withOpacity(0.8)
+                              color: textColor.withValues(alpha: 0.8)
                             ),
                           ),
                           Expanded(
@@ -329,7 +327,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: VerticalDivider(
                               thickness: AppSize.s05, 
                               width: AppSize.s05, 
-                              color: textColor.withOpacity(0.8)
+                              color: textColor.withValues(alpha: 0.8)
                             ),
                           ),
                           Expanded(
@@ -408,7 +406,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                         child: CustomText(
                                           title: dateFormat.format(subData.date), 
                                           textColor: Helper.isDark 
-                                          ? AppColors.white.withOpacity(0.9) 
+                                          ? AppColors.white.withValues(alpha: 0.9) 
                                           : AppColors.black
                                         ),
                                       ),
@@ -446,7 +444,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                         child: CustomText(
                                           title: subData.amount.toString().currencyFormat, 
                                           textColor: Helper.isDark 
-                                          ? AppColors.white.withOpacity(0.9) 
+                                          ? AppColors.white.withValues(alpha: 0.9) 
                                           : AppColors.black
                                         ),
                                       ),
@@ -483,7 +481,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 : AppColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.grey.withOpacity(0.5), 
+                    color: AppColors.grey.withValues(alpha: 0.5), 
                     blurRadius: AppSize.s2, 
                     offset: const Offset(0, -0.5)
                   ),
@@ -505,7 +503,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         title: _localizations!.availableBalance, 
                         textStyle: getSemiBoldStyle(
                           color: Helper.isDark 
-                          ? AppColors.white.withOpacity(0.9) 
+                          ? AppColors.white.withValues(alpha: 0.9) 
                           : AppColors.black
                         ),
                       ),
@@ -573,13 +571,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               ? AppColors.backgroundColorDark 
               : AppColors.white;
               textColor = Helper.isDark 
-              ? AppColors.white.withOpacity(0.9) 
+              ? AppColors.white.withValues(alpha: 0.9) 
               : AppColors.black;
             } else {
               animatedBorderSide = AppSize.s05;
               headerColor = AppColors.primaryColor;
               textColor = Helper.isDark 
-              ? AppColors.white.withOpacity(0.9) 
+              ? AppColors.white.withValues(alpha: 0.9) 
               : AppColors.white;
             }
             break;

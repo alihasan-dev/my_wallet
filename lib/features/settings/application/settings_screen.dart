@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
+import '../../../features/settings/application/bloc/settings_bloc.dart';
+import '../../../utils/app_extension_method.dart';
 import '../../about/about_screen.dart';
-import 'bloc/settings_bloc.dart';
 import '../domain/settings_language_model.dart';
 import '../domain/settings_model.dart';
 import '../domain/settings_theme_model.dart';
 import '../../../constants/app_icons.dart';
 import '../../my_app/presentation/bloc/my_app_bloc.dart';
-import '../../my_app/presentation/bloc/my_app_event.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_style.dart';
@@ -192,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: CustomText(
             title: _localizations!.theme,
             textStyle: getMediumStyle(
-              color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black,
+              color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
               fontSize: AppSize.s18
             ),
           ),
@@ -232,7 +231,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         CustomText(
                           title: data.title,
                           textStyle: getRegularStyle(
-                            color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black,
+                            color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
                             fontSize: AppSize.s14
                           ),
                         ),
@@ -256,7 +255,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: CustomText(
             title: _localizations!.language,
             textStyle: getMediumStyle(
-              color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black,
+              color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
               fontSize: AppSize.s18
             ),
           ),
@@ -297,7 +296,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         CustomText(
                           title: data.title,
                           textStyle: getRegularStyle(
-                            color: Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black,
+                            color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
                             fontSize: AppSize.s14
                           ),
                         ),

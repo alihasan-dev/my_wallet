@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../../../features/transaction/application/bloc/transaction_event.dart';
-import '../../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../../features/transaction/domain/transaction_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -14,6 +13,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:my_wallet/utils/mobile_download.dart'
   if(dart.library.html) 'package:my_wallet/utils/web_download.dart';
 import '../../../dashboard/application/bloc/dashboard_bloc.dart';
+part 'transaction_event.dart';
+part 'transaction_state.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   // late DateFormat dateFormat;
@@ -303,24 +304,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var first = userName.replaceAll(' ', '');
         var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
         first = '${first}_$last.pdf';
-        ///Remove below for different platform
-        ///
         await downloadFile(bytes: await pdf.save(), downloadName: first);
-        // late File file2;
-        // if(Platform.isIOS) {
-        //   Directory? directory = await getApplicationDocumentsDirectory();
-        //   file2 = File('${directory.path}/$first');
-        // } else {
-        //  file2 = File("/storage/emulated/0/Download/$first");
-        // }
-        // await file2.writeAsBytes(await pdf.save());
         emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
       } catch (e) {
         emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
       }
-      // else {
-      //   emit(TransactionExportPDFState(message: 'Please allow storage permission to export your transaction report'));
-      // }
     }
   }
 }

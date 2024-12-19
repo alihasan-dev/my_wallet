@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wallet/constants/app_strings.dart';
-import 'package:my_wallet/constants/app_theme.dart';
-import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
-import 'package:my_wallet/features/dashboard/domain/user_model.dart';
-import 'package:my_wallet/features/profile/application/profile_screen.dart';
-import 'package:my_wallet/features/transaction/application/transaction_screen.dart';
+import '../../../constants/app_strings.dart';
+import '../../../constants/app_theme.dart';
+import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
+import '../../../features/dashboard/domain/user_model.dart';
+import '../../../features/profile/application/profile_screen.dart';
+import '../../../features/transaction/application/transaction_screen.dart';
 import 'bloc/transaction_bloc.dart';
 
 class TransactionDetails extends StatefulWidget {

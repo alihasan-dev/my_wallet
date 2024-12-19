@@ -33,7 +33,7 @@ class EmptyPage extends StatelessWidget {
             ),
             CustomText(
               title: "Design & Develop by Traversal", 
-              textColor: AppColors.grey.withOpacity(0.5), 
+              textColor: AppColors.grey.withValues(alpha: 0.5), 
               textSize: AppSize.s12
             ),
           ],

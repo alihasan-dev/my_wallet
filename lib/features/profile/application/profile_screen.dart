@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:my_wallet/constants/app_theme.dart';
+import '../../../constants/app_theme.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -279,7 +279,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                         icon: AppIcons.deleteIcon,
                         isSelected: true,
                         foregroundColor: AppColors.red,
-                        backgroundColor: AppColors.red.withOpacity(0.2),
+                        backgroundColor: AppColors.red.withValues(alpha: 0.2),
                       ),
                     ),
                     const SizedBox(width: AppSize.s8),
@@ -334,7 +334,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   title: _localizations!.selectImg, 
                   textStyle: getMediumStyle(
                     color: Helper.isDark
-                    ? AppColors.white.withOpacity(0.8)
+                    ? AppColors.white.withValues(alpha: 0.8)
                     : AppColors.black, 
                     fontSize: AppSize.s16
                   ),
@@ -359,7 +359,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                               Icons.camera, 
                               size: AppSize.s28, 
                               color: Helper.isDark
-                              ? AppColors.white.withOpacity(0.8)
+                              ? AppColors.white.withValues(alpha: 0.8)
                               : AppColors.primaryColor
                             ),
                           ),
@@ -367,7 +367,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           CustomText(
                             title: _localizations!.camera, 
                             textColor: Helper.isDark
-                            ? AppColors.white.withOpacity(0.8)
+                            ? AppColors.white.withValues(alpha: 0.8)
                             : AppColors.black,
                           ),
                         ],
@@ -390,7 +390,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                               Icons.photo, 
                               size: AppSize.s28, 
                               color: Helper.isDark
-                              ? AppColors.white.withOpacity(0.8)
+                              ? AppColors.white.withValues(alpha: 0.8)
                               : AppColors.primaryColor
                             ),
                           ),
@@ -398,7 +398,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           CustomText(
                             title: _localizations!.gallery, 
                             textColor: Helper.isDark
-                            ? AppColors.white.withOpacity(0.8)
+                            ? AppColors.white.withValues(alpha: 0.8)
                             : AppColors.black,  
                           ),
                         ],
@@ -410,7 +410,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                 Container(
                   padding: const EdgeInsets.all(AppSize.s5),
                   decoration: BoxDecoration(
-                    color: AppColors.amber.withOpacity(0.1),
+                    color: AppColors.amber.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppSize.s4)
                   ),
                   child: Row(

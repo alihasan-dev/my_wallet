@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/constants/app_style.dart';
-import 'package:my_wallet/features/transaction/application/bloc/transaction_bloc.dart';
-import 'package:my_wallet/features/transaction/application/bloc/transaction_event.dart';
-import 'package:my_wallet/features/transaction/application/bloc/transaction_state.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
-import 'package:my_wallet/widgets/custom_text.dart';
+import '../../../constants/app_style.dart';
+import '../../../features/transaction/application/bloc/transaction_bloc.dart';
+import '../../../utils/app_extension_method.dart';
+import '../../../widgets/custom_text.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_size.dart';
 import '../../../constants/app_strings.dart';

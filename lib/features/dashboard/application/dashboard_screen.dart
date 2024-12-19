@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:my_wallet/constants/app_theme.dart';
+import '../../../constants/app_theme.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
@@ -23,7 +22,6 @@ import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'add_user_dialog.dart';
-part 'dashboard_mobile_view.dart';
 part 'dashboard_web_view.dart';
 
 class DashboardScreen extends StatefulWidget{

@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                       child: Container(
-                        color: AppColors.black.withOpacity(0.2),
+                        color: AppColors.black.withValues(alpha: 0.2),
                       ),
                     ),
                   ),
@@ -210,14 +210,14 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                 title: _localizations!.biometricAuthFailed, 
                 textStyle: getBoldStyle(
                   color: Helper.isDark 
-                  ? AppColors.white.withOpacity(0.9) 
+                  ? AppColors.white.withValues(alpha: 0.9) 
                   : AppColors.black
                 ),
               ),
               content: CustomText(
                 title: _localizations!.biometricAuthFailedMessage, 
                 textColor: Helper.isDark 
-                ? AppColors.white.withOpacity(0.9) 
+                ? AppColors.white.withValues(alpha: 0.9) 
                 : AppColors.black
               ),
               actions: [
@@ -269,14 +269,14 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                     title: _localizations!.biometricAuthFailed,
                     textStyle: getBoldStyle(
                       color: Helper.isDark 
-                      ? AppColors.white.withOpacity(0.9) 
+                      ? AppColors.white.withValues(alpha: 0.9) 
                       : AppColors.black
                     ),
                   ),
                   content: CustomText(
                     title: _localizations!.bioAuthFailedTooManyAttemptMessage, 
                     textColor: Helper.isDark 
-                    ? AppColors.white.withOpacity(0.9) 
+                    ? AppColors.white.withValues(alpha: 0.9) 
                     : AppColors.black
                   ),
                   actions: [

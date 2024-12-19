@@ -179,7 +179,7 @@ class DashboardWebView extends StatelessWidget {
                               ),
                               color: dashboardScreenState.selectedUserId == null || data.userId != dashboardScreenState.selectedUserId
                               ? null
-                              : AppColors.grey.withOpacity(0.2),
+                              : AppColors.grey.withValues(alpha: 0.2),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -213,7 +213,7 @@ class DashboardWebView extends StatelessWidget {
                                                     horizontal: AppSize.s5
                                                   ),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.amber.withOpacity(0.1),
+                                                    color: Colors.amber.withValues(alpha: 0.1),
                                                     borderRadius: BorderRadius.circular(AppSize.s4)
                                                   ),
                                                   child: CustomText(

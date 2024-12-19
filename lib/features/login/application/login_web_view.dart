@@ -60,7 +60,7 @@ class LoginWebView extends StatelessWidget {
                       title: localizations.rememberMe, 
                       textStyle: getMediumStyle(
                         color: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.8) 
+                        ? AppColors.white.withValues(alpha: 0.8) 
                         : AppColors.black
                       ),
                     ),
@@ -72,7 +72,7 @@ class LoginWebView extends StatelessWidget {
                     title: localizations.forgotPassword, 
                     textStyle: getMediumStyle(
                       color: Helper.isDark 
-                      ? AppColors.white.withOpacity(0.8) 
+                      ? AppColors.white.withValues(alpha: 0.8) 
                       : AppColors.black
                     ),
                   ),
@@ -97,7 +97,7 @@ class LoginWebView extends StatelessWidget {
               children: [
                 CustomText(
                   title: '${localizations.dontHaveAccount}  ', 
-                  textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withOpacity(0.8) : AppColors.black)
+                  textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withValues(alpha: 0.8) : AppColors.black)
                 ),
                 CustomInkWellWidget(
                   onTap: () => context.push(AppRoutes.signupScreen), 

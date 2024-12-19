@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wallet/constants/app_strings.dart';
-import 'package:my_wallet/features/dashboard/domain/user_model.dart';
-import 'package:my_wallet/utils/preferences.dart';
+import '../../../../constants/app_strings.dart';
+import '../../../../features/dashboard/domain/user_model.dart';
+import '../../../../utils/preferences.dart';
 part 'settings_event.dart';
 part 'settings_state.dart';
 

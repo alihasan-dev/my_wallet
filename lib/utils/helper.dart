@@ -37,7 +37,7 @@ mixin Helper {
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(AppSize.s6)),
-        side: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.5))
+        side: BorderSide(width: 1.0, color: Colors.grey.withValues(alpha: 0.5))
       ),
       margin: EdgeInsets.only(
         bottom: AppSize.s20, 
@@ -145,7 +145,7 @@ mixin Helper {
           title: title, textStyle: 
           getBoldStyle(
             color: Helper.isDark 
-            ? AppColors.white.withOpacity(0.9) 
+            ? AppColors.white.withValues(alpha: 0.9) 
             : AppColors.black
           ),
         ),
@@ -153,7 +153,7 @@ mixin Helper {
           title: content, 
           textStyle: getSemiBoldStyle(
             color: Helper.isDark 
-            ? AppColors.white.withOpacity(0.9) 
+            ? AppColors.white.withValues(alpha: 0.9) 
             : AppColors.black
           ),
         ),

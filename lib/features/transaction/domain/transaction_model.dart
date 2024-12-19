@@ -3,5 +3,9 @@ class TransactionModel {
   String type;
   double amount;
 
-  TransactionModel({required this.date, required this.type, required this.amount});
+  TransactionModel({
+    required this.date, 
+    required this.type, 
+    required this.amount
+  });
 }

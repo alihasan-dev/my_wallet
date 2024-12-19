@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of 'transaction_bloc.dart';
 
 sealed class TransactionEvent {}
 

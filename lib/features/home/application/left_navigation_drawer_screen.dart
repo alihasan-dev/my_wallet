@@ -102,7 +102,7 @@ class LeftNavigationDrawerScreen extends StatelessWidget {
                       icon: data.icon,
                       title: data.title,
                       foregroundColor: Helper.isDark ? AppColors.white : AppColors.primaryColor,
-                      backgroundColor: Helper.isDark ? AppColors.primaryColor : AppColors.primaryColor.withOpacity(0.2),
+                      backgroundColor: Helper.isDark ? AppColors.primaryColor : AppColors.primaryColor.withValues(alpha: 0.2),
                       isSelected: selectedIndex == index ? true : false,
                     );
                   }
@@ -116,7 +116,7 @@ class LeftNavigationDrawerScreen extends StatelessWidget {
                 icon: AppIcons.logoutIcon,
                 title: localizations.logout,
                 isSelected: true,
-                backgroundColor: AppColors.red.withOpacity(0.2),
+                backgroundColor: AppColors.red.withValues(alpha: 0.2),
                 foregroundColor: AppColors.red,
                 showBorder: true,
               ),

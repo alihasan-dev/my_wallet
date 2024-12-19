@@ -23,11 +23,11 @@ abstract class MyAppTheme {
       //main color of app
       primarySwatch: Colors.indigo,
       primaryColor: Colors.indigo,
-      primaryColorLight: Colors.indigo.withOpacity(0.7),
+      primaryColorLight: Colors.indigo.withValues(alpha: 0.7),
       primaryColorDark: Colors.indigo,
       disabledColor: Colors.grey,
       //ripple color
-      splashColor: Colors.grey.withOpacity(0.5),
+      splashColor: Colors.grey.withValues(alpha: 0.5),
       fontFamily: 'OpenSans',
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),

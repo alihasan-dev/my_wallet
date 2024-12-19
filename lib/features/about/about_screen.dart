@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../constants/app_theme.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_images.dart';
 import '../../constants/app_strings.dart';
@@ -83,7 +83,7 @@ class AboutScreen extends StatelessWidget {
   }
 
   Future<void> launchPolicyUrl({required BuildContext context}) async {
-    final Uri uri = Uri.parse("https://alihasan-dev.github.io/my_wallet/privacy_policy.html");
+    final Uri uri = Uri.parse(AppStrings.privacyPolicyUrl);
     if(await launchUrl(uri) && context.mounted) {
       context.pop();
     }

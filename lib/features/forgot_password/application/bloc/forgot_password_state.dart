@@ -1,3 +1,5 @@
+part of 'forgot_password_bloc.dart';
+
 sealed class ForgotPasswordState {}
 
 class ForgotPasswordInitialState extends ForgotPasswordState {}

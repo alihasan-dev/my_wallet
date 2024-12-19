@@ -78,7 +78,7 @@ class SignupWebView extends StatelessWidget {
                   title: '${localizations.alreadyHaveAnAccount}  ', 
                   textStyle: getMediumStyle(
                     color: Helper.isDark 
-                    ? AppColors.white.withOpacity(0.8) 
+                    ? AppColors.white.withValues(alpha: 0.8) 
                     : AppColors.black
                   ),
                 ),

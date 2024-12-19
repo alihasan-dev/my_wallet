@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../../../constants/app_strings.dart';
-import '../../domain/transaction_model.dart';
+part of 'transaction_bloc.dart';
 
 sealed class TransactionState {}
 

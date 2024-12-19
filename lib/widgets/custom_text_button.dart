@@ -52,7 +52,7 @@ class CustomTextButton extends StatelessWidget {
         ),
         backgroundColor: isSelected == null || !isSelected! 
         ? AppColors.transparent 
-        : backgroundColor ?? AppColors.primaryColor.withOpacity(0.2),
+        : backgroundColor ?? AppColors.primaryColor.withValues(alpha: 0.2),
         padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding)
       ), 
       child: Row(
