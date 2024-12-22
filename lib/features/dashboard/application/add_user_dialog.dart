@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_wallet/constants/app_theme.dart';
+import '../../../constants/app_style.dart';
 import 'bloc/dashboard_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../widgets/custom_button.dart';
@@ -55,6 +57,24 @@ class _AddUserDialogState extends State<AddUserDialog> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        title: _localizations!.addUser,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(10, 0),
+                        child: IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(Icons.clear),
+                          visualDensity: VisualDensity.compact
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s10),
                   TextField(
                     controller: nameTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
@@ -73,7 +93,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
                     ),
                   ),
-                  const SizedBox(height: AppSize.s10),
+                  const SizedBox(height: AppSize.s12),
                   TextField(
                     controller: emailTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardEmailChangeEvent(email: value)),
@@ -92,10 +112,11 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
                     ),
                   ),
-                  const SizedBox(height: AppSize.s10),
+                  const SizedBox(height: AppSize.s15),
                   CustomButton(
                     title: _localizations!.addUser, 
-                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(name: nameTextController.text, email: emailTextController.text))
+                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(name: nameTextController.text, email: emailTextController.text)),
+                    titleSize: AppSize.s15,
                   ),
                 ],
               ),

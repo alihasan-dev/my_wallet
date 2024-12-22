@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import '../../../constants/app_style.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../utils/app_extension_method.dart';
@@ -11,6 +13,7 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../utils/helper.dart';
+import '../../../widgets/custom_text.dart';
 
 class AddTransactionDialog extends StatefulWidget {
   final String userName;
@@ -66,6 +69,24 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        title: _localizations!.addTransaction,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(10, 0),
+                        child: IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(Icons.clear),
+                          visualDensity: VisualDensity.compact
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s10),
                   TextField(
                     controller: amountTextController,
                     onChanged: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
@@ -150,6 +171,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       type: transactionType
                       ),
                     ),
+                    titleSize: AppSize.s15,
                   ),
                 ],
               ),

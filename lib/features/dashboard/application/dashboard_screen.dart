@@ -80,6 +80,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
             allUsers.clear();
             allUsers.addAll(state.allUser);
             if(state.isCancelSearch) {
+              searchFieldEnable = false;
               searchTextController.clear();
             }
             selectedUserCount = allUsers.where((item) => item.isSelected).length;

@@ -32,7 +32,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardNameChangeEvent>(_onNameChange);
     on<DashboardDeleteUserEvent>(_onDeleteUser);
     on<DashboardUserDetailsEvent>(_onFetchUserDetails);
-    on<DashboardCancelSearchEvent>(_onCancelSearchEvent);
+    // on<DashboardCancelSearchEvent>(_onCancelSearchEvent);
     on<DashboardSearchEvent>(_onSearchEvent);
     on<DashboardSelectedUserEvent>(_onSelectedUserEvent);
     on<DashboardSearchFieldEnableEvent>(_onSearchFieldEnableEvent);
@@ -123,18 +123,24 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   void _onSearchFieldEnableEvent(DashboardSearchFieldEnableEvent event, Emitter emit) {
-    emit(DashboardSearchFieldEnableState());
+    if(event.isSearchFieldClosed) {
+      listUser.clear();
+      listUser.addAll(originalUserList);
+      emit(DashboardAllUserState(allUser: listUser, isCancelSearch: true));
+    } else {
+      emit(DashboardSearchFieldEnableState());
+    }
   }
 
   void _onSelectedUserEvent(DashboardSelectedUserEvent event, Emitter emit) {
     emit(DashboardSelectedUserState(userId: event.userId));
   }
 
-  void _onCancelSearchEvent(DashboardCancelSearchEvent event, Emitter emit) {
-    listUser.clear();
-    listUser.addAll(originalUserList);
-    emit(DashboardAllUserState(allUser: listUser, isCancelSearch: true));
-  }
+  // void _onCancelSearchEvent(DashboardCancelSearchEvent event, Emitter emit) {
+  //   listUser.clear();
+  //   listUser.addAll(originalUserList);
+  //   emit(DashboardAllUserState(allUser: listUser, isCancelSearch: true));
+  // }
 
   void _onSearchEvent(DashboardSearchEvent event, Emitter emit) {
     listUser.clear();

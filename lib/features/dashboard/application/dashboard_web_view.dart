@@ -66,7 +66,7 @@ class DashboardWebView extends StatelessWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () => dashboardBloc.add(DashboardSearchFieldEnableEvent()),
+                        onPressed: () => dashboardBloc.add(DashboardSearchFieldEnableEvent(isSearchFieldClosed: dashboardScreenState.searchFieldEnable)),
                         color: AppColors.white,
                         icon: Icon(
                           dashboardScreenState.searchFieldEnable

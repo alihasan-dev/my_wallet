@@ -34,7 +34,7 @@ class DashboardUserDetailsEvent extends DashboardEvent {
   DashboardUserDetailsEvent(this.userModel);
 }
 
-class DashboardCancelSearchEvent extends DashboardEvent {}
+// class DashboardCancelSearchEvent extends DashboardEvent {}
 
 class DashboardSearchEvent extends DashboardEvent {
   String text;
@@ -47,7 +47,11 @@ class DashboardSelectedUserEvent extends DashboardEvent {
   DashboardSelectedUserEvent({this.userId = ''});
 }
 
-class DashboardSearchFieldEnableEvent extends DashboardEvent {}
+class DashboardSearchFieldEnableEvent extends DashboardEvent {
+  bool isSearchFieldClosed;
+
+  DashboardSearchFieldEnableEvent({this.isSearchFieldClosed = false});
+}
 
 class DashboardSelectedContactEvent extends DashboardEvent {
   String selectedUserId;
