@@ -6,8 +6,8 @@ Future<void> downloadFile({required List<int> bytes, required String downloadNam
   final base64 = base64Encode(bytes);
   // Create the link with the file
   final anchor = AnchorElement(href: 'data:application/octet-stream;base64,$base64')
-      ..target = 'blank';
-  anchor.download = downloadName;
+      ..target = 'blank'
+      ..download = downloadName;
   // trigger download
   document.body!.append(anchor);
   anchor.click();

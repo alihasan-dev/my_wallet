@@ -99,8 +99,9 @@ class AppRoutes {
                   return defaultPageBuilder(
                     context,
                     state,
-                    // BlocProvider(create: (_) => ProfileBloc(), child: const ProfileScreen()),
-                    const ProfileScreen()
+                    Preferences.getString(key: AppStrings.prefUserId).isNotEmpty
+                    ? const ProfileScreen()
+                    : const EmptyPage()
                   );
                 }
               ),
@@ -109,7 +110,9 @@ class AppRoutes {
                 pageBuilder: (context, state) => defaultPageBuilder(
                   context,
                   state,
-                  BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+                  Preferences.getString(key: AppStrings.prefUserId).isNotEmpty
+                  ? BlocProvider(create: (_) => SettingsBloc(), child: const SettingsScreen())
+                  : const EmptyPage()
                 ),
               ),
               GoRoute(

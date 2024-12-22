@@ -10,6 +10,7 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
 import '../../../routes/app_routes.dart';
 
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -24,9 +25,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    ///set app status bar color
-    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor));
-    ///set app preferred orientation
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: Preferences.getBool(key: AppStrings.prefEnableBiometric));
     super.initState();

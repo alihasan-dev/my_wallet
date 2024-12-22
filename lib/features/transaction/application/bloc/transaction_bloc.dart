@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -305,7 +306,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
         first = '${first}_$last.pdf';
         await downloadFile(bytes: await pdf.save(), downloadName: first).then((_) {
-          emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
+          if(!kIsWeb) {
+            emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
+          }
         });
       } catch (e) {
         emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
