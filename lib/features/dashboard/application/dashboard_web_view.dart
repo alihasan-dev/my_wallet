@@ -24,6 +24,13 @@ class DashboardWebView extends StatelessWidget {
       ),
       child: Column(
         children: [
+          Offstage(
+            offstage: kIsWeb,
+            child: Container(
+              height: context.statusBarHeight, 
+              color: AppColors.primaryColor
+            ),
+          ),
           Container(
             height: AppBar().preferredSize.height,
             width: double.maxFinite,
@@ -45,7 +52,7 @@ class DashboardWebView extends StatelessWidget {
                       CustomText(
                         title: dashboardScreenState.selectedUserCount.toString(),
                         textStyle: getSemiBoldStyle(color: AppColors.white, fontSize: AppSize.s18)
-                      )
+                      ),
                     ],
                   ),
                   IconButton(

@@ -61,3 +61,15 @@ class DashboardSelectedContactEvent extends DashboardEvent {
 class DashboardCancelSelectedContactEvent extends DashboardEvent {}
 
 class DashboardPinnedContactEvent extends DashboardEvent {}
+
+class DashboardBiometricAuthEvent extends DashboardEvent {
+  bool isAuthenticated;
+
+  DashboardBiometricAuthEvent({this.isAuthenticated = false});
+}
+
+// class DashboardChangeLifeCycleEvent extends DashboardEvent {
+//   bool isActive;
+
+//   DashboardChangeLifeCycleEvent({this.isActive = false});
+// }

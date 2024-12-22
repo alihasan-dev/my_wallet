@@ -15,27 +15,24 @@ class TwoColumnLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
-    return ScaffoldMessenger(
-      child: Scaffold(
-        body: Row(
-          children: [
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: const BoxDecoration(),
-              width: MyAppTheme.columnWidth + (displayNavigationRail ? MyAppTheme.navRailWidth : 0),
-              child: mainView,
-            ),
-            Container(
-              width: 0.05,
-              color: Colors.grey,
-            ),
-            Expanded(
-              child: ClipRRect(
-                child: sideView,
-              ),
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(toolbarHeight: 0, elevation: 0),
+      body: Row(
+        children: [
+          Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: const BoxDecoration(),
+            width: MyAppTheme.columnWidth + (displayNavigationRail ? MyAppTheme.navRailWidth : 0),
+            child: mainView,
+          ),
+          Container(
+            width: 0.05,
+            color: Colors.grey,
+          ),
+          Expanded(
+            child: sideView,
+          ),
+        ],
       ),
     );
   }

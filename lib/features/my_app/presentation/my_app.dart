@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/utils/preferences.dart';
 import '../../../features/my_app/presentation/bloc/my_app_bloc.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
@@ -22,11 +23,17 @@ class _MyAppState extends State<MyApp> {
   late Locale locale;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     ///set app status bar color
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor));
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor));
     ///set app preferred orientation
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: Preferences.getBool(key: AppStrings.prefEnableBiometric));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<MyAppBloc, MyAppState>(
       builder: (context, state) {
         switch (state) {

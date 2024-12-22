@@ -49,3 +49,15 @@ class DashboardSelectedUserState extends DashboardState {
 }
 
 class DashboardSearchFieldEnableState extends DashboardState {}
+
+class DashboardBiometricAuthState extends DashboardState {
+  bool isAuthenticated;
+
+  DashboardBiometricAuthState({this.isAuthenticated = false});
+}
+
+// class DashboardChangeLifeCycleState extends DashboardState {
+//   bool isActive;
+
+//   DashboardChangeLifeCycleState({this.isActive = false});
+// }

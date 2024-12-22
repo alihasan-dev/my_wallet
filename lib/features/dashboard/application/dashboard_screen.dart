@@ -1,9 +1,12 @@
+import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_theme.dart';
 import '../../../utils/preferences.dart';
@@ -24,14 +27,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'add_user_dialog.dart';
 part 'dashboard_web_view.dart';
 
-class DashboardScreen extends StatefulWidget{
+class DashboardScreen extends StatefulWidget {
   final String? userId;
   const DashboardScreen({super.key, this.userId});
   @override
   State createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends State<DashboardScreen>  with Helper {
+class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsBindingObserver {
 
   List<UserModel> allUsers = [];
   bool isLoading = true;
@@ -40,6 +43,10 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
   AppLocalizations? _localizations;
   late DashboardBloc _dashboardBloc;
   bool searchFieldEnable = false;
+  bool isBioAuthenticated = false;
+  bool enableBiometricOnChangeLifeCycle = false;
+  bool isBiometricDialogOpen = false;
+  late LocalAuthentication _localAuthentication;
   String? selectedUserId;
   int selectedUserCount = 0;
 
@@ -51,11 +58,25 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   @override
   void didChangeDependencies() {
+    WidgetsBinding.instance.addObserver(this);
     _dashboardBloc = context.read<DashboardBloc>();
     _localizations = AppLocalizations.of(context)!;
+    _localAuthentication = LocalAuthentication();
+    if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication) && !kIsWeb && !isBiometricDialogOpen) {
+      openBiometricDialog();
+      Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+    } else {
+      isBioAuthenticated = true;
+    }
     searchTextController = TextEditingController();
     dateFormat = DateFormat.yMMMd();
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -63,7 +84,8 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
     selectedUserId = widget.userId;
     return Scaffold(
       body: mainContent(context: context), 
-      appBar: AppBar(toolbarHeight: 0, elevation: 0, systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor))
+      // appBar: AppBar(toolbarHeight: 0, elevation: 0)
+      // appBar: AppBar(toolbarHeight: 0, elevation: 0, systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor))
     );
   }
 
@@ -97,13 +119,34 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
           case DashboardLoadingState _:
             isLoading = true;
             break;
+          case DashboardBiometricAuthState _:
+            isBioAuthenticated = state.isAuthenticated;
+            break;
           default:
         }
       },
       builder: (context, state) {
-        return DashboardWebView(
-          dashboardBloc: _dashboardBloc,
-          dashboardScreenState: this
+        return Stack(
+          children: [
+            DashboardWebView(
+              dashboardBloc: _dashboardBloc,
+              dashboardScreenState: this
+            ),
+            Visibility(
+              visible: !isBioAuthenticated && !kIsWeb,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 1000),
+                height: isBioAuthenticated ? 0 : double.maxFinite,
+                width: isBioAuthenticated ? 0 : double.maxFinite,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                  child: Container(
+                    color: AppColors.black.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       }
     );
@@ -127,6 +170,129 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper {
         }
         GoRouter.of(context).pushReplacement(AppRoutes.loginScreen);
       }
+    }
+  }
+
+  ///method used to open the biometric failed info dialog
+  Future<void> openBiometricDialog() async {
+    if(!await biometricAuthentication()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false, 
+        builder: (_){
+          return PopScope(
+            canPop: false,
+            child: AlertDialog(
+              title: CustomText(
+                title: _localizations!.biometricAuthFailed, 
+                textStyle: getBoldStyle(
+                  color: Helper.isDark 
+                  ? AppColors.white.withValues(alpha: 0.9) 
+                  : AppColors.black
+                ),
+              ),
+              content: CustomText(
+                title: _localizations!.biometricAuthFailedMessage, 
+                textColor: Helper.isDark 
+                ? AppColors.white.withValues(alpha: 0.9) 
+                : AppColors.black
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => exit(0),
+                  child: CustomText(
+                    title: _localizations!.cancel,
+                    textStyle: getBoldStyle(color: AppColors.red),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                    Future.delayed(Duration.zero, () => openBiometricDialog());
+                  },
+                  child: CustomText(
+                    title: _localizations!.reAuthenticate,
+                    textStyle: getBoldStyle(color: AppColors.primaryColor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      );
+    }
+  }
+
+  ///method used to handle the biometric and FaceID authentication
+  Future<bool> biometricAuthentication() async {
+    var data = true;
+    if(await _localAuthentication.isDeviceSupported()) {
+      try {
+        isBiometricDialogOpen = true;
+        data =  await _localAuthentication.authenticate(
+          localizedReason: AppStrings.biometricMessage,
+          options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
+        );
+        isBiometricDialogOpen = !data;
+      } catch (e) {
+        showDialog(
+          context: context,
+          barrierDismissible: false, 
+          builder: (_) {
+            return PopScope(
+              canPop: false,
+              child: AlertDialog(
+                title: CustomText(
+                  title: _localizations!.biometricAuthFailed,
+                  textStyle: getBoldStyle(
+                    color: Helper.isDark 
+                    ? AppColors.white.withValues(alpha: 0.9) 
+                    : AppColors.black
+                  ),
+                ),
+                content: CustomText(
+                  title: _localizations!.bioAuthFailedTooManyAttemptMessage, 
+                  textColor: Helper.isDark 
+                  ? AppColors.white.withValues(alpha: 0.9) 
+                  : AppColors.black
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => exit(0),
+                    child: CustomText(
+                      title: _localizations!.cancel,
+                      textStyle: getBoldStyle(color: AppColors.red),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        );
+      }
+    }
+    _dashboardBloc.add(DashboardBiometricAuthEvent(isAuthenticated: data));
+    return data;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if(enableBiometricOnChangeLifeCycle && !isBioAuthenticated && !kIsWeb && !isBiometricDialogOpen) {
+          openBiometricDialog();
+        }
+        break;
+      case AppLifecycleState.inactive:
+        if(isBioAuthenticated && !kIsWeb) {
+          enableBiometricOnChangeLifeCycle = true;
+          _dashboardBloc.add(DashboardBiometricAuthEvent(isAuthenticated: false));
+        }
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        break;
     }
   }
   
