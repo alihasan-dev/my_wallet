@@ -304,8 +304,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var first = userName.replaceAll(' ', '');
         var last = dateTime.toString().substring(0, 10).replaceAll('-', '');
         first = '${first}_$last.pdf';
-        await downloadFile(bytes: await pdf.save(), downloadName: first);
-        emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
+        await downloadFile(bytes: await pdf.save(), downloadName: first).then((_) {
+          emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
+        });
       } catch (e) {
         emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
       }

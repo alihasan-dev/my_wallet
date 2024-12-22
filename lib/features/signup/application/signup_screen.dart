@@ -13,6 +13,7 @@ import '../../../constants/app_images.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
+import '../../../utils/preferences.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_inkwell_widget.dart';
 import '../../../widgets/custom_text.dart';
@@ -62,6 +63,7 @@ class SignupScreenState extends State<SignupScreen> with Helper {
                 break;
               case SignupSuccessState _:
                 hideLoadingDialog(context: context);
+                Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
                 context.go(AppRoutes.dashboard);
                 break;
               case SignupEmailFieldState _:

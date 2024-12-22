@@ -186,7 +186,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     Row(
                       children: [
                         IconButton(
-                          tooltip: AppStrings.addTransaction,
+                          tooltip: _localizations!.addTransaction,
                           onPressed: () => showAddUserSheet(),
                           icon: const Icon(
                             AppIcons.addIcon, 
@@ -200,7 +200,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           alignment: const Alignment(0.4,- 0.5),
                           smallSize: AppSize.s10,
                           child: IconButton(
-                            tooltip: 'Advance Filter',
+                            tooltip: _localizations!.advanceFilter,
                             onPressed: () => _transactionBloc.add(TransactionFilterEvent()),
                             icon: const Icon(
                               Icons.filter_alt,
@@ -209,7 +209,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           ),
                         ),
                         IconButton(
-                          tooltip: 'Export Report',
+                          tooltip: _localizations!.exportReport,
                           onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
                           icon: const Icon(
                             AppIcons.downloadIcon,

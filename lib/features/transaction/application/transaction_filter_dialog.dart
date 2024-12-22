@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../constants/app_style.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../utils/app_extension_method.dart';
@@ -10,7 +11,6 @@ import '../../../constants/app_size.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
 import '../../../utils/helper.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TransactionFilterDialog extends StatefulWidget {
   final RangeValues? amountChangeValue;
@@ -39,7 +39,6 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
   String transactionType = AppStrings.all;
   late AppLocalizations localizations;
   late TextEditingController dateTimeRangeTextController;
-  // bool isDialogOpenFirst = true;
 
   @override
   void didChangeDependencies() {
@@ -82,17 +81,17 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        title: "Advance Filter",
+                        title: localizations.advanceFilter,
                         textStyle: getSemiBoldStyle(),
                       ),
                       Transform.translate(
-                        offset: const Offset(10, 0),
+                        offset: const Offset(AppSize.s10, AppSize.s0),
                         child: IconButton(
                           onPressed: () => context.pop(),
                           icon: const Icon(Icons.clear),
                           visualDensity: VisualDensity.compact
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
@@ -102,8 +101,9 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     readOnly: true,
                     decoration: InputDecoration(
                       hintText: "DD-MM-YYYY to DD-MM-YYY",
-                      label: const Text('Date Range'),
+                      label: Text(localizations.dateRange),
                       border: const OutlineInputBorder(),
+                      hintStyle: const TextStyle(color: AppColors.grey),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: AppSize.s05,
@@ -141,7 +141,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),
-                  CustomText(title: "Amount Range", textStyle: getMediumStyle()),
+                  CustomText(title: localizations.amountRange, textStyle: getMediumStyle()),
                   SizedBox(
                     width: double.maxFinite,
                     child: SliderTheme(
@@ -151,7 +151,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       ),
                       child: RangeSlider(
                         values: amountChangeValue,
-                        min: 0.0,
+                        min: AppSize.s0,
                         max: widget.finalAmountRange.end + 10000.0,
                         activeColor: AppColors.primaryColor,
                         labels: RangeLabels(amountChangeValue.start.toStringAsFixed(0), amountChangeValue.end.toStringAsFixed(0)),
@@ -179,14 +179,14 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       TextButton(
                         onPressed: () => context.pop(('clear')),
                         child: CustomText(
-                          title: 'Clear',
+                          title: localizations.clear,
                           textStyle: getSemiBoldStyle(color: AppColors.red)
                         ),
                       ),
                       TextButton(
                         onPressed: () => context.pop((initialDateTimeRage, transactionType, amountChangeValue)),
                         child: CustomText(
-                          title: "Apply",
+                          title: localizations.apply,
                           textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
                         ),
                       ),

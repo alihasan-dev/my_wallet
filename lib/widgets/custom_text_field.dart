@@ -68,7 +68,6 @@ class CustomTextField extends StatelessWidget {
         const SizedBox(height: AppSize.s4),
         TextField(
           obscureText: isPasswordField,
-          // obscuringCharacter: '●',
           controller: textEditingController,
           cursorWidth: 1.5,
           style: getMediumStyle(

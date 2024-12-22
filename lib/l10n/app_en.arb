@@ -69,5 +69,12 @@
   "backToLogin": "Back to Login",
   "noUserFound": "No user found",
   "enableBiometric": "Enable Biometric",
-  "enableBiometricMsg": "App unlock using biometric"
+  "enableBiometricMsg": "App unlock using biometric",
+  "apply": "Apply",
+  "clear": "Clear",
+  "amountRange": "Amount Range", 
+  "dateRange": "Date Range",
+  "advanceFilter": "Advance Filter",  
+  "search": "Search",
+  "exportReport": "Export Report"
 }

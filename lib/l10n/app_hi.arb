@@ -69,5 +69,12 @@
   "backToLogin": "लॉगिन पर वापस जाएं",
   "noUserFound": "कोई यूजर नहीं मिला",
   "enableBiometric": "बायोमेट्रिक सक्षम करें",
-  "enableBiometricMsg": "बायोमेट्रिक का उपयोग करके ऐप अनलॉक करें"
+  "enableBiometricMsg": "बायोमेट्रिक का उपयोग करके ऐप अनलॉक करें",
+  "apply": "लागु करें",
+  "clear": "हटाएँ",
+  "amountRange": "राशि सीमा", 
+  "dateRange": "दिनांक सीमा", 
+  "advanceFilter": "एडवांस फ़िल्टर",
+  "search": "खोज",
+  "exportReport": "निर्यात रिपोर्ट"
 }

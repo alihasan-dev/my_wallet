@@ -68,6 +68,7 @@ class LoginScreenState extends State<LoginScreen>  with Helper{
               break;
             case LoginSuccessState _:
               hideLoadingDialog(context: context);
+              Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
               context.go(AppRoutes.dashboard);
               break;
             case LoginEmailFieldState _:

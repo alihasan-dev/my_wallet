@@ -99,6 +99,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       : null,
                       hintText: AppStrings.amount,
                       label: Text('${_localizations!.amount} *'),
+                      hintStyle: const TextStyle(color: AppColors.grey),
                       border: const OutlineInputBorder(),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -156,6 +157,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       ? AppStrings.emptyDate
                       : null,
                       hintText: AppStrings.emptyDate,
+                      hintStyle: const TextStyle(color: AppColors.grey),
                       label: Text('${_localizations!.date} *'),
                       border: const OutlineInputBorder(),
                       enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
