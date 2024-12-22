@@ -593,9 +593,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             break;
           case TransactionExportPDFState _:
             hideLoadingDialog(context: context);
-            if(state.isSuccess) {
+            if(state.isSuccess && !kIsWeb) {
               showSnackBar(context: context, title: state.message, color: AppColors.green);
-            } else {
+            } 
+            if(!state.isSuccess) {
               showSnackBar(context: context, title: state.message);
             }
             break;
