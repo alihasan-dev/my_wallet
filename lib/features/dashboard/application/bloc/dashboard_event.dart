@@ -34,8 +34,6 @@ class DashboardUserDetailsEvent extends DashboardEvent {
   DashboardUserDetailsEvent(this.userModel);
 }
 
-// class DashboardCancelSearchEvent extends DashboardEvent {}
-
 class DashboardSearchEvent extends DashboardEvent {
   String text;
 
@@ -67,9 +65,3 @@ class DashboardBiometricAuthEvent extends DashboardEvent {
 
   DashboardBiometricAuthEvent({this.isAuthenticated = false});
 }
-
-// class DashboardChangeLifeCycleEvent extends DashboardEvent {
-//   bool isActive;
-
-//   DashboardChangeLifeCycleEvent({this.isActive = false});
-// }

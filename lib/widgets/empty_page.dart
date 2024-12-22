@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:my_wallet/constants/app_images.dart';
-import 'package:my_wallet/constants/app_size.dart';
-import 'package:my_wallet/widgets/custom_text.dart';
+import '../constants/app_images.dart';
+import '../constants/app_size.dart';
+import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 
 class EmptyPage extends StatelessWidget {

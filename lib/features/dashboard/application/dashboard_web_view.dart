@@ -73,20 +73,15 @@ class DashboardWebView extends StatelessWidget {
                   ignoring: dashboardScreenState.isLoading,
                   child: Row(
                     children: [
-                      AnimatedSize(
-                        duration: MyAppTheme.animationDuration,
-                        child: dashboardScreenState.allUsers.isEmpty
-                        ? const SizedBox.shrink()
-                        : IconButton(
-                          onPressed: () => dashboardBloc.add(DashboardSearchFieldEnableEvent(isSearchFieldClosed: dashboardScreenState.searchFieldEnable)),
-                          color: AppColors.white,
-                          icon: Icon(
-                            dashboardScreenState.searchFieldEnable
-                            ? Icons.clear
-                            : Icons.search
-                          ),
-                          tooltip: dashboardScreenState.searchFieldEnable ? localizations.clear : localizations.search,
+                      IconButton(
+                        onPressed: () => dashboardBloc.add(DashboardSearchFieldEnableEvent(isSearchFieldClosed: dashboardScreenState.searchFieldEnable)),
+                        color: AppColors.white,
+                        icon: Icon(
+                          dashboardScreenState.searchFieldEnable
+                          ? Icons.clear
+                          : Icons.search
                         ),
+                        tooltip: dashboardScreenState.searchFieldEnable ? localizations.clear : localizations.search,
                       ),
                       PopupMenuButton<String>(
                         padding: EdgeInsets.zero,

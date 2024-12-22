@@ -55,9 +55,3 @@ class DashboardBiometricAuthState extends DashboardState {
 
   DashboardBiometricAuthState({this.isAuthenticated = false});
 }
-
-// class DashboardChangeLifeCycleState extends DashboardState {
-//   bool isActive;
-
-//   DashboardChangeLifeCycleState({this.isActive = false});
-// }

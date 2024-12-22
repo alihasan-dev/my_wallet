@@ -347,15 +347,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                     ),
                   ],
                 ),
-                // CustomText(
-                //   title: _localizations!.selectImg, 
-                //   textStyle: getMediumStyle(
-                //     color: Helper.isDark
-                //     ? AppColors.white.withValues(alpha: 0.8)
-                //     : AppColors.black, 
-                //     fontSize: AppSize.s16
-                //   ),
-                // ),
                 const SizedBox(height: AppSize.s18),
                 Row(
                   children: [

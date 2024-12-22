@@ -136,16 +136,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return false;
     } else if(event.profileData['phone'].isNotEmpty) {
       var data = event.profileData['phone'];
-      if(data.length < 10){
-        return false;
-      } else {
-        return true;
-      }
-    } else if(!await checkConnectivity.hasConnection) {
+      if(data.length < 10) return false;
+      return true;
+    } else if (!await checkConnectivity.hasConnection) {
       emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
     } else {
       return true;
     }
   }
+  
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wallet/utils/helper.dart';
+import '../utils/helper.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';

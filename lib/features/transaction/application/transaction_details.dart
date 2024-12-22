@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../features/dashboard/domain/user_model.dart';

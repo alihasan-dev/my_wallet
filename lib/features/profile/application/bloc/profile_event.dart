@@ -21,7 +21,6 @@ class ProfilePhoneChangeEvent extends ProfileEvent {
   ProfilePhoneChangeEvent({required this.text});
 }
 
-
 class ProfileChooseImageEvent extends ProfileEvent {
   String imagePath;
   ProfileChooseImageEvent({required this.imagePath});

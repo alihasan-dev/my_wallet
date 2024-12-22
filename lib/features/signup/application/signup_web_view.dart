@@ -92,7 +92,7 @@ class SignupWebView extends StatelessWidget {
               ],
             ),
           ],
-        )
+        ),
       ),
     );
   }

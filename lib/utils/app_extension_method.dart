@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_wallet/utils/helper.dart';
+import '../utils/helper.dart';
 import '../utils/preferences.dart';
 import '../constants/app_strings.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wallet/constants/app_theme.dart';
+import '../constants/app_theme.dart';
 
 class TwoColumnLayout extends StatelessWidget {
   final Widget mainView;
@@ -14,7 +14,6 @@ class TwoColumnLayout extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0, elevation: 0),
       body: Row(

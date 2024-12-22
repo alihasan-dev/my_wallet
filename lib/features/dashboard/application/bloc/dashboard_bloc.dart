@@ -32,7 +32,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardNameChangeEvent>(_onNameChange);
     on<DashboardDeleteUserEvent>(_onDeleteUser);
     on<DashboardUserDetailsEvent>(_onFetchUserDetails);
-    // on<DashboardCancelSearchEvent>(_onCancelSearchEvent);
     on<DashboardSearchEvent>(_onSearchEvent);
     on<DashboardSelectedUserEvent>(_onSelectedUserEvent);
     on<DashboardSearchFieldEnableEvent>(_onSearchFieldEnableEvent);
@@ -40,7 +39,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardCancelSelectedContactEvent>(_onCancelSelectedContactEvent);
     on<DashboardPinnedContactEvent>(_onPinnedContact);
     on<DashboardBiometricAuthEvent>(_onBiometricAuthenticated);
-    // on<DashboardChangeLifeCycleEvent>(_onChangeLifeCycleEvent);
 
     _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event){
       var userData = event.data() as Map;
@@ -95,10 +93,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(DashboardBiometricAuthState(isAuthenticated: event.isAuthenticated));
   }
 
-  // void _onChangeLifeCycleEvent(DashboardBiometricAuthEvent event, Emitter emit) {
-  //   emit(DashboardBiometricAuthState(isAuthenticated: event.isAuthenticated));
-  // }
-
   Future<void> _onPinnedContact(DashboardPinnedContactEvent event, Emitter emit) async {
     if(listUser.isNotEmpty) {
       var tempUserList = [];
@@ -146,24 +140,20 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(DashboardSelectedUserState(userId: event.userId));
   }
 
-  // void _onCancelSearchEvent(DashboardCancelSearchEvent event, Emitter emit) {
-  //   listUser.clear();
-  //   listUser.addAll(originalUserList);
-  //   emit(DashboardAllUserState(allUser: listUser, isCancelSearch: true));
-  // }
-
   void _onSearchEvent(DashboardSearchEvent event, Emitter emit) {
-    listUser.clear();
-    if(event.text.isEmpty) {
-      listUser.addAll(originalUserList);
-    } else {
-      for(var item in originalUserList) {
-        if(item.name.toLowerCase().contains(event.text.toLowerCase())) {
-          listUser.add(item);
+    if(originalUserList.isNotEmpty) {
+      listUser.clear();
+      if(event.text.isEmpty) {
+        listUser.addAll(originalUserList);
+      } else {
+        for(var item in originalUserList) {
+          if(item.name.toLowerCase().contains(event.text.toLowerCase())) {
+            listUser.add(item);
+          }
         }
       }
+      emit(DashboardAllUserState(allUser: listUser));
     }
-    emit(DashboardAllUserState(allUser: listUser));
   }
 
   void _onFetchUserDetails(DashboardUserDetailsEvent event, Emitter emit) {
@@ -200,7 +190,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       });
     }
   }
-
 
   Future<void> _onDeleteUser(DashboardDeleteUserEvent event, Emitter emit) async {
     await firebaseStoreInstance.doc(userId).collection('friends').doc(event.docId).delete();
