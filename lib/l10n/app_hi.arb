@@ -8,6 +8,8 @@
   "language": "भाषा",
   "logout": "लॉग आउट",
   "cancel": "रद्द करें",
+  "close": "बंद करे",
+  "back": "वापस जाएं",
   "yes": "हाँ",
   "no": "नहीं",
   "logoutMsg": "क्या आप लॉग आउट करना चाहते हैं?",
@@ -75,6 +77,6 @@
   "amountRange": "राशि सीमा", 
   "dateRange": "दिनांक सीमा", 
   "advanceFilter": "एडवांस फ़िल्टर",
-  "search": "खोज",
+  "search": "खोजें",
   "exportReport": "निर्यात रिपोर्ट"
 }

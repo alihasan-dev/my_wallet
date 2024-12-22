@@ -87,6 +87,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       Transform.translate(
                         offset: const Offset(AppSize.s10, AppSize.s0),
                         child: IconButton(
+                          tooltip: localizations.close,
                           onPressed: () => context.pop(),
                           icon: const Icon(Icons.clear),
                           visualDensity: VisualDensity.compact

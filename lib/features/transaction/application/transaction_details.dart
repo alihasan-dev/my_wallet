@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
@@ -38,6 +39,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
@@ -75,7 +77,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
                 child: ProfileScreen(
                   userId: widget.userModel.userId,
                   closeButton: IconButton(
-                    tooltip: AppStrings.close,
+                    tooltip: localizations.close,
                     onPressed: toggleDisplayProfileColumn, 
                     icon: const Icon(Icons.close)
                   ),

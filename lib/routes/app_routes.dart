@@ -120,11 +120,13 @@ class AppRoutes {
                   return defaultPageBuilder(
                     context,
                     state,
-                    TransactionDetails(
-                      key: Key(data == null ? '' : data.userId),
-                      userModel: data!,
-                      dashboardBloc: context.read<DashboardBloc>(),
-                    ),
+                    Preferences.getString(key: AppStrings.prefUserId).isNotEmpty
+                    ? TransactionDetails(
+                        key: Key(data == null ? '' : data.userId),
+                        userModel: data!,
+                        dashboardBloc: context.read<DashboardBloc>(),
+                      )
+                    : const EmptyPage()
                   );
                 },
                 routes: [

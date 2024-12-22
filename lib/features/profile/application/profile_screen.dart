@@ -182,7 +182,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
         horizontal: !kIsWeb 
         ? AppSize.s20
         : AppSize.s20
-        // : context.screenWidth * 0.18
       ),
       children: [
         Row(
@@ -330,15 +329,33 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
               shrinkWrap: true,
               padding: const EdgeInsets.all(AppSize.s20),
               children: [
-                CustomText(
-                  title: _localizations!.selectImg, 
-                  textStyle: getMediumStyle(
-                    color: Helper.isDark
-                    ? AppColors.white.withValues(alpha: 0.8)
-                    : AppColors.black, 
-                    fontSize: AppSize.s16
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      title: _localizations!.selectImg,
+                      textStyle: getSemiBoldStyle(),
+                    ),
+                    Transform.translate(
+                      offset: const Offset(AppSize.s10, AppSize.s0),
+                      child: IconButton(
+                        onPressed: () => context.pop(),
+                        icon: const Icon(Icons.clear),
+                        visualDensity: VisualDensity.compact,
+                        tooltip: _localizations!.close,
+                      ),
+                    ),
+                  ],
                 ),
+                // CustomText(
+                //   title: _localizations!.selectImg, 
+                //   textStyle: getMediumStyle(
+                //     color: Helper.isDark
+                //     ? AppColors.white.withValues(alpha: 0.8)
+                //     : AppColors.black, 
+                //     fontSize: AppSize.s16
+                //   ),
+                // ),
                 const SizedBox(height: AppSize.s18),
                 Row(
                   children: [

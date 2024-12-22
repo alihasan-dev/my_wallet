@@ -79,6 +79,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       Transform.translate(
                         offset: const Offset(10, 0),
                         child: IconButton(
+                          tooltip: _localizations!.close,
                           onPressed: () => context.pop(),
                           icon: const Icon(Icons.clear),
                           visualDensity: VisualDensity.compact

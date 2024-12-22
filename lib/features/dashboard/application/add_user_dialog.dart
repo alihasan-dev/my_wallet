@@ -69,7 +69,8 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         child: IconButton(
                           onPressed: () => context.pop(),
                           icon: const Icon(Icons.clear),
-                          visualDensity: VisualDensity.compact
+                          visualDensity: VisualDensity.compact,
+                          tooltip: _localizations!.close,
                         ),
                       )
                     ],

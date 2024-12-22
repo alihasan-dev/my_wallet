@@ -8,6 +8,8 @@
   "language": "Language",
   "logout": "Logout",
   "cancel": "Cancel",
+  "close": "Close",
+  "back": "Back",
   "yes": "Yes",
   "no": "No",
   "logoutMsg": "Are you sure you want to logout?",

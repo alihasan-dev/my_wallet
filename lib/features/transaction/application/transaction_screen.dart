@@ -124,7 +124,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         children: [
                           const SizedBox(width: AppSize.s10),
                           Tooltip(
-                            message: AppStrings.back,
+                            message: _localizations!.back,
                             child: Material(
                               color: AppColors.transparent,
                               child: InkWell(
