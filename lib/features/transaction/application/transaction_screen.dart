@@ -61,8 +61,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   RangeValues? amountChangeValue;
   DateTimeRange? initialDateTimeRage;
   String transactionType = AppStrings.all;
-  int maxAmount = - double.maxFinite.toInt();
-  int minAmount = double.maxFinite.toInt();
+  double maxAmount = - double.maxFinite;
+  double minAmount = double.maxFinite;
 
   @override
   void initState() {
@@ -622,22 +622,27 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   }
 
   Future<void> showFilterDialog() async {
-    if(maxAmount == - double.maxFinite.toInt()) {
+    if(maxAmount == - double.maxFinite) {
       for(var item in transactionDataList) {
         if(maxAmount < item.amount) {
-          maxAmount = item.amount.toInt();
+          maxAmount = item.amount;
         }
         if(minAmount > item.amount) {
-          minAmount = item.amount.toInt();
+          minAmount = item.amount;
         }
       }
-    }
-    if(maxAmount != - double.maxFinite.toInt()) {
+    } 
+    if(maxAmount != - double.maxFinite) {
+      for(var item in transactionDataList) {
+        if(item.amount > maxAmount) {
+          maxAmount = item.amount;
+        }
+      }
       var data = await showDialog(
         context: context,
         builder: (_) => TransactionFilterDialog(
           amountChangeValue: amountChangeValue,
-          finalAmountRange: RangeValues(minAmount.toDouble(), maxAmount.toDouble()),
+          finalAmountRange: RangeValues(minAmount, maxAmount),
           transactionBloc: _transactionBloc,
           initialDateTimeRage: initialDateTimeRage,
           transactionType: transactionType

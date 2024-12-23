@@ -82,11 +82,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   @override
   Widget build(BuildContext context) {
     selectedUserId = widget.userId;
-    return Scaffold(
-      body: mainContent(context: context), 
-      // appBar: AppBar(toolbarHeight: 0, elevation: 0)
-      // appBar: AppBar(toolbarHeight: 0, elevation: 0, systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: AppColors.primaryColor))
-    );
+    return Scaffold(body: mainContent(context: context));
   }
 
   Widget mainContent({required BuildContext context}) {
@@ -277,6 +273,8 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final location = GoRouter.of(context).routerDelegate.currentConfiguration.fullPath;
+    if(location != AppRoutes.dashboard) return;
     switch (state) {
       case AppLifecycleState.resumed:
         if(enableBiometricOnChangeLifeCycle && !isBioAuthenticated && !kIsWeb && !isBiometricDialogOpen) {
