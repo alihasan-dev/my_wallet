@@ -277,12 +277,12 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
     if(location != AppRoutes.dashboard) return;
     switch (state) {
       case AppLifecycleState.resumed:
-        if(enableBiometricOnChangeLifeCycle && !isBioAuthenticated && !kIsWeb && !isBiometricDialogOpen) {
+        if(enableBiometricOnChangeLifeCycle && !isBioAuthenticated && !kIsWeb && !isBiometricDialogOpen && Preferences.getBool(key: AppStrings.prefEnableBiometric)) {
           openBiometricDialog();
         }
         break;
       case AppLifecycleState.inactive:
-        if(isBioAuthenticated && !kIsWeb) {
+        if(isBioAuthenticated && !kIsWeb && Preferences.getBool(key: AppStrings.prefEnableBiometric)) {
           enableBiometricOnChangeLifeCycle = true;
           _dashboardBloc.add(DashboardBiometricAuthEvent(isAuthenticated: false));
         }
