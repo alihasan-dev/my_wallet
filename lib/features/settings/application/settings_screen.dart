@@ -191,7 +191,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: CustomText(
             title: _localizations!.theme,
             textStyle: getMediumStyle(
-              color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
+              color: Helper.isDark 
+              ? AppColors.white.withValues(alpha: 0.9) 
+              : AppColors.black,
               fontSize: AppSize.s18
             ),
           ),

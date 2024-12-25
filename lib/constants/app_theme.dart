@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wallet/constants/app_color.dart';
+import '../constants/app_color.dart';
 import '../constants/app_font.dart';
 import '../constants/app_style.dart';
 import 'app_size.dart';

@@ -29,7 +29,7 @@ class LoginScreen extends StatefulWidget{
   State createState() => LoginScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen>  with Helper{
+class LoginScreenState extends State<LoginScreen>  with Helper {
 
   late TextEditingController emailTextController;
   late TextEditingController passwordTextController;

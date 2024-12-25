@@ -101,7 +101,10 @@ class LoginMobileView extends StatelessWidget {
               onTap: () => context.push(AppRoutes.signupScreen), 
               widget: CustomText(
                 title: localizations.signup, 
-                textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: AppColors.primaryColor)
+                textStyle: getSemiBoldStyle(
+                  fontSize: AppSize.s14, 
+                  color: AppColors.primaryColor
+                ),
               ),
             ),
           ],

@@ -19,7 +19,7 @@ class TransactionDetails extends StatefulWidget {
   });
 
   @override
-  State<TransactionDetails> createState() => TransactionDetailsState();
+  State createState() => TransactionDetailsState();
 }
 
 class TransactionDetailsState extends State<TransactionDetails> {

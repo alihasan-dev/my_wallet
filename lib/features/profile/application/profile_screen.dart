@@ -89,9 +89,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
               return true;
             },
             builder: (context, state) {
-              // return widget.userId.isNotEmpty
-              // ? mainWidget(bContext: context)
-              // : 
               return Scaffold(
                 backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
                 appBar: AppBar(

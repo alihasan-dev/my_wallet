@@ -97,20 +97,27 @@ class LoginWebView extends StatelessWidget {
               children: [
                 CustomText(
                   title: '${localizations.dontHaveAccount}  ', 
-                  textStyle: getMediumStyle(color: Helper.isDark ? AppColors.white.withValues(alpha: 0.8) : AppColors.black)
+                  textStyle: getMediumStyle(
+                    color: Helper.isDark 
+                    ? AppColors.white.withValues(alpha: 0.8) 
+                    : AppColors.black
+                  ),
                 ),
                 CustomInkWellWidget(
                   onTap: () => context.push(AppRoutes.signupScreen), 
                   widget: CustomText(
                     title: localizations.signup, 
-                    textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: AppColors.primaryColor)
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppSize.s14, 
+                      color: AppColors.primaryColor
+                    ),
                   ),
                 ),
               ],
             ),
           ],
-        )
-      )
+        ),
+      ),
     );
   }
 }

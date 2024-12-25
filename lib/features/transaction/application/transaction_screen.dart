@@ -468,7 +468,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             ],
           ),
           bottomNavigationBar: Offstage(
-            offstage: transactionDataList.isEmpty ? true : false,
+            offstage: transactionDataList.isEmpty,
             child: Container(
               padding: EdgeInsets.only(
                 left: AppSize.s15,
@@ -529,7 +529,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     ),
                   ),
                 ],
-              )
+              ),
             ),
           ),
         );
