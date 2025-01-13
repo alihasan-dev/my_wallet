@@ -40,7 +40,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardPinnedContactEvent>(_onPinnedContact);
     on<DashboardBiometricAuthEvent>(_onBiometricAuthenticated);
 
-    _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event){
+    _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event) {
       var userData = event.data() as Map;
       if(userData.isNotEmpty) {
         Preferences.setString(key: AppStrings.prefFullName, value: userData['name']);
@@ -129,7 +129,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _onSearchFieldEnableEvent(DashboardSearchFieldEnableEvent event, Emitter emit) {
     if(event.isSearchFieldClosed) {
       listUser.clear();
-      listUser.addAll(originalUserList);
+      if(showUnverifiedUser) {
+        listUser.addAll(originalUserList);
+      } else {
+        listUser.addAll(originalUserList.where((item) => item.isUserVerified));
+      }
       emit(DashboardAllUserState(allUser: listUser, isCancelSearch: true));
     } else {
       emit(DashboardSearchFieldEnableState());
@@ -144,7 +148,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     if(originalUserList.isNotEmpty) {
       listUser.clear();
       if(event.text.isEmpty) {
-        listUser.addAll(originalUserList);
+        if(showUnverifiedUser) {
+          listUser.addAll(originalUserList);
+        } else {
+          listUser.addAll(originalUserList.where((item) => item.isUserVerified));
+        }
       } else {
         for(var item in originalUserList) {
           if(item.name.toLowerCase().contains(event.text.toLowerCase())) {

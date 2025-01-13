@@ -65,9 +65,39 @@ class DashboardWebView extends StatelessWidget {
             : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomText(
-                  title: localizations.contacts,
-                  textStyle: getBoldStyle(color: AppColors.white),
+                Expanded(
+                  child: AnimatedOpacity(
+                    duration: MyAppTheme.animationDuration,
+                    opacity: 1,
+                    child: dashboardScreenState.searchFieldEnable
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              autofocus: true,
+                              controller: dashboardScreenState.searchTextController,
+                              onChanged: (value) => dashboardBloc.add(DashboardSearchEvent(text: value)),
+                              style: getMediumStyle(
+                                color: Colors.white, 
+                                fontSize: AppSize.s16
+                              ),
+                              cursorColor: AppColors.white,
+                              decoration: InputDecoration.collapsed(
+                                hintText: localizations.search,
+                                hintStyle: getMediumStyle(
+                                  color: AppColors.white.withValues(alpha: 0.8), 
+                                  fontSize: AppSize.s16
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    : CustomText(
+                      title: localizations.contacts,
+                      textStyle: getBoldStyle(color: AppColors.white),
+                    ),
+                  ),
                 ),
                 IgnorePointer(
                   ignoring: dashboardScreenState.isLoading,
@@ -81,81 +111,72 @@ class DashboardWebView extends StatelessWidget {
                           ? Icons.clear
                           : Icons.search
                         ),
-                        tooltip: dashboardScreenState.searchFieldEnable ? localizations.clear : localizations.search,
+                        tooltip: dashboardScreenState.searchFieldEnable 
+                        ? localizations.clear 
+                        : localizations.search,
                       ),
-                      PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        position: PopupMenuPosition.under,
-                        iconColor: AppColors.white,
-                        menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
-                        itemBuilder: (_) {
-                          return <PopupMenuEntry<String>> [
-                            PopupMenuItem<String>(
-                              value: AppStrings.profile,
-                              padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
-                              child: ListTile(
-                                visualDensity: VisualDensity.compact,
-                                leading: const Icon(AppIcons.personIcon),
-                                title: CustomText(title: localizations.profile, textStyle: getMediumStyle()),
+                      AnimatedSize(
+                        duration: MyAppTheme.animationDuration,
+                        child: dashboardScreenState.searchFieldEnable
+                        ? const SizedBox.shrink()
+                        : PopupMenuButton<String>(
+                          padding: EdgeInsets.zero,
+                          position: PopupMenuPosition.under,
+                          iconColor: AppColors.white,
+                          menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+                          itemBuilder: (_) {
+                            return <PopupMenuEntry<String>> [
+                              PopupMenuItem<String>(
+                                value: AppStrings.profile,
+                                padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
+                                child: ListTile(
+                                  visualDensity: VisualDensity.compact,
+                                  leading: const Icon(AppIcons.personIcon),
+                                  title: CustomText(title: localizations.profile, textStyle: getMediumStyle()),
+                                ),
                               ),
-                            ),
-                            PopupMenuItem<String>(
-                              value: AppStrings.settings,
-                              padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
-                              child: ListTile(
-                                visualDensity: VisualDensity.compact,
-                                leading: const Icon(AppIcons.settingsIcon),
-                                title: CustomText(title: localizations.settings, textStyle: getMediumStyle()),
+                              PopupMenuItem<String>(
+                                value: AppStrings.settings,
+                                padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
+                                child: ListTile(
+                                  visualDensity: VisualDensity.compact,
+                                  leading: const Icon(AppIcons.settingsIcon),
+                                  title: CustomText(title: localizations.settings, textStyle: getMediumStyle()),
+                                ),
                               ),
-                            ),
-                            PopupMenuItem<String>(
-                              value: AppStrings.logout,
-                              padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
-                              child: ListTile(
-                                visualDensity: VisualDensity.compact,
-                                leading: const Icon(AppIcons.logoutIcon),
-                                title: CustomText(title: localizations.logout, textStyle: getMediumStyle()),
+                              PopupMenuItem<String>(
+                                value: AppStrings.logout,
+                                padding: const EdgeInsets.only(left: AppSize.s10, right: AppSize.s40),
+                                child: ListTile(
+                                  visualDensity: VisualDensity.compact,
+                                  leading: const Icon(AppIcons.logoutIcon),
+                                  title: CustomText(title: localizations.logout, textStyle: getMediumStyle()),
+                                ),
                               ),
-                            ),
-                          ];
-                        },
-                        onSelected: (value) {
-                          switch (value) {
-                            case AppStrings.profile:
-                              context.go('/dashboard/profile');
-                              dashboardBloc.add(DashboardSelectedUserEvent());
-                              break;
-                            case AppStrings.settings:
-                              context.go('/dashboard/settings');
-                              dashboardBloc.add(DashboardSelectedUserEvent());
-                              break;
-                            case AppStrings.logout:
-                              dashboardScreenState.onClickLogout(context: context);
-                              break;
-                          }
-                        },
-                      )
+                            ];
+                          },
+                          onSelected: (value) {
+                            switch (value) {
+                              case AppStrings.profile:
+                                context.go('/dashboard/profile');
+                                dashboardBloc.add(DashboardSelectedUserEvent());
+                                break;
+                              case AppStrings.settings:
+                                context.go('/dashboard/settings');
+                                dashboardBloc.add(DashboardSelectedUserEvent());
+                                break;
+                              case AppStrings.logout:
+                                dashboardScreenState.onClickLogout(context: context);
+                                break;
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
-            ),
-          ),
-          AnimatedContainer(
-            duration: MyAppTheme.animationDuration,
-            height: dashboardScreenState.searchFieldEnable ? AppSize.s36 : AppSize.s0,
-            width: dashboardScreenState.searchFieldEnable ? double.maxFinite : AppSize.s0,
-            margin: EdgeInsets.symmetric(
-              horizontal: AppSize.s8,
-              vertical: dashboardScreenState.searchFieldEnable ? AppSize.s5 : AppSize.s0
-            ),
-            child: CupertinoTheme(
-              data: CupertinoThemeData(brightness: Helper.isDark ? Brightness.dark : Brightness.light),
-              child: CupertinoSearchTextField(
-                controller: dashboardScreenState.searchTextController,
-                onChanged: (value) => dashboardBloc.add(DashboardSearchEvent(text: value)),
-              ),
             ),
           ),
           Expanded(
