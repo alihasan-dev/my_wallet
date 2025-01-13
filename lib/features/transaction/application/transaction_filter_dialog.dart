@@ -178,14 +178,18 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: () => context.pop(('clear')),
+                        onPressed: () => context.pop({}),
                         child: CustomText(
                           title: localizations.clear,
                           textStyle: getSemiBoldStyle(color: AppColors.red)
                         ),
                       ),
                       TextButton(
-                        onPressed: () => context.pop((initialDateTimeRage, transactionType, amountChangeValue)),
+                        onPressed: () => context.pop({
+                          'initial_date_time_range': initialDateTimeRage, 
+                          'transaction_type': transactionType, 
+                          'amount_range': amountChangeValue
+                        }),
                         child: CustomText(
                           title: localizations.apply,
                           textStyle: getSemiBoldStyle(color: AppColors.primaryColor)

@@ -93,23 +93,26 @@ mixin Helper {
   void showLoadingDialog({required BuildContext context}) {
     if(!isLoadingVisible) {
       isLoadingVisible = true;
-      showDialog(
+      showGeneralDialog(
         context: context, 
         barrierColor: AppColors.transparent,
-        builder: (_) {
-          return AlertDialog(
-            elevation: 0.0,
-            contentPadding: EdgeInsets.zero,
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: AppColors.transparent,
-            content: SizedBox(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 2.5,sigmaY: 2.5,
+        pageBuilder: (_, a1, __) {
+          return ScaleTransition(
+            scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+            child: AlertDialog(
+              elevation: 0.0,
+              contentPadding: EdgeInsets.zero,
+              insetPadding: EdgeInsets.zero,
+              backgroundColor: AppColors.transparent,
+              content: SizedBox(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 2.5,sigmaY: 2.5,
+                  ),
+                  child: const Center(child: CircularProgressIndicator.adaptive()),
                 ),
-                child: const Center(child: CircularProgressIndicator.adaptive()),
               ),
             ),
           );
@@ -135,45 +138,48 @@ mixin Helper {
     required String content,
     required AppLocalizations localizations
   }) async {
-    return await showDialog(
-      context: context, 
-      builder: (_) => AlertDialog(
-        backgroundColor: Helper.isDark 
-        ? AppColors.dialogColorDark 
-        : AppColors.white,
-        title: CustomText(
-          title: title, textStyle: 
-          getBoldStyle(
-            color: Helper.isDark 
-            ? AppColors.white.withValues(alpha: 0.9) 
-            : AppColors.black
-          ),
-        ),
-        content: CustomText(
-          title: content, 
-          textStyle: getSemiBoldStyle(
-            color: Helper.isDark 
-            ? AppColors.white.withValues(alpha: 0.9) 
-            : AppColors.black
-          ),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(false),
-            child: CustomText(
-              title: localizations.cancel, 
-              textStyle: getSemiBoldStyle(color: AppColors.red)
+    return await showGeneralDialog<bool>(
+      context: context,
+      pageBuilder: (_, a1, __) => ScaleTransition(
+        scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+        child: AlertDialog(
+          backgroundColor: Helper.isDark 
+          ? AppColors.dialogColorDark 
+          : AppColors.white,
+          title: CustomText(
+            title: title, textStyle: 
+            getBoldStyle(
+              color: Helper.isDark 
+              ? AppColors.white.withValues(alpha: 0.9) 
+              : AppColors.black
             ),
           ),
-          TextButton(
-            onPressed: () => context.pop(true), 
-            child: CustomText(
-              title: localizations.yes, 
-              textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
+          content: CustomText(
+            title: content, 
+            textStyle: getSemiBoldStyle(
+              color: Helper.isDark 
+              ? AppColors.white.withValues(alpha: 0.9) 
+              : AppColors.black
             ),
           ),
-        ],
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(false),
+              child: CustomText(
+                title: localizations.cancel, 
+                textStyle: getSemiBoldStyle(color: AppColors.red)
+              ),
+            ),
+            TextButton(
+              onPressed: () => context.pop(true), 
+              child: CustomText(
+                title: localizations.yes, 
+                textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
+              ),
+            ),
+          ],
+        ),
       )
     ) ?? false;
   }

@@ -75,7 +75,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       )
                     ],
                   ),
-                  const SizedBox(height: AppSize.s10),
+                  const SizedBox(height: AppSize.s8),
                   TextField(
                     controller: nameTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),

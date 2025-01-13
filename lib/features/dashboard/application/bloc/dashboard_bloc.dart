@@ -155,7 +155,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         }
       } else {
         for(var item in originalUserList) {
-          if(item.name.toLowerCase().contains(event.text.toLowerCase())) {
+          final isMatchingName = item.name.toLowerCase().contains(event.text.toLowerCase());
+          final shouldAddUser = (showUnverifiedUser || (!showUnverifiedUser && item.isUserVerified));
+          if (isMatchingName && shouldAddUser) {
             listUser.add(item);
           }
         }

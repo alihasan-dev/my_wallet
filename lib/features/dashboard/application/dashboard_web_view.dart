@@ -46,7 +46,7 @@ class DashboardWebView extends StatelessWidget {
                         tooltip: localizations.cancel,
                         onPressed: () => dashboardBloc.add(DashboardCancelSelectedContactEvent()),
                         icon: const Icon(
-                          Icons.clear,
+                          AppIcons.clearIcon,
                           color: AppColors.white
                         ),
                       ),
@@ -58,7 +58,7 @@ class DashboardWebView extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => dashboardBloc.add(DashboardPinnedContactEvent()),
-                    icon: const Icon(Icons.push_pin_outlined, color: AppColors.white)
+                    icon: const Icon(AppIcons.pinOutlineIcon, color: AppColors.white)
                   ),
                 ],
               )
@@ -90,7 +90,7 @@ class DashboardWebView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       )
                     : CustomText(
@@ -108,8 +108,8 @@ class DashboardWebView extends StatelessWidget {
                         color: AppColors.white,
                         icon: Icon(
                           dashboardScreenState.searchFieldEnable
-                          ? Icons.clear
-                          : Icons.search
+                          ? AppIcons.clearIcon
+                          : AppIcons.searchIcon
                         ),
                         tooltip: dashboardScreenState.searchFieldEnable 
                         ? localizations.clear 
@@ -288,7 +288,7 @@ class DashboardWebView extends StatelessWidget {
                                           children: [
                                             SizedBox(width: AppSize.s5),
                                             Icon(
-                                              Icons.push_pin,
+                                              AppIcons.pinIcon,
                                               size: AppSize.s16,
                                               color: AppColors.grey
                                             ),
@@ -320,7 +320,7 @@ class DashboardWebView extends StatelessWidget {
                       onPressed: dashboardScreenState.addUserDialog,
                       backgroundColor: AppColors.primaryColor,
                       label: CustomText(title: localizations.addUser, textStyle: getMediumStyle(fontSize: AppSize.s16, color: AppColors.white)),
-                      icon: const Icon(Icons.add, color: AppColors.white),
+                      icon: const Icon(AppIcons.addIcon, color: AppColors.white),
                     ),
                   ),
                 ),

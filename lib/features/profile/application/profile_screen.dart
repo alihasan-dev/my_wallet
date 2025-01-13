@@ -210,7 +210,11 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           color: AppColors.primaryColor,
                           boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
                         ),
-                        child: const Icon(Icons.edit, size: AppSize.s16, color: AppColors.white),
+                        child: const Icon(
+                          AppIcons.editIcon, 
+                          size: AppSize.s16, 
+                          color: AppColors.white
+                        ),
                       ),
                     ),
                   ),
@@ -307,133 +311,136 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   void showImagePickerSheet(BuildContext mContext) {
-    showDialog(
+    showGeneralDialog(
       context: mContext, 
-      builder: (_) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          insetPadding: const EdgeInsets.only(bottom: kIsWeb ? AppSize.s0 : AppSize.s18),
-          alignment: kIsWeb ? Alignment.center : Alignment.bottomCenter,
-          content: Container(
-            width: MyAppTheme.columnWidth,
-            decoration: BoxDecoration(
-              color: Helper.isDark
-              ? AppColors.backgroundColorDark
-              : AppColors.white,
-              borderRadius: BorderRadius.circular(AppSize.s10)
-            ),
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(AppSize.s20),
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomText(
-                      title: _localizations!.selectImg,
-                      textStyle: getSemiBoldStyle(),
-                    ),
-                    Transform.translate(
-                      offset: const Offset(AppSize.s10, AppSize.s0),
-                      child: IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(Icons.clear),
-                        visualDensity: VisualDensity.compact,
-                        tooltip: _localizations!.close,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSize.s18),
-                Row(
-                  children: [
-                    const SizedBox(width: AppSize.s10),
-                    InkWell(
-                      onTap: () async {
-                        context.pop();
-                        var data = await pickImage(imageSource: ImageSource.camera, context: context);
-                        if(data.isNotEmpty && context.mounted){
-                          mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
-                        }
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: AppSize.s26,
-                            child: Icon(
-                              Icons.camera, 
-                              size: AppSize.s28, 
-                              color: Helper.isDark
-                              ? AppColors.white.withValues(alpha: 0.8)
-                              : AppColors.primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: AppSize.s4),
-                          CustomText(
-                            title: _localizations!.camera, 
-                            textColor: Helper.isDark
-                            ? AppColors.white.withValues(alpha: 0.8)
-                            : AppColors.black,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: AppSize.s30),
-                    InkWell(
-                      onTap: () async {
-                        context.pop();
-                        var data = await pickImage(imageSource: ImageSource.gallery, context: context);
-                        if(data.isNotEmpty && context.mounted){
-                          mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
-                        }
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: AppSize.s26,
-                            child: Icon(
-                              Icons.photo, 
-                              size: AppSize.s28, 
-                              color: Helper.isDark
-                              ? AppColors.white.withValues(alpha: 0.8)
-                              : AppColors.primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: AppSize.s4),
-                          CustomText(
-                            title: _localizations!.gallery, 
-                            textColor: Helper.isDark
-                            ? AppColors.white.withValues(alpha: 0.8)
-                            : AppColors.black,  
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSize.s10),
-                Container(
-                  padding: const EdgeInsets.all(AppSize.s5),
-                  decoration: BoxDecoration(
-                    color: AppColors.amber.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppSize.s4)
-                  ),
-                  child: Row(
+      pageBuilder: (_, a1, __) {
+        return ScaleTransition(
+          scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            insetPadding: const EdgeInsets.only(bottom: kIsWeb ? AppSize.s0 : AppSize.s18),
+            alignment: kIsWeb ? Alignment.center : Alignment.bottomCenter,
+            content: Container(
+              width: MyAppTheme.columnWidth,
+              decoration: BoxDecoration(
+                color: Helper.isDark
+                ? AppColors.backgroundColorDark
+                : AppColors.white,
+                borderRadius: BorderRadius.circular(AppSize.s10)
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(AppSize.s20),
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(
-                        AppIcons.warningIcon, 
-                        color: AppColors.amber, 
-                        size: AppSize.s20
-                      ),
-                      const SizedBox(width: AppSize.s5),
                       CustomText(
-                        title: _localizations!.imageSizeMsg, 
-                        textColor: AppColors.amber
+                        title: _localizations!.selectImg,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(AppSize.s10, AppSize.s0),
+                        child: IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(AppIcons.clearIcon),
+                          visualDensity: VisualDensity.compact,
+                          tooltip: _localizations!.close,
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: AppSize.s18),
+                  Row(
+                    children: [
+                      const SizedBox(width: AppSize.s10),
+                      InkWell(
+                        onTap: () async {
+                          context.pop();
+                          var data = await pickImage(imageSource: ImageSource.camera, context: context);
+                          if(data.isNotEmpty && context.mounted){
+                            mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: AppSize.s26,
+                              child: Icon(
+                                AppIcons.cameraIcon, 
+                                size: AppSize.s28, 
+                                color: Helper.isDark
+                                ? AppColors.white.withValues(alpha: 0.8)
+                                : AppColors.primaryColor
+                              ),
+                            ),
+                            const SizedBox(height: AppSize.s4),
+                            CustomText(
+                              title: _localizations!.camera, 
+                              textColor: Helper.isDark
+                              ? AppColors.white.withValues(alpha: 0.8)
+                              : AppColors.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: AppSize.s30),
+                      InkWell(
+                        onTap: () async {
+                          context.pop();
+                          var data = await pickImage(imageSource: ImageSource.gallery, context: context);
+                          if(data.isNotEmpty && context.mounted){
+                            mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: AppSize.s26,
+                              child: Icon(
+                                AppIcons.photoIcon, 
+                                size: AppSize.s28, 
+                                color: Helper.isDark
+                                ? AppColors.white.withValues(alpha: 0.8)
+                                : AppColors.primaryColor
+                              ),
+                            ),
+                            const SizedBox(height: AppSize.s4),
+                            CustomText(
+                              title: _localizations!.gallery, 
+                              textColor: Helper.isDark
+                              ? AppColors.white.withValues(alpha: 0.8)
+                              : AppColors.black,  
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s10),
+                  Container(
+                    padding: const EdgeInsets.all(AppSize.s5),
+                    decoration: BoxDecoration(
+                      color: AppColors.amber.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppSize.s4)
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          AppIcons.warningIcon, 
+                          color: AppColors.amber, 
+                          size: AppSize.s20
+                        ),
+                        const SizedBox(width: AppSize.s5),
+                        CustomText(
+                          title: _localizations!.imageSizeMsg, 
+                          textColor: AppColors.amber
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

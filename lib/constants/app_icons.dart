@@ -25,4 +25,11 @@ class AppIcons {
   static const IconData settingsIcon = Icons.settings;
   static const IconData openInNewIcon = Icons.open_in_new_rounded;
   static const IconData warningIcon = Icons.warning_rounded;
+  static const IconData clearIcon = Icons.clear;
+  static const IconData pinOutlineIcon = Icons.push_pin_outlined;
+  static const IconData pinIcon = Icons.push_pin;
+  static const IconData searchIcon = Icons.search;
+  static const IconData cameraIcon = Icons.camera;
+  static const IconData photoIcon = Icons.photo;
+  static const IconData editIcon = Icons.edit;
 }

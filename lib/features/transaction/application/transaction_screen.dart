@@ -615,9 +615,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   void showAddUserSheet() {
     errorAmount = false;
     errorDate = false;
-    showDialog(
+    showGeneralDialog(
       context: context, 
-      builder: (_) => AddTransactionDialog(userName: name, friendId: friendId)
+      pageBuilder: (_, a1, __) => ScaleTransition(
+        scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+        child: AddTransactionDialog(userName: name, friendId: friendId),
+      )
     );
   }
 
@@ -638,25 +641,28 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
           maxAmount = item.amount;
         }
       }
-      var data = await showDialog(
+      var data = await showGeneralDialog<Map>(
         context: context,
-        builder: (_) => TransactionFilterDialog(
-          amountChangeValue: amountChangeValue,
-          finalAmountRange: RangeValues(minAmount, maxAmount),
-          transactionBloc: _transactionBloc,
-          initialDateTimeRage: initialDateTimeRage,
-          transactionType: transactionType
-        )
+        pageBuilder: (_, a1, __) => ScaleTransition(
+          scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+          child: TransactionFilterDialog(
+            amountChangeValue: amountChangeValue,
+            finalAmountRange: RangeValues(minAmount, maxAmount),
+            transactionBloc: _transactionBloc,
+            initialDateTimeRage: initialDateTimeRage,
+            transactionType: transactionType
+          ),
+        ),
       );
       if(data != null) {
-        if(data == 'clear') {
+        if(data.isEmpty) {
           _transactionBloc.add(TransactionClearFilterEvent(clearFilter: isFilterEnable));
         } else {
-          initialDateTimeRage = data.$1;
+          initialDateTimeRage = data['initial_date_time_range'];
           _transactionBloc.add(TransactionApplyFilterEvent(
-            dateTimeRange: data.$1,
-            transactionType: data.$2,
-            amountRangeValues: data.$3
+            dateTimeRange: data['initial_date_time_range'],
+            transactionType: data['transaction_type'],
+            amountRangeValues: data['amount_range']
           ));
         }
       }
