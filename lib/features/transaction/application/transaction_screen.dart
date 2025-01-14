@@ -617,6 +617,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     errorDate = false;
     showGeneralDialog(
       context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) => ScaleTransition(
         scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
         child: AddTransactionDialog(userName: name, friendId: friendId),
@@ -643,6 +645,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       }
       var data = await showGeneralDialog<Map>(
         context: context,
+        barrierDismissible: true,
+        barrierLabel: AppStrings.close,
         pageBuilder: (_, a1, __) => ScaleTransition(
           scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
           child: TransactionFilterDialog(

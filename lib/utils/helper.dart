@@ -96,6 +96,8 @@ mixin Helper {
       showGeneralDialog(
         context: context, 
         barrierColor: AppColors.transparent,
+        barrierDismissible: true,
+        barrierLabel: AppStrings.close,
         pageBuilder: (_, a1, __) {
           return ScaleTransition(
             scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
@@ -140,6 +142,8 @@ mixin Helper {
   }) async {
     return await showGeneralDialog<bool>(
       context: context,
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) => ScaleTransition(
         scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
         child: AlertDialog(

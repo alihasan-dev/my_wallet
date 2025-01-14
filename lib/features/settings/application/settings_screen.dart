@@ -177,9 +177,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void showAboutAppDialog({required BuildContext context}) {
-    showDialog(
+    showGeneralDialog(
       context: context, 
-      builder: (context) => const AboutScreen()
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (context, a1, _) => ScaleTransition(
+        scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+        child: const AboutScreen()
+      )
     );
   }
 

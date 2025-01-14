@@ -313,6 +313,8 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   void showImagePickerSheet(BuildContext mContext) {
     showGeneralDialog(
       context: mContext, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) {
         return ScaleTransition(
           scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),

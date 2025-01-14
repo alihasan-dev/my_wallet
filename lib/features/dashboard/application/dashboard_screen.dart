@@ -150,6 +150,8 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   void addUserDialog() {
     showGeneralDialog(
       context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, ___) => ScaleTransition(
         scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
         child: const AddUserDialog(),
