@@ -53,6 +53,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionChangeAmountRangeEvent>(_onChangeAmountRange);
     on<TransactionApplyFilterEvent>(_onApplyFilterEvent);
     on<TransactionClearFilterEvent>(_onClearFilterEvent);
+    on<TransactionSelectListItemEvent>(_onSelectListItemEvent);
+    on<TransactionDeleteEvent>(_onDeleteTransaction);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -70,6 +72,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
           originalTransactionResultList.add(TransactionModel(
+            id: item.id,
             date: DateTime.fromMillisecondsSinceEpoch(mapData['date'].millisecondsSinceEpoch),
             type: mapData['type'],
             amount: double.parse(mapData['amount'])
@@ -84,6 +87,32 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> close() {
     streamDocumentSnapshot.cancel();
     return super.close();
+  }
+
+  Future<void> _onDeleteTransaction(TransactionDeleteEvent event, Emitter emit) async {
+    if(listTransactionResult.isNotEmpty) {
+      final batch = FirebaseFirestore.instance.batch();
+      for(final transaction in listTransactionResult) {
+        if(transaction.selected) {
+          final docRef = firebaseStoreInstance.collection('transactions').doc(transaction.id);
+          batch.delete(docRef);
+        }
+      }
+      try {
+        await batch.commit();
+        debugPrint("Documents deleted successfully");
+      } catch (e) {
+        debugPrint("Error deleting documents: $e");
+      }
+    }
+  }
+
+  void _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) {
+    if(listTransactionResult.isNotEmpty) {
+      listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
+      double balance = totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
+    }
   }
 
   void _onClearFilterEvent(TransactionClearFilterEvent event, Emitter emit) {

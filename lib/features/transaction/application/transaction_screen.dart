@@ -183,40 +183,63 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         ],
                       ),
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          tooltip: _localizations!.addTransaction,
-                          onPressed: () => showAddUserSheet(),
-                          icon: const Icon(
-                            AppIcons.addIcon, 
-                            color: AppColors.white, 
-                            size: AppSize.s26
-                          ),
-                        ),
-                        Badge(
-                          backgroundColor: AppColors.red,
-                          isLabelVisible: isFilterEnable,
-                          alignment: const Alignment(0.4,- 0.5),
-                          smallSize: AppSize.s10,
-                          child: IconButton(
-                            tooltip: _localizations!.advanceFilter,
-                            onPressed: () => _transactionBloc.add(TransactionFilterEvent()),
+                    AnimatedSize(
+                      duration: MyAppTheme.animationDuration,
+                      child: transactionDataList.any((item) => item.selected)
+                      ? Row(
+                          children: [
+                            IconButton(
+                              tooltip: _localizations!.delete,
+                              onPressed: () => _transactionBloc.add(TransactionDeleteEvent()), 
+                              icon: const Icon(Icons.delete_outline, color: AppColors.white)
+                            ),
+                            // Need to implement later
+                            // AnimatedSize(
+                            //   duration: MyAppTheme.animationDuration,
+                            //   child: transactionDataList.where((item) => item.selected).length > 1
+                            //   ? const SizedBox()
+                            //   : IconButton(
+                            //     onPressed: () => debugPrint(''), 
+                            //     icon: const Icon(Icons.edit_outlined, color: AppColors.white)
+                            //   ),
+                            // ),
+                          ],
+                        )
+                      : Row(
+                        children: [
+                          IconButton(
+                            tooltip: _localizations!.addTransaction,
+                            onPressed: () => showAddUserSheet(),
                             icon: const Icon(
-                              Icons.filter_alt,
+                              AppIcons.addIcon, 
+                              color: AppColors.white, 
+                              size: AppSize.s26
+                            ),
+                          ),
+                          Badge(
+                            backgroundColor: AppColors.red,
+                            isLabelVisible: isFilterEnable,
+                            alignment: const Alignment(0.4,- 0.5),
+                            smallSize: AppSize.s10,
+                            child: IconButton(
+                              tooltip: _localizations!.advanceFilter,
+                              onPressed: () => _transactionBloc.add(TransactionFilterEvent()),
+                              icon: const Icon(
+                                Icons.filter_alt,
+                                color: AppColors.white
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            tooltip: _localizations!.exportReport,
+                            onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
+                            icon: const Icon(
+                              AppIcons.downloadIcon,
                               color: AppColors.white
                             ),
                           ),
-                        ),
-                        IconButton(
-                          tooltip: _localizations!.exportReport,
-                          onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
-                          icon: const Icon(
-                            AppIcons.downloadIcon,
-                            color: AppColors.white
-                          ),
-                        ),
-                      ],
+                        ],
+                      )
                     ),
                   ],
                 ),
@@ -390,66 +413,88 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               );
                             } else {
                               var subData = transactionDataList[index];
-                              return Container(
-                                color: AppColors.grey,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSize.s10, 
-                                          vertical: AppSize.s15
-                                        ),
-                                        color: Helper.isDark 
-                                        ? AppColors.backgroundColorDark
-                                        : AppColors.white, 
-                                        child: CustomText(
-                                          title: dateFormat.format(subData.date), 
-                                          textColor: Helper.isDark 
-                                          ? AppColors.white.withValues(alpha: 0.9) 
-                                          : AppColors.black
-                                        ),
-                                      ),
-                                    ),
-                                    const CustomVerticalDivider(),
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSize.s10, 
-                                          vertical: AppSize.s15
-                                        ),
-                                        color: Helper.isDark 
-                                        ? AppColors.backgroundColorDark 
-                                        : AppColors.white, 
-                                        child: CustomText(
-                                          title: subData.type == AppStrings.transfer 
-                                          ? _localizations!.transfer 
-                                          : _localizations!.receive, 
-                                          textColor: subData.type == AppStrings.transfer 
-                                          ? AppColors.red 
-                                          : AppColors.green
-                                        ),
-                                      ),
-                                    ),
-                                    const CustomVerticalDivider(),
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSize.s10, 
-                                          vertical: AppSize.s15
-                                        ),
-                                        color: Helper.isDark 
-                                        ? AppColors.backgroundColorDark 
-                                        : AppColors.white, 
-                                        child: CustomText(
-                                          title: subData.amount.toString().currencyFormat, 
-                                          textColor: Helper.isDark 
-                                          ? AppColors.white.withValues(alpha: 0.9) 
-                                          : AppColors.black
+                              return InkWell(
+                                onTap: () => _transactionBloc.add(TransactionSelectListItemEvent(index: index)),
+                                child: Container(
+                                  color: AppColors.grey,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSize.s10, 
+                                            vertical: AppSize.s15
+                                          ),
+                                          color: Helper.isDark 
+                                          ? AppColors.backgroundColorDark
+                                          : AppColors.white, 
+                                          child: Row(
+                                            children: [
+                                              AnimatedSize(
+                                                duration: MyAppTheme.animationDuration,
+                                                child: subData.selected
+                                                ? const Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.check_circle_outline, 
+                                                        size: AppSize.s18, 
+                                                        color: AppColors.green
+                                                      ),
+                                                      SizedBox(width: AppSize.s5),
+                                                    ],
+                                                  )
+                                                : const SizedBox.shrink()
+                                              ),
+                                              CustomText(
+                                                title: dateFormat.format(subData.date), 
+                                                textColor: Helper.isDark 
+                                                ? AppColors.white.withValues(alpha: 0.9) 
+                                                : AppColors.black
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      const CustomVerticalDivider(),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSize.s10, 
+                                            vertical: AppSize.s15
+                                          ),
+                                          color: Helper.isDark 
+                                          ? AppColors.backgroundColorDark 
+                                          : AppColors.white, 
+                                          child: CustomText(
+                                            title: subData.type == AppStrings.transfer 
+                                            ? _localizations!.transfer 
+                                            : _localizations!.receive, 
+                                            textColor: subData.type == AppStrings.transfer 
+                                            ? AppColors.red 
+                                            : AppColors.green
+                                          ),
+                                        ),
+                                      ),
+                                      const CustomVerticalDivider(),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSize.s10, 
+                                            vertical: AppSize.s15
+                                          ),
+                                          color: Helper.isDark 
+                                          ? AppColors.backgroundColorDark 
+                                          : AppColors.white, 
+                                          child: CustomText(
+                                            title: subData.amount.toString().currencyFormat, 
+                                            textColor: Helper.isDark 
+                                            ? AppColors.white.withValues(alpha: 0.9) 
+                                            : AppColors.black
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }

@@ -77,3 +77,12 @@ class TransactionClearFilterEvent extends TransactionEvent {
 
   TransactionClearFilterEvent({this.clearFilter = false});
 }
+
+class TransactionSelectListItemEvent extends TransactionEvent {
+  int index;
+  TransactionSelectListItemEvent({required this.index});
+}
+
+class TransactionDeleteEvent extends TransactionEvent {}
+
+class TransactionEditEvent extends TransactionEvent {}

@@ -78,5 +78,6 @@
   "dateRange": "Date Range",
   "advanceFilter": "Advance Filter",  
   "search": "Search",
-  "exportReport": "Export Report"
+  "exportReport": "Export Report",
+  "delete": "Delete"
 }

@@ -11,6 +11,7 @@ class AppColors {
   static const Color green = Colors.green;
   static const Color amber = Colors.amber;
   static const Color transparent = Colors.transparent;
+  static const Color blue = Colors.blue;
 
   ///Dark Theme Color
   static const Color headerColorDark = Color(0xFF3A3A3C);

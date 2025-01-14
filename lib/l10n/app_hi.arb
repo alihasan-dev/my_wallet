@@ -78,5 +78,6 @@
   "dateRange": "दिनांक सीमा", 
   "advanceFilter": "एडवांस फ़िल्टर",
   "search": "खोजें",
-  "exportReport": "निर्यात रिपोर्ट"
+  "exportReport": "निर्यात रिपोर्ट",
+  "delete": "मिटाए"
 }
