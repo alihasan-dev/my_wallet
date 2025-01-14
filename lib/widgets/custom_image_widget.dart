@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_color.dart';
@@ -69,9 +67,7 @@ class CustomImageWidget extends StatelessWidget {
                 fit: BoxFit.cover,
                 imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet
               )
-            : kIsWeb
-              ? Image.memory(base64Decode(imageUrl), fit: BoxFit.cover)
-              : Image.file(File(imageUrl), fit: BoxFit.cover)
+            : Image.memory(base64Decode(imageUrl), fit: BoxFit.cover)
         ),
       )
     );
