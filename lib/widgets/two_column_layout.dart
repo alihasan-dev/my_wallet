@@ -12,6 +12,7 @@ class TwoColumnLayout extends StatelessWidget {
     required this.sideView,
     required this.displayNavigationRail,
   });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,4 +36,5 @@ class TwoColumnLayout extends StatelessWidget {
       ),
     );
   }
+  
 }

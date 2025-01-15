@@ -37,7 +37,7 @@ mixin Helper {
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(AppSize.s6)),
-        side: BorderSide(width: 1.0, color: Colors.grey.withValues(alpha: 0.5))
+        side: BorderSide(width: 1.0, color: AppColors.grey.withValues(alpha: 0.5))
       ),
       margin: EdgeInsets.only(
         bottom: AppSize.s20, 
@@ -145,7 +145,7 @@ mixin Helper {
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) => ScaleTransition(
-        scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+        scale: Tween<double>(begin: 0.5, end: 1.0).animate(a1),
         child: AlertDialog(
           backgroundColor: Helper.isDark 
           ? AppColors.dialogColorDark 

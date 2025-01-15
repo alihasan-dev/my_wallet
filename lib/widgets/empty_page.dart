@@ -6,8 +6,10 @@ import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 
 class EmptyPage extends StatelessWidget {
+
   static const double _width = 300;
   const EmptyPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width, EmptyPage._width) / 2;
@@ -41,4 +43,5 @@ class EmptyPage extends StatelessWidget {
       ),
     );
   }
+  
 }
