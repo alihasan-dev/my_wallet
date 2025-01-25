@@ -41,7 +41,9 @@ mixin Helper {
       ),
       margin: EdgeInsets.only(
         bottom: AppSize.s20, 
-        left: kIsWeb ? context.screenWidth * 0.65 : AppSize.s20, 
+        left: kIsWeb && context.screenWidth.screenDimension == ScreenType.web
+        ? context.screenWidth * 0.65  
+        : AppSize.s20, 
         right: AppSize.s20
       ),
       content: Container(
