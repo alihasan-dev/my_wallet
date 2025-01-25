@@ -262,7 +262,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: CustomText(
             title: _localizations!.language,
             textStyle: getMediumStyle(
-              color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
+              color: Helper.isDark 
+              ? AppColors.white.withValues(alpha: 0.9) 
+              : AppColors.black,
               fontSize: AppSize.s18
             ),
           ),
@@ -303,7 +305,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         CustomText(
                           title: data.title,
                           textStyle: getRegularStyle(
-                            color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
+                            color: Helper.isDark 
+                            ? AppColors.white.withValues(alpha: 0.9) 
+                            : AppColors.black,
                             fontSize: AppSize.s14
                           ),
                         ),

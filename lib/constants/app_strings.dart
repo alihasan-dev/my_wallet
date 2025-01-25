@@ -2,6 +2,7 @@ class AppStrings {
   AppStrings._();
 
   static const String appName = 'MyWallet';
+  static String appVersion = '';
   static const String emptyString = '';
   static const String login = 'Login';
   static const String signup = 'Signup';

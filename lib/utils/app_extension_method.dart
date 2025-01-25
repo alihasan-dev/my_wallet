@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../utils/helper.dart';
@@ -72,6 +73,16 @@ extension StringExtension on String {
       return '+ ₹$currencyFormat';
     } catch (e) {
       return '₹${toString()}';
+    }
+  }
+
+  String get determineAppVersion {
+    try {
+      return isNotEmpty 
+      ? this 
+      : kIsWeb ? 'Web' : 'Unknown';
+    } catch (e) {
+      return kIsWeb ? 'Web' : 'Unknown';
     }
   }
   

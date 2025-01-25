@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/preferences.dart';
@@ -9,6 +11,7 @@ part 'my_app_state.dart';
 class MyAppBloc extends Bloc<MyAppEvent, MyAppState>{
 
   MyAppBloc() : super(MyAppInitialState(locale: Preferences.getString(key: AppStrings.prefLanguage).getLocale, themeMode: Preferences.getString(key: AppStrings.prefTheme).getThemeMode)){
+    _initializeAppVersion();
     on<MyAppChangeThemeEvent>(_onChangeThemeMode);
     on<MyAppChangeLanguageEvent>(_onChangeLangugae);
   }
@@ -28,5 +31,15 @@ class MyAppBloc extends Bloc<MyAppEvent, MyAppState>{
     }
     var theme = Preferences.getString(key: AppStrings.prefTheme).getThemeMode;
     emit(MyAppInitialState(themeMode: theme, locale: event.locale));
+  }
+
+  Future<void> _initializeAppVersion() async {
+    if(AppStrings.appVersion.isEmpty) {
+      try {
+        final version = (await PackageInfo.fromPlatform()).version;
+        log('App version : $version');
+        AppStrings.appVersion = version;
+      } catch (_) {}
+    }
   }
 }
