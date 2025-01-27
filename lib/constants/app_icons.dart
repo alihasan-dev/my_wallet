@@ -12,7 +12,7 @@ class AppIcons {
   static const IconData personIcon = Icons.person;
   static const IconData userNotFoundIcon = Icons.account_circle_sharp;
   static const IconData filterIcon = Icons.filter_list;
-  static const IconData swapIcon = Icons.swap_vert_outlined;
+  static const IconData swapIcon = Icons.swap_vert_rounded;
   static const IconData accountCircleIcon = Icons.account_circle_outlined;
   static const IconData dashboardIcon = Icons.dashboard_outlined;
   static const IconData deleteIcon = Icons.delete_outline;

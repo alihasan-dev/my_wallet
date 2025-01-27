@@ -175,6 +175,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                   ),
                   const SizedBox(height: AppSize.s10),
                   Row(
+                    spacing: AppSize.s12,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(

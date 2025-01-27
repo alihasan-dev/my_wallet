@@ -21,7 +21,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
-      backgroundColor: Helper.isDark ? AppColors.backgroundColorDark : AppColors.white,
+      backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
       insetPadding: EdgeInsets.zero,
       contentPadding: const EdgeInsets.all(AppSize.s15),
       content: Container(

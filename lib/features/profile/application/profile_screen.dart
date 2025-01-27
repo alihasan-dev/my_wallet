@@ -317,7 +317,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
       barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) {
         return ScaleTransition(
-          scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
           child: AlertDialog(
             contentPadding: EdgeInsets.zero,
             insetPadding: const EdgeInsets.only(bottom: kIsWeb ? AppSize.s0 : AppSize.s18),

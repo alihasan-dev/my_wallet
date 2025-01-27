@@ -102,7 +102,7 @@ mixin Helper {
         barrierLabel: AppStrings.close,
         pageBuilder: (_, a1, __) {
           return ScaleTransition(
-            scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+            scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
             child: AlertDialog(
               elevation: 0.0,
               contentPadding: EdgeInsets.zero,
@@ -147,7 +147,7 @@ mixin Helper {
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) => ScaleTransition(
-        scale: Tween<double>(begin: 0.5, end: 1.0).animate(a1),
+        scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
         child: AlertDialog(
           backgroundColor: Helper.isDark 
           ? AppColors.dialogColorDark 

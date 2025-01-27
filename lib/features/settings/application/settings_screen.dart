@@ -181,8 +181,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context, 
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
-      pageBuilder: (context, a1, _) => ScaleTransition(
-        scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+      pageBuilder: (context, a1, a2) => ScaleTransition(
+        scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
         child: const AboutScreen()
       )
     );

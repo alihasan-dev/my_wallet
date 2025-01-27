@@ -665,7 +665,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) => ScaleTransition(
-        scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+        scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: AddTransactionDialog(userName: name, friendId: friendId),
       )
     );
@@ -693,7 +693,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         barrierDismissible: true,
         barrierLabel: AppStrings.close,
         pageBuilder: (_, a1, __) => ScaleTransition(
-          scale: Tween<double>( begin: 0.5, end: 1.0 ).animate(a1),
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
           child: TransactionFilterDialog(
             amountChangeValue: amountChangeValue,
             finalAmountRange: RangeValues(minAmount, maxAmount),
