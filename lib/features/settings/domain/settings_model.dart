@@ -6,12 +6,14 @@ class SettingModel {
   IconData icon;
   bool showSwitch;
   bool switchValue;
+  bool isLauncher;
 
   SettingModel({
     this.icon = Icons.settings,
     required this.title,
     this.subTitle = "",
     this.showSwitch = false,
-    this.switchValue = false
+    this.switchValue = false,
+    this.isLauncher = false,
   });
 }

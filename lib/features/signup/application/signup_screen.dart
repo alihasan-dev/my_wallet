@@ -86,7 +86,6 @@ class SignupScreenState extends State<SignupScreen> with Helper {
               builder: (context, constraints) {
                 switch (constraints.maxWidth.screenDimension) {
                   case ScreenType.mobile:
-                  case ScreenType.tablet:
                     return SignupMobileView(
                       signupBloc: _signupBloc,
                       signupScreenState: this

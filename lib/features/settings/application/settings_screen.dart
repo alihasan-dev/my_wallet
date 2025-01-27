@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../about/about_screen.dart';
@@ -52,6 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser, showSwitch: true));
     if(!kIsWeb) {
       settingItemList.add(SettingModel(icon: Icons.fingerprint, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
+      settingItemList.add(SettingModel(icon: Icons.ads_click_outlined, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
     }
     settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
@@ -89,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               (index) {
                 var data = settingItemList[index];
                 return InkWell(
-                  onTap: data.showSwitch
+                  onTap: data.showSwitch || data.isLauncher
                   ? null
                   : () => onClickItem(context: context, index: index),
                   child: Container(
@@ -118,7 +120,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Visibility(
                                   visible: data.subTitle.isNotEmpty,
                                   child: CustomText(
-                                    title: data.subTitle.capitalize, 
+                                    title: data.isLauncher
+                                    ? data.subTitle
+                                    : data.subTitle.capitalize, 
                                     textColor: AppColors.grey
                                   ),
                                 ),
@@ -126,16 +130,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ],
                         ),
-                        Visibility(
-                          visible: data.showSwitch,
-                          child: Transform.scale(
+                        if (data.isLauncher)
+                          IconButton(
+                            onPressed: () => launchPolicyUrl(),
+                            icon: Icon(
+                              AppIcons.openInNewIcon,
+                              size: AppSize.s20,
+                              color: Helper.isDark
+                              ? AppColors.white
+                              : AppColors.black
+                            )
+                          ),
+                        if (data.showSwitch)
+                          Transform.scale(
                             scale: 0.8,
                             child: CupertinoSwitch(
                               value: data.switchValue, 
                               onChanged: (value) => onChangeSwith(index: index, value: value)
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -169,11 +182,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         showThemeDialog(context: context);
         break;
       case 3:
-      case 4:
+      case 5:
         showAboutAppDialog(context: context);
         break;
       default:
     }
+  }
+
+  Future<void> launchPolicyUrl() async {
+    final Uri uri = Uri.parse(AppStrings.webUrl);
+    await launchUrl(uri);
   }
 
   void showAboutAppDialog({required BuildContext context}) {

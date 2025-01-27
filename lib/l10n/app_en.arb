@@ -79,5 +79,6 @@
   "advanceFilter": "Advance Filter",  
   "search": "Search",
   "exportReport": "Export Report",
-  "delete": "Delete"
+  "delete": "Delete",
+  "openAppOnBrowser": "Open app on browser"
 }

@@ -79,5 +79,6 @@
   "advanceFilter": "एडवांस फ़िल्टर",
   "search": "खोजें",
   "exportReport": "निर्यात रिपोर्ट",
-  "delete": "मिटाए"
+  "delete": "मिटाए",
+  "openAppOnBrowser": "ब्राउज़र पर ऐप खोलें"
 }

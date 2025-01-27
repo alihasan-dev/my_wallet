@@ -445,11 +445,15 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                                   )
                                                 : const SizedBox.shrink()
                                               ),
-                                              CustomText(
-                                                title: dateFormat.format(subData.date), 
-                                                textColor: Helper.isDark 
-                                                ? AppColors.white.withValues(alpha: 0.9) 
-                                                : AppColors.black
+                                              Expanded(
+                                                child: CustomText(
+                                                  title: dateFormat.format(subData.date), 
+                                                  textColor: Helper.isDark 
+                                                  ? AppColors.white.withValues(alpha: 0.9) 
+                                                  : AppColors.black,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                               ),
                                             ],
                                           ),

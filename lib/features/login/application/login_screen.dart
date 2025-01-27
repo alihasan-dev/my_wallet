@@ -91,7 +91,6 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
             builder: (context, constraints) {
               switch (constraints.maxWidth.screenDimension) {
                 case ScreenType.mobile:
-                case ScreenType.tablet:
                   return LoginMobileView(
                     loginBloc: _loginBloc,
                     loginScreenState: this

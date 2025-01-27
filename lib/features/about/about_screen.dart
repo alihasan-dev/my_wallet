@@ -22,7 +22,7 @@ class AboutScreen extends StatelessWidget {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
       backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
-      insetPadding: EdgeInsets.zero,
+      insetPadding: const EdgeInsets.all(AppSize.s12),
       contentPadding: const EdgeInsets.all(AppSize.s15),
       content: Container(
         width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s40),

@@ -76,18 +76,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
         builder: (_, state) {
           return LayoutBuilder(
             builder: (context, constraints) {
-              switch (constraints.maxWidth.screenDimension) {
-                case ScreenType.mobile:
-                case ScreenType.tablet:  
-                  return mainContent(context: context);
-                default:
-                  return Center(
-                    child: SizedBox(
-                      width: MyAppTheme.columnWidth + AppSize.s30,
-                      child: Center(child: mainContent(context: context)),
-                    ),
-                  );
+              if (constraints.maxWidth >= 600) {
+                return Center(
+                  child: SizedBox(
+                    width: MyAppTheme.columnWidth + AppSize.s30,
+                    child: Center(child: mainContent(context: context, isWeb: true)),
+                  ),
+                );
+              } else {
+                return mainContent(context: context);
               }
+
+              // switch (constraints.maxWidth.screenDimension) {
+              //   case ScreenType.mobile:
+              //   case ScreenType.tablet:  
+              //     return mainContent(context: context);
+              //   default:
+              //     return Center(
+              //       child: SizedBox(
+              //         width: MyAppTheme.columnWidth + AppSize.s30,
+              //         child: Center(child: mainContent(context: context)),
+              //       ),
+              //     );
+              // }
             }
           );
         }
@@ -95,15 +106,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
     );
   }
 
-  Widget mainContent({required BuildContext context}) {
+  Widget mainContent({required BuildContext context, bool isWeb = false}) {
     return ListView(
       shrinkWrap: true,
-      padding: kIsWeb 
+      padding: isWeb 
       ? EdgeInsets.zero
       : const EdgeInsets.symmetric(horizontal: AppSize.s28, vertical: AppSize.s28),
       children: [
         Offstage(
-          offstage: kIsWeb ? true : false,
+          offstage: isWeb ? true : false,
           child: Row(
             children: [
               Transform.translate(
@@ -167,7 +178,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
         ),
         const SizedBox(height: AppSize.s18),
         Offstage(
-          offstage: kIsWeb ? false : true,
+          offstage: isWeb ? false : true,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

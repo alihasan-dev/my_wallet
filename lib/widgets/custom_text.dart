@@ -10,6 +10,8 @@ class CustomText extends StatelessWidget {
   final double? textSize;
   final TextAlign? textAlign;
   final TextStyle? textStyle;
+  final int? maxLines;
+  final TextOverflow? overflow;
 
   const CustomText({
     required this.title,
@@ -17,6 +19,8 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.textStyle,
     this.textSize,
+    this.maxLines,
+    this.overflow,
     super.key
   });
 
@@ -25,6 +29,8 @@ class CustomText extends StatelessWidget {
     return Text(
       title,
       textAlign: textAlign ?? TextAlign.start,
+      maxLines: maxLines,
+      overflow: overflow,
       style: textStyle ?? getRegularStyle(
         fontSize: textSize ?? AppSize.s14,
         color: textColor ?? (Helper.isDark ? AppColors.white : AppColors.black)

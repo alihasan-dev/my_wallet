@@ -320,8 +320,8 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
           child: AlertDialog(
             contentPadding: EdgeInsets.zero,
-            insetPadding: const EdgeInsets.only(bottom: kIsWeb ? AppSize.s0 : AppSize.s18),
-            alignment: kIsWeb ? Alignment.center : Alignment.bottomCenter,
+            insetPadding: const EdgeInsets.all(AppSize.s12),
+            alignment: Alignment.center,
             content: Container(
               width: MyAppTheme.columnWidth,
               decoration: BoxDecoration(
@@ -426,19 +426,23 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                       color: AppColors.amber.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppSize.s4)
                     ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          AppIcons.warningIcon, 
-                          color: AppColors.amber, 
-                          size: AppSize.s20
-                        ),
-                        const SizedBox(width: AppSize.s5),
-                        CustomText(
-                          title: _localizations!.imageSizeMsg, 
-                          textColor: AppColors.amber
-                        ),
-                      ],
+                    child: Expanded(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            AppIcons.warningIcon, 
+                            color: AppColors.amber, 
+                            size: AppSize.s20
+                          ),
+                          const SizedBox(width: AppSize.s5),
+                          Expanded(
+                            child: CustomText(
+                              title: _localizations!.imageSizeMsg, 
+                              textColor: AppColors.amber
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
