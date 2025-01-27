@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_wallet/constants/app_audio.dart';
 import '../../../../features/transaction/domain/transaction_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -93,10 +94,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return super.close();
   }
 
-  Future<void> initializeAudioPlayer() async {
-    audioPlayer = AudioPlayer();
-    await audioPlayer.setAsset('assets/audio/downloadSound.mp3');
-  }
+  void initializeAudioPlayer() => audioPlayer = AudioPlayer();
 
   Future<void> _onDeleteTransaction(TransactionDeleteEvent event, Emitter emit) async {
     if(listTransactionResult.isNotEmpty) {
@@ -116,9 +114,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  void _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) {
+  Future<void> _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) async {
     if(listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
+      await audioPlayer.setAsset(AppAudio.selectSound);
+      audioPlayer.play();
       double balance = totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
     }
@@ -345,6 +345,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         await downloadFile(bytes: await pdf.save(), downloadName: first).then((_) async {
           emit(TransactionExportPDFState(message: 'File downloaded successfully', isSuccess: true));
         });
+        await audioPlayer.setAsset(AppAudio.downloadSound);
         audioPlayer.play();
       } catch (e) {
         emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
