@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyWallet - Transaction Tracking Application</title>
-  <style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+  <link rel="icon" type="image/x-icon" href="assets/images/app_icon.png"><style>
     body {
       font-family: Arial, sans-serif;
       line-height: 1.6;
@@ -26,6 +27,16 @@
       background: #fff;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
+      position: relative;
+    }
+    .top-right-image {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 100px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     h1, h2, h3 {
       color: #007bff;
@@ -48,6 +59,7 @@
 </head>
 <body>
   <main>
+    <img src="assets/images/app_icon.png" alt="Top Right Illustration" class="top-right-image">
     <section>
       <h1>MyWallet</h1>
       <p>A Powerful Mobile Tool for Tracking Transactions</p>
@@ -61,9 +73,8 @@
         <li><strong>User Authentication:</strong> Secure login and sign-up options using Firebase Authentication, with support for email-based authentication.</li>
         <li><strong>Transaction Entry:</strong> Users can add new transactions, specifying details like amount, category, and date.</li>
         <li><strong>Real-Time Sync:</strong> Firebase’s real-time database keeps transaction data up to date across all of the user’s devices.</li>
-        <li><strong>Categorization and Filtering:</strong> Users can filter transactions by type (income/expense) and category (e.g., Food, Rent, Transportation), allowing them to get insights into specific spending areas.</li>
-        <li><strong>Data Storage and Security:</strong> All data is stored securely on Firebase Cloud Firestore, providing both offline capabilities and robust data storage.</li>
-        <li><strong>Data Analytics and Insights:</strong> Users can view basic analytics (e.g., monthly spending, income versus expenses) to gain insights into their financial habits.</li>
+        <li><strong>Categorization and Filtering:</strong> Users can filter transactions by type (transfer/receive), data, and amount.</li>
+        <li><strong>Data Storage and Security:</strong> All data is stored securely on Firebase Cloud Firestore, providing robust data storage.</li>
       </ul>
     </section>
     <section>
@@ -72,108 +83,21 @@
         <li><strong>User Registration/Login:</strong> When users first open the app, they’ll be prompted to register or log in using Firebase Authentication.</li>
         <li><strong>Add Transaction:</strong> After authentication, users can add transaction details such as amount, category, date, and description.</li>
         <li><strong>Data Storage:</strong> Transaction data is saved to Firebase Cloud Firestore, making it available on all synced devices in real time.</li>
-        <li><strong>View and Manage Transactions:</strong> Users can browse their past transactions, filter by category, and view monthly or weekly spending summaries.</li>
-        <li><strong>Insights and Analytics:</strong> The app provides insights, allowing users to track spending habits, identify major spending categories, and better understand their financial situation.</li>
+        <li><strong>View and Manage Transactions:</strong> Users can browse their past transactions, filter by category, date, and amount, export transaction report feature can also be used to get the report in the form of PDF.</li>
       </ol>
     </section>
     <section>
       <h2>Key Technologies and Tools</h2>
       <ul>
         <li><strong>Frontend Framework:</strong> Flutter.</li>
-        <li><strong>Backend as a Service (BaaS):</strong> Firebase, which provides database, authentication, analytics, and storage services.</li>
+        <li><strong>Backend as a Service (BaaS):</strong> Firebase, which provides database, authentication, storage, and hosting services</li>
         <li><strong>Cloud Firestore:</strong> Firebase’s NoSQL database to store transaction records.</li>
         <li><strong>Firebase Authentication:</strong> For managing user registration and login.</li>
       </ul>
     </section>
   </main>
   <footer>
-    <p>&copy; 2024 MyWallet. All Rights Reserved.</p>
+    <p>&copy; 2025 MyWallet. All Rights Reserved.</p>
   </footer>
-</body>
-</html>
-
-
-
-
-<!--Previous Flutter HTML content-->
-<!DOCTYPE html>
-<html>
-<head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
-
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="my_wallet">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>MyWallet</title>
-  <link rel="manifest" href="manifest.json">
-
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
-
-  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-analytics.js"></script>
-  <script>
-    // Add Firebase configuration here
-    const firebaseConfig = {
-      apiKey: "AIzaSyCTEJGQgG_CoNSfD8LaZpQj7uKFhFwYlY8",
-      authDomain: "my-wallet-99fdf.firebaseapp.com",
-      databaseURL: "https://my-wallet-99fdf-default-rtdb.firebaseio.com",
-      projectId: "my-wallet-99fdf",
-      storageBucket: "my-wallet-99fdf.appspot.com",
-      messagingSenderId: "976324609510",
-      appId: "1:976324609510:web:4d119a5ba6befc59e4c227",
-      measurementId: "G-TXX98KWH2B"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-  </script>
-</head>
-<body>
-  <script>
-    window.addEventListener('load', async function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
 </body>
 </html>
