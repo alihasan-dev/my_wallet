@@ -426,23 +426,21 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                       color: AppColors.amber.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppSize.s4)
                     ),
-                    child: Expanded(
-                      child: Row(
-                        children: [
-                          const Icon(
-                            AppIcons.warningIcon, 
-                            color: AppColors.amber, 
-                            size: AppSize.s20
+                    child: Row(
+                      children: [
+                        const Icon(
+                          AppIcons.warningIcon, 
+                          color: AppColors.amber, 
+                          size: AppSize.s20
+                        ),
+                        const SizedBox(width: AppSize.s5),
+                        Expanded(
+                          child: CustomText(
+                            title: _localizations!.imageSizeMsg, 
+                            textColor: AppColors.amber
                           ),
-                          const SizedBox(width: AppSize.s5),
-                          Expanded(
-                            child: CustomText(
-                              title: _localizations!.imageSizeMsg, 
-                              textColor: AppColors.amber
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
