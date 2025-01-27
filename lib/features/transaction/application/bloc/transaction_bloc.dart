@@ -117,8 +117,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) async {
     if(listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
-      await audioPlayer.setAsset(AppAudio.selectSound);
-      audioPlayer.play();
       double balance = totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
     }
