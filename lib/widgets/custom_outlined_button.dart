@@ -39,7 +39,7 @@ class CustomOutlinedButton extends StatelessWidget {
         backgroundColor: isSelected == null || !isSelected! 
         ? AppColors.transparent 
         : backgroundColor ?? AppColors.primaryColor.withValues(alpha: 0.2),
-        padding: const EdgeInsets.symmetric(vertical: AppSize.s8)
+        padding: const EdgeInsets.symmetric(vertical: AppSize.s12)
       ), 
       child: CustomText(
         title: title, 

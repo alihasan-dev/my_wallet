@@ -299,6 +299,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                 })),
                 title: _localizations!.update,
                 isSelected: true,
+                verticalPadding: AppSize.s12,
                 foregroundColor: AppColors.white,
                 backgroundColor: AppColors.primaryColor,
                 mainAxisAlignment: MainAxisAlignment.center,

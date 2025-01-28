@@ -40,7 +40,7 @@ class CustomButton extends StatelessWidget {
           textAlign: TextAlign.center,
           textStyle: getSemiBoldStyle(
             fontSize: titleSize ?? AppSize.s14, 
-            color: titleColor ?? (onTap == null ? AppColors.white.withValues(alpha: 0.6) : AppColors.white)
+            color: titleColor ?? (onTap == null ? AppColors.grey : AppColors.white)
           ),
         ),
       ),
