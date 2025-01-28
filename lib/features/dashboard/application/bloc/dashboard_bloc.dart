@@ -95,16 +95,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onPinnedContact(DashboardPinnedContactEvent event, Emitter emit) async {
     if(listUser.isNotEmpty) {
-      var tempUserList = [];
-      tempUserList.addAll(listUser);
-      for(int i = 0; i < tempUserList.length; i++) {
-        if(tempUserList[i].isSelected) {
-          await firebaseStoreInstance.doc(userId).collection('friends').doc(tempUserList[i].userId).update({
-            'pinned': !tempUserList[i].isPinned
-          });
-          tempUserList[i].isSelected = false;
+      final batch = FirebaseFirestore.instance.batch();
+      for(int i = 0; i < listUser.length; i++) {
+        if(listUser[i].isSelected) {
+          final docReference = firebaseStoreInstance.doc(userId).collection('friends').doc(listUser[i].userId);
+          batch.update(docReference, {'pinned': !listUser[i].isPinned});
+          listUser[i].isSelected = false;
         }
       }
+      batch.commit();
     }
   }
 
