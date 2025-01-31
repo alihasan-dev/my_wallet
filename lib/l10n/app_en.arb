@@ -80,5 +80,7 @@
   "search": "Search",
   "exportReport": "Export Report",
   "delete": "Delete",
-  "openAppOnBrowser": "Open app on browser"
+  "openAppOnBrowser": "Open app on browser",
+  "deleteTransaction": "Delete Transaction",
+  "deleteTransactionMsg": "Are you sure you want to delete the selected transaction?"
 }

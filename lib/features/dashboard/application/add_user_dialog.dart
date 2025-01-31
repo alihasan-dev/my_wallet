@@ -40,7 +40,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
         backgroundColor: Helper.isDark 
         ? AppColors.dialogColorDark 
         : AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
         content: BlocConsumer<DashboardBloc, DashboardState>(
           builder: (context, state){
             switch (state) {

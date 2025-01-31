@@ -223,7 +223,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           backgroundColor: Helper.isDark 
           ? AppColors.dialogColorDark 
           : AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
           contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +289,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           backgroundColor: Helper.isDark 
           ? AppColors.dialogColorDark 
           : AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
           contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

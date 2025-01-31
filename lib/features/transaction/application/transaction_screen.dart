@@ -190,7 +190,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           children: [
                             IconButton(
                               tooltip: _localizations!.delete,
-                              onPressed: () => _transactionBloc.add(TransactionDeleteEvent()), 
+                              onPressed: () => showDeleteTransactionDialog(context), 
                               icon: const Icon(Icons.delete_outline, color: AppColors.white)
                             ),
                             // Need to implement later
@@ -239,7 +239,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ),
                   ],
                 ),
@@ -332,7 +332,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     children: [
                                       CustomText(
                                         title: _localizations!.type, 
-                                        textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                        textStyle: getSemiBoldStyle(
+                                          color: textColor, 
+                                          fontSize: AppSize.s14
+                                        ),
                                       ),
                                       Icon(
                                         AppIcons.swapIcon, 
@@ -659,6 +662,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         }
       },
     );
+  }
+
+  Future<void> showDeleteTransactionDialog(BuildContext context) async {
+    if(await confirmationDialog(context: context, title: _localizations!.deleteTransaction, content: _localizations!.deleteTransactionMsg, localizations: _localizations!)) {
+      _transactionBloc.add(TransactionDeleteEvent());
+    }
   }
 
   void showAddUserSheet() {

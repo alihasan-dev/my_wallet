@@ -67,7 +67,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
         contentPadding: const EdgeInsets.all(AppSize.s10),
         insetPadding: const EdgeInsets.symmetric(horizontal: AppSize.s15),
         backgroundColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
         content: BlocConsumer<TransactionBloc, TransactionState>(
           builder: (context, state){
             return Container(

@@ -80,5 +80,7 @@
   "search": "खोजें",
   "exportReport": "निर्यात रिपोर्ट",
   "delete": "मिटाए",
-  "openAppOnBrowser": "ब्राउज़र पर ऐप खोलें"
+  "openAppOnBrowser": "ब्राउज़र पर ऐप खोलें",
+  "deleteTransaction": "लेन-देन मिटाए",
+  "deleteTransactionMsg": "क्या आप वाकई में चयनित लेनदेन को मिटाना चाहते हैं?"
 }

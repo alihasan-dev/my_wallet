@@ -168,7 +168,7 @@ mixin Helper {
               : AppColors.black
             ),
           ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
           actions: [
             TextButton(
               onPressed: () => context.pop(false),
