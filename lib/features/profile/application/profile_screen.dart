@@ -205,7 +205,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                       onTap: () => showImagePickerSheet(bContext),
                       child: Container(
                         padding: const EdgeInsets.all(AppSize.s8),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.primaryColor,
                           boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]

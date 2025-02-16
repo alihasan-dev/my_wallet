@@ -18,6 +18,29 @@ abstract class MyAppTheme {
 
   static const Duration animationDuration = Duration(milliseconds: 240);
 
+  ///method used to convert color to material color
+  static MaterialColor createMaterialColor(Color? color) {
+    if (color == null) return Colors.indigo;
+    final strengths = <double>[.05];
+    final swatch = <int, Color>{};
+    final double r = color.r, g = color.g, b = color.b;
+
+    for (int i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
+    }
+
+    for (final strength in strengths) {
+      final double ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        (r + (ds < 0 ? r : (255 - r)) * ds).toInt(),
+        (g + (ds < 0 ? g : (255 - g)) * ds).toInt(),
+        (b + (ds < 0 ? b : (255 - b)) * ds).toInt(),
+        1,
+      );
+    }
+    return MaterialColor(color.toARGB32(), swatch);
+  }
+
   static ThemeData get getAppTheme {
     return ThemeData(
       //main color of app

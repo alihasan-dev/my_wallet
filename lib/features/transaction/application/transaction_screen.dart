@@ -104,7 +104,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               AnimatedContainer(
                 height: appBarSize,
                 duration: const Duration(milliseconds: 450),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.primaryColor,
                   boxShadow: <BoxShadow>[
                     BoxShadow(

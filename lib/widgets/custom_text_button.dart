@@ -67,7 +67,7 @@ class CustomTextButton extends StatelessWidget {
                   size: AppSize.s22, 
                   color: isSelected == null || !isSelected! 
                   ? Helper.isDark ? AppColors.grey : AppColors.black 
-                  : foregroundColor ?? AppColors.primaryColor
+                  : foregroundColor ?? Theme.of(context).colorScheme.primary
                 ),
                 const SizedBox(width: AppSize.s14),
               ],
@@ -78,7 +78,7 @@ class CustomTextButton extends StatelessWidget {
             textStyle: getMediumStyle(
               color: isSelected == null || !isSelected! 
               ? Helper.isDark ? AppColors.grey : AppColors.black 
-              : foregroundColor ?? AppColors.primaryColor
+              : foregroundColor ?? ThemeData().colorScheme.primary
             ),
           ),
         ],

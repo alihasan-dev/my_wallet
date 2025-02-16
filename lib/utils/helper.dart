@@ -67,7 +67,10 @@ mixin Helper {
                 children: [
                   CustomText(
                     title: title,
-                    textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: color ?? AppColors.red),
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppSize.s14, 
+                      color: color ?? AppColors.red
+                    ),
                   ),
                   Visibility(
                     visible: message != null,
@@ -146,7 +149,7 @@ mixin Helper {
       context: context,
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
-      pageBuilder: (_, a1, __) => ScaleTransition(
+      pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
         child: AlertDialog(
           backgroundColor: Helper.isDark 
@@ -162,10 +165,11 @@ mixin Helper {
           ),
           content: CustomText(
             title: content, 
-            textStyle: getSemiBoldStyle(
+            textStyle: getMediumStyle(
               color: Helper.isDark 
               ? AppColors.white.withValues(alpha: 0.9) 
-              : AppColors.black
+              : AppColors.black,
+              fontSize: AppSize.s16
             ),
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
