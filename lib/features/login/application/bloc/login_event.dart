@@ -30,3 +30,5 @@ class LoginRememberMeEvent extends LoginEvent {
   bool value;
   LoginRememberMeEvent({required this.value});
 }
+
+class LoginWithGoogleEvent extends LoginEvent {}

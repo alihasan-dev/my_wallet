@@ -30,3 +30,5 @@ class SignupShowPasswordEvent extends SignupEvent {
   bool isVisible;
   SignupShowPasswordEvent({required this.isVisible});
 }
+
+class SignupWithGoogleEvent extends SignupEvent {}

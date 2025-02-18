@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/check_connectivity.dart';
@@ -29,6 +30,45 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginPasswordChangeEvent>(_onPasswordChange);
     on<LoginShowPasswordEvent>(_onShowHidePassword);
     on<LoginRememberMeEvent>(_onRememberMe);
+    on<LoginWithGoogleEvent>(_onLoginWithGoogle);
+  }
+
+  Future<void> _onLoginWithGoogle(LoginWithGoogleEvent event, Emitter<LoginState> emit) async {
+    try {
+      emit(LoginLoadingState());
+      const List<String> scopes = ['email'];
+      final googleSignIn = GoogleSignIn(scopes: scopes);
+      final accountData = await googleSignIn.signInSilently();
+      if(accountData != null) {
+        final displayName = accountData.displayName ?? '';
+        final email = accountData.email;
+        final id = accountData.id;
+        final photoUrl = accountData.photoUrl;
+        final googleSignInAuthentication = await accountData.authentication;
+        final authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken
+        );
+        final firebaseUserCredential = await authInstance.signInWithCredential(authCredential);
+        final user = firebaseUserCredential.user;
+        if (user != null) {
+          firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
+          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+          Preferences.setString(key: AppStrings.prefEmail, value: email);
+          await firebaseDocumentReference.get().then((data) {
+            var mapData = data.data() as Map;
+            if(mapData.isNotEmpty) {
+              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+            }
+          });
+          emit(LoginSuccessState());
+        } else {
+          emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
+        }
+      }
+    } catch (e) {
+      emit(LoginFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
+    }
   }
 
   Future<void> _onLoginSubmit(LoginSubmitEvent event, Emitter<LoginState> emit) async {
@@ -83,8 +123,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   //method used to show and hide password
   void _onShowHidePassword(LoginShowPasswordEvent event, Emitter emit){
-    var temp = event.isVisible ? false : true;
-    emit(LoginPasswordVisibilityState(temp));
+    emit(LoginPasswordVisibilityState(!event.isVisible));
   }
 
   ///this method is used to validate the email and password field

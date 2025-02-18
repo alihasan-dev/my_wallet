@@ -90,6 +90,45 @@ class LoginWebView extends StatelessWidget {
                 isRememberMe: loginScreenState.isRememberMe
               ))
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSize.s15),
+              child: Align(
+                alignment: Alignment.center,
+                child: CustomText(
+                  title: 'Or', 
+                  textStyle: getRegularStyle(
+                    color: AppColors.grey, 
+                    fontSize: AppSize.s14
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () => loginBloc.add(LoginWithGoogleEvent()),
+              borderRadius: BorderRadius.circular(AppSize.s5),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppSize.s5),
+                  border: Border.all(color: AppColors.grey.withValues(alpha: 0.4))
+                ),
+                padding: const EdgeInsets.symmetric(vertical: AppSize.s12),
+                child: Row(
+                  spacing: AppSize.s10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomImageWidget(
+                      imageUrl: AppImages.googleIcon, 
+                      imageSize: AppSize.s22,
+                      strokeWidth: AppSize.s0,
+                      borderWidth: AppSize.s0,
+                      padding: AppSize.s0,
+                      borderColor: AppColors.transparent,
+                    ),
+                    CustomText(title: 'Continue with Google')
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: AppSize.s20),
             Row(
               mainAxisSize: MainAxisSize.min,

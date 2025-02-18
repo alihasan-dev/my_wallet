@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart' show GoogleSignIn;
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
@@ -23,6 +24,51 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     on<SignupNameChangeEvent>(_onNameChange);
     on<SignupPasswordChangeEvent>(_onPasswordChange);
     on<SignupShowPasswordEvent>(_onShowHidePassword);
+    on<SignupWithGoogleEvent>(_onSignupWithGoogle);
+  }
+
+  Future<void> _onSignupWithGoogle(SignupWithGoogleEvent event, Emitter<SignupState> emit) async {
+    try {
+      emit(SignupLoadingState());
+      const List<String> scopes = ['email'];
+      final googleSignIn = GoogleSignIn(scopes: scopes);
+      final accountData = await googleSignIn.signInSilently();
+      if(accountData != null) {
+        final displayName = accountData.displayName ?? '';
+        final email = accountData.email;
+        final id = accountData.id;
+        final photoUrl = accountData.photoUrl;
+        final googleSignInAuthentication = await accountData.authentication;
+        final authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken
+        );
+        final firebaseUserCredential = await _authInstance.signInWithCredential(authCredential);
+        final user = firebaseUserCredential.user;
+        if (user != null) {
+          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+          // Preferences.setString(key: AppStrings.prefPassword, value: event.password);
+          Preferences.setString(key: AppStrings.prefEmail, value: email);
+          Preferences.setBool(key: AppStrings.prefRememberMe,value: false);
+          Preferences.setString(key: AppStrings.prefFullName, value: displayName);
+          ///store user in firebase firestore
+          await _collectionReference.doc(user.uid).set({
+            'name': displayName,
+            'email': email,
+            'user_id': user.uid,
+            'profile_img': photoUrl,
+            'showUnverified': true,
+            'enableBiometric': false
+          });
+          Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
+          emit(SignupSuccessState());
+        } else {
+          emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
+        }
+      }
+    } catch (e) {
+      emit(SignupFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
+    }
   }
 
   Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {

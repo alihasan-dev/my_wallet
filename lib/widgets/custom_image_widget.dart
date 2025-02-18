@@ -17,6 +17,7 @@ class CustomImageWidget extends StatelessWidget {
   final double borderWidth;
   final bool fromProfile;
   final bool isSelected;
+  final Color borderColor;
 
   const CustomImageWidget({
     required this.imageUrl,
@@ -27,6 +28,7 @@ class CustomImageWidget extends StatelessWidget {
     this.borderWidth = AppSize.s2,
     this.fromProfile = true,
     this.isSelected = false,
+    this.borderColor = AppColors.primaryColor,
     super.key
   });
 
@@ -40,7 +42,7 @@ class CustomImageWidget extends StatelessWidget {
         shape: BoxShape.circle,
         color: isSelected ? AppColors.primaryColor : null,
         border: Border.all(
-          color: AppColors.primaryColor,
+          color: borderColor,
           width: borderWidth
         ),
       ),
@@ -67,7 +69,9 @@ class CustomImageWidget extends StatelessWidget {
                 fit: BoxFit.cover,
                 imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet
               )
-            : Image.memory(base64Decode(imageUrl), fit: BoxFit.cover)
+            : imageUrl.startsWith('assets/')
+              ? Image.asset(imageUrl, fit: BoxFit.cover)
+              : Image.memory(base64Decode(imageUrl), fit: BoxFit.cover)
         ),
       )
     );
