@@ -21,8 +21,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth authInstance;
   late DocumentReference firebaseDocumentReference;
+  late GoogleSignIn _googleSignIn;
 
-  LoginBloc() : super(LoginInitialState()){
+  LoginBloc() : super(LoginInitialState()) {
+    _googleSignIn = GoogleSignIn(
+      clientId: "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
+      scopes: ["email"],
+    );
     authInstance = FirebaseAuth.instance;
     checkConnectivity = CheckConnectivity();
     on<LoginSubmitEvent>(_onLoginSubmit);
@@ -31,44 +36,45 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginShowPasswordEvent>(_onShowHidePassword);
     on<LoginRememberMeEvent>(_onRememberMe);
     on<LoginWithGoogleEvent>(_onLoginWithGoogle);
+    on<LoginWithGoogleStatusEvent>(_onLoginWithGoogleStatus);
+
+    ///register listener for google signin authentication change
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) => add(LoginWithGoogleStatusEvent(account)));
+  }
+
+  Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoadingState());
+    if(event.googleSignInAccount != null) {
+      final email = event.googleSignInAccount!.email;
+      final authentication = await event.googleSignInAccount!.authentication;
+      final authCredential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken
+      );
+      final firebaseUserCredential = await authInstance.signInWithCredential(authCredential);
+      final user = firebaseUserCredential.user;
+      if (user != null) {
+        firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
+        Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+        Preferences.setString(key: AppStrings.prefEmail, value: email);
+        await firebaseDocumentReference.get().then((data) {
+          var mapData = data.data() as Map;
+          if(mapData.isNotEmpty) {
+            Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+          }
+        });
+        emit(LoginSuccessState());
+      } else {
+        emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
+      }
+    } else {
+      emit(LoginFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
+    }
   }
 
   Future<void> _onLoginWithGoogle(LoginWithGoogleEvent event, Emitter<LoginState> emit) async {
-    try {
-      emit(LoginLoadingState());
-      const List<String> scopes = ['email'];
-      final googleSignIn = GoogleSignIn(scopes: scopes);
-      final accountData = await googleSignIn.signInSilently();
-      if(accountData != null) {
-        final displayName = accountData.displayName ?? '';
-        final email = accountData.email;
-        final id = accountData.id;
-        final photoUrl = accountData.photoUrl;
-        final googleSignInAuthentication = await accountData.authentication;
-        final authCredential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken
-        );
-        final firebaseUserCredential = await authInstance.signInWithCredential(authCredential);
-        final user = firebaseUserCredential.user;
-        if (user != null) {
-          firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
-          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
-          Preferences.setString(key: AppStrings.prefEmail, value: email);
-          await firebaseDocumentReference.get().then((data) {
-            var mapData = data.data() as Map;
-            if(mapData.isNotEmpty) {
-              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
-            }
-          });
-          emit(LoginSuccessState());
-        } else {
-          emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
-        }
-      }
-    } catch (e) {
-      emit(LoginFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
-    }
+    emit(LoginLoadingState());
+    await _googleSignIn.signIn();
   }
 
   Future<void> _onLoginSubmit(LoginSubmitEvent event, Emitter<LoginState> emit) async {

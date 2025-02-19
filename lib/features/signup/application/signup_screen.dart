@@ -19,6 +19,8 @@ import '../../../widgets/custom_image_widget.dart' show CustomImageWidget;
 import '../../../widgets/custom_inkwell_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
+import 'package:my_wallet/widgets/mobile_google_sign_in_button.dart'
+  if(dart.library.html) 'package:my_wallet/widgets/web_google_sign_in_button.dart';
 part 'signup_web_view.dart';
 part 'signup_mobile_view.dart';
 

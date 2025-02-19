@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart' show GoogleSignIn;
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
@@ -14,8 +14,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   late CheckConnectivity _checkConnectivity;
   late FirebaseAuth _authInstance;
   late CollectionReference _collectionReference;
+  late GoogleSignIn _googleSignIn;
 
   SignupBloc() : super(SignupInitialState()){
+    _googleSignIn = GoogleSignIn(
+      clientId: "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
+      scopes: ["email"],
+    );
     _authInstance = FirebaseAuth.instance;
     _collectionReference = FirebaseFirestore.instance.collection('users');
     _checkConnectivity = CheckConnectivity();
@@ -25,29 +30,28 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     on<SignupPasswordChangeEvent>(_onPasswordChange);
     on<SignupShowPasswordEvent>(_onShowHidePassword);
     on<SignupWithGoogleEvent>(_onSignupWithGoogle);
+    on<SignupWithGoogleStatusEvent>(_onSignupWithGoogleStatus);
+
+    ///register listener for google signin authentication change
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) => add(SignupWithGoogleStatusEvent(account)));
   }
 
-  Future<void> _onSignupWithGoogle(SignupWithGoogleEvent event, Emitter<SignupState> emit) async {
-    try {
-      emit(SignupLoadingState());
-      const List<String> scopes = ['email'];
-      final googleSignIn = GoogleSignIn(scopes: scopes);
-      final accountData = await googleSignIn.signInSilently();
-      if(accountData != null) {
-        final displayName = accountData.displayName ?? '';
-        final email = accountData.email;
-        final id = accountData.id;
-        final photoUrl = accountData.photoUrl;
-        final googleSignInAuthentication = await accountData.authentication;
-        final authCredential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken
-        );
-        final firebaseUserCredential = await _authInstance.signInWithCredential(authCredential);
-        final user = firebaseUserCredential.user;
+  Future<void> _onSignupWithGoogleStatus(SignupWithGoogleStatusEvent event, Emitter<SignupState> emit) async {
+    emit(SignupLoadingState());
+    if(event.googleSignInAccount != null) {
+      final displayName = event.googleSignInAccount!.displayName ?? '';
+      final photoUrl = event.googleSignInAccount!.photoUrl;
+      final email = event.googleSignInAccount!.email;
+      final authentication = await event.googleSignInAccount!.authentication;
+      final authCredential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken
+      );
+      final firebaseUserCredential = await _authInstance.signInWithCredential(authCredential);
+      final user = firebaseUserCredential.user;
+      if(firebaseUserCredential.additionalUserInfo!.isNewUser) {
         if (user != null) {
           Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
-          // Preferences.setString(key: AppStrings.prefPassword, value: event.password);
           Preferences.setString(key: AppStrings.prefEmail, value: email);
           Preferences.setBool(key: AppStrings.prefRememberMe,value: false);
           Preferences.setString(key: AppStrings.prefFullName, value: displayName);
@@ -56,7 +60,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'name': displayName,
             'email': email,
             'user_id': user.uid,
-            'profile_img': photoUrl,
+            'profile_img': photoUrl ?? AppStrings.sampleImg,
             'showUnverified': true,
             'enableBiometric': false
           });
@@ -65,10 +69,17 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
         }
+      } else {
+        emit(SignupFailedState(title: AppStrings.error, message: 'The email address is already in use by another account.'));
       }
-    } catch (e) {
+    } else {
       emit(SignupFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
     }
+  }
+
+  Future<void> _onSignupWithGoogle(SignupWithGoogleEvent event, Emitter<SignupState> emit) async {
+    emit(SignupLoadingState());
+    await _googleSignIn.signIn();
   }
 
   Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {
