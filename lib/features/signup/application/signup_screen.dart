@@ -15,7 +15,6 @@ import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_image_widget.dart' show CustomImageWidget;
 import '../../../widgets/custom_inkwell_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';

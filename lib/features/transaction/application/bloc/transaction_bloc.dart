@@ -118,7 +118,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if(listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
       double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
 
@@ -129,7 +129,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransactionResult.addAll(originalTransactionResultList);
       listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
       double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance));
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
 
