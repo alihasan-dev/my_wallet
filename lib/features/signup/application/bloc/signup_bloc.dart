@@ -15,6 +15,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   late FirebaseAuth _authInstance;
   late CollectionReference _collectionReference;
   late GoogleSignIn _googleSignIn;
+  bool _isGoogleSignedOut = false;
 
   SignupBloc() : super(SignupInitialState()){
     _googleSignIn = GoogleSignIn(
@@ -70,10 +71,17 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
         }
       } else {
+        _isGoogleSignedOut = true;
         emit(SignupFailedState(title: AppStrings.error, message: 'The email address is already in use by another account.'));
+        await _googleSignIn.signOut();
       }
     } else {
-      emit(SignupFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
+      emit(SignupFailedState(
+        title: AppStrings.failed, 
+        message: 'Google authentication failed, please try again.', 
+        canShowSnaclBar: !_isGoogleSignedOut
+      ));
+      _isGoogleSignedOut = false;
     }
   }
 
