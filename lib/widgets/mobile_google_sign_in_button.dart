@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wallet/constants/app_color.dart';
 import 'package:my_wallet/constants/app_size.dart';
+import 'package:my_wallet/constants/app_strings.dart';
 import 'package:my_wallet/widgets/custom_image_widget.dart';
 import 'package:my_wallet/widgets/custom_text.dart';
 import '../constants/app_images.dart';
@@ -37,7 +38,7 @@ class GoogleSigninCustomButton extends StatelessWidget {
               padding: AppSize.s0,
               borderColor: AppColors.transparent,
             ),
-            CustomText(title: 'Continue with Google')
+            CustomText(title: AppStrings.continueWithGoogle)
           ],
         ),
       ),

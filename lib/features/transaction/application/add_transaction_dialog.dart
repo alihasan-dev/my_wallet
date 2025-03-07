@@ -117,7 +117,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     decoration: InputDecoration(
                       isDense: true,
                       label: Text(_localizations!.transferType),
-                      contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s4, horizontal: AppSize.s14),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: AppSize.s05, 

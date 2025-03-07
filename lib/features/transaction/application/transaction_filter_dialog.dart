@@ -120,7 +120,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     decoration: InputDecoration(
                       isDense: true,
                       label: Text(localizations.transferType),
-                      contentPadding: const EdgeInsets.symmetric(vertical: AppSize.s0, horizontal: AppSize.s14),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: AppSize.s05,

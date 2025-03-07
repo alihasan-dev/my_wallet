@@ -81,9 +81,10 @@ class AppStrings {
   static const String emailAlreadyExist = 'Email already exist';
   static const String deleteUserMsg = 'Are you sure you want to delete';
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
-  static const String invalidPhone = "Plase provide valid phone number";
+  static const String invalidPhone = "Please provide valid phone number";
   static const String imageSizeMsg = "Image size should not be more than 2MB";
   static const String userDeletedMsg = "User has been deleted successfully";
+  static const String continueWithGoogle = "Continue with Google";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';

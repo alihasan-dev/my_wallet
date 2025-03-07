@@ -97,7 +97,9 @@ class LoginMobileView extends StatelessWidget {
             ),
           ),
         ),
-        GoogleSigninCustomButton(onTap: () => loginBloc.add(LoginWithGoogleEvent())),
+        kIsWeb
+        ? const GoogleSigninCustomButton(key: Key(AppStrings.continueWithGoogle))
+        : GoogleSigninCustomButton(onTap: () => loginBloc.add(LoginWithGoogleEvent())),
         const SizedBox(height: AppSize.s20),
         Row(
           mainAxisSize: MainAxisSize.min,

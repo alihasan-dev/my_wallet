@@ -170,9 +170,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                   height: double.maxFinite,
                                   child: Row(
                                     children: [
-                                      CustomText(
-                                        title: name, 
-                                        textStyle: getBoldStyle(color: AppColors.white)
+                                      Expanded(
+                                        child: CustomText(
+                                          title: name, 
+                                          textStyle: getBoldStyle(color: AppColors.white),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
                                   ),

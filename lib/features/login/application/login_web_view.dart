@@ -103,7 +103,7 @@ class LoginWebView extends StatelessWidget {
                 ),
               ),
             ),
-            GoogleSigninCustomButton(onTap: () => loginBloc.add(LoginWithGoogleEvent())),
+            const GoogleSigninCustomButton(key: Key(AppStrings.continueWithGoogle)),
             const SizedBox(height: AppSize.s20),
             Row(
               mainAxisSize: MainAxisSize.min,

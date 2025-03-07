@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wallet/constants/app_theme.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_color.dart';
 import '../constants/app_icons.dart';
@@ -34,7 +35,8 @@ class CustomImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: MyAppTheme.animationDuration * 2,
       width: imageSize,
       height: imageSize,
       padding: EdgeInsets.all(padding),
