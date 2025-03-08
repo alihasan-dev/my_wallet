@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../constants/app_icons.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../constants/app_style.dart';
 import '../../../widgets/custom_button.dart';
@@ -68,7 +69,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         offset: const Offset(10, 0),
                         child: IconButton(
                           onPressed: () => context.pop(),
-                          icon: const Icon(Icons.clear),
+                          icon: const Icon(AppIcons.clearIcon),
                           visualDensity: VisualDensity.compact,
                           tooltip: _localizations!.close,
                         ),

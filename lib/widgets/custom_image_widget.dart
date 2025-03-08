@@ -49,7 +49,7 @@ class CustomImageWidget extends StatelessWidget {
         ),
       ),
       child: isSelected
-      ? const Icon(Icons.check, color: AppColors.white)
+      ? const Icon(AppIcons.checkIcon, color: AppColors.white)
       : ClipOval(
         child: SizedBox.fromSize(
           size: Size.fromRadius(imageSize),
@@ -67,7 +67,7 @@ class CustomImageWidget extends StatelessWidget {
                   padding: EdgeInsets.all(circularPadding),
                   child: CircularProgressIndicator.adaptive(strokeWidth: strokeWidth)
                 ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+                errorWidget: (context, url, error) => const Icon(AppIcons.errorIcon),
                 fit: BoxFit.cover,
                 imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet
               )

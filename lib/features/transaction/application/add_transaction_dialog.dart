@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/constants/app_icons.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
@@ -81,7 +82,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         child: IconButton(
                           tooltip: _localizations!.close,
                           onPressed: () => context.pop(),
-                          icon: const Icon(Icons.clear),
+                          icon: const Icon(AppIcons.clearIcon),
                           visualDensity: VisualDensity.compact
                         ),
                       )

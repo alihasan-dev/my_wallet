@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/constants/app_icons.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../features/dashboard/domain/user_model.dart';
@@ -78,7 +79,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
                   closeButton: IconButton(
                     tooltip: localizations.close,
                     onPressed: toggleDisplayProfileColumn, 
-                    icon: const Icon(Icons.close)
+                    icon: const Icon(AppIcons.closeIcon)
                   ),
                 ),
               );

@@ -54,37 +54,6 @@ class AboutScreen extends StatelessWidget {
               title: '  \u00a9 2025 Traversal Inc.',
               textSize: AppSize.s12,
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(top: AppSize.s6),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       const CustomText(
-            //         title: '  View License', 
-            //         textSize: AppSize.s14
-            //       ),
-            //       IconButton(
-            //         visualDensity: VisualDensity.compact,
-            //         onPressed: () => showLicensePage(
-            //           context: context,
-            //           applicationName: AppStrings.appName,
-            //           applicationVersion: AppStrings.appVersion.determineAppVersion,
-            //           applicationIcon: Image.asset(
-            //             AppImages.appImage,
-            //             width: 64,
-            //             height: 64,
-            //             filterQuality: FilterQuality.medium,
-            //           ),
-            //         ),
-            //         icon: const Icon(
-            //           AppIcons.openInNewIcon,
-            //           size: AppSize.s20,
-            //           color: AppColors.grey
-            //         )
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(top: AppSize.s12),
               child: Row(

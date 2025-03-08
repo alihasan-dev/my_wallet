@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
+import '../constants/app_icons.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_strings.dart';
 import '../constants/app_color.dart';
@@ -57,8 +58,8 @@ mixin Helper {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             color != null
-            ? Icon(Icons.check_circle, color: color, size: AppSize.s20)
-            : const Icon(Icons.warning, color: AppColors.amber, size: AppSize.s20),
+            ? Icon(AppIcons.checkCircleIcon, color: color, size: AppSize.s20)
+            : const Icon(AppIcons.warningIcon, color: AppColors.amber, size: AppSize.s20),
             const SizedBox(width: AppSize.s10),
             Expanded(
               child: Column(
@@ -92,7 +93,9 @@ mixin Helper {
         ),
       ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(snackBar);
   }
 
   void showLoadingDialog({required BuildContext context}) {

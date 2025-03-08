@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../constants/app_icons.dart';
 import '../../../constants/app_style.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../utils/app_extension_method.dart';
@@ -89,7 +90,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                         child: IconButton(
                           tooltip: localizations.close,
                           onPressed: () => context.pop(),
-                          icon: const Icon(Icons.clear),
+                          icon: const Icon(AppIcons.clearIcon),
                           visualDensity: VisualDensity.compact
                         ),
                       ),

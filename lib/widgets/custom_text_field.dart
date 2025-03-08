@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../constants/app_icons.dart';
 import '../utils/helper.dart';
 import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
@@ -108,8 +109,8 @@ class CustomTextField extends StatelessWidget {
               onTap: onShowPassword,
               child: Icon(
                 isPasswordField 
-                ? Icons.visibility 
-                : Icons.visibility_off
+                ? AppIcons.visibilityIcon
+                : AppIcons.visibilityOffIcon
               ),
             ),
           ),

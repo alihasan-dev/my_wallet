@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../constants/app_icons.dart';
+
 class SettingModel {
   String title;
   String subTitle;
@@ -9,7 +11,7 @@ class SettingModel {
   bool isLauncher;
 
   SettingModel({
-    this.icon = Icons.settings,
+    this.icon = AppIcons.settingsIcon,
     required this.title,
     this.subTitle = "",
     this.showSwitch = false,

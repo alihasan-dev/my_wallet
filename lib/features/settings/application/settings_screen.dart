@@ -48,14 +48,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     languageList.add(SettingLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
     settingItemList.clear();
-    settingItemList.add(SettingModel(icon: Icons.language_outlined, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-    settingItemList.add(SettingModel(icon: Icons.contrast_outlined, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-    settingItemList.add(SettingModel(icon: Icons.verified_outlined, title: _localizations!.showUnverifiedUser, showSwitch: true));
+    settingItemList.add(SettingModel(icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+    settingItemList.add(SettingModel(icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
     if(!kIsWeb) {
-      settingItemList.add(SettingModel(icon: Icons.fingerprint, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
-      settingItemList.add(SettingModel(icon: Icons.ads_click_outlined, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
+      settingItemList.add(SettingModel(icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
+      settingItemList.add(SettingModel(icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
     }
-    settingItemList.add(SettingModel(icon: Icons.info_outline_rounded, title: _localizations!.aboutMyWallet));
+    settingItemList.add(SettingModel(icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
   }
 
@@ -247,7 +247,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
-                          Preferences.getString(key: AppStrings.prefTheme) == data.theme ? AppIcons.checkIcon : AppIcons.uncheckIcon,
+                          Preferences.getString(key: AppStrings.prefTheme) == data.theme ? AppIcons.radioCheckIcon : AppIcons.uncheckIcon,
                           color: Preferences.getString(key: AppStrings.prefTheme) == data.theme 
                           ? AppColors.primaryColor
                           : AppColors.grey
@@ -313,7 +313,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       children: [
                         Icon(
                           Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
-                          ? AppIcons.checkIcon 
+                          ? AppIcons.radioCheckIcon 
                           : AppIcons.uncheckIcon,
                           color: Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
                           ? AppColors.primaryColor

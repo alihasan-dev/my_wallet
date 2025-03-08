@@ -195,18 +195,18 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             IconButton(
                               tooltip: _localizations!.delete,
                               onPressed: () => showDeleteTransactionDialog(context), 
-                              icon: const Icon(Icons.delete_outline, color: AppColors.white)
+                              icon: const Icon(AppIcons.deleteIcon, color: AppColors.white)
                             ),
                             // Need to implement later
-                            // AnimatedSize(
-                            //   duration: MyAppTheme.animationDuration,
-                            //   child: transactionDataList.where((item) => item.selected).length > 1
-                            //   ? const SizedBox()
-                            //   : IconButton(
-                            //     onPressed: () => debugPrint(''), 
-                            //     icon: const Icon(Icons.edit_outlined, color: AppColors.white)
-                            //   ),
-                            // ),
+                            AnimatedSize(
+                              duration: MyAppTheme.animationDuration,
+                              child: transactionDataList.where((item) => item.selected).length > 1
+                              ? const SizedBox()
+                              : IconButton(
+                                onPressed: () => debugPrint(''), 
+                                icon: const Icon(Icons.edit_outlined, color: AppColors.white)
+                              ),
+                            ),
                           ],
                         )
                       : Row(
@@ -229,7 +229,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               tooltip: _localizations!.advanceFilter,
                               onPressed: () => _transactionBloc.add(TransactionFilterEvent()),
                               icon: const Icon(
-                                Icons.filter_alt,
+                                AppIcons.filterIcon,
                                 color: AppColors.white
                               ),
                             ),
@@ -443,7 +443,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                                 ? const Row(
                                                     children: [
                                                       Icon(
-                                                        Icons.check_circle_outline, 
+                                                        AppIcons.checkCircleOutlineIcon, 
                                                         size: AppSize.s18, 
                                                         color: AppColors.green
                                                       ),
