@@ -16,7 +16,7 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../features/dashboard/domain/user_model.dart';
-import '../../../features/transaction/application/add_transaction_dialog.dart';
+import 'transaction_dialog.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
 import '../../../utils/helper.dart';
@@ -194,17 +194,17 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           children: [
                             IconButton(
                               tooltip: _localizations!.delete,
-                              onPressed: () => showDeleteTransactionDialog(context), 
+                              onPressed: () => _showDeleteTransactionDialog(context), 
                               icon: const Icon(AppIcons.deleteIcon, color: AppColors.white)
                             ),
-                            // Need to implement later
                             AnimatedSize(
                               duration: MyAppTheme.animationDuration,
                               child: transactionDataList.where((item) => item.selected).length > 1
                               ? const SizedBox()
                               : IconButton(
-                                onPressed: () => debugPrint(''), 
-                                icon: const Icon(Icons.edit_outlined, color: AppColors.white)
+                                tooltip: _localizations!.editTransaction,
+                                onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
+                                icon: const Icon(AppIcons.editIcon, color: AppColors.white)
                               ),
                             ),
                           ],
@@ -213,7 +213,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         children: [
                           IconButton(
                             tooltip: _localizations!.addTransaction,
-                            onPressed: () => showAddUserSheet(),
+                            onPressed: () => _showAddTransactionDialog(),
                             icon: const Icon(
                               AppIcons.addIcon, 
                               color: AppColors.white, 
@@ -642,7 +642,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             profileImg = state.profileImage;
             break;
           case TransactionFilterState _:
-            showFilterDialog();
+            _showFilterDialog();
             break;
           case TransactionLoadingState _:
             showLoadingDialog(context: context);
@@ -662,19 +662,22 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             case TransactionTypeChangeState _:
               transactionType = state.type;
               break;
+            case TransactionEditState _:
+              _showAddTransactionDialog(transactionModel: state.selectedTransaction);
+              break;
           default:
         }
       },
     );
   }
 
-  Future<void> showDeleteTransactionDialog(BuildContext context) async {
+  Future<void> _showDeleteTransactionDialog(BuildContext context) async {
     if(await confirmationDialog(context: context, title: _localizations!.deleteTransaction, content: _localizations!.deleteTransactionMsg, localizations: _localizations!)) {
       _transactionBloc.add(TransactionDeleteEvent());
     }
   }
 
-  void showAddUserSheet() {
+  void _showAddTransactionDialog({TransactionModel? transactionModel}) {
     errorAmount = false;
     errorDate = false;
     showGeneralDialog(
@@ -683,12 +686,16 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, __) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
-        child: AddTransactionDialog(userName: name, friendId: friendId),
-      )
+        child: AddTransactionDialog(
+          userName: name, 
+          friendId: friendId, 
+          transactionModel: transactionModel
+        ),
+      ),
     );
   }
 
-  Future<void> showFilterDialog() async {
+  Future<void> _showFilterDialog() async {
     if(maxAmount == - double.maxFinite) {
       for(var item in transactionDataList) {
         if(maxAmount < item.amount) {

@@ -70,3 +70,8 @@ class TransactionChangeAmountRangeState extends TransactionState {
 
   TransactionChangeAmountRangeState({required this.rangeAmount});
 }
+
+class TransactionEditState extends TransactionState {
+  TransactionModel selectedTransaction;
+  TransactionEditState({required this.selectedTransaction});
+}

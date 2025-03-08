@@ -34,6 +34,7 @@
   "transfer": "Transfer",
   "transferType": "Transfer Type",
   "addTransaction": "Add Transaction",
+  "editTransaction": "Edit Transaction",
   "userProfile": "User Profile",
   "deleteUser": "Delete User",
   "deleteUserMsg": "Are you sure you want to delete {name}",

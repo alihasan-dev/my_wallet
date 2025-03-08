@@ -9,11 +9,14 @@ class TransactionAddEvent extends TransactionEvent {
   DateTime? date;
   String amount;
   String type;
+  String transactionId;
+
   TransactionAddEvent({
     required this.userName,
     required this.amount,
     required this.type,
     this.date,
+    this.transactionId = ''
   });
 } 
 

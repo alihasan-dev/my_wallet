@@ -34,6 +34,7 @@
   "transfer": "ट्रान्सफर",
   "transferType": "ट्रान्सफर प्रकार",
   "addTransaction": "लेन-देन जोड़ें",
+  "editTransaction": "लेन-देन सुधारें",
   "userProfile": "उपभोक्ता प्रोफ़ाइल",
   "deleteUser": "उपभोक्ता मिटायें",
   "deleteUserMsg": "क्या आप वाकई मे {name} को हटाना चाहते हैं?",

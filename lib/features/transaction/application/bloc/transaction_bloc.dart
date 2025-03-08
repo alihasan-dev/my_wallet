@@ -59,6 +59,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionClearFilterEvent>(_onClearFilterEvent);
     on<TransactionSelectListItemEvent>(_onSelectListItemEvent);
     on<TransactionDeleteEvent>(_onDeleteTransaction);
+    on<TransactionEditEvent>(_onEditTransaction);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -95,6 +96,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void initializeAudioPlayer() => audioPlayer = AudioPlayer();
+
+  void _onEditTransaction(TransactionEditEvent event, Emitter emit) {
+    if (listTransactionResult.isNotEmpty) {
+      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected);
+      emit(TransactionEditState(selectedTransaction: selectedTransaction));
+    }
+  }
 
   Future<void> _onDeleteTransaction(TransactionDeleteEvent event, Emitter emit) async {
     if(listTransactionResult.isNotEmpty) {
@@ -243,12 +251,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   Future<void> _addTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await validation(emit, userName: event.userName, date: event.date, amount: event.amount)) {
-      firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
-      firebaseStoreInstance.update({
-        'lastTransactionTime': event.date,
-        'amount': event.amount,
-        'type': event.type
-      });
+      if (event.transactionId.isEmpty) {
+        firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
+        firebaseStoreInstance.update({
+          'lastTransactionTime': event.date,
+          'amount': event.amount,
+          'type': event.type
+        });
+      } else {
+        firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({'date': event.date, 'amount': event.amount, 'type': event.type});
+      }
     }
   }
 
