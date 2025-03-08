@@ -83,5 +83,6 @@
   "delete": "Delete",
   "openAppOnBrowser": "Open app on browser",
   "deleteTransaction": "Delete Transaction",
-  "deleteTransactionMsg": "Are you sure you want to delete the selected transaction?"
+  "deleteTransactionMsg": "Are you sure you want to delete the selected transaction?",
+  "clearSelection": "Clear Selection"
 }

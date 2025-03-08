@@ -60,6 +60,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionSelectListItemEvent>(_onSelectListItemEvent);
     on<TransactionDeleteEvent>(_onDeleteTransaction);
     on<TransactionEditEvent>(_onEditTransaction);
+    on<TransactionClearSelectionEvent>(_onClearSelectionTransactionEvent);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -96,6 +97,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void initializeAudioPlayer() => audioPlayer = AudioPlayer();
+
+  void _onClearSelectionTransactionEvent(TransactionClearSelectionEvent event, Emitter emit) {
+    if(listTransactionResult.isNotEmpty) {
+      for (var item in listTransactionResult) {
+        item.selected = false;
+      }
+      double balance = totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+    }
+  }
 
   void _onEditTransaction(TransactionEditEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {

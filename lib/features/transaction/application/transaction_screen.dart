@@ -63,6 +63,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   String transactionType = AppStrings.all;
   double maxAmount = - double.maxFinite;
   double minAmount = double.maxFinite;
+  int _selectedTransactionCount = 0;
 
   @override
   void initState() {
@@ -189,9 +190,22 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     ),
                     AnimatedSize(
                       duration: MyAppTheme.animationDuration,
-                      child: transactionDataList.any((item) => item.selected)
+                      child: _selectedTransactionCount > 0
                       ? Row(
                           children: [
+                            OutlinedButton(
+                              onPressed: () => _transactionBloc.add(TransactionClearSelectionEvent()),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.white,
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                side: BorderSide(color: AppColors.white)
+                              ), 
+                              child: CustomText(
+                                title:'$_selectedTransactionCount  ${_localizations!.clearSelection}',
+                                textColor: AppColors.white,
+                              ),
+                            ),
+                            const SizedBox(width: AppSize.s8),
                             IconButton(
                               tooltip: _localizations!.delete,
                               onPressed: () => _showDeleteTransactionDialog(context), 
@@ -199,7 +213,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             ),
                             AnimatedSize(
                               duration: MyAppTheme.animationDuration,
-                              child: transactionDataList.where((item) => item.selected).length > 1
+                              child: _selectedTransactionCount > 1
                               ? const SizedBox()
                               : IconButton(
                                 tooltip: _localizations!.editTransaction,
@@ -612,6 +626,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               isFilterEnable = state.isFilterEnable;
               transactionDataList.clear();
               transactionDataList.addAll(state.listTransaction);
+              _selectedTransactionCount = transactionDataList.where((item) => item.selected).length;
               if(!isFilterEnable) {
                 transactionType = AppStrings.all;
                 initialDateTimeRage = null;

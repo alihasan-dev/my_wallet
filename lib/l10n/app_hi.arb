@@ -83,5 +83,6 @@
   "delete": "मिटाए",
   "openAppOnBrowser": "ब्राउज़र पर ऐप खोलें",
   "deleteTransaction": "लेन-देन मिटाए",
-  "deleteTransactionMsg": "क्या आप वाकई में चयनित लेनदेन को मिटाना चाहते हैं?"
+  "deleteTransactionMsg": "क्या आप वाकई में चयनित लेनदेन को मिटाना चाहते हैं?",
+  "clearSelection": "चयनित हटाएँ"
 }

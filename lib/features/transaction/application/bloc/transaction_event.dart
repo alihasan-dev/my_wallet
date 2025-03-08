@@ -89,3 +89,5 @@ class TransactionSelectListItemEvent extends TransactionEvent {
 class TransactionDeleteEvent extends TransactionEvent {}
 
 class TransactionEditEvent extends TransactionEvent {}
+
+class TransactionClearSelectionEvent extends TransactionEvent {}
