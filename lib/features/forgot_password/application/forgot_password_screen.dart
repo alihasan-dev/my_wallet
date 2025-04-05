@@ -86,19 +86,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
               } else {
                 return mainContent(context: context);
               }
-
-              // switch (constraints.maxWidth.screenDimension) {
-              //   case ScreenType.mobile:
-              //   case ScreenType.tablet:  
-              //     return mainContent(context: context);
-              //   default:
-              //     return Center(
-              //       child: SizedBox(
-              //         width: MyAppTheme.columnWidth + AppSize.s30,
-              //         child: Center(child: mainContent(context: context)),
-              //       ),
-              //     );
-              // }
             }
           );
         }

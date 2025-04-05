@@ -78,7 +78,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc(userId: widget.userId),
+      create: (_) => ProfileBloc(friendId: widget.userId),
       child: Builder(
         builder: (context) {
           return BlocConsumer<ProfileBloc, ProfileState>(

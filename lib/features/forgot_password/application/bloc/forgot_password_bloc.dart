@@ -8,7 +8,7 @@ import '../../../../utils/check_connectivity.dart';
 part 'forgot_password_event.dart';
 part 'forgot_password_state.dart';
 
-class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
+class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
 
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth _firebaseAuth;
@@ -53,7 +53,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
     } else if(!userEmails.any((item) => item == email)) {
       emit(ForgotPasswordFailedState(title: 'User does not exist', message: 'User is not registered with this email.'));
       return false;
-    } else if(!await checkConnectivity.hasConnection){
+    } else if(!await checkConnectivity.hasConnection) {
       emit(ForgotPasswordFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
     } else {
@@ -71,7 +71,6 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState>{
       emit(ForgotPasswordEmailFieldState(message: AppStrings.emptyString));
     }
   }
-
 
   @override
   Future<void> close() {

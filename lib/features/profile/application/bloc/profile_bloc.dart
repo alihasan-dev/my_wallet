@@ -19,12 +19,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   var profileData = <String, dynamic>{};
   late CheckConnectivity checkConnectivity;
   String selectedImagePath = '';
-  String userId;
+  String friendId;
 
-  ProfileBloc({this.userId = ''}) : super(ProfileInitialState()) {
+  ProfileBloc({this.friendId = ''}) : super(ProfileInitialState()) {
     checkConnectivity = CheckConnectivity();
     var userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
-    firebaseDocReference = userId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(userId);
+    firebaseDocReference = friendId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
     firebaseStorage = FirebaseStorage.instance.ref();
 
     ///Register Event Here
@@ -39,7 +39,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
       profileData = event.data() as Map<String, dynamic>;
       if(profileData['user_id'] == null) {
-        profileData['user_id'] = userId;
+        profileData['user_id'] = friendId;
       }
       add(ProfileDataEvent());
     });
@@ -67,7 +67,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
       }
     } else {
-       emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
+      emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
     }
   }
 
@@ -82,9 +82,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if(selectedImagePath.isNotEmpty) {
         emit(ProfileLoadingState());
         try {
-          final mountainImagesRef = userId.isEmpty 
+          final mountainImagesRef = friendId.isEmpty 
           ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
-          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$userId.jpg");
+          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
           await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
             await mountainImagesRef.getDownloadURL().then((value) {
               updatedImageUrl = value;

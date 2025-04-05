@@ -85,6 +85,7 @@ class AppStrings {
   static const String imageSizeMsg = "Image size should not be more than 2MB";
   static const String userDeletedMsg = "User has been deleted successfully";
   static const String continueWithGoogle = "Continue with Google";
+  static const String termAndPolilcy = "  Terms & Privacy Policy";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';

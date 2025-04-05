@@ -141,7 +141,7 @@ class AppRoutes {
                         context,
                         state,
                         BlocProvider(
-                          create: (_) => ProfileBloc(userId: data == null ? '' : data.userId),
+                          create: (_) => ProfileBloc(friendId: data == null ? '' : data.userId),
                           child: ProfileScreen(userId: data == null ? '' : data.userId)
                         ),
                       );

@@ -91,8 +91,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               (index) {
                 var data = settingItemList[index];
                 return InkWell(
+                  // onTap: data.showSwitch || data.isLauncher
+                  // ? null
+                  // : () => onClickItem(context: context, index: index),
                   onTap: data.showSwitch || data.isLauncher
-                  ? null
+                  ? () {
+                      if(data.showSwitch) {
+                        onChangeSwith(index: index, value: !data.switchValue);
+                      }
+                      if(data.isLauncher) {
+                        launchPolicyUrl();
+                      }
+                    }
                   : () => onClickItem(context: context, index: index),
                   child: Container(
                     padding: const EdgeInsets.symmetric(

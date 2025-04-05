@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../utils/app_extension_method.dart';
 import '../../constants/app_theme.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_images.dart';
@@ -60,7 +60,7 @@ class AboutScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const CustomText(
-                    title: '  Terms & Privacy Policy', 
+                    title: AppStrings.termAndPolilcy, 
                     textSize: AppSize.s14
                   ),
                   IconButton(
@@ -72,7 +72,7 @@ class AboutScreen extends StatelessWidget {
                       color: Helper.isDark
                       ? AppColors.white
                       : AppColors.black
-                    )
+                    ),
                   ),
                 ],
               ),
@@ -89,4 +89,5 @@ class AboutScreen extends StatelessWidget {
       context.pop();
     }
   }
+  
 }

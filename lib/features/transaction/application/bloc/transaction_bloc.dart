@@ -46,7 +46,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionDateChangeEvent>(_changeDateStatus);
     on<TransactionTypeChangeEvent>(_changeTransactionType);
     on<TransactionAmountChangeEvent>(_onAmountChange);
-    on<AllTransactionEvent>(_allTransactionData);
+    on<TransactionAllEvent>(_allTransactionData);
     on<TransactionDateSortEvent>(_onTransactionDateSort);
     on<TransactionAmountSortEvent>(_onTransactionAmountSort);
     on<TransactionTypeSortEvent>(_onTransactionTypeSort);
@@ -85,7 +85,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           ));
         }
       }
-      add(AllTransactionEvent());
+      add(TransactionAllEvent());
     });
   }
 

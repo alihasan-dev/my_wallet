@@ -30,7 +30,7 @@ mixin Helper {
     String? message, 
     Color? color
   }) {
-    var snackBar = SnackBar(
+    final snackBar = SnackBar(
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 3),
       padding: EdgeInsets.zero,
@@ -38,7 +38,10 @@ mixin Helper {
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(AppSize.s6)),
-        side: BorderSide(width: 1.0, color: AppColors.grey.withValues(alpha: 0.5))
+        side: BorderSide(
+          width: 1.0, 
+          color: AppColors.grey.withValues(alpha: 0.5)
+        ),
       ),
       margin: EdgeInsets.only(
         bottom: AppSize.s20, 
@@ -59,7 +62,11 @@ mixin Helper {
           children: [
             color != null
             ? Icon(AppIcons.checkCircleIcon, color: color, size: AppSize.s20)
-            : const Icon(AppIcons.warningIcon, color: AppColors.amber, size: AppSize.s20),
+            : const Icon(
+                AppIcons.warningIcon, 
+                color: AppColors.amber, 
+                size: AppSize.s20
+              ),
             const SizedBox(width: AppSize.s10),
             Expanded(
               child: Column(

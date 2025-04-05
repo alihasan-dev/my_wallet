@@ -35,8 +35,8 @@ class TransactionDateChangeEvent extends TransactionEvent {
   TransactionDateChangeEvent({required this.isError});
 }
 
-class AllTransactionEvent extends TransactionEvent {
-  AllTransactionEvent();
+class TransactionAllEvent extends TransactionEvent {
+  TransactionAllEvent();
 }
 
 class TransactionDateSortEvent extends TransactionEvent {}

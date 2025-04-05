@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/constants/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../utils/helper.dart';
+import '../../../constants/app_theme.dart';
 import '../../../constants/app_icons.dart';
-import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../constants/app_style.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_text.dart';
-import '../../../utils/helper.dart';
-
+import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 
 class AddUserDialog extends StatefulWidget {
   const AddUserDialog({super.key});
@@ -43,16 +42,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
         : AppColors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
         content: BlocConsumer<DashboardBloc, DashboardState>(
-          builder: (context, state){
-            switch (state) {
-              case DashboardEmailFieldState _:
-                errorEmail = state.emailMessage;
-                break;
-              case DashboardNameFieldState _:
-                errorName = state.nameMessage;
-                break;
-              default:
-            }
+          builder: (context, _) {
             return SizedBox(
               width: MyAppTheme.columnWidth,
               child: Column(
@@ -73,7 +63,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                           visualDensity: VisualDensity.compact,
                           tooltip: _localizations!.close,
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSize.s8),
@@ -92,7 +82,14 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s12),
@@ -111,7 +108,14 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),
@@ -124,13 +128,17 @@ class _AddUserDialogState extends State<AddUserDialog> {
               ),
             );
           }, 
-          listener: (_, state){
+          listener: (_, state) {
             switch (state) {
               case DashboardAllUserState _:
-                if(!isFirstOpen){
-                  Navigator.pop(context);
-                }
+                if(!isFirstOpen) Navigator.pop(context);
                 isFirstOpen = false;
+                break;
+              case DashboardEmailFieldState _:
+                errorEmail = state.emailMessage;
+                break;
+              case DashboardNameFieldState _:
+                errorName = state.nameMessage;
                 break;
               default:
             }

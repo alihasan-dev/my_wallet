@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_theme.dart';
 import '../../../utils/preferences.dart';
@@ -19,11 +20,10 @@ import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
+import '../../../features/dashboard/application/add_user_dialog.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'add_user_dialog.dart';
 part 'dashboard_web_view.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -152,7 +152,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
       context: context, 
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
-      pageBuilder: (_, a1, ___) => ScaleTransition(
+      pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: const AddUserDialog(),
       )
