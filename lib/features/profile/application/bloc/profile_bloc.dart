@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/preferences.dart';
 import '../../../../utils/check_connectivity.dart';
@@ -33,6 +34,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileDataEvent>(_getProfileData);
     on<ProfileNameChangeEvent>(_onNameChange);
     on<ProfilePhoneChangeEvent>(_onPhoneChange);
+    on<ProfileEmailChangeEvent>(_onEmailChange);
     on<ProfileChooseImageEvent>(_onChooseImage);
     on<ProfileDeleteUserEvent>(_onDeleteUser);
 
@@ -59,13 +61,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
+  void _onEmailChange(ProfileEmailChangeEvent event, Emitter emit) {
+    if(event.email.isEmpty) {
+      emit(ProfileErrorEmailState(message: AppStrings.emptyEmail));
+    } else if(!event.email.isValidEmail) {
+      emit(ProfileErrorEmailState(message: AppStrings.invalidEmail));
+    } else {
+      emit(ProfileErrorEmailState(message: AppStrings.emptyString));
+    }
+  }
+
   void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
-    if(event.text.isNotEmpty){
-      if(event.text.length < 10){
-        emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
-      } else {
-        emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
-      }
+    if(event.text.length < 10) {
+      emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
     } else {
       emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
     }

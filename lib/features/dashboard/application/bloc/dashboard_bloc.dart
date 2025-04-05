@@ -29,6 +29,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardAllUserEvent>(_onGetAllUser);
     on<DashboardAddUserEvent>(_onAddUser);
     on<DashboardEmailChangeEvent>(_onEmailChange);
+    on<DashboardPhoneChangeEvent>(_onPhoneChange);
     on<DashboardNameChangeEvent>(_onNameChange);
     on<DashboardDeleteUserEvent>(_onDeleteUser);
     on<DashboardUserDetailsEvent>(_onFetchUserDetails);
@@ -188,11 +189,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   Future<void> _onAddUser(DashboardAddUserEvent event, Emitter emit) async {
-    if(await validation(emit, name: event.name, email: event.email)) {
+    if(await validation(emit, name: event.name, email: event.email, phone: event.phone)) {
       await firebaseStoreInstance.doc(userId).collection('friends').add({
         'name': event.name,
         'email': event.email,
-        'phone': '',
+        'phone': event.phone,
         'address': '',
         'profile_img': AppStrings.sampleImg,
         'isVerified': true 
@@ -204,20 +205,38 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     await firebaseStoreInstance.doc(userId).collection('friends').doc(event.docId).delete();
   }
 
-  Future<bool> validation(Emitter emit, {required String name, required String email}) async {
-    if(name.isBlank){
+  Future<bool> validation(Emitter emit, {required String name, String email = '', required String phone}) async {
+    // if(name.isBlank){
+    //   emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
+    //   return false;
+    // } else if (email.isEmpty){
+    //   emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyEmail));
+    //   return false;
+    // } else if (!email.isValidEmail){
+    //   emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
+    //   return false;
+    // } else if (listUser.any((element) => element.email == email)){
+    //   emit(DashboardEmailFieldState(emailMessage: AppStrings.emailAlreadyExist));
+    //   return false;
+    // } else if (!await checkConnectivity.hasConnection){
+    //   emit(DashboardFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
+    //   return false;
+    // }
+    // return true;
+
+    if(name.isBlank) {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
       return false;
-    } else if (email.isEmpty){
-      emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyEmail));
+    } else if (phone.isEmpty) {
+      emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyPhone));
       return false;
-    } else if (!email.isValidEmail){
-      emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
+    } else if (!phone.isValidPhone) {
+      emit(DashboardPhoneFieldState(phoneMessage: AppStrings.invalidPhone));
       return false;
-    } else if (listUser.any((element) => element.email == email)){
-      emit(DashboardEmailFieldState(emailMessage: AppStrings.emailAlreadyExist));
+    } else if (listUser.any((element) => element.phone == phone)) {
+      emit(DashboardPhoneFieldState(phoneMessage: AppStrings.phoneAlreadyExist));
       return false;
-    } else if (!await checkConnectivity.hasConnection){
+    } else if (!await checkConnectivity.hasConnection) {
       emit(DashboardFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       return false;
     }
@@ -231,6 +250,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
     } else {
       emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyString));
+    }
+  }
+
+  void _onPhoneChange(DashboardPhoneChangeEvent event, Emitter emit) {
+    if(event.phone.isEmpty) {
+      emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyPhone));
+    } else if(!event.phone.isValidPhone) {
+      emit(DashboardPhoneFieldState(phoneMessage: AppStrings.invalidPhone));
+    } else {
+      emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyString));
     }
   }
 

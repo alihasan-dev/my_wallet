@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_theme.dart';
 import '../../../constants/app_icons.dart';
@@ -23,11 +24,18 @@ class AddUserDialog extends StatefulWidget {
 class _AddUserDialogState extends State<AddUserDialog> {
 
   var emailTextController = TextEditingController();
+  var phoneTextController = TextEditingController();
   var nameTextController = TextEditingController();
   String errorName = '';
   String errorEmail = '';
+  String errorPhone = '';
   bool isFirstOpen = true;
   AppLocalizations? _localizations;
+  //US Phone Number Format
+  var maskFormatter = MaskTextInputFormatter(
+    mask: '+91 ####-###-###',
+    filter: {"#": RegExp(r'[0-9]')}
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -92,17 +100,44 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       ),
                     ),
                   ),
+                  //Previous Email
+                  // const SizedBox(height: AppSize.s12),
+                  // TextField(
+                  //   controller: emailTextController,
+                  //   onChanged: (value) => context.read<DashboardBloc>().add(DashboardEmailChangeEvent(email: value)),
+                  //   decoration: InputDecoration(
+                  //     hintText: AppStrings.email,
+                  //     errorText: errorEmail.isNotEmpty
+                  //     ? errorEmail
+                  //     : null,
+                  //     label: CustomText(
+                  //       title: '${_localizations!.email} *',
+                  //       textColor: Helper.isDark 
+                  //       ? AppColors.white.withValues(alpha: 0.8)
+                  //       : AppColors.black
+                  //     ),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: AppSize.s12),
                   TextField(
-                    controller: emailTextController,
-                    onChanged: (value) => context.read<DashboardBloc>().add(DashboardEmailChangeEvent(email: value)),
+                    controller: phoneTextController,
+                    onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: maskFormatter.unmaskText(value))),
                     decoration: InputDecoration(
-                      hintText: AppStrings.email,
-                      errorText: errorEmail.isNotEmpty
-                      ? errorEmail
+                      hintText: AppStrings.phone,
+                      errorText: errorPhone.isNotEmpty
+                      ? errorPhone
                       : null,
                       label: CustomText(
-                        title: '${_localizations!.email} *',
+                        title: '${_localizations!.phone} *',
                         textColor: Helper.isDark 
                         ? AppColors.white.withValues(alpha: 0.8)
                         : AppColors.black
@@ -117,11 +152,16 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         ),
                       ),
                     ),
+                    inputFormatters: [maskFormatter],
                   ),
                   const SizedBox(height: AppSize.s15),
                   CustomButton(
                     title: _localizations!.addUser, 
-                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(name: nameTextController.text, email: emailTextController.text)),
+                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
+                      name: nameTextController.text, 
+                      email: emailTextController.text,
+                      phone: maskFormatter.unmaskText(phoneTextController.text)
+                    )),
                     titleSize: AppSize.s15,
                   ),
                 ],
@@ -136,6 +176,9 @@ class _AddUserDialogState extends State<AddUserDialog> {
                 break;
               case DashboardEmailFieldState _:
                 errorEmail = state.emailMessage;
+                break;
+              case DashboardPhoneFieldState _:
+                errorPhone = state.phoneMessage;
                 break;
               case DashboardNameFieldState _:
                 errorName = state.nameMessage;

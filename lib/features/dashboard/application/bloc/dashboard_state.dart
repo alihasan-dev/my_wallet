@@ -32,6 +32,11 @@ class DashboardEmailFieldState extends DashboardState{
   DashboardEmailFieldState({required this.emailMessage});
 }
 
+class DashboardPhoneFieldState extends DashboardState{
+  String phoneMessage;
+  DashboardPhoneFieldState({required this.phoneMessage});
+}
+
 class DashboardPasswordFieldState extends DashboardState{
   String passwordMessage;
   DashboardPasswordFieldState({required this.passwordMessage});

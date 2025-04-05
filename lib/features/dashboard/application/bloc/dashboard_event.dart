@@ -17,10 +17,16 @@ class DashboardEmailChangeEvent extends DashboardEvent {
   DashboardEmailChangeEvent({required this.email});
 }
 
+class DashboardPhoneChangeEvent extends DashboardEvent {
+  String phone;
+  DashboardPhoneChangeEvent({required this.phone});
+}
+
 class DashboardAddUserEvent extends DashboardEvent {
   String name;
   String email;
-  DashboardAddUserEvent({required this.name, required this.email});
+  String phone;
+  DashboardAddUserEvent({this.name = '', this.email = '', this.phone = ''});
 }
 
 class DashboardDeleteUserEvent extends DashboardEvent {

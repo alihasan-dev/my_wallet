@@ -23,6 +23,14 @@ extension StringExtension on String {
     return regExp.hasMatch(this);
   }
 
+  bool get isValidPhone {
+    try {
+      return trim().length < 10 ? false : true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Locale get getLocale {
     var data =  this;
     switch (data) {

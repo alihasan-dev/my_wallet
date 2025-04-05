@@ -71,6 +71,7 @@ class AppStrings {
   static const String noInternetConnection = 'No Internet Connection';
   static const String noInternetConnectionMessage = 'Please check your internet connection';
   static const String emptyEmail = 'Please provide email';
+  static const String emptyPhone = 'Please provide phone number';
   static const String emptyName = 'Please provide name';
   static const String invalidEmail = 'Please provide valid email';
   static const String emptyPassword = 'Please provide password';
@@ -79,6 +80,7 @@ class AppStrings {
   static const String dialogNotShowingMessage = 'Loading dialog is not showing'; 
   static const String noUserFound = 'No user found';
   static const String emailAlreadyExist = 'Email already exist';
+  static const String phoneAlreadyExist = 'Phone number already exist';
   static const String deleteUserMsg = 'Are you sure you want to delete';
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
   static const String invalidPhone = "Please provide valid phone number";
