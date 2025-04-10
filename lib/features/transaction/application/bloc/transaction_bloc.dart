@@ -1,19 +1,19 @@
 import 'dart:async';
+import 'package:pdf/pdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_wallet/constants/app_audio.dart';
+import 'package:pdf/widgets.dart' as pw;
+import '../../../../constants/app_audio.dart';
 import '../../../../features/transaction/domain/transaction_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:my_wallet/utils/mobile_download.dart'
-  if(dart.library.html) 'package:my_wallet/utils/web_download.dart';
+import '../../../../utils/mobile_download.dart'
+  if(dart.library.html) '../../../../utils/web_download.dart';
 import '../../../dashboard/application/bloc/dashboard_bloc.dart';
 part 'transaction_event.dart';
 part 'transaction_state.dart';
@@ -41,22 +41,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     userId = Preferences.getString(key: AppStrings.prefUserId);
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
     checkConnectivity = CheckConnectivity();
-    initializeAudioPlayer();
-    on<TransactionAddEvent>(_addTransaction);
-    on<TransactionDateChangeEvent>(_changeDateStatus);
-    on<TransactionTypeChangeEvent>(_changeTransactionType);
-    on<TransactionAmountChangeEvent>(_onAmountChange);
+    _initializeAudioPlayer();
+    on<TransactionAddEvent>(_onAddTransaction);
+    on<TransactionDateChangeEvent>(_onChangeDateStatus);
+    on<TransactionTypeChangeEvent>(_onChangeTransactionType);
+    on<TransactionAmountChangeEvent>(_onChangeAmount);
     on<TransactionAllEvent>(_allTransactionData);
-    on<TransactionDateSortEvent>(_onTransactionDateSort);
-    on<TransactionAmountSortEvent>(_onTransactionAmountSort);
-    on<TransactionTypeSortEvent>(_onTransactionTypeSort);
-    on<TransactionScrollEvent>(_onScrollingList);
+    on<TransactionDateSortEvent>(_onSortTransactionDate);
+    on<TransactionAmountSortEvent>(_onSortTransactionAmount);
+    on<TransactionTypeSortEvent>(_onSortTransactionType);
+    on<TransactionScrollEvent>(_onScrollList);
     on<TransactionExportPDFEvent>(_onExportPDF);
-    on<TransactionProfileUpdateEvent>(_onUpdateProfileEvent);
-    on<TransactionFilterEvent>(_onEnableFilterEvent);
+    on<TransactionProfileUpdateEvent>(_onUpdateProfile);
+    on<TransactionFilterEvent>(_onEnableFilter);
     on<TransactionChangeAmountRangeEvent>(_onChangeAmountRange);
-    on<TransactionApplyFilterEvent>(_onApplyFilterEvent);
-    on<TransactionClearFilterEvent>(_onClearFilterEvent);
+    on<TransactionApplyFilterEvent>(_onApplyFilter);
+    on<TransactionClearFilterEvent>(_onClearFilter);
     on<TransactionSelectListItemEvent>(_onSelectListItemEvent);
     on<TransactionDeleteEvent>(_onDeleteTransaction);
     on<TransactionEditEvent>(_onEditTransaction);
@@ -96,7 +96,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return super.close();
   }
 
-  void initializeAudioPlayer() => audioPlayer = AudioPlayer();
+  void _initializeAudioPlayer() => audioPlayer = AudioPlayer();
 
   void _onClearSelectionTransactionEvent(TransactionClearSelectionEvent event, Emitter emit) {
     if(listTransactionResult.isNotEmpty) {
@@ -141,7 +141,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  void _onClearFilterEvent(TransactionClearFilterEvent event, Emitter emit) {
+  void _onClearFilter(TransactionClearFilterEvent event, Emitter emit) {
     if(event.clearFilter) {
       isFilterApplied = false;
       listTransactionResult.clear();
@@ -156,19 +156,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionChangeAmountRangeState(rangeAmount: event.rangeAmount));
   }
 
-  void _onScrollingList(TransactionScrollEvent event, Emitter emit) {
+  void _onScrollList(TransactionScrollEvent event, Emitter emit) {
     emit(TransactionScrollState(appbarSize: event.appbarSize));
   }
 
-  void _onUpdateProfileEvent(TransactionProfileUpdateEvent event, Emitter emit) {
+  void _onUpdateProfile(TransactionProfileUpdateEvent event, Emitter emit) {
     emit(TransactionProfileUpdateState(userName: event.userName, profileImage: event.profileImage));
   }
 
-  void _onEnableFilterEvent(TransactionFilterEvent event, Emitter emit) {
+  void _onEnableFilter(TransactionFilterEvent event, Emitter emit) {
     emit(TransactionFilterState());
   }
 
-  void _onApplyFilterEvent(TransactionApplyFilterEvent event, Emitter emit) {
+  void _onApplyFilter(TransactionApplyFilterEvent event, Emitter emit) {
     isFilterApplied = true;
     listTransactionResult.clear();
     final startDateTime = event.dateTimeRange?.start;
@@ -197,15 +197,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isTransactionAgainstFilter: isFilterApplied));
   }
 
-  void _changeDateStatus(event, emit) {
+  void _onChangeDateStatus(event, emit) {
     emit(TransactionDateChangeState(false));
   }
 
-  void _changeTransactionType(event, emit) {
+  void _onChangeTransactionType(event, emit) {
     emit(TransactionTypeChangeState(event.type));
   }
 
-  void _onAmountChange(event, emit) {
+  void _onChangeAmount(event, emit) {
     if (event.amount.isEmpty) {
       emit(TransactionAmountFieldState(isAmountEmpty: true));
     } else {
@@ -213,7 +213,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  void _onTransactionDateSort(TransactionDateSortEvent event, Emitter emit) {
+  void _onSortTransactionDate(TransactionDateSortEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
       if (dateAscending) {
         dateAscending = !dateAscending;
@@ -227,7 +227,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  void _onTransactionAmountSort(TransactionAmountSortEvent event, Emitter emit) {
+  void _onSortTransactionAmount(TransactionAmountSortEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
       if (amountAscending) {
         amountAscending = !amountAscending;
@@ -241,7 +241,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  void _onTransactionTypeSort(TransactionTypeSortEvent event, Emitter emit) {
+  void _onSortTransactionType(TransactionTypeSortEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
       if (typeAscending) {
         typeAscending = !typeAscending;
@@ -260,7 +260,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return totalBalance;
   }
 
-  Future<void> _addTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
+  Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await validation(emit, userName: event.userName, date: event.date, amount: event.amount)) {
       if (event.transactionId.isEmpty) {
         firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
@@ -353,7 +353,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           }
           pdf.addPage(pw.Page(
             pageFormat: PdfPageFormat.a4,
-            build: (pw.Context context) => pw.Table(border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),children: tableRowList),
+            build: (pw.Context context) => pw.Table(
+              border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),
+              children: tableRowList
+            ),
           ));
           pageCount -= 1;
           start = end - 1;
