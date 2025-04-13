@@ -60,6 +60,8 @@ dependencies:
   just_audio: ^0.9.46
   web: ^1.1.0
   google_sign_in: ^6.2.2
+  firebase_crashlytics: ^4.3.5
+  firebase_analytics: ^11.4.5
 
 dev_dependencies:
   flutter_test:
