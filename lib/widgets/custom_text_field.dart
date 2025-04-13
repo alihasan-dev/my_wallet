@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../utils/app_extension_method.dart';
 import '../constants/app_icons.dart';
 import '../utils/helper.dart';
 import '../widgets/custom_text.dart';
@@ -97,10 +98,14 @@ class CustomTextField extends StatelessWidget {
             border: const OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05)),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                width: AppSize.s05, 
+                width: errorText == null || errorText!.isBlank
+                  ? AppSize.s05
+                  : 1.5, 
                 color: Helper.isDark 
                 ? AppColors.grey 
-                : AppColors.black
+                : errorText == null || errorText!.isBlank 
+                  ? AppColors.black
+                  : AppColors.red
               )
             ),
             suffixIcon: onShowPassword == null
