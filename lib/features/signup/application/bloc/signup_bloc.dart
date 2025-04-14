@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
+import '../../../../utils/custom_exception.dart';
 import '../../../../utils/preferences.dart';
 part 'signup_event.dart';
 part 'signup_state.dart';
@@ -87,7 +88,15 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
 
   Future<void> _onSignupWithGoogle(SignupWithGoogleEvent event, Emitter<SignupState> emit) async {
     emit(SignupLoadingState());
-    await _googleSignIn.signIn();
+    try {
+      final data = await _googleSignIn.signIn(); 
+      if (data == null) throw CustomException();
+    } on CustomException catch (_) {
+      emit(SignupFailedState(
+        title: AppStrings.failed, 
+        message: 'Google authentication failed, please try again.',
+      ));
+    }
   }
 
   Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {

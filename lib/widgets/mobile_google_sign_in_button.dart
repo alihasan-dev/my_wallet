@@ -9,9 +9,11 @@ import '../constants/app_images.dart';
 class GoogleSigninCustomButton extends StatelessWidget {
   
   final VoidCallback? onTap;
+  final bool? isLoading;
 
   const GoogleSigninCustomButton({
     this.onTap,
+    this.isLoading = false,
     super.key
   });
 
