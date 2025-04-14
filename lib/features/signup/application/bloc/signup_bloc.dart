@@ -66,13 +66,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'enableBiometric': false
           });
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
-          emit(SignupSuccessState());
+          emit(SignupSuccessState(title: AppStrings.success, message: AppStrings.registerMsg));
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
         }
       } else {
         _isGoogleSignedOut = true;
-        emit(SignupFailedState(title: AppStrings.error, message: 'The email address is already in use by another account.'));
+        emit(SignupFailedState(title: AppStrings.error, message: 'Welcome back! It seems you already have an account with us. Please log in to continue.'));
         await _googleSignIn.signOut();
       }
     } else {
@@ -112,7 +112,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'enableBiometric': false
           });
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
-          emit(SignupSuccessState());
+          emit(SignupSuccessState(title: AppStrings.success, message: AppStrings.registerMsg));
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
         }

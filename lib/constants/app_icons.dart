@@ -39,5 +39,6 @@ class AppIcons {
   static const IconData adsClickIcon = Icons.ads_click_outlined;
   static const IconData infoIcon = Icons.info_outline_rounded;
   static const IconData editIcon = Icons.edit_outlined;
+  static const IconData campaignIcon = Icons.campaign_rounded;
   
 }

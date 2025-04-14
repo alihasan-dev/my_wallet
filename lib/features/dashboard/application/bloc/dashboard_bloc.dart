@@ -50,7 +50,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           name: userData['name'],
           userId: userData['user_id'],
           email: userData['email'],
-          phone: userData['phone'],
+          phone: userData['phone'] ?? '',
           isUserVerified: userData['showUnverified'] ?? true
         )));
       }
@@ -206,24 +206,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   Future<bool> validation(Emitter emit, {required String name, String email = '', required String phone}) async {
-    // if(name.isBlank){
-    //   emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
-    //   return false;
-    // } else if (email.isEmpty){
-    //   emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyEmail));
-    //   return false;
-    // } else if (!email.isValidEmail){
-    //   emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
-    //   return false;
-    // } else if (listUser.any((element) => element.email == email)){
-    //   emit(DashboardEmailFieldState(emailMessage: AppStrings.emailAlreadyExist));
-    //   return false;
-    // } else if (!await checkConnectivity.hasConnection){
-    //   emit(DashboardFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
-    //   return false;
-    // }
-    // return true;
-
     if(name.isBlank) {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
       return false;

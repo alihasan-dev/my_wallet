@@ -5,13 +5,16 @@ sealed class LoginState {}
 class LoginInitialState extends LoginState {}
 
 class LoginSuccessState extends LoginState{
-  LoginSuccessState();
+  String title;
+  String message;
+  LoginSuccessState({this.title = '', this.message = ''});
 }
 
 class LoginFailedState extends LoginState{
   String message;
   String title;
-  LoginFailedState({required this.message,required this.title});
+  bool canShowSnackBar;
+  LoginFailedState({required this.message,required this.title, this.canShowSnackBar = true});
 }
 
 class LoginLoadingState extends LoginState{}

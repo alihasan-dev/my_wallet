@@ -236,7 +236,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
         CustomTextField(
           title: _localizations!.phone, 
           isPasswordField: false,
-          isEnabled: false, 
+          isEnabled: widget.userId.isBlank ? true : false, 
           isMandatory: true,
           textEditingController: phoneTextController,
           errorText: errorPhone,
@@ -247,7 +247,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
         CustomTextField(
           title: _localizations!.email, 
           isPasswordField: false, 
-          // isEnabled: false,
+          isEnabled: widget.userId.isBlank ? false : true, 
           isMandatory: true,
           textEditingController: emailTextController,
           errorText: errorEmail,
@@ -263,15 +263,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           onChange: (value) => bContext.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
         ),
         const SizedBox(height: AppSize.s4),
-        // CustomTextField(
-        //   title: _localizations!.phone, 
-        //   isPasswordField: false, 
-        //   textEditingController: phoneTextController,
-        //   errorText: errorPhone,
-        //   maxLength: 12,
-        //   textInputFormatter: [maskFormatter],
-        //   onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
-        // ),
         CustomTextField(
           title: _localizations!.address, 
           isPasswordField: false, 

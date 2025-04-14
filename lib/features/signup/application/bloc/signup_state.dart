@@ -5,7 +5,9 @@ sealed class SignupState {}
 class SignupInitialState extends SignupState {}
 
 class SignupSuccessState extends SignupState{
-  SignupSuccessState();
+  String title;
+  String message;
+  SignupSuccessState({this.title = '', this.message = ''});
 }
 
 class SignupFailedState extends SignupState{

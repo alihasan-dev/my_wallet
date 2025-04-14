@@ -20,8 +20,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth authInstance;
+  late CollectionReference _collectionReference;
   late DocumentReference firebaseDocumentReference;
   late GoogleSignIn _googleSignIn;
+  bool _isGoogleSignedOut = false;
 
   LoginBloc() : super(LoginInitialState()) {
     _googleSignIn = GoogleSignIn(
@@ -29,6 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       scopes: ["email"],
     );
     authInstance = FirebaseAuth.instance;
+    _collectionReference = FirebaseFirestore.instance.collection('users');
     checkConnectivity = CheckConnectivity();
     on<LoginSubmitEvent>(_onLoginSubmit);
     on<LoginEmailChangeEvent>(_onEmailChange);
@@ -45,6 +48,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
     emit(LoginLoadingState());
     if(event.googleSignInAccount != null) {
+      final displayName = event.googleSignInAccount!.displayName ?? '';
+      final photoUrl = event.googleSignInAccount!.photoUrl;
       final email = event.googleSignInAccount!.email;
       final authentication = await event.googleSignInAccount!.authentication;
       final authCredential = GoogleAuthProvider.credential(
@@ -53,22 +58,46 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
       final firebaseUserCredential = await authInstance.signInWithCredential(authCredential);
       final user = firebaseUserCredential.user;
-      if (user != null) {
-        firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
-        Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
-        Preferences.setString(key: AppStrings.prefEmail, value: email);
-        await firebaseDocumentReference.get().then((data) {
-          var mapData = data.data() as Map;
-          if(mapData.isNotEmpty) {
-            Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
-          }
-        });
-        emit(LoginSuccessState());
+      if(firebaseUserCredential.additionalUserInfo != null && user != null) {
+        if(!firebaseUserCredential.additionalUserInfo!.isNewUser) {
+          firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
+          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+          Preferences.setString(key: AppStrings.prefEmail, value: email);
+          await firebaseDocumentReference.get().then((data) {
+            var mapData = data.data() as Map;
+            if(mapData.isNotEmpty) {
+              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+            }
+          });
+          emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
+        } else {
+          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+          Preferences.setString(key: AppStrings.prefEmail, value: email);
+          Preferences.setBool(key: AppStrings.prefRememberMe,value: false);
+          Preferences.setString(key: AppStrings.prefFullName, value: displayName);
+          ///store user in firebase firestore
+          await _collectionReference.doc(user.uid).set({
+            'name': displayName,
+            'email': email,
+            'user_id': user.uid,
+            'profile_img': photoUrl ?? AppStrings.sampleImg,
+            'showUnverified': true,
+            'enableBiometric': false
+          });
+          Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
+          emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessNewUserMsg));
+        }
       } else {
+        _isGoogleSignedOut = true;
         emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
+        await _googleSignIn.signOut();
       }
     } else {
-      emit(LoginFailedState(title: AppStrings.failed, message: 'Google authentication failed, please try again.'));
+      emit(LoginFailedState(
+        title: AppStrings.failed, 
+        message: 'Google authentication failed, please try again.', 
+        canShowSnackBar: !_isGoogleSignedOut
+      ));
     }
   }
 
@@ -97,7 +126,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
             }
           });
-          emit(LoginSuccessState());
+          emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
         } else {
           emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
         }

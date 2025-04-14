@@ -1,4 +1,3 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart' show FirebaseCrashlytics;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,13 +65,16 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
           switch (state) {
             case LoginFailedState _:
               hideLoadingDialog(context: context);
-              showSnackBar(context: context, title: state.title, message: state.message);
+              if(state.canShowSnackBar) {
+                showSnackBar(context: context, title: state.title, message: state.message);
+              }
               break;
             case LoginLoadingState _:
               showLoadingDialog(context: context);
               break;
             case LoginSuccessState _:
               hideLoadingDialog(context: context);
+              showSnackBar(context: context, title: state.title, message: state.message, color: AppColors.green);
               Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
               context.go(AppRoutes.dashboard);
               break;

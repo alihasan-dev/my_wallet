@@ -10,8 +10,8 @@ class AppStrings {
   static const String rememberMe = 'Remember Me';
   static const String forgotPassword = 'Forgot Password';
   static const String continueString = 'Continue';
-  static const String dontHaveAccount = "Don't have an account";
-  static const String alreadyHaveAccount = 'Already have an account';
+  static const String dontHaveAccount = "Don't have an account?";
+  static const String alreadyHaveAccount = 'Already have an account?';
   static const String all = 'All';
   static const String transfer = 'Transfer';
   static const String receive = 'Receive';
@@ -85,9 +85,12 @@ class AppStrings {
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
   static const String invalidPhone = "Please provide valid phone number";
   static const String imageSizeMsg = "Image size should not be more than 2MB";
-  static const String userDeletedMsg = "User has been deleted successfully";
+  static const String userDeletedMsg = "User deleted successfully";
   static const String continueWithGoogle = "Continue with Google";
   static const String termAndPolilcy = "  Terms & Privacy Policy";
+  static const String registerMsg = "Thank you for joining us! Your account has been successfully created.";
+  static const String loginSuccessMsg = "User login successfully";
+  static const String loginSuccessNewUserMsg = "User login successfully. Against new user with profile creation";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';
