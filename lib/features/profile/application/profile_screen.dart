@@ -207,8 +207,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                         padding: const EdgeInsets.all(AppSize.s8),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.primaryColor,
-                          boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+                          color: AppColors.primaryColor
                         ),
                         child: const Icon(
                           AppIcons.editIcon, 

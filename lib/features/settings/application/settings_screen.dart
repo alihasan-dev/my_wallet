@@ -34,6 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
   bool showUnverified = false;
+  bool showTransactionDetails = false;
   late SettingsBloc _settingBloc;
 
   @override
@@ -50,6 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     settingItemList.clear();
     settingItemList.add(SettingModel(icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
     settingItemList.add(SettingModel(icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
     settingItemList.add(SettingModel(icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
     if(!kIsWeb) {
       settingItemList.add(SettingModel(icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
@@ -76,9 +78,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           switch (state) {
             case SettingsUserDetailsState _:
               showUnverified = state.userModel.isUserVerified;
-              settingItemList[2].switchValue = state.userModel.isUserVerified;
-              settingItemList[3].switchValue = state.userModel.enableBiometric;
-              settingItemList[2].subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
+              showTransactionDetails = state.userModel.showTransactionDetails;
+              settingItemList[2].switchValue = state.userModel.showTransactionDetails;
+              settingItemList[3].switchValue = state.userModel.isUserVerified;
+              settingItemList[4].switchValue = state.userModel.enableBiometric;
+              settingItemList[3].subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
               settingItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
               break;
             default:
@@ -91,19 +95,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               (index) {
                 var data = settingItemList[index];
                 return InkWell(
+                  onTap: () => onTapOption(data: data, index: index),
                   // onTap: data.showSwitch || data.isLauncher
-                  // ? null
+                  // ? () {
+                  //     if(data.showSwitch) onChangeSwith(index: index, value: !data.switchValue);
+                  //     if(data.isLauncher) launchPolicyUrl();
+                  //   }
                   // : () => onClickItem(context: context, index: index),
-                  onTap: data.showSwitch || data.isLauncher
-                  ? () {
-                      if(data.showSwitch) {
-                        onChangeSwith(index: index, value: !data.switchValue);
-                      }
-                      if(data.isLauncher) {
-                        launchPolicyUrl();
-                      }
-                    }
-                  : () => onClickItem(context: context, index: index),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSize.s20,
@@ -112,33 +110,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(data.icon, color: AppColors.grey),
-                            const SizedBox(width: AppSize.s12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomText(
-                                  title: data.title, 
-                                  textStyle: getMediumStyle(
-                                    color: Helper.isDark 
-                                    ? AppColors.white 
-                                    : AppColors.black
-                                  ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(data.icon, color: AppColors.grey),
+                              const SizedBox(width: AppSize.s12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      title: data.title, 
+                                      textStyle: getMediumStyle(
+                                        color: Helper.isDark 
+                                        ? AppColors.white 
+                                        : AppColors.black
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: data.subTitle.isNotEmpty,
+                                      child: CustomText(
+                                        title: data.isLauncher
+                                        ? data.subTitle
+                                        : data.subTitle.capitalize, 
+                                        textColor: AppColors.grey
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Visibility(
-                                  visible: data.subTitle.isNotEmpty,
-                                  child: CustomText(
-                                    title: data.isLauncher
-                                    ? data.subTitle
-                                    : data.subTitle.capitalize, 
-                                    textColor: AppColors.grey
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                         if (data.isLauncher)
                           IconButton(
@@ -171,33 +173,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void onTapOption({required SettingModel data, required int index}) {
+    if(data.showSwitch || data.isLauncher) {
+      if(data.showSwitch) onChangeSwith(index: index, value: !data.switchValue);
+      if(data.isLauncher) launchPolicyUrl();
+    } else {
+      // onClickItem(context: context, index: index)
+      switch (index) {
+        case 0:
+          showLanguageDialog(context: context);
+          break;
+        case 1:
+          showThemeDialog(context: context);
+          break;
+        case 4:
+        case 6:
+          showAboutAppDialog(context: context);
+          break;
+        default:
+      }
+    }
+  }
+
   void onChangeSwith({required int index, required bool value}) {
     switch (index) {
       case 2:
-        context.read<SettingsBloc>().add(SettingsOnChangeVerifiedEvent(isVerified: value));
+        _settingBloc.add(SettingsOnChangeTransactionDetailsEvent(isEnable: value));
         break;
-      case 3: 
-        context.read<SettingsBloc>().add(SettingsOnChangeBiometricEvent(enableBiometric: value));
+      case 3:
+        _settingBloc.add(SettingsOnChangeVerifiedEvent(isVerified: value));
+        break;
+      case 4: 
+        _settingBloc.add(SettingsOnChangeBiometricEvent(enableBiometric: value));
         break;
       default:
     }
   }
 
-  void onClickItem({required BuildContext context, required int index}) {
-    switch (index) {
-      case 0:
-        showLanguageDialog(context: context);
-        break;
-      case 1:
-        showThemeDialog(context: context);
-        break;
-      case 3:
-      case 5:
-        showAboutAppDialog(context: context);
-        break;
-      default:
-    }
-  }
+  // void onClickItem({required BuildContext context, required int index}) {
+  //   switch (index) {
+  //     case 0:
+  //       showLanguageDialog(context: context);
+  //       break;
+  //     case 1:
+  //       showThemeDialog(context: context);
+  //       break;
+  //     case 4:
+  //     case 6:
+  //       showAboutAppDialog(context: context);
+  //       break;
+  //     default:
+  //   }
+  // }
 
   Future<void> launchPolicyUrl() async {
     final Uri uri = Uri.parse(AppStrings.webUrl);
@@ -209,7 +236,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context, 
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
-      pageBuilder: (context, a1, a2) => ScaleTransition(
+      pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
         child: const AboutScreen()
       )

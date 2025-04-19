@@ -7,6 +7,7 @@ class UserModel {
   String amount;
   int lastTransactionDate;
   String type;
+  bool showTransactionDetails;
   bool isUserVerified;
   bool enableBiometric;
   bool isSelected;
@@ -21,6 +22,7 @@ class UserModel {
     this.amount = '',
     this.lastTransactionDate = -1,
     this.type = '',
+    this.showTransactionDetails = false,
     this.isUserVerified = false,
     this.enableBiometric = false,
     this.isPinned = false,

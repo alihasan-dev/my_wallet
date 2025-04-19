@@ -21,6 +21,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
     on<SettingsUserDetailsEvent>(_onUserDetails);
     on<SettingsOnChangeVerifiedEvent>(_onChangeVerifiedUser);
     on<SettingsOnChangeBiometricEvent>(_onChangeEnableBiometric);
+    on<SettingsOnChangeTransactionDetailsEvent>(_onChangeTransactionDetails);
 
     _streamSubscription = _firebaseDocumentRef.snapshots().listen((event) {
       var userData = event.data() as Map;
@@ -28,6 +29,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
         _userModel.userId = userData['user_id'];
         _userModel.email = userData['email'];
         _userModel.name = userData['name'];
+        _userModel.showTransactionDetails = userData['showTransactionDetails'] ?? false;
         _userModel.isUserVerified = userData['showUnverified'] ?? false;
         _userModel.enableBiometric = userData['enableBiometric'] ?? false;
         Preferences.setBool(key: AppStrings.prefEnableBiometric, value: userData['enableBiometric'] ?? false);
@@ -39,6 +41,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
   Future<void> _onChangeVerifiedUser(SettingsOnChangeVerifiedEvent event, Emitter emit) async {
     await _firebaseDocumentRef.update({
       'showUnverified': event.isVerified
+    });
+  }
+
+  Future<void> _onChangeTransactionDetails(SettingsOnChangeTransactionDetailsEvent event, Emitter emit) async {
+    await _firebaseDocumentRef.update({
+      'showTransactionDetails': event.isEnable
     });
   }
 

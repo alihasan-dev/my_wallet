@@ -16,6 +16,12 @@ class SettingsOnChangeVerifiedEvent extends SettingsEvent {
   SettingsOnChangeVerifiedEvent({this.isVerified = false});
 }
 
+class SettingsOnChangeTransactionDetailsEvent extends SettingsEvent {
+  bool isEnable;
+
+  SettingsOnChangeTransactionDetailsEvent({this.isEnable = false});
+}
+
 class SettingsOnChangeBiometricEvent extends SettingsEvent {
   bool enableBiometric;
 
