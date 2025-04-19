@@ -20,13 +20,13 @@ class LoginFailedState extends LoginState{
 class LoginLoadingState extends LoginState{}
 
 class LoginEmailFieldState extends LoginState{
-  String emailMessage;
-  LoginEmailFieldState({required this.emailMessage});
+  String message;
+  LoginEmailFieldState({required this.message});
 }
 
 class LoginPasswordFieldState extends LoginState{
-  String passwordMessage;
-  LoginPasswordFieldState({required this.passwordMessage});
+  String message;
+  LoginPasswordFieldState({required this.message});
 }
 
 class LoginPasswordVisibilityState extends LoginState{

@@ -36,6 +36,7 @@ class AppRoutes {
   static const String profileScreen = 'profile';
 
   static final GoRouter router = GoRouter(
+    observers: [CustomObserver()],
     redirect: (context, state) {
       var brightness = Theme.of(context).brightness;
       if(brightness == Brightness.dark) {
@@ -52,11 +53,11 @@ class AppRoutes {
       ),
       GoRoute(
         path: loginScreen,
-        builder: (_, __) => BlocProvider(create: (_) => LoginBloc(), child: const LoginScreen()),
+        builder: (_, _) => BlocProvider(create: (_) => LoginBloc(), child: const LoginScreen()),
         routes: [
           GoRoute(
             path: forgotPasswordScreen,
-            builder: (_, __) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
+            builder: (_, _) => BlocProvider(create: (_) => ForgotPasswordBloc(), child: const ForgotPasswordScreen())
           )
         ]
       ),
@@ -171,4 +172,21 @@ class AppRoutes {
     );
   }
 
+}
+
+class CustomObserver extends NavigatorObserver {
+  @override
+  void didChangeTop(Route topRoute, Route? previousTopRoute) {
+    if(topRoute.settings.name != null) {
+      switch (topRoute.settings.name) {
+        case AppRoutes.signupScreen:
+          Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: true);
+          break;
+        case AppRoutes.loginScreen:
+          Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: false);
+          break;
+        default:
+      }
+    }
+  }
 }

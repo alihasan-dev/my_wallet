@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   late DocumentReference firebaseDocumentReference;
   late GoogleSignIn _googleSignIn;
   bool _isGoogleSignedOut = false;
+  StreamSubscription? _googleSignInSubscription;
 
   LoginBloc() : super(LoginInitialState()) {
     _googleSignIn = GoogleSignIn(
@@ -42,8 +45,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginWithGoogleEvent>(_onLoginWithGoogle);
     on<LoginWithGoogleStatusEvent>(_onLoginWithGoogleStatus);
 
-    ///register listener for google signin authentication change
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) => add(LoginWithGoogleStatusEvent(account)));
+    _googleSignInSubscription = _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      if(!Preferences.getBool(key: AppStrings.prefGoogleSignInFromSignup)) {
+        add(LoginWithGoogleStatusEvent(account));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _googleSignInSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
@@ -96,9 +108,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else {
       emit(LoginFailedState(
         title: AppStrings.failed, 
-        message: 'Google authentication failed, please try again.', 
+        message: AppStrings.googleSigninFailedMsg, 
         canShowSnackBar: !_isGoogleSignedOut
       ));
+      _isGoogleSignedOut = true;
     }
   }
 
@@ -110,7 +123,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } on CustomException catch (_) {
       emit(LoginFailedState(
         title: AppStrings.failed, 
-        message: 'Google authentication failed, please try again.',
+        message: AppStrings.googleSigninFailedMsg,
       ));
     }
   }
@@ -149,19 +162,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onEmailChange(LoginEmailChangeEvent event, Emitter emit) {
     if(event.email.isEmpty) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.emptyEmail));
+      emit(LoginEmailFieldState(message: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.invalidEmail));
+      emit(LoginEmailFieldState(message: AppStrings.invalidEmail));
     } else {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.emptyString));
+      emit(LoginEmailFieldState(message: AppStrings.emptyString));
     }
   }
 
   void _onPasswordChange(LoginPasswordChangeEvent event, Emitter emit) {
     if(event.password.toString().isBlank) {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
+      emit(LoginPasswordFieldState(message: AppStrings.emptyPassword));
     } else {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyString));
+      emit(LoginPasswordFieldState(message: AppStrings.emptyString));
     }
   }
 
@@ -173,13 +186,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ///this method is used to validate the email and password field
   Future<bool> validation(Emitter<LoginState> emit, {required String email, required String password}) async {
     if(email.isBlank) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.emptyEmail));
+      emit(LoginEmailFieldState(message: AppStrings.emptyEmail));
       return false;
     } else if(!email.isValidEmail) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.invalidEmail));
+      emit(LoginEmailFieldState(message: AppStrings.invalidEmail));
       return false;
     } else if(password.isBlank) {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
+      emit(LoginPasswordFieldState(message: AppStrings.emptyPassword));
       return false;
     } else if(!await checkConnectivity.hasConnection) {
       emit(LoginFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));

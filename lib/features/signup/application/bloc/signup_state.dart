@@ -20,18 +20,18 @@ class SignupFailedState extends SignupState{
 class SignupLoadingState extends SignupState{}
 
 class SignupNameFieldState extends SignupState{
-  String nameMessage;
-  SignupNameFieldState({required this.nameMessage});
+  String message;
+  SignupNameFieldState({required this.message});
 }
 
 class SignupEmailFieldState extends SignupState{
-  String emailMessage;
-  SignupEmailFieldState({required this.emailMessage});
+  String message;
+  SignupEmailFieldState({required this.message});
 }
 
 class SignupPasswordFieldState extends SignupState{
-  String passwordMessage;
-  SignupPasswordFieldState({required this.passwordMessage});
+  String message;
+  SignupPasswordFieldState({required this.message});
 }
 
 class SignupPasswordVisibilityState extends SignupState{

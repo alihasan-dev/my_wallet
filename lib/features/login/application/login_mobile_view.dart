@@ -114,7 +114,10 @@ class LoginMobileView extends StatelessWidget {
               ),
             ),
             CustomInkWellWidget(
-              onTap: () => context.push(AppRoutes.signupScreen), 
+              onTap: () { 
+                // Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: true);
+                context.push(AppRoutes.signupScreen);
+              }, 
               widget: CustomText(
                 title: localizations.signup, 
                 textStyle: getSemiBoldStyle(

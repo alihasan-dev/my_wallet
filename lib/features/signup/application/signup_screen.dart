@@ -52,62 +52,59 @@ class SignupScreenState extends State<SignupScreen> with Helper {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => SignupBloc(),
-      child: Scaffold(
-        appBar: AppBar(toolbarHeight: 0, backgroundColor: AppColors.primaryColor),
-        body: BlocConsumer<SignupBloc, SignupState>(
-          listener: (context, state) {
-            switch (state) {
-              case SignupFailedState _:
-                hideLoadingDialog(context: context);
-                if(state.canShowSnaclBar) {
-                  showSnackBar(context: context, title: state.title, message: state.message);
-                }
-                break;
-              case SignupLoadingState _:
-                showLoadingDialog(context: context);
-                break;
-              case SignupSuccessState _:
-                hideLoadingDialog(context: context);
-                Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
-                showSnackBar(context: context, title: state.title, message: state.message, color: AppColors.green);
-                context.go(AppRoutes.dashboard);
-                break;
-              case SignupEmailFieldState _:
-                errorEmail = state.emailMessage;
-                break;
-              case SignupPasswordFieldState _:
-                errorPassword = state.passwordMessage;
-                break;
-              case SignupPasswordVisibilityState _:
-                showPassword = state.isVisible;
-                break;
-              case SignupNameFieldState _:
-                errorName = state.nameMessage;
-                break;
-              default:
-            }
-          },
-          builder: (context, state) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                switch (constraints.maxWidth.screenDimension) {
-                  case ScreenType.mobile:
-                    return SignupMobileView(
-                      signupBloc: _signupBloc,
-                      signupScreenState: this
-                    );
-                  default:
-                    return SignupWebView(
-                      signupBloc: _signupBloc, 
-                      signupScreenState: this
-                    );
-                }
+    return Scaffold(
+      appBar: AppBar(toolbarHeight: 0, backgroundColor: AppColors.primaryColor),
+      body: BlocConsumer<SignupBloc, SignupState>(
+        listener: (context, state) {
+          switch (state) {
+            case SignupFailedState _:
+              hideLoadingDialog(context: context);
+              if(state.canShowSnaclBar) {
+                showSnackBar(context: context, title: state.title, message: state.message);
               }
-            );
+              break;
+            case SignupLoadingState _:
+              showLoadingDialog(context: context);
+              break;
+            case SignupSuccessState _:
+              hideLoadingDialog(context: context);
+              Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+              showSnackBar(context: context, title: state.title, message: state.message, color: AppColors.green);
+              context.go(AppRoutes.dashboard);
+              break;
+            case SignupEmailFieldState _:
+              errorEmail = state.message;
+              break;
+            case SignupPasswordFieldState _:
+              errorPassword = state.message;
+              break;
+            case SignupPasswordVisibilityState _:
+              showPassword = state.isVisible;
+              break;
+            case SignupNameFieldState _:
+              errorName = state.message;
+              break;
+            default:
           }
-        ),
+        },
+        builder: (context, state) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              switch (constraints.maxWidth.screenDimension) {
+                case ScreenType.mobile:
+                  return SignupMobileView(
+                    signupBloc: _signupBloc,
+                    signupScreenState: this
+                  );
+                default:
+                  return SignupWebView(
+                    signupBloc: _signupBloc, 
+                    signupScreenState: this
+                  );
+              }
+            }
+          );
+        }
       ),
     );
   }

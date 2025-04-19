@@ -79,10 +79,10 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
               context.go(AppRoutes.dashboard);
               break;
             case LoginEmailFieldState _:
-              errorEmail = state.emailMessage;
+              errorEmail = state.message;
               break;
             case LoginPasswordFieldState _:
-              errorPassword = state.passwordMessage;
+              errorPassword = state.message;
               break;
             case LoginPasswordVisibilityState _:
               showPassword = state.isVisible;

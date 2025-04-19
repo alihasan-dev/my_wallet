@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +18,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   late CollectionReference _collectionReference;
   late GoogleSignIn _googleSignIn;
   bool _isGoogleSignedOut = false;
+  StreamSubscription? _googleSignInSubscription;
 
-  SignupBloc() : super(SignupInitialState()){
+  SignupBloc() : super(SignupInitialState()) {
     _googleSignIn = GoogleSignIn(
       clientId: "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
       scopes: ["email"],
@@ -35,12 +37,22 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     on<SignupWithGoogleStatusEvent>(_onSignupWithGoogleStatus);
 
     ///register listener for google signin authentication change
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) => add(SignupWithGoogleStatusEvent(account)));
+    _googleSignInSubscription = _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      if(Preferences.getBool(key: AppStrings.prefGoogleSignInFromSignup)) {
+        add(SignupWithGoogleStatusEvent(account));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _googleSignInSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onSignupWithGoogleStatus(SignupWithGoogleStatusEvent event, Emitter<SignupState> emit) async {
-    emit(SignupLoadingState());
     if(event.googleSignInAccount != null) {
+      emit(SignupLoadingState());
       final displayName = event.googleSignInAccount!.displayName ?? '';
       final photoUrl = event.googleSignInAccount!.photoUrl;
       final email = event.googleSignInAccount!.email;
@@ -73,13 +85,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
         }
       } else {
         _isGoogleSignedOut = true;
-        emit(SignupFailedState(title: AppStrings.error, message: 'Welcome back! It seems you already have an account with us. Please log in to continue.'));
+        emit(SignupFailedState(title: AppStrings.error, message: AppStrings.alreadyHaveAccountMsg));
         await _googleSignIn.signOut();
       }
     } else {
       emit(SignupFailedState(
         title: AppStrings.failed, 
-        message: 'Google authentication failed, please try again.', 
+        message: AppStrings.googleSigninFailedMsg, 
         canShowSnaclBar: !_isGoogleSignedOut
       ));
       _isGoogleSignedOut = false;
@@ -94,13 +106,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     } on CustomException catch (_) {
       emit(SignupFailedState(
         title: AppStrings.failed, 
-        message: 'Google authentication failed, please try again.',
+        message: AppStrings.googleSigninFailedMsg,
       ));
     }
   }
 
   Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {
-    if(await validation(emit, name: event.name, email: event.email, password: event.password)){
+    if(await validation(emit, name: event.name, email: event.email, password: event.password)) {
       emit(SignupLoadingState());
       try {
         var userCredential = await _authInstance.createUserWithEmailAndPassword(email: event.email, password: event.password);
@@ -133,29 +145,29 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
 
   void _onEmailChange(SignupEmailChangeEvent event, Emitter emit) {
     if(event.email.isEmpty) {
-      emit(SignupEmailFieldState(emailMessage: AppStrings.emptyEmail));
+      emit(SignupEmailFieldState(message: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
-      emit(SignupEmailFieldState(emailMessage: AppStrings.invalidEmail));
+      emit(SignupEmailFieldState(message: AppStrings.invalidEmail));
     } else {
-      emit(SignupEmailFieldState(emailMessage: AppStrings.emptyString));
+      emit(SignupEmailFieldState(message: AppStrings.emptyString));
     }
   }
 
   void _onNameChange(SignupNameChangeEvent event, Emitter emit) {
     if(event.name.isEmpty) {
-      emit(SignupNameFieldState(nameMessage: AppStrings.emptyName));
+      emit(SignupNameFieldState(message: AppStrings.emptyName));
     } else {
-      emit(SignupNameFieldState(nameMessage: AppStrings.emptyString));
+      emit(SignupNameFieldState(message: AppStrings.emptyString));
     }
   }
 
   void _onPasswordChange(SignupPasswordChangeEvent event, Emitter emit) {
     if(event.password.toString().isBlank) {
-      emit(SignupPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
+      emit(SignupPasswordFieldState(message: AppStrings.emptyPassword));
     } else  if(event.password.toString().length < 8) {
-      emit(SignupPasswordFieldState(passwordMessage: AppStrings.invalidPassword));
+      emit(SignupPasswordFieldState(message: AppStrings.invalidPassword));
     } else {
-      emit(SignupPasswordFieldState(passwordMessage: AppStrings.emptyString));
+      emit(SignupPasswordFieldState(message: AppStrings.emptyString));
     }
   }
 
@@ -166,19 +178,19 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
 
   Future<bool> validation(Emitter emit, {required String name, required String email, required String password}) async {
     if(name.isBlank) {
-      emit(SignupNameFieldState(nameMessage: AppStrings.emptyName));
+      emit(SignupNameFieldState(message: AppStrings.emptyName));
       return false;
     } else if(email.isBlank) {
-      emit(SignupEmailFieldState(emailMessage: AppStrings.emptyEmail));
+      emit(SignupEmailFieldState(message: AppStrings.emptyEmail));
       return false;
     } else if(!email.isValidEmail) {
-      emit(SignupEmailFieldState(emailMessage: AppStrings.invalidEmail));
+      emit(SignupEmailFieldState(message: AppStrings.invalidEmail));
       return false;
     } else if(password.isBlank) {
-      emit(SignupPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
+      emit(SignupPasswordFieldState(message: AppStrings.emptyPassword));
       return false;
     } else if(password.length < 8) {
-      emit(SignupPasswordFieldState(passwordMessage: AppStrings.invalidPassword));
+      emit(SignupPasswordFieldState(message: AppStrings.invalidPassword));
       return false;
     } else if(!await _checkConnectivity.hasConnection) {
       emit(SignupFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));

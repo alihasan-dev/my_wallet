@@ -100,7 +100,10 @@ class SignupWebView extends StatelessWidget {
                   onTap: () => context.pop(), 
                   widget: CustomText(
                     title: localizations.login, 
-                    textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: AppColors.primaryColor)
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppSize.s14, 
+                      color: AppColors.primaryColor
+                    ),
                   ),
                 ),
               ],

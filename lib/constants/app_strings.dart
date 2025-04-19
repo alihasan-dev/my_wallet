@@ -90,7 +90,9 @@ class AppStrings {
   static const String termAndPolilcy = "  Terms & Privacy Policy";
   static const String registerMsg = "Thank you for joining us! Your account has been successfully created.";
   static const String loginSuccessMsg = "User login successfully";
-  static const String loginSuccessNewUserMsg = "User login successfully. Against new user with profile creation";
+  static const String loginSuccessNewUserMsg = "User login successfully. Against a new user with profile creation";
+  static const String googleSigninFailedMsg = "Oops! Google sign-in failed. Please try again.";
+  static const String alreadyHaveAccountMsg = "Welcome back! It seems you already have an account with us. Please log in to continue.";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';
@@ -104,6 +106,7 @@ class AppStrings {
   static const String prefProfileImg = 'PREF_PROFILE_IMG';
   static const String prefLanguage = 'PREF_LANGUAGE';
   static const String prefTheme = 'PREF_THEME';
+  static const String prefGoogleSignInFromSignup = 'PREF_GOOGLE_SIGNIN_FROM';
 
   ///sample image
   static const String sampleImg = "https://images.unsplash.com/photo-1613891188927-14c2774fb8d7?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTh8fGh1bWluZyUyMGJpcmR8ZW58MHx8MHx8fDA%3D";
