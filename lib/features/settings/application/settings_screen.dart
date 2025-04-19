@@ -33,8 +33,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   var themeModeList = <SettingThemeModel>[];
   var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
-  bool showUnverified = false;
-  bool showTransactionDetails = false;
   late SettingsBloc _settingBloc;
 
   @override
@@ -77,8 +75,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (context, state) {
           switch (state) {
             case SettingsUserDetailsState _:
-              showUnverified = state.userModel.isUserVerified;
-              showTransactionDetails = state.userModel.showTransactionDetails;
               settingItemList[2].switchValue = state.userModel.showTransactionDetails;
               settingItemList[3].switchValue = state.userModel.isUserVerified;
               settingItemList[4].switchValue = state.userModel.enableBiometric;

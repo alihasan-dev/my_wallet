@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wallet/utils/preferences.dart';
+import '../../transaction/application/transaction_dialog.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/transaction/application/transaction_details.dart';
 import '../../../features/transaction/application/transaction_filter_dialog.dart';
@@ -16,13 +18,13 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../features/dashboard/domain/user_model.dart';
-import 'transaction_dialog.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_verticle_divider.dart';
+part 'transaction_disable_dialog.dart';
 
 class TransactionScreen extends StatefulWidget {
   final UserModel? userModel;
@@ -197,18 +199,19 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               onPressed: () => _transactionBloc.add(TransactionClearSelectionEvent()),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppColors.white,
-                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                padding: EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: 10),
                                 side: BorderSide(color: AppColors.white)
                               ), 
                               child: CustomText(
-                                title:'$_selectedTransactionCount  ${_localizations!.clearSelection}',
+                                title:'$_selectedTransactionCount  ${_localizations!.unselect}',
                                 textColor: AppColors.white,
                               ),
                             ),
-                            const SizedBox(width: AppSize.s8),
+                            const SizedBox(width: AppSize.s6),
                             IconButton(
                               tooltip: _localizations!.delete,
                               onPressed: () => _showDeleteTransactionDialog(context), 
+                              visualDensity: VisualDensity.compact,
                               icon: const Icon(AppIcons.deleteIcon, color: AppColors.white)
                             ),
                             AnimatedSize(
@@ -218,6 +221,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               : IconButton(
                                 tooltip: _localizations!.editTransaction,
                                 onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
+                                visualDensity: VisualDensity.compact,
                                 icon: const Icon(AppIcons.editIcon, color: AppColors.white)
                               ),
                             ),
@@ -435,7 +439,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             } else {
                               var subData = transactionDataList[index];
                               return InkWell(
-                                onTap: () => _transactionBloc.add(TransactionSelectListItemEvent(index: index)),
+                                onTap: () => _onTapTransaction(transactionId: subData.id, index: index),
+                                onLongPress: () => _transactionBloc.add(TransactionSelectListItemEvent(index: index)),
                                 child: Container(
                                   color: AppColors.grey,
                                   child: Row(
@@ -708,6 +713,26 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         ),
       ),
     );
+  }
+
+  void _onTapTransaction({required String transactionId, required int index}) {
+    if(_selectedTransactionCount == 0) {
+      if (Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
+        _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId));
+      } else {
+        showGeneralDialog(
+          context: context, 
+          barrierDismissible: true,
+          barrierLabel: AppStrings.close,
+          pageBuilder: (context, a1, a2) => ScaleTransition(
+            scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+            child: const TransactionDisableDialog()
+          )
+        );
+      }
+    } else {
+      _transactionBloc.add(TransactionSelectListItemEvent(index: index));
+    }
   }
 
   Future<void> _showFilterDialog() async {

@@ -89,5 +89,7 @@
   "signupWarningMsg": "If you signed up before using a Google account with the same email address, signing up again with that Google account now will replace your existing account. Please be careful!",
   "gotIt": "Got it",
   "transactionBreakdown": "Transaction Details",
-  "transactionBreakdownMsg": "Details for Each Transaction"
+  "transactionBreakdownMsg": "Details for Each Transaction",
+  "unselect": "Unselect",
+  "add": "Add"
 }

@@ -61,6 +61,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionDeleteEvent>(_onDeleteTransaction);
     on<TransactionEditEvent>(_onEditTransaction);
     on<TransactionClearSelectionEvent>(_onClearSelectionTransactionEvent);
+    on<TransactionShowDetailsEvent>(_onShowTransactionDetails);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -97,6 +98,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _initializeAudioPlayer() => audioPlayer = AudioPlayer();
+
+  void _onShowTransactionDetails(TransactionShowDetailsEvent event, Emitter emit) {
+    if(!event.transactionId.isBlank) {
+      // firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').add({});
+    }
+  }
 
   void _onClearSelectionTransactionEvent(TransactionClearSelectionEvent event, Emitter emit) {
     if(listTransactionResult.isNotEmpty) {

@@ -8,7 +8,7 @@ import '../../../../utils/preferences.dart';
 part 'settings_event.dart';
 part 'settings_state.dart';
 
-class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
+class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   late DocumentReference _firebaseDocumentRef;
   late StreamSubscription<DocumentSnapshot> _streamSubscription;
@@ -33,6 +33,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState>{
         _userModel.isUserVerified = userData['showUnverified'] ?? false;
         _userModel.enableBiometric = userData['enableBiometric'] ?? false;
         Preferences.setBool(key: AppStrings.prefEnableBiometric, value: userData['enableBiometric'] ?? false);
+        Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: userData['showTransactionDetails'] ?? false);
       }
       add(SettingsUserDetailsEvent());
     });

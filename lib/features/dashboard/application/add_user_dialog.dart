@@ -100,33 +100,6 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       ),
                     ),
                   ),
-                  //Previous Email
-                  // const SizedBox(height: AppSize.s12),
-                  // TextField(
-                  //   controller: emailTextController,
-                  //   onChanged: (value) => context.read<DashboardBloc>().add(DashboardEmailChangeEvent(email: value)),
-                  //   decoration: InputDecoration(
-                  //     hintText: AppStrings.email,
-                  //     errorText: errorEmail.isNotEmpty
-                  //     ? errorEmail
-                  //     : null,
-                  //     label: CustomText(
-                  //       title: '${_localizations!.email} *',
-                  //       textColor: Helper.isDark 
-                  //       ? AppColors.white.withValues(alpha: 0.8)
-                  //       : AppColors.black
-                  //     ),
-                  //     border: const OutlineInputBorder(),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05, 
-                  //         color: Helper.isDark 
-                  //         ? AppColors.grey 
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: AppSize.s12),
                   TextField(
                     controller: phoneTextController,
@@ -156,7 +129,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                   ),
                   const SizedBox(height: AppSize.s15),
                   CustomButton(
-                    title: _localizations!.addUser, 
+                    title: _localizations!.add, 
                     onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
                       name: nameTextController.text, 
                       email: emailTextController.text,

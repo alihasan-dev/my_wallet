@@ -1,4 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../constants/app_color.dart';
+import '../utils/app_extension_method.dart';
+import '../utils/helper.dart';
 import '../constants/app_theme.dart';
 
 class TwoColumnLayout extends StatelessWidget {
@@ -27,7 +31,9 @@ class TwoColumnLayout extends StatelessWidget {
           ),
           Container(
             width: 0.05,
-            color: Colors.grey,
+            color: kIsWeb && context.screenWidth.screenDimension == ScreenType.web
+            ?AppColors.grey
+            :AppColors.transparent,
           ),
           Expanded(
             child: sideView,

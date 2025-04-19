@@ -89,5 +89,7 @@
   "signupWarningMsg": "यदि आपने पहले उसी ईमेल पते से Google खाता इस्तेमाल करके साइन अप किया था, तो अब उसी Google खाते से फिर से साइन अप करने पर आपका मौजूदा खाता बदल जाएगा। कृपया सावधान रहें!",
   "gotIt": "समझ गया",
   "transactionBreakdown": "लेन-देन विवरण",
-  "transactionBreakdownMsg": "प्रत्येक लेनदेन का विवरण"
+  "transactionBreakdownMsg": "प्रत्येक लेनदेन का विवरण",
+  "unselect": "अचयनित",
+  "add": "जोड़ें"
 }

@@ -194,14 +194,17 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                   const SizedBox(height: AppSize.s20),
                   CustomButton(
                     title: widget.transactionModel != null  
-                    ? _localizations!.editTransaction
-                    : _localizations!.addTransaction, 
+                    ? _localizations!.update
+                    : _localizations!.add, 
                     onTap: () => context.read<TransactionBloc>().add(TransactionAddEvent(
-                      userName: widget.userName, 
-                      date: transactionDate, 
-                      amount: amountTextController.text, 
-                      type: transactionType,
-                      transactionId: widget.transactionModel == null ? '' : widget.transactionModel!.id),
+                        userName: widget.userName, 
+                        date: transactionDate, 
+                        amount: amountTextController.text, 
+                        type: transactionType,
+                        transactionId: widget.transactionModel == null 
+                        ? '' 
+                        : widget.transactionModel!.id
+                      ),
                     ),
                     titleSize: AppSize.s15,
                   ),

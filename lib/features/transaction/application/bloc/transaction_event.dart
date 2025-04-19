@@ -91,3 +91,9 @@ class TransactionDeleteEvent extends TransactionEvent {}
 class TransactionEditEvent extends TransactionEvent {}
 
 class TransactionClearSelectionEvent extends TransactionEvent {}
+
+class TransactionShowDetailsEvent extends TransactionEvent {
+  String transactionId;
+
+  TransactionShowDetailsEvent({required this.transactionId});
+}
