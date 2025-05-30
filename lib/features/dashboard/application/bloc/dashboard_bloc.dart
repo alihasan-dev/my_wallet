@@ -178,7 +178,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }
   }
 
-  void _onGetAllUser(event, emit) {
+  void _onGetAllUser(DashboardAllUserEvent event, Emitter emit) {
     listUser.clear();
     if(showUnverifiedUser) {
       listUser.addAll(originalUserList);

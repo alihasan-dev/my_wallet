@@ -63,7 +63,7 @@ class AppRoutes {
       ),
       GoRoute(
         path: signupScreen,
-        builder: (_, __) => BlocProvider(create: (_) => SignupBloc(), child: const SignupScreen())
+        builder: (_, _) => BlocProvider(create: (_) => SignupBloc(), child: const SignupScreen())
       ),
       ShellRoute(
         redirect: (context, state) {

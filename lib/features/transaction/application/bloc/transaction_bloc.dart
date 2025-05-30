@@ -196,7 +196,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: true));
   }
 
-  void _allTransactionData(event, emit) {
+  void _allTransactionData(TransactionAllEvent event, Emitter emit) {
     listTransactionResult.clear();
     listTransactionResult.addAll(originalTransactionResultList);
     listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
@@ -204,15 +204,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isTransactionAgainstFilter: isFilterApplied));
   }
 
-  void _onChangeDateStatus(event, emit) {
+  void _onChangeDateStatus(TransactionDateChangeEvent event, Emitter emit) {
     emit(TransactionDateChangeState(false));
   }
 
-  void _onChangeTransactionType(event, emit) {
+  void _onChangeTransactionType(TransactionTypeChangeEvent event, Emitter emit) {
     emit(TransactionTypeChangeState(event.type));
   }
 
-  void _onChangeAmount(event, emit) {
+  void _onChangeAmount(TransactionAmountChangeEvent event, Emitter emit) {
     if (event.amount.isEmpty) {
       emit(TransactionAmountFieldState(isAmountEmpty: true));
     } else {

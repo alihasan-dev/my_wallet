@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import '../constants/app_icons.dart';
+import '../l10n/app_localizations.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_strings.dart';
 import '../constants/app_color.dart';
@@ -113,7 +113,7 @@ mixin Helper {
         barrierColor: AppColors.transparent,
         barrierDismissible: true,
         barrierLabel: AppStrings.close,
-        pageBuilder: (_, a1, __) {
+        pageBuilder: (_, a1, _) {
           return ScaleTransition(
             scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
             child: AlertDialog(

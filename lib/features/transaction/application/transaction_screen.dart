@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:my_wallet/utils/preferences.dart';
 import '../../transaction/application/transaction_dialog.dart';
 import '../../../constants/app_theme.dart';
@@ -704,7 +704,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       context: context, 
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
-      pageBuilder: (_, a1, __) => ScaleTransition(
+      pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: AddTransactionDialog(
           userName: name, 
@@ -756,7 +756,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         context: context,
         barrierDismissible: true,
         barrierLabel: AppStrings.close,
-        pageBuilder: (_, a1, __) => ScaleTransition(
+        pageBuilder: (_, a1, _) => ScaleTransition(
           scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
           child: TransactionFilterDialog(
             amountChangeValue: amountChangeValue,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_theme.dart';
 import '../../../widgets/custom_image_widget.dart';
@@ -320,7 +320,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
       context: mContext, 
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
-      pageBuilder: (_, a1, __) {
+      pageBuilder: (_, a1, _) {
         return ScaleTransition(
           scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
           child: AlertDialog(

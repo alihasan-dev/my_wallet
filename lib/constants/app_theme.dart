@@ -55,7 +55,7 @@ abstract class MyAppTheme {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
       //card view theme
-      cardTheme: const CardTheme(color: Colors.white, elevation: AppSize.s4, shadowColor: Colors.grey),
+      cardTheme: const CardThemeData(color: Colors.white, elevation: AppSize.s4, shadowColor: Colors.grey),
       ///app bar theme
       appBarTheme: AppBarTheme(
         centerTitle: true,

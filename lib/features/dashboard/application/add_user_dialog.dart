@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/l10n/app_localizations.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_theme.dart';
 import '../../../constants/app_icons.dart';
