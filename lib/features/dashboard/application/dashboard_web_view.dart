@@ -195,7 +195,7 @@ class DashboardWebView extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if(dashboardScreenState.selectedUserCount == 0) {
-                                context.go('/dashboard/${data.userId}', extra: data);
+                                context.go('/dashboard/${data.userId}', extra: {'user_data': data});
                                 dashboardBloc.add(DashboardSelectedUserEvent(userId: data.userId));
                               } else {
                                 dashboardBloc.add(DashboardSelectedContactEvent(selectedUserId: data.userId));

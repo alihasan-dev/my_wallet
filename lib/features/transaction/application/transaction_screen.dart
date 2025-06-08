@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../l10n/app_localizations.dart';
-import 'package:my_wallet/utils/preferences.dart';
+import '../../../utils/preferences.dart';
 import '../../transaction/application/transaction_dialog.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/transaction/application/transaction_details.dart';
@@ -168,7 +168,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               child: InkWell(
                                 onTap: () => MyAppTheme.isThreeColumnMode(context)
                                 ? widget.transactionDetailsState.toggleDisplayProfileColumn()
-                                : context.go('/dashboard/${widget.userModel!.userId}/profile', extra: widget.userModel),
+                                : context.go('/dashboard/${widget.userModel!.userId}/profile', extra: {'user_data': widget.userModel}),
                                 child: SizedBox(
                                   height: double.maxFinite,
                                   child: Row(
@@ -685,6 +685,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             case TransactionEditState _:
               _showAddTransactionDialog(transactionModel: state.selectedTransaction);
               break;
+            case TransactionShowDetailsState _:
+              if (state.transactionId.isNotEmpty) {
+                MyAppTheme.isThreeColumnMode(context)
+                ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionBloc: _transactionBloc, transactionId: state.transactionId, title: state.title)
+                : context.go('/dashboard/${widget.userModel!.userId}/transaction_details', extra: {'transaction_bloc': _transactionBloc, 'transaction_id': state.transactionId, 'user_data': widget.userModel, 'title': state.title});
+              }
           default:
         }
       },
@@ -716,20 +722,21 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   }
 
   void _onTapTransaction({required String transactionId, required int index}) {
-    if(_selectedTransactionCount == 0) {
-      if (Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
-        _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId));
-      } else {
-        showGeneralDialog(
-          context: context, 
-          barrierDismissible: true,
-          barrierLabel: AppStrings.close,
-          pageBuilder: (context, a1, a2) => ScaleTransition(
-            scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
-            child: const TransactionDisableDialog()
-          )
-        );
-      }
+    if(_selectedTransactionCount == 0 && Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
+      _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId, title: dateFormat.format(transactionDataList[index].date)));
+      // if (Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
+      //   _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId, title: dateFormat.format(transactionDataList[index].date)));
+      // } else {
+      //   showGeneralDialog(
+      //     context: context, 
+      //     barrierDismissible: true,
+      //     barrierLabel: AppStrings.close,
+      //     pageBuilder: (context, a1, a2) => ScaleTransition(
+      //       scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+      //       child: const TransactionDisableDialog()
+      //     )
+      //   );
+      // }
     } else {
       _transactionBloc.add(TransactionSelectListItemEvent(index: index));
     }

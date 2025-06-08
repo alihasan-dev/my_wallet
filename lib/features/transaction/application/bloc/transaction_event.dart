@@ -94,6 +94,27 @@ class TransactionClearSelectionEvent extends TransactionEvent {}
 
 class TransactionShowDetailsEvent extends TransactionEvent {
   String transactionId;
+  String title;
 
-  TransactionShowDetailsEvent({required this.transactionId});
+  TransactionShowDetailsEvent({required this.transactionId, required this.title});
+}
+
+class TransactionDetailsEvent extends TransactionEvent {
+  String transactionId;
+  TransactionDetailsEvent({required this.transactionId});
+}
+
+class TransactionAddDetailsEvent extends TransactionEvent {
+  String transactionId;
+  String description;
+  double rate;
+  int quantity;
+  double total;
+  TransactionAddDetailsEvent({
+    required this.transactionId,
+    required this.description,
+    required this.rate,
+    required this.quantity,
+    required this.total
+  });
 }

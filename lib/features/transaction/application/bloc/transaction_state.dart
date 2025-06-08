@@ -16,6 +16,8 @@ class TransactionFailedState extends TransactionState {
 
 class TransactionLoadingState extends TransactionState {}
 
+class TransactionDetailsLoadingState extends TransactionState {}
+
 class TransactionAmountFieldState extends TransactionState {
   bool isAmountEmpty;
   TransactionAmountFieldState({required this.isAmountEmpty});
@@ -74,4 +76,19 @@ class TransactionChangeAmountRangeState extends TransactionState {
 class TransactionEditState extends TransactionState {
   TransactionModel selectedTransaction;
   TransactionEditState({required this.selectedTransaction});
+}
+
+class TransactionShowDetailsState extends TransactionState {
+  String transactionId;
+  String title;
+  TransactionShowDetailsState({
+    required this.transactionId,
+    required this.title
+  }) : assert(transactionId.isNotEmpty, "Please provide valid transaction id");
+}
+
+
+class TransactionFetchDetailsState extends TransactionState {
+  List<TransactionDetailsModel> transactionDetailsList;
+  TransactionFetchDetailsState({this.transactionDetailsList = const []});
 }

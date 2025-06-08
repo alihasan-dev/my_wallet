@@ -6,6 +6,7 @@ import '../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../features/dashboard/application/dashboard_screen.dart';
 import '../features/profile/application/bloc/profile_bloc.dart';
 import '../features/transaction/application/transaction_details.dart';
+import '../features/transaction/application/transaction_sub_details_screen.dart';
 import '../widgets/two_column_layout.dart';
 import '../features/settings/application/bloc/settings_bloc.dart';
 import '../features/settings/application/settings_screen.dart';
@@ -13,7 +14,6 @@ import '../features/profile/application/profile_screen.dart';
 import '../features/forgot_password/application/bloc/forgot_password_bloc.dart';
 import '../features/login/application/bloc/login_bloc.dart';
 import '../features/signup/application/bloc/signup_bloc.dart';
-import '../features/dashboard/domain/user_model.dart';
 import '../features/forgot_password/application/forgot_password_screen.dart';
 import '../constants/app_strings.dart';
 import '../features/login/application/login_screen.dart';
@@ -31,6 +31,7 @@ class AppRoutes {
   static const String signupScreen = '/sign';
   static const String dashboard = '/dashboard';
   static const String transactionScreen = '/transaction';
+  static const String transactionDetailsScreen = 'transaction_details';
   static const String forgotPasswordScreen = 'forgotPassword';
   static const String settingsScreen = 'settings';
   static const String profileScreen = 'profile';
@@ -95,6 +96,23 @@ class AppRoutes {
             ),
             routes: [
               GoRoute(
+                path: transactionDetailsScreen,
+                pageBuilder: (context, state) { 
+                  var data = state.extra == null ? null : state.extra as Map;
+                  return defaultPageBuilder(
+                    context,
+                    state,
+                    Preferences.getString(key: AppStrings.prefUserId).isNotEmpty && data != null
+                    ? TransactionSubDetailsScreen(
+                      transactionBloc: data['transaction_bloc']!,
+                      transactionId: data['transaction_id'],
+                      title: data['title'],
+                    )
+                    : const EmptyPage()
+                  );
+                }
+              ),
+              GoRoute(
                 path: profileScreen,
                 pageBuilder: (context, state) { 
                   return defaultPageBuilder(
@@ -120,14 +138,15 @@ class AppRoutes {
                 path: ':userId',
                 redirect: (context, state) => state.extra == null ? dashboard : null,
                 pageBuilder: (context, state) {
-                  var data = state.extra == null ? null : state.extra as UserModel;
+                  var data = state.extra == null ? null : state.extra as Map;
                   return defaultPageBuilder(
                     context,
                     state,
-                    Preferences.getString(key: AppStrings.prefUserId).isNotEmpty
+                    Preferences.getString(key: AppStrings.prefUserId).isNotEmpty && data != null
                     ? TransactionDetails(
-                        key: Key(data == null ? '' : data.userId),
-                        userModel: data!,
+                        key: Key((data)['user_data'].userId),
+                        // key: Key(data as Map ? data.userId : data['user_data'].userId),
+                        userModel: (data)['user_data'],
                         dashboardBloc: context.read<DashboardBloc>(),
                       )
                     : const EmptyPage()
@@ -137,17 +156,32 @@ class AppRoutes {
                   GoRoute(
                     path: 'profile',
                     pageBuilder: (context, state) { 
-                      var data = state.extra == null ? null : state.extra as UserModel;
+                      var data = state.extra == null ? null : state.extra as Map;
                       return defaultPageBuilder(
                         context,
                         state,
                         BlocProvider(
-                          create: (_) => ProfileBloc(friendId: data == null ? '' : data.userId),
-                          child: ProfileScreen(userId: data == null ? '' : data.userId)
+                          create: (_) => ProfileBloc(friendId: data == null ? '' : data['user_data'].userId),
+                          child: ProfileScreen(userId: data == null ? '' : data['user_data'].userId)
                         ),
                       );
                     }
                   ),
+                  GoRoute(
+                    path: transactionDetailsScreen,
+                    pageBuilder: (context, state) { 
+                      var data = state.extra == null ? null : state.extra as Map;
+                      return defaultPageBuilder(
+                        context,
+                        state,
+                        TransactionSubDetailsScreen(
+                          transactionBloc: data!['transaction_bloc']!,
+                          transactionId: data['transaction_id'],
+                          title: data['title'],
+                        )
+                      );
+                    }
+                  )
                 ]
               ),
             ]

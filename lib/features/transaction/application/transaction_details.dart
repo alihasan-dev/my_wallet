@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wallet/features/transaction/application/transaction_sub_details_screen.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_icons.dart';
 import '../../../constants/app_theme.dart';
@@ -26,15 +27,31 @@ class TransactionDetails extends StatefulWidget {
 class TransactionDetailsState extends State<TransactionDetails> {
 
   late final ValueNotifier<bool> _displayProfileColumn;
+  late final ValueNotifier<bool> _displayTransactionDetailsColumn;
+  TransactionBloc? _transactionBloc;
+  String transactionId = '';
+  String title = '';
 
   @override
   void initState() {
     _displayProfileColumn = ValueNotifier(false);
+    _displayTransactionDetailsColumn = ValueNotifier(false);
     super.initState();
   }
 
   void toggleDisplayProfileColumn() {
     _displayProfileColumn.value = !_displayProfileColumn.value;
+  } 
+
+  void toggleTransactionDetailsColumn({TransactionBloc? transactionBloc, String? transactionId, String? title}) {
+    if (_displayTransactionDetailsColumn.value && title == null) {
+      _displayTransactionDetailsColumn.value = false;
+    } else {
+      _displayTransactionDetailsColumn.value = true;
+    }
+    _transactionBloc = transactionBloc;
+    this.transactionId = transactionId ?? '';
+    this.title = title ?? '';
   } 
 
   @override
@@ -79,6 +96,44 @@ class TransactionDetailsState extends State<TransactionDetails> {
                   closeButton: IconButton(
                     tooltip: localizations.close,
                     onPressed: toggleDisplayProfileColumn, 
+                    icon: const Icon(AppIcons.closeIcon)
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        AnimatedSize(
+          duration: MyAppTheme.animationDuration,
+          child: ValueListenableBuilder(
+            valueListenable: _displayTransactionDetailsColumn,
+            builder: (context, showTransactionDetails, _) {
+              if(!MyAppTheme.isThreeColumnMode(context) || !showTransactionDetails) {
+                return const SizedBox(
+                  height: double.infinity,
+                  width: 0,
+                );
+              }
+              return Container(
+                key: Key(transactionId),
+                width: MyAppTheme.columnWidth,
+                clipBehavior: Clip.hardEdge,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      width: 1,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                child: TransactionSubDetailsScreen(
+                  key: Key(transactionId),
+                  transactionBloc: _transactionBloc!, 
+                  transactionId: transactionId,
+                  title: title,
+                  closeButton: IconButton(
+                    tooltip: localizations.close,
+                    onPressed: toggleTransactionDetailsColumn, 
                     icon: const Icon(AppIcons.closeIcon)
                   ),
                 ),

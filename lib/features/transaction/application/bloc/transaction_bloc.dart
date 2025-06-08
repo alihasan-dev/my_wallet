@@ -15,6 +15,7 @@ import '../../../../utils/preferences.dart';
 import '../../../../utils/mobile_download.dart'
   if(dart.library.html) '../../../../utils/web_download.dart';
 import '../../../dashboard/application/bloc/dashboard_bloc.dart';
+import '../../domain/transaction_details_model.dart';
 part 'transaction_event.dart';
 part 'transaction_state.dart';
 
@@ -35,6 +36,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late DateFormat dateFormat;
   String userId = '';
   late AudioPlayer audioPlayer;
+  var transactionDetailsList = <TransactionDetailsModel>[];
 
   TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
@@ -62,6 +64,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionEditEvent>(_onEditTransaction);
     on<TransactionClearSelectionEvent>(_onClearSelectionTransactionEvent);
     on<TransactionShowDetailsEvent>(_onShowTransactionDetails);
+    on<TransactionDetailsEvent>(_onFetchTransactionDetails);
+    on<TransactionAddDetailsEvent>(_onAddTransactionDetails);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -97,11 +101,37 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return super.close();
   }
 
+  Future<void> _onAddTransactionDetails(TransactionAddDetailsEvent event, Emitter emit) async {
+    await firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').add({
+      'description': event.description,
+      'quantity': event.quantity,
+      'rate': event.rate,
+      'total': event.total
+    });
+    add(TransactionDetailsEvent(transactionId: event.transactionId));
+  }
+
+  Future<void> _onFetchTransactionDetails(TransactionDetailsEvent event, Emitter emit) async {
+    emit(TransactionDetailsLoadingState());
+    final transactionDetails = await firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').get();
+    transactionDetailsList.clear();
+    for (var item in transactionDetails.docs) {
+      final _data = item.data() as Map;
+      transactionDetailsList.add(TransactionDetailsModel(
+        description: _data['description'],
+        quantity: _data['quantity'],
+        rate: _data['rate'].toDouble(),
+        total: _data['total'].toDouble()
+      ));
+    }
+    emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+  }
+
   void _initializeAudioPlayer() => audioPlayer = AudioPlayer();
 
   void _onShowTransactionDetails(TransactionShowDetailsEvent event, Emitter emit) {
     if(!event.transactionId.isBlank) {
-      // firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').add({});
+      emit(TransactionShowDetailsState(transactionId: event.transactionId, title: event.title));
     }
   }
 
