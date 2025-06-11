@@ -81,7 +81,10 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   @override
   Widget build(BuildContext context) {
     selectedUserId = widget.userId;
-    return Scaffold(body: mainContent(context: context));
+    return Scaffold(
+      // backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
+      body: mainContent(context: context)
+    );
   }
 
   Widget mainContent({required BuildContext context}) {

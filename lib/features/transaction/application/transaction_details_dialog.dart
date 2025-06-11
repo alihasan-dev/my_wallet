@@ -77,7 +77,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 // errorText: errorAmount
-                hintText: AppStrings.amount,
+                hintText: 'Description',
                 label: Text('Description'),
                 hintStyle: const TextStyle(color: AppColors.grey),
                 border: const OutlineInputBorder(),
@@ -99,7 +99,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 // errorText: errorAmount
-                hintText: AppStrings.amount,
+                hintText: 'Quantity',
                 label: Text('Quantity'),
                 hintStyle: const TextStyle(color: AppColors.grey),
                 border: const OutlineInputBorder(),
@@ -122,7 +122,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$'))],
               decoration: InputDecoration(
                 // errorText: errorAmount
-                hintText: AppStrings.amount,
+                hintText: 'Rate per piece',
                 label: Text('Rate per piece'),
                 hintStyle: const TextStyle(color: AppColors.grey),
                 border: const OutlineInputBorder(),

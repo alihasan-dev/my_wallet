@@ -40,6 +40,9 @@ class TransactionDetailsState extends State<TransactionDetails> {
   }
 
   void toggleDisplayProfileColumn() {
+    if(_displayTransactionDetailsColumn.value) {
+      _displayTransactionDetailsColumn.value = false;
+    }
     _displayProfileColumn.value = !_displayProfileColumn.value;
   } 
 
@@ -48,6 +51,9 @@ class TransactionDetailsState extends State<TransactionDetails> {
       _displayTransactionDetailsColumn.value = false;
     } else {
       _displayTransactionDetailsColumn.value = true;
+    }
+    if(_displayProfileColumn.value) {
+      _displayProfileColumn.value = false;
     }
     _transactionBloc = transactionBloc;
     this.transactionId = transactionId ?? '';

@@ -79,6 +79,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             var mapData = data.data() as Map;
             if(mapData.isNotEmpty) {
               Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+              Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
             }
           });
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
@@ -145,6 +146,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             var mapData = data.data() as Map;
             if(mapData.isNotEmpty) {
               Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+              Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
             }
           });
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));

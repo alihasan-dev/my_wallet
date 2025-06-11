@@ -93,6 +93,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                 backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
                 appBar: AppBar(
                   centerTitle: true, 
+                  elevation: 0,
                   leading: widget.closeButton ?? const Center(child: Tooltip(message: AppStrings.back ,child: BackButton())),
                   backgroundColor: AppColors.primaryColor,
                   title: CustomText(

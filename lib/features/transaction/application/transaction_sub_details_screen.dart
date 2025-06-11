@@ -3,14 +3,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/constants/app_color.dart';
-import 'package:my_wallet/constants/app_strings.dart';
-import 'package:my_wallet/constants/app_style.dart';
-import 'package:my_wallet/features/transaction/application/bloc/transaction_bloc.dart';
-import 'package:my_wallet/features/transaction/application/transaction_details_dialog.dart';
-import 'package:my_wallet/l10n/app_localizations.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
-import 'package:my_wallet/widgets/custom_text.dart';
+import 'package:text_marquee/text_marquee.dart';
+import '../../../constants/app_color.dart';
+import '../../../constants/app_strings.dart';
+import '../../../constants/app_style.dart';
+import '../../../features/transaction/application/bloc/transaction_bloc.dart';
+import '../../../features/transaction/application/transaction_details_dialog.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/app_extension_method.dart';
+import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_verticle_divider.dart';
@@ -62,8 +63,12 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
       child: BlocConsumer<TransactionBloc, TransactionState>(
         builder: (context, state) {
           return Scaffold(
+            backgroundColor: Helper.isDark 
+            ? AppColors.backgroundColorDark 
+            : AppColors.white,
             appBar: AppBar(
-              centerTitle: true, 
+              centerTitle: true,
+              elevation: 0, 
               leading: widget.closeButton ?? const Center(child: Tooltip(message: AppStrings.back ,child: BackButton())),
               backgroundColor: AppColors.primaryColor,
               title: CustomText(
@@ -82,7 +87,18 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
             body: isLoading
             ? Center(child: CircularProgressIndicator.adaptive())
             : transactionDetailsList.isEmpty
-              ? Center(child: CustomText(title: 'No details found'))
+              ? Center(
+                  child: Text(
+                    'No details found',
+                    style: TextStyle(
+                      color: Helper.isDark 
+                      ? AppColors.white.withValues(alpha: 0.9) 
+                      : AppColors.black, 
+                      fontSize: AppSize.s18, 
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                )
               : Column(
               children: [
                 SizedBox(
@@ -183,6 +199,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                 Expanded(
                   child: ListView.separated(
                     itemCount: transactionDetailsList.length + 1,
+                    shrinkWrap: true,
                     itemBuilder: (context, index) {
                       if (index == transactionDetailsList.length) {
                         return const Divider(
@@ -205,21 +222,40 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                   color: Helper.isDark 
                                   ? AppColors.backgroundColorDark 
                                   : AppColors.white, 
-                                  child: CustomText(
-                                    title: data.description, 
-                                    textColor: Helper.isDark 
-                                    ? AppColors.white.withValues(alpha: 0.9) 
-                                    : AppColors.black,
-                                    overflow: TextOverflow.ellipsis,
-                                  )
-                                )
+                                  child: TextMarquee(
+                                    data.description,
+                                    // spaceSize: 72,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14
+                                    ),
+                                  ),
+                                ),
                               ),
+                              // Expanded(
+                              //   child: Container(
+                              //     padding: const EdgeInsets.symmetric(
+                              //       horizontal: AppSize.s10, 
+                              //       vertical: AppSize.s15,
+                              //     ),
+                              //     color: Helper.isDark 
+                              //     ? AppColors.backgroundColorDark 
+                              //     : AppColors.white, 
+                              //     child: CustomText(
+                              //       title: data.description, 
+                              //       textColor: Helper.isDark 
+                              //       ? AppColors.white.withValues(alpha: 0.9) 
+                              //       : AppColors.black,
+                              //       overflow: TextOverflow.ellipsis,
+                              //     ),
+                              //   ),
+                              // ),
                               const CustomVerticalDivider(),
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15
+                                    vertical: AppSize.s15,
                                   ),
                                   color: Helper.isDark 
                                   ? AppColors.backgroundColorDark 
@@ -229,47 +265,47 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                     textColor: Helper.isDark 
                                     ? AppColors.white.withValues(alpha: 0.9) 
                                     : AppColors.black,
-                                    textAlign: TextAlign.center,
-                                  )
-                                )
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                               const CustomVerticalDivider(),
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15
+                                    vertical: AppSize.s15,
                                   ),
                                   color: Helper.isDark 
                                   ? AppColors.backgroundColorDark 
                                   : AppColors.white, 
                                   child: CustomText(
-                                    title: data.quantity.toString(), 
+                                    title: data.quantity.toStringAsFixed(0), 
                                     textColor: Helper.isDark 
                                     ? AppColors.white.withValues(alpha: 0.9) 
                                     : AppColors.black,
-                                    textAlign: TextAlign.center,
-                                  )
-                                )
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                               const CustomVerticalDivider(),
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15
+                                    vertical: AppSize.s15,
                                   ),
                                   color: Helper.isDark 
                                   ? AppColors.backgroundColorDark 
                                   : AppColors.white, 
                                   child: CustomText(
-                                    title: data.total.toStringAsFixed(1), 
+                                    title: data.total.toStringAsFixed(2), 
                                     textColor: Helper.isDark 
                                     ? AppColors.white.withValues(alpha: 0.9) 
                                     : AppColors.black,
-                                    textAlign: TextAlign.center,
-                                  )
-                                )
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                             ],
                           ),

@@ -62,8 +62,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext bContent) {
     return Scaffold(
+      backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
       appBar: AppBar(
         centerTitle: true,
+        elevation: 0,
         title: CustomText(
           title: _localizations!.settings, 
           textStyle: getBoldStyle(color: AppColors.white)
