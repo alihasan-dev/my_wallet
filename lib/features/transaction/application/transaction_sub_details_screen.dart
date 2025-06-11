@@ -224,9 +224,11 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                   : AppColors.white, 
                                   child: TextMarquee(
                                     data.description,
-                                    // spaceSize: 72,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    spaceSize: 40,
+                                    style: TextStyle(
+                                      color: Helper.isDark 
+                                      ? AppColors.white.withValues(alpha: 0.9) 
+                                      : AppColors.black,
                                       fontSize: 14
                                     ),
                                   ),

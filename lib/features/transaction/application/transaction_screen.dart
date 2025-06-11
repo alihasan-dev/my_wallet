@@ -66,6 +66,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   double maxAmount = - double.maxFinite;
   double minAmount = double.maxFinite;
   int _selectedTransactionCount = 0;
+  String? transactionId;
 
   @override
   void initState() {
@@ -415,7 +416,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     const Divider(color: AppColors.grey, thickness: AppSize.s05, height: AppSize.s05),
                     Expanded(
                       child: NotificationListener<ScrollNotification>(
-                        onNotification: (notification) {
+                        onNotification: (_) {
                           if(_scrollController.position.userScrollDirection != ScrollDirection.idle) {
                             if(_scrollController.position.userScrollDirection == ScrollDirection.forward && appBarSize != appBarHeight) {
                               _transactionBloc.add(TransactionScrollEvent(appbarSize: appBarHeight));
@@ -451,9 +452,11 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                             horizontal: AppSize.s10, 
                                             vertical: AppSize.s15
                                           ),
-                                          color: Helper.isDark 
-                                          ? AppColors.backgroundColorDark
-                                          : AppColors.white, 
+                                          color: transactionId == null || subData.id == transactionId 
+                                          ? Helper.isDark 
+                                            ? AppColors.backgroundColorDark
+                                            : AppColors.white
+                                          : AppColors.grey.withValues(alpha: 0.2), 
                                           child: Row(
                                             children: [
                                               AnimatedSize(
