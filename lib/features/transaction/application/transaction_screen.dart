@@ -452,11 +452,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                             horizontal: AppSize.s10, 
                                             vertical: AppSize.s15
                                           ),
-                                          color: transactionId == null || subData.id == transactionId 
+                                          color: transactionId == null || subData.id != transactionId 
                                           ? Helper.isDark 
                                             ? AppColors.backgroundColorDark
                                             : AppColors.white
-                                          : AppColors.grey.withValues(alpha: 0.2), 
+                                          : Helper.isDark
+                                            ? AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            :AppColors.white.withValues(alpha: 0.8), 
                                           child: Row(
                                             children: [
                                               AnimatedSize(
@@ -672,10 +674,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             break;
           case TransactionExportPDFState _:
             hideLoadingDialog(context: context);
-            if(state.isSuccess && !kIsWeb) {
+            if (state.isSuccess && !kIsWeb) {
               showSnackBar(context: context, title: state.message, color: AppColors.green);
             } 
-            if(!state.isSuccess) {
+            if (!state.isSuccess) {
               showSnackBar(context: context, title: state.message);
             }
             break;
@@ -690,6 +692,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               break;
             case TransactionShowDetailsState _:
               if (state.transactionId.isNotEmpty) {
+                transactionId = state.transactionId;
                 MyAppTheme.isThreeColumnMode(context)
                 ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionBloc: _transactionBloc, transactionId: state.transactionId, title: state.title)
                 : context.go('/dashboard/${widget.userModel!.userId}/transaction_details', extra: {'transaction_bloc': _transactionBloc, 'transaction_id': state.transactionId, 'user_data': widget.userModel, 'title': state.title});

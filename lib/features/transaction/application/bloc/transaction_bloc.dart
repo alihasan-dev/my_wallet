@@ -171,7 +171,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   Future<void> _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) async {
-    if(listTransactionResult.isNotEmpty) {
+    if (listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
       double balance = totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
@@ -179,7 +179,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _onClearFilter(TransactionClearFilterEvent event, Emitter emit) {
-    if(event.clearFilter) {
+    if (event.clearFilter) {
       isFilterApplied = false;
       listTransactionResult.clear();
       listTransactionResult.addAll(originalTransactionResultList);
