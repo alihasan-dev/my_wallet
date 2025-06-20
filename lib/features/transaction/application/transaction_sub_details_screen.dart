@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
 import 'package:text_marquee/text_marquee.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
@@ -69,11 +70,20 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
             appBar: AppBar(
               centerTitle: true,
               elevation: 0, 
-              leading: widget.closeButton ?? const Center(child: Tooltip(message: AppStrings.back ,child: BackButton())),
+              leading: widget.closeButton ??  Center(
+                child: Tooltip(
+                  message: AppStrings.back ,
+                  child: BackButton(
+                    onPressed: () {
+                      context.read<DashboardBloc>().add(DashboardTransactionDetailsWindowCloseEvent());
+                      context.pop();
+                    }
+                  )
+                ),
+              ),
               backgroundColor: AppColors.primaryColor,
               title: CustomText(
-                title: widget.title, 
-                // title: _localizations!.profile, 
+                title: widget.title,
                 textStyle: getBoldStyle(color: AppColors.white)
               ),
               iconTheme: const IconThemeData(color: AppColors.white),
@@ -114,15 +124,15 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                           color: Helper.isDark 
                           ? AppColors.backgroundColorDark 
                           : AppColors.white, 
-                          child: CustomText(
-                            title: 'Description', 
-                            textStyle: getSemiBoldStyle(
+                          child: TextMarquee(
+                            'Description',
+                            spaceSize: 40,
+                            style: getSemiBoldStyle(
                               color: Helper.isDark 
                               ? AppColors.white.withValues(alpha: 0.9) 
                               : AppColors.black,
                               fontSize: AppSize.s14
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
@@ -234,24 +244,6 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                   ),
                                 ),
                               ),
-                              // Expanded(
-                              //   child: Container(
-                              //     padding: const EdgeInsets.symmetric(
-                              //       horizontal: AppSize.s10, 
-                              //       vertical: AppSize.s15,
-                              //     ),
-                              //     color: Helper.isDark 
-                              //     ? AppColors.backgroundColorDark 
-                              //     : AppColors.white, 
-                              //     child: CustomText(
-                              //       title: data.description, 
-                              //       textColor: Helper.isDark 
-                              //       ? AppColors.white.withValues(alpha: 0.9) 
-                              //       : AppColors.black,
-                              //       overflow: TextOverflow.ellipsis,
-                              //     ),
-                              //   ),
-                              // ),
                               const CustomVerticalDivider(),
                               Expanded(
                                 child: Container(

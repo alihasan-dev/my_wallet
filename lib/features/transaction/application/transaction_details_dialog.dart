@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_size.dart';
 import '../../../constants/app_color.dart';
-import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_theme.dart';
 import '../../../utils/helper.dart';

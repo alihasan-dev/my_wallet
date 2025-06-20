@@ -92,3 +92,5 @@ class TransactionFetchDetailsState extends TransactionState {
   List<TransactionDetailsModel> transactionDetailsList;
   TransactionFetchDetailsState({this.transactionDetailsList = const []});
 }
+
+class TransactionClearTransactionIdState extends TransactionState {}

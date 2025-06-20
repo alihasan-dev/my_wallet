@@ -167,9 +167,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: Material(
                               color: AppColors.transparent,
                               child: InkWell(
-                                onTap: () => MyAppTheme.isThreeColumnMode(context)
-                                ? widget.transactionDetailsState.toggleDisplayProfileColumn()
-                                : context.go('/dashboard/${widget.userModel!.userId}/profile', extra: {'user_data': widget.userModel}),
+                                onTap: _onTapProfile,
                                 child: SizedBox(
                                   height: double.maxFinite,
                                   child: Row(
@@ -457,7 +455,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                             ? AppColors.backgroundColorDark
                                             : AppColors.white
                                           : Helper.isDark
-                                            ? AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
                                             :AppColors.white.withValues(alpha: 0.8), 
                                           child: Row(
                                             children: [
@@ -497,9 +495,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                             horizontal: AppSize.s10, 
                                             vertical: AppSize.s15
                                           ),
-                                          color: Helper.isDark 
-                                          ? AppColors.backgroundColorDark 
-                                          : AppColors.white, 
+                                          color: transactionId == null || subData.id != transactionId 
+                                          ? Helper.isDark 
+                                            ? AppColors.backgroundColorDark
+                                            : AppColors.white
+                                          : Helper.isDark
+                                            ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            :AppColors.white.withValues(alpha: 0.8), 
                                           child: CustomText(
                                             title: subData.type == AppStrings.transfer 
                                             ? _localizations!.transfer 
@@ -517,9 +519,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                             horizontal: AppSize.s10, 
                                             vertical: AppSize.s15
                                           ),
-                                          color: Helper.isDark 
-                                          ? AppColors.backgroundColorDark 
-                                          : AppColors.white, 
+                                          color: transactionId == null || subData.id != transactionId 
+                                          ? Helper.isDark 
+                                            ? AppColors.backgroundColorDark
+                                            : AppColors.white
+                                          : Helper.isDark
+                                            ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            :AppColors.white.withValues(alpha: 0.8), 
                                           child: CustomText(
                                             title: subData.amount.toString().currencyFormat, 
                                             textColor: Helper.isDark 
@@ -697,10 +703,20 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionBloc: _transactionBloc, transactionId: state.transactionId, title: state.title)
                 : context.go('/dashboard/${widget.userModel!.userId}/transaction_details', extra: {'transaction_bloc': _transactionBloc, 'transaction_id': state.transactionId, 'user_data': widget.userModel, 'title': state.title});
               }
+              break;
+            case TransactionClearTransactionIdState _:
+              transactionId = null;
           default:
         }
       },
     );
+  }
+
+  void _onTapProfile() {
+    if(transactionId != null) _transactionBloc.add(TransactionClearTransactionIdEvent());
+    MyAppTheme.isThreeColumnMode(context)
+    ? widget.transactionDetailsState.toggleDisplayProfileColumn()
+    : context.go('/dashboard/${widget.userModel!.userId}/profile', extra: {'user_data': widget.userModel});
   }
 
   Future<void> _showDeleteTransactionDialog(BuildContext context) async {

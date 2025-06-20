@@ -58,6 +58,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
     _transactionBloc = transactionBloc;
     this.transactionId = transactionId ?? '';
     this.title = title ?? '';
+    setState(() {});
   } 
 
   @override
@@ -72,8 +73,8 @@ class TransactionDetailsState extends State<TransactionDetails> {
               friendId: widget.userModel.userId,
               dashboardBloc: widget.dashboardBloc
             ), 
-            child: TransactionScreen(userModel: widget.userModel, transactionDetailsState:  this)
-          )
+            child: TransactionScreen(userModel: widget.userModel, transactionDetailsState: this)
+          ),
         ),
         AnimatedSize(
           duration: MyAppTheme.animationDuration,
@@ -121,7 +122,6 @@ class TransactionDetailsState extends State<TransactionDetails> {
                 );
               }
               return Container(
-                key: Key(transactionId),
                 width: MyAppTheme.columnWidth,
                 clipBehavior: Clip.hardEdge,
                 decoration: const BoxDecoration(
@@ -133,13 +133,16 @@ class TransactionDetailsState extends State<TransactionDetails> {
                   ),
                 ),
                 child: TransactionSubDetailsScreen(
-                  key: Key(transactionId),
+                  key: ValueKey(transactionId),
                   transactionBloc: _transactionBloc!, 
                   transactionId: transactionId,
                   title: title,
                   closeButton: IconButton(
                     tooltip: localizations.close,
-                    onPressed: toggleTransactionDetailsColumn, 
+                    onPressed: () {
+                      context.read<DashboardBloc>().add(DashboardTransactionDetailsWindowCloseEvent());
+                      toggleTransactionDetailsColumn();
+                    }, 
                     icon: const Icon(AppIcons.closeIcon)
                   ),
                 ),

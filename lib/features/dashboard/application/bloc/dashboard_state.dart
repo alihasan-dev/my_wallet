@@ -60,3 +60,5 @@ class DashboardBiometricAuthState extends DashboardState {
 
   DashboardBiometricAuthState({this.isAuthenticated = false});
 }
+
+class DashboardTransactionDetailsWindowCloseState extends DashboardState {}

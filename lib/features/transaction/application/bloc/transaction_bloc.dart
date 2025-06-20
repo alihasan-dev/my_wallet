@@ -24,6 +24,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late CheckConnectivity checkConnectivity;
   late DocumentReference firebaseStoreInstance;
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
+  StreamSubscription<QuerySnapshot>? streamSubscriptionTransactionDetails;
   var listTransactionResult = <TransactionModel>[];
   var originalTransactionResultList = <TransactionModel>[];
   final String userName;
@@ -66,6 +67,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionShowDetailsEvent>(_onShowTransactionDetails);
     on<TransactionDetailsEvent>(_onFetchTransactionDetails);
     on<TransactionAddDetailsEvent>(_onAddTransactionDetails);
+    on<TransactionClearTransactionIdEvent>(_onClearTransactionId);
+    on<TransactionSubDetailsEvent>(_onFetchTransactionSubDetailsEvent);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -74,6 +77,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         if(userEvent.isNotEmpty) {
           add(TransactionProfileUpdateEvent(userName: userEvent.first.name, profileImage: userEvent.first.profileImg));
         }
+      }
+      if (event is DashboardTransactionDetailsWindowCloseState) {
+        add(TransactionClearTransactionIdEvent());
       }
     });
 
@@ -98,7 +104,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> close() {
     audioPlayer.dispose();
     streamDocumentSnapshot.cancel();
+    streamSubscriptionTransactionDetails?.cancel();
     return super.close();
+  }
+
+  void _onClearTransactionId(TransactionClearTransactionIdEvent event, Emitter emit) {
+    emit(TransactionClearTransactionIdState());
   }
 
   Future<void> _onAddTransactionDetails(TransactionAddDetailsEvent event, Emitter emit) async {
@@ -108,22 +119,56 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       'rate': event.rate,
       'total': event.total
     });
-    add(TransactionDetailsEvent(transactionId: event.transactionId));
+    // add(TransactionDetailsEvent(transactionId: event.transactionId));
   }
 
-  Future<void> _onFetchTransactionDetails(TransactionDetailsEvent event, Emitter emit) async {
+  void _onFetchTransactionDetails(TransactionDetailsEvent event, Emitter emit)  {
     emit(TransactionDetailsLoadingState());
-    final transactionDetails = await firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').get();
-    transactionDetailsList.clear();
-    for (var item in transactionDetails.docs) {
-      final _data = item.data() as Map;
-      transactionDetailsList.add(TransactionDetailsModel(
-        description: _data['description'],
-        quantity: _data['quantity'],
-        rate: _data['rate'].toDouble(),
-        total: _data['total'].toDouble()
-      ));
-    }
+    // final transactionDetails = await firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').get();
+    // transactionDetailsList.clear();
+    // for (var item in transactionDetails.docs) {
+    //   final _data = item.data() as Map;
+    //   transactionDetailsList.add(TransactionDetailsModel(
+    //     description: _data['description'],
+    //     quantity: _data['quantity'],
+    //     rate: _data['rate'].toDouble(),
+    //     total: _data['total'].toDouble()
+    //   ));
+    // }
+    // emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+
+
+
+    ///new with stream 
+    streamSubscriptionTransactionDetails = firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').snapshots().listen((event) {
+      transactionDetailsList.clear();
+      for (var item in event.docs) {
+        var mapData = item.data();
+        if (mapData.isNotEmpty) {
+          transactionDetailsList.add(TransactionDetailsModel(
+            description: mapData['description'],
+            quantity: mapData['quantity'],
+            rate: mapData['rate'].toDouble(),
+            total: mapData['total'].toDouble()
+          ));
+        }
+      }
+      // emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+      add(TransactionSubDetailsEvent());
+    });
+    // transactionDetailsList.clear();
+    // for (var item in transactionDetails.docs) {
+    //   final _data = item.data() as Map;
+    //   transactionDetailsList.add(TransactionDetailsModel(
+    //     description: _data['description'],
+    //     quantity: _data['quantity'],
+    //     rate: _data['rate'].toDouble(),
+    //     total: _data['total'].toDouble()
+    //   ));
+    // }
+  }
+
+  void _onFetchTransactionSubDetailsEvent(TransactionSubDetailsEvent event, Emitter emit) {
     emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
   }
 

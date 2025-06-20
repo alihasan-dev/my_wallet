@@ -71,3 +71,5 @@ class DashboardBiometricAuthEvent extends DashboardEvent {
 
   DashboardBiometricAuthEvent({this.isAuthenticated = false});
 }
+
+class DashboardTransactionDetailsWindowCloseEvent extends DashboardEvent {}

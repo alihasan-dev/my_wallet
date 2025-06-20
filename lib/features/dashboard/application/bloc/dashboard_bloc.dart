@@ -40,6 +40,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardCancelSelectedContactEvent>(_onCancelSelectedContactEvent);
     on<DashboardPinnedContactEvent>(_onPinnedContact);
     on<DashboardBiometricAuthEvent>(_onBiometricAuthenticated);
+    on<DashboardTransactionDetailsWindowCloseEvent>(_onCloseTransactionWindow);
 
     _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event) {
       var userData = event.data() as Map;
@@ -88,6 +89,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     _streamDocumentSnapshot.cancel();
     _streamSubscription.cancel();
     return super.close();
+  }
+
+  void _onCloseTransactionWindow(DashboardTransactionDetailsWindowCloseEvent event, Emitter emit) {
+    emit(DashboardTransactionDetailsWindowCloseState());
   }
 
   void _onBiometricAuthenticated(DashboardBiometricAuthEvent event, Emitter emit) {

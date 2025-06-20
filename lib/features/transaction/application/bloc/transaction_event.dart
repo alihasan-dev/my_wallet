@@ -118,3 +118,7 @@ class TransactionAddDetailsEvent extends TransactionEvent {
     required this.total
   });
 }
+
+class TransactionClearTransactionIdEvent extends TransactionEvent {}
+
+class TransactionSubDetailsEvent extends TransactionEvent {}
