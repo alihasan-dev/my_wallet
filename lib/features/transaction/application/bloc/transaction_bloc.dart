@@ -69,6 +69,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionAddDetailsEvent>(_onAddTransactionDetails);
     on<TransactionClearTransactionIdEvent>(_onClearTransactionId);
     on<TransactionSubDetailsEvent>(_onFetchTransactionSubDetailsEvent);
+    on<TransactionSelectSubDetailsEvent>(_onSelectSubTransactionDetails);
+    on<TransactionClearSubSelectionEvent>(_onClearSubSelectedTransaction);
+    on<TransactionSubDeleteEvent>(_onDeleteSubTransactionDetails);
 
     dashboardBloc.stream.listen((event) {
       if(event is DashboardAllUserState) {
@@ -108,8 +111,42 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return super.close();
   }
 
+  Future<void> _onDeleteSubTransactionDetails(TransactionSubDeleteEvent event, Emitter emit) async {
+    if(listTransactionResult.isNotEmpty) {
+      final batch = FirebaseFirestore.instance.batch();
+      for(final transaction in transactionDetailsList) {
+        if(transaction.isSelected) {
+          final docRef = firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').doc(transaction.id);
+          batch.delete(docRef);
+        }
+      }
+      try {
+        await batch.commit();
+        debugPrint("Documents deleted successfully");
+      } catch (e) {
+        debugPrint("Error deleting documents: $e");
+      }
+    }
+  }
+
   void _onClearTransactionId(TransactionClearTransactionIdEvent event, Emitter emit) {
     emit(TransactionClearTransactionIdState());
+  }
+
+  void _onClearSubSelectedTransaction(TransactionClearSubSelectionEvent event, Emitter emit) {
+    if (transactionDetailsList.isNotEmpty) {
+      for (var item in transactionDetailsList) {
+        item.isSelected = false;
+      }
+      emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+    }
+  }
+
+  void _onSelectSubTransactionDetails(TransactionSelectSubDetailsEvent event, Emitter emit) {
+    if (transactionDetailsList.isNotEmpty) {
+      transactionDetailsList[event.selectedIndex].isSelected = !transactionDetailsList[event.selectedIndex].isSelected;
+      emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+    }
   }
 
   Future<void> _onAddTransactionDetails(TransactionAddDetailsEvent event, Emitter emit) async {
@@ -146,6 +183,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
           transactionDetailsList.add(TransactionDetailsModel(
+            id: item.id,
             description: mapData['description'],
             quantity: mapData['quantity'],
             rate: mapData['rate'].toDouble(),

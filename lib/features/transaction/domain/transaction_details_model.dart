@@ -1,4 +1,5 @@
 class TransactionDetailsModel {
+  String id;
   String description;
   int quantity;
   double rate;
@@ -7,6 +8,7 @@ class TransactionDetailsModel {
 
 
   TransactionDetailsModel({
+    required this.id,
     this.description = '',
     this.quantity = 0,
     this.rate = 0.0,

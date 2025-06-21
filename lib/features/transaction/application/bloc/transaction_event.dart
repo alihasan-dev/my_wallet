@@ -88,9 +88,17 @@ class TransactionSelectListItemEvent extends TransactionEvent {
 
 class TransactionDeleteEvent extends TransactionEvent {}
 
+class TransactionSubDeleteEvent extends TransactionEvent {
+  String transactionId;
+
+  TransactionSubDeleteEvent({required this.transactionId});
+}
+
 class TransactionEditEvent extends TransactionEvent {}
 
 class TransactionClearSelectionEvent extends TransactionEvent {}
+
+class TransactionClearSubSelectionEvent extends TransactionEvent {}
 
 class TransactionShowDetailsEvent extends TransactionEvent {
   String transactionId;
@@ -122,3 +130,9 @@ class TransactionAddDetailsEvent extends TransactionEvent {
 class TransactionClearTransactionIdEvent extends TransactionEvent {}
 
 class TransactionSubDetailsEvent extends TransactionEvent {}
+
+class TransactionSelectSubDetailsEvent extends TransactionEvent {
+  int selectedIndex;
+
+  TransactionSelectSubDetailsEvent({this.selectedIndex = -1});
+}

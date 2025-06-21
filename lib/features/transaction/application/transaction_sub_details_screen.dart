@@ -39,7 +39,7 @@ class TransactionSubDetailsScreen extends StatefulWidget {
   State createState() => _TransactionSubDetailsScreenState();
 }
 
-class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScreen> {
+class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScreen> with Helper {
 
   AppLocalizations? _localizations;
   List<TransactionDetailsModel> transactionDetailsList = [];
@@ -70,7 +70,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
             ? AppColors.backgroundColorDark 
             : AppColors.white,
             appBar: AppBar(
-              centerTitle: true,
+              centerTitle: false,
               elevation: 0, 
               leading: widget.closeButton ?? Center(
                 child: Tooltip(
@@ -90,10 +90,38 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
               ),
               iconTheme: const IconThemeData(color: AppColors.white),
               actions: [
-                IconButton(
-                  tooltip: _localizations!.addTransactionDetails,
-                  onPressed: () => _showTransactionDetailsDialog(), 
-                  icon: Icon(Icons.add)
+                AnimatedSize(
+                  duration: MyAppTheme.animationDuration,
+                  child: transactionDetailsList.any((item) => item.isSelected)
+                  ? Row(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () => widget.transactionBloc.add(TransactionClearSubSelectionEvent()),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.white,
+                            padding: EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: 10),
+                            side: BorderSide(color: AppColors.white)
+                          ), 
+                          child: CustomText(
+                            title:'${transactionDetailsList.where((item) => item.isSelected).length}  ${_localizations!.unselect}',
+                            textColor: AppColors.white,
+                          ),
+                        ),
+                        const SizedBox(width: AppSize.s6),
+                        IconButton(
+                          tooltip: _localizations!.delete,
+                          // onPressed: () => {}, 
+                          onPressed: () => _showDeleteTransactionDialog(context, transactionId: widget.transactionId), 
+                          visualDensity: VisualDensity.compact,
+                          icon: const Icon(AppIcons.deleteIcon, color: AppColors.white)
+                        ),
+                      ],
+                    )
+                  : IconButton(
+                    tooltip: _localizations!.addTransactionDetails,
+                    onPressed: () => _showTransactionDetailsDialog(), 
+                    icon: Icon(Icons.add)
+                  ),
                 ),
               ],
             ),
@@ -149,15 +177,15 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                           color: Helper.isDark 
                           ? AppColors.backgroundColorDark 
                           : AppColors.white, 
-                          child: CustomText(
-                            title: _localizations!.rate, 
-                            textStyle: getSemiBoldStyle(
+                          child: TextMarquee(
+                            _localizations!.rate,
+                            spaceSize: 40,
+                            style: getSemiBoldStyle(
                               color: Helper.isDark 
                               ? AppColors.white.withValues(alpha: 0.9) 
                               : AppColors.black,
                               fontSize: AppSize.s14
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
@@ -223,7 +251,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                       } else {
                         final data = transactionDetailsList[index];
                         return InkWell(
-                          onTap: () => print('Click here to select the transaction details'),
+                          onTap: () => widget.transactionBloc.add(TransactionSelectSubDetailsEvent(selectedIndex: index)),
                           child: Container(
                             color: AppColors.grey,
                             child: Row(
@@ -425,7 +453,13 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
     );
   }
 
-  void _showTransactionDetailsDialog({TransactionDetailsModel? transactionModel}) {
+  Future<void> _showDeleteTransactionDialog(BuildContext context,{required String transactionId}) async {
+    if(await confirmationDialog(context: context, title: _localizations!.deleteSubTransaction, content: _localizations!.deleteSubTransactionMsg, localizations: _localizations!)) {
+      widget.transactionBloc.add(TransactionSubDeleteEvent(transactionId: transactionId));
+    }
+  }
+
+  void _showTransactionDetailsDialog() {
     showGeneralDialog(
       context: context, 
       barrierDismissible: true,

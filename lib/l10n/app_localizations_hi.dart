@@ -240,6 +240,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'क्या आप वाकई में चयनित लेनदेन को मिटाना चाहते हैं?';
 
   @override
+  String get deleteSubTransaction => 'उप लेन-देन मिटाए';
+
+  @override
+  String get deleteSubTransactionMsg =>
+      'क्या आप वाकई में चयनित उप लेनदेन को मिटाना चाहते हैं?';
+
+  @override
   String get clearSelection => 'चयनित हटाएँ';
 
   @override

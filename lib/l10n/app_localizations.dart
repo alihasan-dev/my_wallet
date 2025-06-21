@@ -548,6 +548,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete the selected transaction?'**
   String get deleteTransactionMsg;
 
+  /// No description provided for @deleteSubTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Sub Transaction'**
+  String get deleteSubTransaction;
+
+  /// No description provided for @deleteSubTransactionMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the selected sub transaction?'**
+  String get deleteSubTransactionMsg;
+
   /// No description provided for @clearSelection.
   ///
   /// In en, this message translates to:

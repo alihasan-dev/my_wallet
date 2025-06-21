@@ -240,6 +240,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete the selected transaction?';
 
   @override
+  String get deleteSubTransaction => 'Delete Sub Transaction';
+
+  @override
+  String get deleteSubTransactionMsg =>
+      'Are you sure you want to delete the selected sub transaction?';
+
+  @override
   String get clearSelection => 'Clear Selection';
 
   @override

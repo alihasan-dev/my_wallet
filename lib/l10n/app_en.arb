@@ -84,6 +84,8 @@
   "openAppOnBrowser": "Open app on browser",
   "deleteTransaction": "Delete Transaction",
   "deleteTransactionMsg": "Are you sure you want to delete the selected transaction?",
+  "deleteSubTransaction": "Delete Sub Transaction",
+  "deleteSubTransactionMsg": "Are you sure you want to delete the selected sub transaction?",
   "clearSelection": "Clear Selection",
   "importantNote": "Important Note",
   "signupWarningMsg": "If you signed up before using a Google account with the same email address, signing up again with that Google account now will replace your existing account. Please be careful!",
