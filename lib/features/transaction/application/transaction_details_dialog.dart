@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_size.dart';
 import '../../../constants/app_color.dart';
@@ -29,6 +30,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
   late TextEditingController descriptionText;
   late TextEditingController quantityText;
   late TextEditingController rateText;
+  AppLocalizations? _localizations;
 
   @override
   void initState() {
@@ -36,6 +38,12 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
     quantityText = TextEditingController();
     rateText = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _localizations = AppLocalizations.of(context)!;
+    super.didChangeDependencies();
   }
 
   @override
@@ -54,14 +62,14 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomText(
-                  title: 'Transaction Details',
+                  title: _localizations!.transactionBreakdown,
                   textStyle: getSemiBoldStyle(),
                 ),
                 Transform.translate(
                   offset: const Offset(10, 0),
                   child: IconButton(
                     // tooltip: _localizations!.close,
-                    tooltip: 'Close',
+                    tooltip: _localizations!.close,
                     onPressed: () => context.pop(),
                     icon: const Icon(AppIcons.clearIcon),
                     visualDensity: VisualDensity.compact
@@ -76,8 +84,8 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 // errorText: errorAmount
-                hintText: 'Description',
-                label: Text('Description'),
+                hintText: _localizations!.description,
+                label: Text(_localizations!.description),
                 hintStyle: const TextStyle(color: AppColors.grey),
                 border: const OutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
@@ -98,8 +106,8 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 // errorText: errorAmount
-                hintText: 'Quantity',
-                label: Text('Quantity'),
+                hintText: _localizations!.quantity,
+                label: Text(_localizations!.quantity),
                 hintStyle: const TextStyle(color: AppColors.grey),
                 border: const OutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
@@ -121,8 +129,8 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$'))],
               decoration: InputDecoration(
                 // errorText: errorAmount
-                hintText: 'Rate per piece',
-                label: Text('Rate per piece'),
+                hintText: _localizations!.rate,
+                label: Text(_localizations!.rate),
                 hintStyle: const TextStyle(color: AppColors.grey),
                 border: const OutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
@@ -137,18 +145,8 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
             ),
             const SizedBox(height: AppSize.s20),
             CustomButton(
-              title: 'Add', 
+              title: _localizations!.add, 
               onTap: () => widget.onAdd(descriptionText.text, rateText.text, quantityText.text),
-              //  context.read<TransactionBloc>().add(TransactionAddEvent(
-              //     userName: widget.userName, 
-              //     date: transactionDate, 
-              //     amount: amountTextController.text, 
-              //     type: transactionType,
-              //     transactionId: widget.transactionModel == null 
-              //     ? '' 
-              //     : widget.transactionModel!.id
-              //   ),
-              // ),
               titleSize: AppSize.s15,
             ),
           ],

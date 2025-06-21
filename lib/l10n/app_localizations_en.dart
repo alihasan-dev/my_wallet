@@ -263,4 +263,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add => 'Add';
+
+  @override
+  String get addTransactionDetails => 'Add Transaction Details';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get rate => 'Rate per piece';
+
+  @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get noTransactionDetailsFound => 'No transaction details found';
 }

@@ -263,4 +263,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get add => 'जोड़ें';
+
+  @override
+  String get addTransactionDetails => 'लेन-देन विवरण जोड़ें';
+
+  @override
+  String get description => 'विवरण';
+
+  @override
+  String get rate => 'दर प्रति पीस';
+
+  @override
+  String get quantity => 'मात्रा';
+
+  @override
+  String get total => 'कुल';
+
+  @override
+  String get noTransactionDetailsFound => 'कोई लेनदेन विवरण नहीं मिला';
 }

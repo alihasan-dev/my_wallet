@@ -91,5 +91,11 @@
   "transactionBreakdown": "Transaction Details",
   "transactionBreakdownMsg": "Details for Each Transaction",
   "unselect": "Unselect",
-  "add": "Add"
+  "add": "Add",
+  "addTransactionDetails": "Add Transaction Details",
+  "description": "Description",
+  "rate": "Rate per piece",
+  "quantity": "Quantity",
+  "total": "Total",
+  "noTransactionDetailsFound": "No transaction details found"
 }

@@ -91,5 +91,11 @@
   "transactionBreakdown": "लेन-देन विवरण",
   "transactionBreakdownMsg": "प्रत्येक लेनदेन का विवरण",
   "unselect": "अचयनित",
-  "add": "जोड़ें"
+  "add": "जोड़ें",
+  "addTransactionDetails": "लेन-देन विवरण जोड़ें",
+  "description": "विवरण",
+  "rate": "दर प्रति पीस",
+  "quantity": "मात्रा",
+  "total": "कुल",
+  "noTransactionDetailsFound": "कोई लेनदेन विवरण नहीं मिला"
 }

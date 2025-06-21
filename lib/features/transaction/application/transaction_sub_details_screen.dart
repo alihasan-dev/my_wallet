@@ -3,8 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/features/dashboard/application/bloc/dashboard_bloc.dart';
 import 'package:text_marquee/text_marquee.dart';
+import '../../../constants/app_icons.dart';
+import '../../../constants/app_theme.dart';
+import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
@@ -70,7 +72,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
             appBar: AppBar(
               centerTitle: true,
               elevation: 0, 
-              leading: widget.closeButton ??  Center(
+              leading: widget.closeButton ?? Center(
                 child: Tooltip(
                   message: AppStrings.back ,
                   child: BackButton(
@@ -78,7 +80,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                       context.read<DashboardBloc>().add(DashboardTransactionDetailsWindowCloseEvent());
                       context.pop();
                     }
-                  )
+                  ),
                 ),
               ),
               backgroundColor: AppColors.primaryColor,
@@ -89,6 +91,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
               iconTheme: const IconThemeData(color: AppColors.white),
               actions: [
                 IconButton(
+                  tooltip: _localizations!.addTransactionDetails,
                   onPressed: () => _showTransactionDetailsDialog(), 
                   icon: Icon(Icons.add)
                 ),
@@ -99,7 +102,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
             : transactionDetailsList.isEmpty
               ? Center(
                   child: Text(
-                    'No details found',
+                    _localizations!.noTransactionDetailsFound,
                     style: TextStyle(
                       color: Helper.isDark 
                       ? AppColors.white.withValues(alpha: 0.9) 
@@ -125,7 +128,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                           ? AppColors.backgroundColorDark 
                           : AppColors.white, 
                           child: TextMarquee(
-                            'Description',
+                            _localizations!.description,
                             spaceSize: 40,
                             style: getSemiBoldStyle(
                               color: Helper.isDark 
@@ -147,7 +150,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                           ? AppColors.backgroundColorDark 
                           : AppColors.white, 
                           child: CustomText(
-                            title: 'Rate', 
+                            title: _localizations!.rate, 
                             textStyle: getSemiBoldStyle(
                               color: Helper.isDark 
                               ? AppColors.white.withValues(alpha: 0.9) 
@@ -169,7 +172,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                           ? AppColors.backgroundColorDark 
                           : AppColors.white, 
                           child: CustomText(
-                            title: 'Quantity', 
+                            title: _localizations!.quantity, 
                             textStyle: getSemiBoldStyle(
                               color: Helper.isDark 
                               ? AppColors.white.withValues(alpha: 0.9) 
@@ -191,7 +194,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                           ? AppColors.backgroundColorDark 
                           : AppColors.white, 
                           child: CustomText(
-                            title: 'Total', 
+                            title: _localizations!.total, 
                             textStyle: getSemiBoldStyle(
                               color: Helper.isDark 
                               ? AppColors.white.withValues(alpha: 0.9) 
@@ -219,89 +222,116 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                         );
                       } else {
                         final data = transactionDetailsList[index];
-                        return Container(
-                          color: AppColors.grey,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15,
-                                  ),
-                                  color: Helper.isDark 
-                                  ? AppColors.backgroundColorDark 
-                                  : AppColors.white, 
-                                  child: TextMarquee(
-                                    data.description,
-                                    spaceSize: 40,
-                                    style: TextStyle(
-                                      color: Helper.isDark 
-                                      ? AppColors.white.withValues(alpha: 0.9) 
-                                      : AppColors.black,
-                                      fontSize: 14
+                        return InkWell(
+                          onTap: () => print('Click here to select the transaction details'),
+                          child: Container(
+                            color: AppColors.grey,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSize.s10, 
+                                      vertical: AppSize.s15,
+                                    ),
+                                    color: Helper.isDark 
+                                    ? AppColors.backgroundColorDark 
+                                    : AppColors.white, 
+                                    child: Row(
+                                      children: [
+                                        AnimatedSize(
+                                          duration: MyAppTheme.animationDuration,
+                                          child: data.isSelected
+                                          ? const Row(
+                                              children: [
+                                                Icon(
+                                                  AppIcons.checkCircleOutlineIcon, 
+                                                  size: AppSize.s18, 
+                                                  color: AppColors.green
+                                                ),
+                                                SizedBox(width: AppSize.s5),
+                                              ],
+                                            )
+                                          : const SizedBox.shrink()
+                                        ),
+                                        Expanded(
+                                          child: TextMarquee(
+                                            data.description,
+                                            spaceSize: 40,
+                                            style: TextStyle(
+                                              color: Helper.isDark 
+                                              ? AppColors.white.withValues(alpha: 0.9) 
+                                              : AppColors.black,
+                                              fontSize: 14
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ),
-                              const CustomVerticalDivider(),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15,
-                                  ),
-                                  color: Helper.isDark 
-                                  ? AppColors.backgroundColorDark 
-                                  : AppColors.white, 
-                                  child: CustomText(
-                                    title: data.rate.toStringAsFixed(1), 
-                                    textColor: Helper.isDark 
-                                    ? AppColors.white.withValues(alpha: 0.9) 
-                                    : AppColors.black,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                              const CustomVerticalDivider(),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15,
-                                  ),
-                                  color: Helper.isDark 
-                                  ? AppColors.backgroundColorDark 
-                                  : AppColors.white, 
-                                  child: CustomText(
-                                    title: data.quantity.toStringAsFixed(0), 
-                                    textColor: Helper.isDark 
-                                    ? AppColors.white.withValues(alpha: 0.9) 
-                                    : AppColors.black,
-                                    overflow: TextOverflow.ellipsis,
+                                const CustomVerticalDivider(),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSize.s10, 
+                                      vertical: AppSize.s15,
+                                    ),
+                                    color: Helper.isDark 
+                                    ? AppColors.backgroundColorDark 
+                                    : AppColors.white, 
+                                    child: CustomText(
+                                      title: data.rate.toStringAsFixed(1), 
+                                      textColor: Helper.isDark 
+                                      ? AppColors.white.withValues(alpha: 0.9) 
+                                      : AppColors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const CustomVerticalDivider(),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSize.s10, 
-                                    vertical: AppSize.s15,
-                                  ),
-                                  color: Helper.isDark 
-                                  ? AppColors.backgroundColorDark 
-                                  : AppColors.white, 
-                                  child: CustomText(
-                                    title: data.total.toStringAsFixed(2), 
-                                    textColor: Helper.isDark 
-                                    ? AppColors.white.withValues(alpha: 0.9) 
-                                    : AppColors.black,
-                                    overflow: TextOverflow.ellipsis,
+                                const CustomVerticalDivider(),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSize.s10, 
+                                      vertical: AppSize.s15,
+                                    ),
+                                    color: Helper.isDark 
+                                    ? AppColors.backgroundColorDark 
+                                    : AppColors.white, 
+                                    child: CustomText(
+                                      title: data.quantity.toStringAsFixed(0), 
+                                      textColor: Helper.isDark 
+                                      ? AppColors.white.withValues(alpha: 0.9) 
+                                      : AppColors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                const CustomVerticalDivider(),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSize.s10, 
+                                      vertical: AppSize.s15,
+                                    ),
+                                    color: Helper.isDark 
+                                    ? AppColors.backgroundColorDark 
+                                    : AppColors.white, 
+                                    child: CustomText(
+                                      title: data.total.toStringAsFixed(1), 
+                                      textColor: Helper.isDark 
+                                      ? AppColors.white.withValues(alpha: 0.9) 
+                                      : AppColors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }
@@ -348,7 +378,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                         ? AppColors.backgroundColorDark 
                         : AppColors.white, 
                         child: CustomText(
-                          title: 'Total', 
+                          title: _localizations!.total, 
                           textStyle: getSemiBoldStyle(
                             color: Helper.isDark 
                             ? AppColors.white.withValues(alpha: 0.9) 

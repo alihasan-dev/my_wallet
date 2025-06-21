@@ -595,6 +595,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get add;
+
+  /// No description provided for @addTransactionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Transaction Details'**
+  String get addTransactionDetails;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @rate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate per piece'**
+  String get rate;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @noTransactionDetailsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No transaction details found'**
+  String get noTransactionDetailsFound;
 }
 
 class _AppLocalizationsDelegate
