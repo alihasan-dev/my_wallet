@@ -110,7 +110,6 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                         const SizedBox(width: AppSize.s6),
                         IconButton(
                           tooltip: _localizations!.delete,
-                          // onPressed: () => {}, 
                           onPressed: () => _showDeleteTransactionDialog(context, transactionId: widget.transactionId), 
                           visualDensity: VisualDensity.compact,
                           icon: const Icon(AppIcons.deleteIcon, color: AppColors.white)

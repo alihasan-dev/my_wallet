@@ -156,27 +156,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       'rate': event.rate,
       'total': event.total
     });
-    // add(TransactionDetailsEvent(transactionId: event.transactionId));
   }
 
   void _onFetchTransactionDetails(TransactionDetailsEvent event, Emitter emit)  {
     emit(TransactionDetailsLoadingState());
-    // final transactionDetails = await firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').get();
-    // transactionDetailsList.clear();
-    // for (var item in transactionDetails.docs) {
-    //   final _data = item.data() as Map;
-    //   transactionDetailsList.add(TransactionDetailsModel(
-    //     description: _data['description'],
-    //     quantity: _data['quantity'],
-    //     rate: _data['rate'].toDouble(),
-    //     total: _data['total'].toDouble()
-    //   ));
-    // }
-    // emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
-
-
-
-    ///new with stream 
     streamSubscriptionTransactionDetails = firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').snapshots().listen((event) {
       transactionDetailsList.clear();
       for (var item in event.docs) {
@@ -191,19 +174,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           ));
         }
       }
-      // emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
       add(TransactionSubDetailsEvent());
     });
-    // transactionDetailsList.clear();
-    // for (var item in transactionDetails.docs) {
-    //   final _data = item.data() as Map;
-    //   transactionDetailsList.add(TransactionDetailsModel(
-    //     description: _data['description'],
-    //     quantity: _data['quantity'],
-    //     rate: _data['rate'].toDouble(),
-    //     total: _data['total'].toDouble()
-    //   ));
-    // }
   }
 
   void _onFetchTransactionSubDetailsEvent(TransactionSubDetailsEvent event, Emitter emit) {

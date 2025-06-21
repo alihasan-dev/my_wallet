@@ -24,7 +24,6 @@ import '../../../utils/helper.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_verticle_divider.dart';
-part 'transaction_disable_dialog.dart';
 
 class TransactionScreen extends StatefulWidget {
   final UserModel? userModel;
@@ -746,19 +745,6 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   void _onTapTransaction({required String transactionId, required int index}) {
     if(_selectedTransactionCount == 0 && Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
       _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId, title: dateFormat.format(transactionDataList[index].date)));
-      // if (Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
-      //   _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId, title: dateFormat.format(transactionDataList[index].date)));
-      // } else {
-      //   showGeneralDialog(
-      //     context: context, 
-      //     barrierDismissible: true,
-      //     barrierLabel: AppStrings.close,
-      //     pageBuilder: (context, a1, a2) => ScaleTransition(
-      //       scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
-      //       child: const TransactionDisableDialog()
-      //     )
-      //   );
-      // }
     } else {
       _transactionBloc.add(TransactionSelectListItemEvent(index: index));
     }
