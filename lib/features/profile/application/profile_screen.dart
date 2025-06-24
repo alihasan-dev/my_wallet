@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../constants/app_theme.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
@@ -166,9 +166,9 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
     );
   }
 
-  Future<void> onUserDelete(String name, BuildContext bContext) async {
+  Future<void> onUserDelete(String name, BuildContext mContext) async {
     if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: _localizations!.deleteUserMsg(name), localizations: _localizations!)) {
-      bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
+      mContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
     }
   }
 

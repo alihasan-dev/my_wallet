@@ -26,7 +26,7 @@ class SignupMobileView extends StatelessWidget {
           isMandatory: true,
           textEditingController: signupScreenState.nameTextController,
           errorText: signupScreenState.errorName,
-          onChange: (value) => context.read<SignupBloc>().add(SignupNameChangeEvent(name: value)),
+          onChange: (value) => signupBloc.add(SignupNameChangeEvent(name: value)),
           textInputAction: TextInputAction.next,
         ),
         const SizedBox(height: AppSize.s10),
@@ -36,7 +36,7 @@ class SignupMobileView extends StatelessWidget {
           isMandatory: true,
           textEditingController: signupScreenState.emailTextController,
           errorText: signupScreenState.errorEmail,
-          onChange: (value) => context.read<SignupBloc>().add(SignupEmailChangeEvent(email: value)),
+          onChange: (value) => signupBloc.add(SignupEmailChangeEvent(email: value)),
           textInputAction: TextInputAction.next,
         ),
         const SizedBox(height: AppSize.s10),
@@ -45,10 +45,10 @@ class SignupMobileView extends StatelessWidget {
           isPasswordField: signupScreenState.showPassword,
           isMandatory: true,
           textEditingController: signupScreenState.passwordTextController,
-          onShowPassword: () => context.read<SignupBloc>().add(SignupShowPasswordEvent(isVisible: signupScreenState.showPassword)),
+          onShowPassword: () => signupBloc.add(SignupShowPasswordEvent(isVisible: signupScreenState.showPassword)),
           errorText: signupScreenState.errorPassword,
-          onChange: (value) => context.read<SignupBloc>().add(SignupPasswordChangeEvent(password: value)),
-          onSubmitted: (_) => context.read<SignupBloc>().add(SignupSubmitEvent(
+          onChange: (value) => signupBloc.add(SignupPasswordChangeEvent(password: value)),
+          onSubmitted: (_) => signupBloc.add(SignupSubmitEvent(
             name: signupScreenState.nameTextController.text, 
             email: signupScreenState.emailTextController.text, 
             password: signupScreenState.passwordTextController.text
@@ -59,7 +59,7 @@ class SignupMobileView extends StatelessWidget {
         CustomButton(
           title: localizations.signup,
           titleSize: AppSize.s16, 
-          onTap: () => context.read<SignupBloc>().add(SignupSubmitEvent(
+          onTap: () => signupBloc.add(SignupSubmitEvent(
             name: signupScreenState.nameTextController.text, 
             email: signupScreenState.emailTextController.text, 
             password: signupScreenState.passwordTextController.text
@@ -80,7 +80,7 @@ class SignupMobileView extends StatelessWidget {
         ),
         kIsWeb
         ? const GoogleSigninCustomButton(key: Key(AppStrings.continueWithGoogle))
-        : GoogleSigninCustomButton(onTap: () => context.read<SignupBloc>().add(SignupWithGoogleEvent())),
+        : GoogleSigninCustomButton(onTap: () => signupBloc.add(SignupWithGoogleEvent())),
         const SizedBox(height: AppSize.s20),
         Row(
           mainAxisSize: MainAxisSize.min,

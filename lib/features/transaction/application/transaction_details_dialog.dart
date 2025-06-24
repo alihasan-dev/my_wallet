@@ -68,7 +68,6 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
                 Transform.translate(
                   offset: const Offset(10, 0),
                   child: IconButton(
-                    // tooltip: _localizations!.close,
                     tooltip: _localizations!.close,
                     onPressed: () => context.pop(),
                     icon: const Icon(AppIcons.clearIcon),
@@ -83,7 +82,6 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               onChanged: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                // errorText: errorAmount
                 hintText: _localizations!.description,
                 label: Text(_localizations!.description),
                 hintStyle: const TextStyle(color: AppColors.grey),
@@ -105,7 +103,6 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
-                // errorText: errorAmount
                 hintText: _localizations!.quantity,
                 label: Text(_localizations!.quantity),
                 hintStyle: const TextStyle(color: AppColors.grey),
@@ -128,7 +125,6 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               textInputAction: TextInputAction.done,
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$'))],
               decoration: InputDecoration(
-                // errorText: errorAmount
                 hintText: _localizations!.rate,
                 label: Text(_localizations!.rate),
                 hintStyle: const TextStyle(color: AppColors.grey),

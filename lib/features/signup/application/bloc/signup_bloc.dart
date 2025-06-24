@@ -177,7 +177,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     emit(SignupPasswordVisibilityState(!event.isVisible));
   }
 
-
   Future<bool> validation(Emitter emit, {required String name, required String email, required String password}) async {
     if(name.isBlank) {
       emit(SignupNameFieldState(message: AppStrings.emptyName));

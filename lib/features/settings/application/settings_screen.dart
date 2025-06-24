@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../about/about_screen.dart';
@@ -62,7 +62,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext bContent) {
     return Scaffold(
-      backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
+      backgroundColor: Helper.isDark 
+      ? AppColors.backgroundColorDark
+      : AppColors.white,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
@@ -94,12 +96,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 var data = settingItemList[index];
                 return InkWell(
                   onTap: () => onTapOption(data: data, index: index),
-                  // onTap: data.showSwitch || data.isLauncher
-                  // ? () {
-                  //     if(data.showSwitch) onChangeSwith(index: index, value: !data.switchValue);
-                  //     if(data.isLauncher) launchPolicyUrl();
-                  //   }
-                  // : () => onClickItem(context: context, index: index),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSize.s20,
@@ -142,14 +138,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         if (data.isLauncher)
                           IconButton(
-                            onPressed: () => launchPolicyUrl(),
+                            onPressed: launchPolicyUrl,
                             icon: Icon(
                               AppIcons.openInNewIcon,
                               size: AppSize.s20,
                               color: Helper.isDark
                               ? AppColors.white
                               : AppColors.black
-                            )
+                            ),
                           ),
                         if (data.showSwitch)
                           Transform.scale(
@@ -176,7 +172,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if(data.showSwitch) onChangeSwith(index: index, value: !data.switchValue);
       if(data.isLauncher) launchPolicyUrl();
     } else {
-      // onClickItem(context: context, index: index)
       switch (index) {
         case 0:
           showLanguageDialog(context: context);
@@ -208,22 +203,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  // void onClickItem({required BuildContext context, required int index}) {
-  //   switch (index) {
-  //     case 0:
-  //       showLanguageDialog(context: context);
-  //       break;
-  //     case 1:
-  //       showThemeDialog(context: context);
-  //       break;
-  //     case 4:
-  //     case 6:
-  //       showAboutAppDialog(context: context);
-  //       break;
-  //     default:
-  //   }
-  // }
-
   Future<void> launchPolicyUrl() async {
     final Uri uri = Uri.parse(AppStrings.webUrl);
     await launchUrl(uri);
@@ -237,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
         child: const AboutScreen()
-      )
+      ),
     );
   }
 
@@ -259,7 +238,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ? AppColors.dialogColorDark 
           : AppColors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSize.s12, 
+            vertical: AppSize.s12
+          ),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -282,7 +264,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
-                          Preferences.getString(key: AppStrings.prefTheme) == data.theme ? AppIcons.radioCheckIcon : AppIcons.uncheckIcon,
+                          Preferences.getString(key: AppStrings.prefTheme) == data.theme 
+                          ? AppIcons.radioCheckIcon 
+                          : AppIcons.uncheckIcon,
                           color: Preferences.getString(key: AppStrings.prefTheme) == data.theme 
                           ? AppColors.primaryColor
                           : AppColors.grey
@@ -291,7 +275,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         CustomText(
                           title: data.title,
                           textStyle: getRegularStyle(
-                            color: Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black,
+                            color: Helper.isDark 
+                            ? AppColors.white.withValues(alpha: 0.9) 
+                            : AppColors.black,
                             fontSize: AppSize.s14
                           ),
                         ),
