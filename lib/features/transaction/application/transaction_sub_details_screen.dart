@@ -308,7 +308,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                     ? AppColors.backgroundColorDark 
                                     : AppColors.white, 
                                     child: CustomText(
-                                      title: data.rate.toStringAsFixed(1), 
+                                      title: data.rate.toString().currencyFormat, 
                                       textColor: Helper.isDark 
                                       ? AppColors.white.withValues(alpha: 0.9) 
                                       : AppColors.black,
@@ -348,7 +348,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                     ? AppColors.backgroundColorDark 
                                     : AppColors.white, 
                                     child: CustomText(
-                                      title: data.total.toStringAsFixed(1), 
+                                      title: data.total.toString().currencyFormat, 
                                       textColor: Helper.isDark 
                                       ? AppColors.white.withValues(alpha: 0.9) 
                                       : AppColors.black,

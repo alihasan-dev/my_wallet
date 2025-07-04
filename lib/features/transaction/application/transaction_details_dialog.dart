@@ -123,7 +123,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
               onChanged: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$'))],
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 hintText: _localizations!.rate,
                 label: Text(_localizations!.rate),
