@@ -95,23 +95,6 @@ class AppRoutes {
               : BlocProvider(create: (_) => DashboardBloc(), child: DashboardScreen(userId: state.pathParameters['userId'])),
             ),
             routes: [
-              // GoRoute(
-              //   path: transactionDetailsScreen,
-              //   pageBuilder: (context, state) { 
-              //     var data = state.extra == null ? null : state.extra as Map;
-              //     return defaultPageBuilder(
-              //       context,
-              //       state,
-              //       Preferences.getString(key: AppStrings.prefUserId).isNotEmpty && data != null
-              //       ? TransactionSubDetailsScreen(
-              //         transactionBloc: data['transaction_bloc']!,
-              //         transactionId: data['transaction_id'],
-              //         title: data['title'],
-              //       )
-              //       : const EmptyPage()
-              //     );
-              //   }
-              // ),
               GoRoute(
                 path: profileScreen,
                 pageBuilder: (context, state) { 

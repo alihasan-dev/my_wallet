@@ -18,7 +18,7 @@ abstract class MyAppTheme {
 
   static const Duration animationDuration = Duration(milliseconds: 240);
 
-  ///method used to convert color to material color
+  ///method to convert color to material color
   static MaterialColor createMaterialColor(Color? color) {
     if (color == null) return Colors.indigo;
     final strengths = <double>[.05];
@@ -90,12 +90,7 @@ abstract class MyAppTheme {
         //label style
         labelStyle: getMediumStyle(color: Colors.grey),
         //error style
-        errorStyle: getRegularStyle(color: Colors.red),
-        //enable border
-        // outlineBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(color: Colors.grey, width: AppSize.s4),
-        //   borderRadius: BorderRadius.all(Radius.circular(AppSize.s8))
-        // )
+        errorStyle: getRegularStyle(color: Colors.red)
         
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
