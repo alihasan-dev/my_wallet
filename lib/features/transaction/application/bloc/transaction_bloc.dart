@@ -74,6 +74,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionSubDeleteEvent>(_onDeleteSubTransactionDetails);
 
     dashboardBloc.stream.listen((event) {
+      if (isClosed) return;
       if(event is DashboardAllUserState) {
         final userState = event;
         var userEvent = userState.allUser.where((item) => item.userId == friendId).toList();

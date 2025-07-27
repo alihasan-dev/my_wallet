@@ -182,7 +182,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
         : AppSize.s20
       ),
       children: [
-        Row(
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(

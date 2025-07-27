@@ -250,7 +250,7 @@ class DashboardWebView extends StatelessWidget {
                                                   margin: const EdgeInsets.only(left: AppSize.s8),
                                                   padding: const EdgeInsets.symmetric(
                                                     vertical: 1.8,
-                                                    horizontal: AppSize.s5
+                                                    horizontal: AppSize.s4
                                                   ),
                                                   decoration: BoxDecoration(
                                                     color: AppColors.primaryColor.withValues(alpha: 0.1),
@@ -260,7 +260,7 @@ class DashboardWebView extends StatelessWidget {
                                                     title: localizations.archive,
                                                     textStyle: getRegularStyle(
                                                       color: AppColors.primaryColor,
-                                                      fontSize: AppSize.s14
+                                                      fontSize: AppSize.s12
                                                     ),
                                                   ),
                                                 )
