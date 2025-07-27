@@ -260,7 +260,7 @@ class DashboardWebView extends StatelessWidget {
                                                     title: localizations.archive,
                                                     textStyle: getRegularStyle(
                                                       color: AppColors.primaryColor,
-                                                      fontSize: AppSize.s12
+                                                      fontSize: 11
                                                     ),
                                                   ),
                                                 )
