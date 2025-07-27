@@ -288,4 +288,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noTransactionDetailsFound => 'कोई लेनदेन विवरण नहीं मिला';
+
+  @override
+  String get pin => 'पिन';
+
+  @override
+  String get archive => 'आर्काइव';
 }

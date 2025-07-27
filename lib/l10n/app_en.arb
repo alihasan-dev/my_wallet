@@ -99,5 +99,7 @@
   "rate": "Rate per piece",
   "quantity": "Quantity",
   "total": "Total",
-  "noTransactionDetailsFound": "No transaction details found"
+  "noTransactionDetailsFound": "No transaction details found",
+  "pin": "Pin",
+  "archive": "Archive"
 }

@@ -99,5 +99,7 @@
   "rate": "दर प्रति पीस",
   "quantity": "मात्रा",
   "total": "कुल",
-  "noTransactionDetailsFound": "कोई लेनदेन विवरण नहीं मिला"
+  "noTransactionDetailsFound": "कोई लेनदेन विवरण नहीं मिला",
+  "pin": "पिन",
+  "archive": "आर्काइव"
 }

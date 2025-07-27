@@ -59,13 +59,13 @@ class DashboardWebView extends StatelessWidget {
                   ),
                   Spacer(),
                   IconButton(
-                    tooltip: 'Archive',
+                    tooltip: localizations.archive,
                     onPressed: () => dashboardBloc.add(DashboardArchieveContactEvent()),
                     icon: const Icon(AppIcons.archive, color: AppColors.white)
                   ),
                   const SizedBox(width: AppSize.s8),
                   IconButton(
-                    tooltip: 'Pin',
+                    tooltip: localizations.pin,
                     onPressed: () => dashboardBloc.add(DashboardPinnedContactEvent()),
                     icon: const Icon(AppIcons.pinOutlineIcon, color: AppColors.white)
                   ),
@@ -257,7 +257,7 @@ class DashboardWebView extends StatelessWidget {
                                                     borderRadius: BorderRadius.circular(AppSize.s4)
                                                   ),
                                                   child: CustomText(
-                                                    title: AppStrings.archive,
+                                                    title: localizations.archive,
                                                     textStyle: getRegularStyle(
                                                       color: AppColors.primaryColor,
                                                       fontSize: AppSize.s14

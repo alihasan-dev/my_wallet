@@ -288,4 +288,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noTransactionDetailsFound => 'No transaction details found';
+
+  @override
+  String get pin => 'Pin';
+
+  @override
+  String get archive => 'Archive';
 }
