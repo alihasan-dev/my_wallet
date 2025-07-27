@@ -107,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              Icon(data.icon, color: AppColors.grey),
+                              Icon(data.icon, color: AppColors.primaryColor),
                               const SizedBox(width: AppSize.s12),
                               Expanded(
                                 child: Column(
@@ -152,6 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             scale: 0.8,
                             child: CupertinoSwitch(
                               value: data.switchValue, 
+                              activeTrackColor: AppColors.primaryColor,
                               onChanged: (value) => onChangeSwith(index: index, value: value)
                             ),
                           ),

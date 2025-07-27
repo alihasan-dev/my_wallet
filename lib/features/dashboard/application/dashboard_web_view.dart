@@ -272,12 +272,17 @@ class DashboardWebView extends StatelessWidget {
                                   ),
                                   Row(
                                     children: [
-                                      CustomText(
-                                        title: data.amount.amountFormat(type: data.type),
-                                        textStyle: getMediumStyle(
-                                          color: data.type == AppStrings.transfer
-                                          ? AppColors.red
-                                          : AppColors.green
+                                      AnimatedSize(
+                                        duration: MyAppTheme.animationDuration,
+                                        child: data.amount.isEmpty
+                                        ? const SizedBox.shrink()
+                                        : CustomText(
+                                          title: data.amount.amountFormat(type: data.type),
+                                          textStyle: getMediumStyle(
+                                            color: data.type == AppStrings.transfer
+                                            ? AppColors.red
+                                            : AppColors.green
+                                          ),
                                         ),
                                       ),
                                       AnimatedSize(
