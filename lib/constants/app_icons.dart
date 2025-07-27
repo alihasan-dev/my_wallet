@@ -41,5 +41,6 @@ class AppIcons {
   static const IconData editIcon = Icons.edit_outlined;
   static const IconData campaignIcon = Icons.campaign_rounded;
   static const IconData barChartIcon = Icons.bar_chart_sharp;
+  static const IconData archive = Icons.archive;
   
 }

@@ -61,7 +61,7 @@
   "reAuthenticate": "पुन: प्रमाणीकृत",
   "viewProfile": "व्यू प्रोफाइल",
   "settings": "सेटिंग्स",
-  "showUnverifiedUser": "शो उनवेरिफ़िएड यूजर",
+  "showUnverifiedUser": "शो आर्चीवड यूजर",
   "forgotPassword": "पासवर्ड भूल गए",
   "forgotPasswordMsg": "अपने खाते से संबद्ध ईमेल पता दर्ज करें और हम आपको आपका पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे",
   "send": "भेजें",

@@ -419,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @showUnverifiedUser.
   ///
   /// In en, this message translates to:
-  /// **'Show Unverified User'**
+  /// **'Show Archived User'**
   String get showUnverifiedUser;
 
   /// No description provided for @forgotPassword.

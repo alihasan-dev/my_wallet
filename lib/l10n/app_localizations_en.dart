@@ -172,7 +172,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get showUnverifiedUser => 'Show Unverified User';
+  String get showUnverifiedUser => 'Show Archived User';
 
   @override
   String get forgotPassword => 'Forgot Password';

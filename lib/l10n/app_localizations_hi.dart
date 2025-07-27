@@ -172,7 +172,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings => 'सेटिंग्स';
 
   @override
-  String get showUnverifiedUser => 'शो उनवेरिफ़िएड यूजर';
+  String get showUnverifiedUser => 'शो आर्चीवड यूजर';
 
   @override
   String get forgotPassword => 'पासवर्ड भूल गए';

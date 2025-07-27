@@ -31,7 +31,8 @@ class DashboardWebView extends StatelessWidget {
               color: AppColors.primaryColor
             ),
           ),
-          Container(
+          AnimatedContainer(
+            duration: MyAppTheme.animationDuration,
             height: AppBar().preferredSize.height,
             width: double.maxFinite,
             color: AppColors.primaryColor,
@@ -56,7 +57,15 @@ class DashboardWebView extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Spacer(),
                   IconButton(
+                    tooltip: 'Archive',
+                    onPressed: () => dashboardBloc.add(DashboardArchieveContactEvent()),
+                    icon: const Icon(AppIcons.archive, color: AppColors.white)
+                  ),
+                  const SizedBox(width: AppSize.s8),
+                  IconButton(
+                    tooltip: 'Pin',
                     onPressed: () => dashboardBloc.add(DashboardPinnedContactEvent()),
                     icon: const Icon(AppIcons.pinOutlineIcon, color: AppColors.white)
                   ),
@@ -234,26 +243,28 @@ class DashboardWebView extends StatelessWidget {
                                                 title: data.name,
                                                 textStyle: getSemiBoldStyle(),
                                               ),
-                                              Visibility(
-                                                visible: !data.isUserVerified,
-                                                child: Container(
+                                              AnimatedSize(
+                                                duration: MyAppTheme.animationDuration,
+                                                child: !data.isUserVerified
+                                                ? Container(
                                                   margin: const EdgeInsets.only(left: AppSize.s8),
                                                   padding: const EdgeInsets.symmetric(
                                                     vertical: 1.8,
                                                     horizontal: AppSize.s5
                                                   ),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.amber.withValues(alpha: 0.1),
+                                                    color: AppColors.primaryColor.withValues(alpha: 0.1),
                                                     borderRadius: BorderRadius.circular(AppSize.s4)
                                                   ),
                                                   child: CustomText(
-                                                    title: 'Test',
+                                                    title: AppStrings.archive,
                                                     textStyle: getRegularStyle(
-                                                      color: Colors.amber,
+                                                      color: AppColors.primaryColor,
                                                       fontSize: AppSize.s14
                                                     ),
                                                   ),
-                                                ),
+                                                )
+                                                : const SizedBox.shrink()
                                               ),
                                             ],
                                           ),

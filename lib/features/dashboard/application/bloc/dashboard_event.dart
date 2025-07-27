@@ -66,6 +66,8 @@ class DashboardCancelSelectedContactEvent extends DashboardEvent {}
 
 class DashboardPinnedContactEvent extends DashboardEvent {}
 
+class DashboardArchieveContactEvent extends DashboardEvent {}
+
 class DashboardBiometricAuthEvent extends DashboardEvent {
   bool isAuthenticated;
 

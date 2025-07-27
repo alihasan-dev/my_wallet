@@ -39,6 +39,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardSelectedContactEvent>(_onSelectContactEvent);
     on<DashboardCancelSelectedContactEvent>(_onCancelSelectedContactEvent);
     on<DashboardPinnedContactEvent>(_onPinnedContact);
+    on<DashboardArchieveContactEvent>(_onArchiveContact);
     on<DashboardBiometricAuthEvent>(_onBiometricAuthenticated);
     on<DashboardTransactionDetailsWindowCloseEvent>(_onCloseTransactionWindow);
 
@@ -106,6 +107,20 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         if(listUser[i].isSelected) {
           final docReference = firebaseStoreInstance.doc(userId).collection('friends').doc(listUser[i].userId);
           batch.update(docReference, {'pinned': !listUser[i].isPinned});
+          listUser[i].isSelected = false;
+        }
+      }
+      batch.commit();
+    }
+  }
+
+  Future<void> _onArchiveContact(DashboardArchieveContactEvent event, Emitter emit) async {
+    if(listUser.isNotEmpty) {
+      final batch = FirebaseFirestore.instance.batch();
+      for(int i = 0; i < listUser.length; i++) {
+        if(listUser[i].isSelected) {
+          final docReference = firebaseStoreInstance.doc(userId).collection('friends').doc(listUser[i].userId);
+          batch.update(docReference, {'isVerified': !listUser[i].isUserVerified});
           listUser[i].isSelected = false;
         }
       }
