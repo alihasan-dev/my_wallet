@@ -104,6 +104,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                   TextField(
                     controller: phoneTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: maskFormatter.unmaskText(value))),
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: AppStrings.phone,
                       errorText: errorPhone.isNotEmpty

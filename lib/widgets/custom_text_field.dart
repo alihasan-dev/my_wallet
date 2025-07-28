@@ -18,20 +18,23 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
   final bool? isMandatory;
   final List<TextInputFormatter>? textInputFormatter;
-  final VoidCallback? onShowPassword;
+  final VoidCallback? onSuffixTap;
+  final TextInputType? keyboardType;
   final String? errorText;
   final TextInputAction? textInputAction;
   final Function(String)? onChange;
   final Function(String)? onSubmitted;
   final bool? readOnly;
+  final IconData? suffixIcon;
 
   const CustomTextField({
     required this.title,
     required this.isPasswordField,
     required this.textEditingController,
+    this.keyboardType,
     this.isEnabled,
     this.isMandatory,
-    this.onShowPassword,
+    this.onSuffixTap,
     this.errorText,
     this.onChange,
     this.onSubmitted,
@@ -40,6 +43,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines,
     this.maxLength,
     this.textInputFormatter,
+    this.suffixIcon,
     super.key
   });
 
@@ -81,6 +85,7 @@ class CustomTextField extends StatelessWidget {
           readOnly: readOnly == null || !readOnly! ? false : true,
           maxLength: maxLength,
           inputFormatters: textInputFormatter,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: title,
             counterText: '',
@@ -108,14 +113,20 @@ class CustomTextField extends StatelessWidget {
                   : AppColors.red
               )
             ),
-            suffixIcon: onShowPassword == null
-            ? null
-            : InkWell(
-              onTap: onShowPassword,
-              child: Icon(
+            suffixIcon: suffixIcon != null
+            ? InkWell(
+                onTap: onSuffixTap,
+                child: Icon(suffixIcon, color: AppColors.grey),
+              )
+            : onSuffixTap == null
+              ? null
+              : InkWell(
+                onTap: onSuffixTap,
+                child: Icon(
                 isPasswordField 
                 ? AppIcons.visibilityIcon
-                : AppIcons.visibilityOffIcon
+                : AppIcons.visibilityOffIcon,
+                color: AppColors.grey
               ),
             ),
           ),

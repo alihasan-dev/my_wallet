@@ -45,7 +45,7 @@ class SignupMobileView extends StatelessWidget {
           isPasswordField: signupScreenState.showPassword,
           isMandatory: true,
           textEditingController: signupScreenState.passwordTextController,
-          onShowPassword: () => signupBloc.add(SignupShowPasswordEvent(isVisible: signupScreenState.showPassword)),
+          onSuffixTap: () => signupBloc.add(SignupShowPasswordEvent(isVisible: signupScreenState.showPassword)),
           errorText: signupScreenState.errorPassword,
           onChange: (value) => signupBloc.add(SignupPasswordChangeEvent(password: value)),
           onSubmitted: (_) => signupBloc.add(SignupSubmitEvent(

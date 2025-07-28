@@ -34,7 +34,7 @@ class LoginMobileView extends StatelessWidget {
           isPasswordField: loginScreenState.showPassword,
           isMandatory: true,
           textEditingController: loginScreenState.passwordTextController,
-          onShowPassword: () => loginBloc.add(LoginShowPasswordEvent(isVisible: loginScreenState.showPassword)),
+          onSuffixTap: () => loginBloc.add(LoginShowPasswordEvent(isVisible: loginScreenState.showPassword)),
           errorText: loginScreenState.errorPassword,
           onChange: (value) => loginBloc.add(LoginPasswordChangeEvent(password: value)),
           onSubmitted: (_) => loginBloc.add(LoginSubmitEvent(email: loginScreenState.emailTextController.text, password: loginScreenState.passwordTextController.text, isRememberMe: loginScreenState.isRememberMe)),

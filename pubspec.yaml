@@ -63,6 +63,8 @@ dependencies:
   firebase_crashlytics: ^4.3.6
   firebase_analytics: ^11.4.6
   text_marquee: ^0.0.2
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -230,7 +231,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           textEditingController: userIdTextController,
           readOnly: true,
           isMandatory: true,
-          onShowPassword: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
+          onSuffixTap: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
           errorText: errorUserId,
         ),
         CustomTextField(
@@ -240,6 +241,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           isMandatory: true,
           textEditingController: phoneTextController,
           errorText: errorPhone,
+          keyboardType: TextInputType.number,
           maxLength: 12,
           textInputFormatter: [maskFormatter],
           onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
@@ -267,7 +269,9 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           title: _localizations!.address, 
           isPasswordField: false, 
           textEditingController: addressTextController,
-          errorText: errorAddress
+          errorText: errorAddress,
+          suffixIcon: Icons.location_pin,
+          onSuffixTap: () => _getCurrentLocation(context),
         ),
         const SizedBox(height: AppSize.s4),
         Row(
@@ -456,5 +460,13 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
         );
       }
     );
+  }
+
+  Future<void> _getCurrentLocation(BuildContext context) async {
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100
+    );
+    Position position = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
   }
 }
