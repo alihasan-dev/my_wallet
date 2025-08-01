@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/utils/location_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../constants/app_theme.dart';
 import '../../../widgets/custom_image_widget.dart';
@@ -53,6 +54,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   String errorPhone = '';
   String errorAddress = '';
   bool isFetchProfileData = false;
+  late LocationService _locationService;
 
   //US Phone Number Format
   var maskFormatter = MaskTextInputFormatter(
@@ -72,6 +74,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
 
   @override
   void didChangeDependencies() {
+    _locationService = LocationService(context);
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
   }
@@ -270,8 +273,8 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           isPasswordField: false, 
           textEditingController: addressTextController,
           errorText: errorAddress,
-          suffixIcon: Icons.location_pin,
-          onSuffixTap: () => _getCurrentLocation(context),
+          suffixIcon: kIsWeb ? null : Icons.location_pin,
+          onSuffixTap: kIsWeb ? null : () => _getCurrentLocation(context),
         ),
         const SizedBox(height: AppSize.s4),
         Row(
@@ -463,10 +466,8 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   Future<void> _getCurrentLocation(BuildContext context) async {
-    final LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100
-    );
-    Position position = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
+    var address = await _locationService.getCurrentAddress();
+    if (address.isEmpty) return;
+    addressTextController.text = address;
   }
 }

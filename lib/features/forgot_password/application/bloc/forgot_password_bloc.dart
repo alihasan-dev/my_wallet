@@ -24,8 +24,8 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     on<ForgotPasswordSubmitEvent>(_onForgotPassword);
 
     _streamSubscription = _firestoreInstance.snapshots().listen((event) {
-      userEmails.clear()
-;      for(var item in event.docs) {
+      userEmails.clear();      
+      for(var item in event.docs) {
         var userData = item.data() as Map;
         if(userData.isNotEmpty) {
           userEmails.add(userData['email']);
