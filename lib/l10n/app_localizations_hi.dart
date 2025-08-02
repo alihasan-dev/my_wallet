@@ -250,7 +250,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get clearSelection => 'चयनित हटाएँ';
 
   @override
-  String get importantNote => 'महत्वपूर्ण नोट';
+  String get importantNote => 'महत्वपूर्ण सूचना';
 
   @override
   String get signupWarningMsg =>

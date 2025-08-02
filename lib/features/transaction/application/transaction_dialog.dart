@@ -35,7 +35,7 @@ class AddTransactionDialog extends StatefulWidget {
 
 class _AddTransactionDialogState extends State<AddTransactionDialog> {
 
-  bool errorAmount = false;
+  String errorAmount = '';
   bool errorDate = false;
   bool isFirst = true;
   DateTime? transactionDate;
@@ -75,7 +75,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
           builder: (context, state){
             switch (state) {
               case TransactionAmountFieldState _:
-                errorAmount = state.isAmountEmpty;
+                errorAmount = state.errorAmountMsg;
                 break;
               case TransactionTypeChangeState _:
                 transactionType = state.type;
@@ -117,10 +117,11 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    maxLength: 8,
                     decoration: InputDecoration(
-                      errorText: errorAmount
-                      ? AppStrings.emptyAmount
-                      : null,
+                      errorText: errorAmount.isBlank
+                      ? null
+                      : errorAmount,
                       hintText: AppStrings.amount,
                       label: Text('${_localizations!.amount} *'),
                       hintStyle: const TextStyle(color: AppColors.grey),
@@ -133,6 +134,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                           : AppColors.black
                         ),
                       ),
+                      counterText: ''
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),

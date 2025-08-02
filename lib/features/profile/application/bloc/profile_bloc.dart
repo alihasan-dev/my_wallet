@@ -62,6 +62,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onEmailChange(ProfileEmailChangeEvent event, Emitter emit) {
+    if (friendId.isNotEmpty && event.email.isEmpty) {
+      emit(ProfileErrorEmailState(message: AppStrings.emptyString));
+      return;
+    }
     if(event.email.isEmpty) {
       emit(ProfileErrorEmailState(message: AppStrings.emptyEmail));
     } else if(!event.email.isValidEmail) {
@@ -72,6 +76,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
+    if (friendId.isEmpty && event.text.isEmpty) {
+      emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
+      return;
+    }
     if(event.text.length < 10) {
       emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
     } else {
@@ -133,25 +141,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<bool> fieldValidation(ProfileUpdateEvent event, Emitter emit) async {
-    if(event.profileData['user_id'].isEmpty) {
+    bool result = true;
+    if(event.profileData['user_id'].toString().isBlank) {
       emit(ProfileErrorIdState(message: AppStrings.emptyEmail));
-      return false;
-    } else if(event.profileData['email'].isEmpty) {
-      emit(ProfileErrorEmailState(message: AppStrings.emptyEmail));
-      return false;
-    } else if(event.profileData['name'].isEmpty) {
-      emit(ProfileErrorNameState(message: AppStrings.emptyEmail));
-      return false;
-    } else if(event.profileData['phone'].isNotEmpty) {
-      var data = event.profileData['phone'];
-      if(data.length < 10) return false;
-      return true;
-    } else if (!await checkConnectivity.hasConnection) {
-      emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
-      return false;
-    } else {
-      return true;
+      result = false;
+    } 
+    if (!event.profileData['email'].toString().isBlank) { 
+      if (!event.profileData['email'].toString().isValidEmail) {
+        emit(ProfileErrorEmailState(message: AppStrings.invalidEmail));
+        result = false;
+      }
     }
+    if(event.profileData['name'].toString().isBlank) {
+      emit(ProfileErrorNameState(message: AppStrings.emptyName));
+      result = false;
+    } 
+    if(!event.profileData['phone'].toString().isBlank) {
+      var data = event.profileData['phone'].toString();
+      if(data.length < 10) result = false;
+    }
+    if (result && !await checkConnectivity.hasConnection) {
+      emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
+      result = false;
+    } 
+    return result;
   }
   
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +137,7 @@ mixin Helper {
         },
       );
     } else {
-      debugPrint(AppStrings.dialogShowingMessage);
+      log(AppStrings.dialogShowingMessage);
     }
   }
 
@@ -145,7 +146,7 @@ mixin Helper {
       isLoadingVisible = false;
       context.pop();
     } else {
-      debugPrint(AppStrings.dialogNotShowingMessage);
+      log(AppStrings.dialogNotShowingMessage);
     }
   }
 

@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @userId.
   ///
   /// In en, this message translates to:
-  /// **'User Id'**
+  /// **'User ID'**
   String get userId;
 
   /// No description provided for @name.

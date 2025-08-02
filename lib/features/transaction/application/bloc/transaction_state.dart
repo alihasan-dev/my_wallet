@@ -19,8 +19,8 @@ class TransactionLoadingState extends TransactionState {}
 class TransactionDetailsLoadingState extends TransactionState {}
 
 class TransactionAmountFieldState extends TransactionState {
-  bool isAmountEmpty;
-  TransactionAmountFieldState({required this.isAmountEmpty});
+  String errorAmountMsg;
+  TransactionAmountFieldState({this.errorAmountMsg = ''});
 }
 
 class TransactionUserNameFieldState extends TransactionState {

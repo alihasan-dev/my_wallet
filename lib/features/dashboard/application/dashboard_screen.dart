@@ -24,6 +24,7 @@ import '../../../features/dashboard/application/add_user_dialog.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
+import '../../../widgets/transaction_deleted_widget.dart';
 part 'dashboard_web_view.dart';
 
 class DashboardScreen extends StatefulWidget {

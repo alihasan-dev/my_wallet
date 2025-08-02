@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:pdf/pdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   String userId = '';
   late AudioPlayer audioPlayer;
   var transactionDetailsList = <TransactionDetailsModel>[];
+  int lastTransactionDate = 0;
 
   TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
@@ -73,12 +75,23 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionClearSubSelectionEvent>(_onClearSubSelectedTransaction);
     on<TransactionSubDeleteEvent>(_onDeleteSubTransactionDetails);
 
+    ///get last transaction time initially 
+    firebaseStoreInstance.get().then((data) {
+      var profileData = data.data() as Map;
+      if (profileData.isNotEmpty) {
+        lastTransactionDate = profileData['lastTransactionTime'] == null
+        ? -1
+        : profileData['lastTransactionTime'].millisecondsSinceEpoch;
+      }
+    });
+
     dashboardBloc.stream.listen((event) {
       if (isClosed) return;
       if(event is DashboardAllUserState) {
         final userState = event;
         var userEvent = userState.allUser.where((item) => item.userId == friendId).toList();
         if(userEvent.isNotEmpty) {
+          lastTransactionDate = userEvent.first.lastTransactionDate;
           add(TransactionProfileUpdateEvent(userName: userEvent.first.name, profileImage: userEvent.first.profileImg));
         }
       }
@@ -123,9 +136,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
       try {
         await batch.commit();
-        debugPrint("Documents deleted successfully");
+        log("Documents deleted successfully");
       } catch (e) {
-        debugPrint("Error deleting documents: $e");
+        log("Error deleting documents: $e");
       }
     }
   }
@@ -211,17 +224,23 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> _onDeleteTransaction(TransactionDeleteEvent event, Emitter emit) async {
     if(listTransactionResult.isNotEmpty) {
       final batch = FirebaseFirestore.instance.batch();
+      final savedLastTransaction = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
+      bool isLastTransactionDeleting = false;
       for(final transaction in listTransactionResult) {
         if(transaction.selected) {
+          if (transaction.date.compareTo(savedLastTransaction) == 0) isLastTransactionDeleting = true;
           final docRef = firebaseStoreInstance.collection('transactions').doc(transaction.id);
           batch.delete(docRef);
         }
       }
       try {
         await batch.commit();
-        debugPrint("Documents deleted successfully");
+        log("Documents deleted successfully");
+        if (isLastTransactionDeleting) {
+          firebaseStoreInstance.update({'amount': 'deleted'});
+        }
       } catch (e) {
-        debugPrint("Error deleting documents: $e");
+        log("Error deleting documents: $e");
       }
     }
   }
@@ -300,9 +319,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onChangeAmount(TransactionAmountChangeEvent event, Emitter emit) {
     if (event.amount.isEmpty) {
-      emit(TransactionAmountFieldState(isAmountEmpty: true));
+      emit(TransactionAmountFieldState(errorAmountMsg: AppStrings.emptyAmount));
     } else {
-      emit(TransactionAmountFieldState(isAmountEmpty: false));
+      emit(TransactionAmountFieldState());
     }
   }
 
@@ -354,7 +373,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
-    if (await validation(emit, userName: event.userName, date: event.date, amount: event.amount)) {
+    if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
       if (event.transactionId.isEmpty) {
         firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
         firebaseStoreInstance.update({
@@ -368,9 +387,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  Future<bool> validation(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
+  Future<bool> _validate(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
     if (amount.isBlank) {
-      emit(TransactionAmountFieldState(isAmountEmpty: true));
+      emit(TransactionAmountFieldState(errorAmountMsg: AppStrings.emptyAmount));
+      return false;
+    } else if (int.parse(amount) <= 0) {
+      emit(TransactionAmountFieldState(errorAmountMsg: "Invalid amount"));
       return false;
     } else if (date == null) {
       emit(TransactionDateChangeState(true));

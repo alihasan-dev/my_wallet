@@ -287,7 +287,9 @@ class DashboardWebView extends StatelessWidget {
                                         duration: MyAppTheme.animationDuration,
                                         child: data.amount.isEmpty
                                         ? const SizedBox.shrink()
-                                        : CustomText(
+                                        : data.amount == 'deleted'
+                                          ? TransactionDeletedWidget()
+                                          : CustomText(
                                           title: data.amount.amountFormat(type: data.type),
                                           textStyle: getMediumStyle(
                                             color: data.type == AppStrings.transfer

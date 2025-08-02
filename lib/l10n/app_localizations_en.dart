@@ -57,7 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exitMsg => 'Are you sure you want to exit?';
 
   @override
-  String get userId => 'User Id';
+  String get userId => 'User ID';
 
   @override
   String get name => 'Name';
