@@ -34,10 +34,10 @@ class LocationService with Helper {
       final LocationPermission permission = await _checkLocationPermission();
       switch (permission) {
         case LocationPermission.whileInUse:
-          final LocationSettings locationSettings = LocationSettings(
-            accuracy: LocationAccuracy.best,
-            distanceFilter: 100
-          );
+          // final LocationSettings locationSettings = LocationSettings(
+          //   accuracy: LocationAccuracy.best,
+          //   distanceFilter: 100
+          // );
           Position position = await Geolocator.getCurrentPosition();
           var placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
           if (placemark.isNotEmpty) {

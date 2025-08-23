@@ -94,6 +94,11 @@ class AppStrings {
   static const String loginSuccessNewUserMsg = "User login successfully. Against a new user with profile creation";
   static const String googleSigninFailedMsg = "Oops! Google sign-in failed. Please try again.";
   static const String alreadyHaveAccountMsg = "Welcome back! It seems you already have an account with us. Please log in to continue.";
+  static const String descriptionMsg = "Please enter description";
+  static const String quantityMsg = "Please enter quantity";
+  static const String rateMsg = "Please enter rate";
+  static const String invalidQuantityMsg = "Invalid quantity";
+  static const String invalidRateMsg = "Invalid rate";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';

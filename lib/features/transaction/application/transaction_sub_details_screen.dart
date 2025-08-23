@@ -11,7 +11,7 @@ import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
-import '../../../features/transaction/application/transaction_details_dialog.dart';
+import 'add_transaction_details_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../widgets/custom_text.dart';
@@ -467,7 +467,8 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
       barrierLabel: AppStrings.close,
       pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
-        child: TransactionDetailsDialog(
+        child: AddTransactionDetailsDialog(
+          transactionBloc: widget.transactionBloc,
           onAdd: (String description, String rate, String quantity) {
             if(description.isNotEmpty && rate.isNotEmpty && quantity.isNotEmpty) {
               context.pop();

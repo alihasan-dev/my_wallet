@@ -59,7 +59,7 @@ abstract class MyAppTheme {
       ///app bar theme
       appBarTheme: AppBarTheme(
         centerTitle: true,
-        color: Colors.indigo,
+        backgroundColor: Colors.indigo,
         elevation: AppSize.s4,
         shadowColor: Colors.grey,
         titleTextStyle: getRegularStyle(color: Colors.white),

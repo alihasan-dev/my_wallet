@@ -148,7 +148,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     width: double.maxFinite,
                     child: SliderTheme(
                       data: const SliderThemeData(
-                        showValueIndicator: ShowValueIndicator.always,
+                        showValueIndicator: ShowValueIndicator.onDrag,
                         inactiveTrackColor: Colors.grey
                       ),
                       child: RangeSlider(

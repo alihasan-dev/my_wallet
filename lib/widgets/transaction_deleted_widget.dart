@@ -14,21 +14,15 @@ class TransactionDeletedWidget extends StatelessWidget {
         vertical: AppSize.s2, 
         horizontal: AppSize.s5
       ),
-      child: Row(
-        spacing: 2,
-        children: [
-          Icon(Icons.block, size: 13, color: AppColors.grey),
-          CustomText(
-            title: 'Deleted',
-            textStyle: TextStyle(
-              fontStyle: FontStyle.italic,
-              color: AppColors.grey,
-              fontSize: 13
-            ),
-          ),
-        ],
-      )
+      child: CustomText(
+        title: 'Deleted',
+        textStyle: TextStyle(
+          fontStyle: FontStyle.italic,
+          color: AppColors.grey,
+          fontSize: 13
+        ),
+      ),
     );
   }
-
+  
 }
