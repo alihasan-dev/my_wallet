@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
 import '../../../constants/app_strings.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../utils/check_connectivity.dart';
@@ -14,16 +15,17 @@ import '../../../constants/app_theme.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text.dart';
-import 'bloc/transaction_bloc.dart';
 
 class AddTransactionDetailsDialog extends StatefulWidget {
 
-  final Function(String, String, String) onAdd;
-  final TransactionBloc transactionBloc;
+  // final Function(String, String, String) onAdd;
+  final SubTransactionBloc transactionBloc;
+  final String transactionId;
   const AddTransactionDetailsDialog({
     super.key,
+    required this.transactionId,
     required this.transactionBloc,
-    required this.onAdd
+    // required this.onAdd
   });
 
   @override
@@ -73,7 +75,7 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
           value: widget.transactionBloc,
           child: AnimatedBuilder(
             animation: Listenable.merge([errorDescription, errorQuantity, errorRate]),
-            builder: (_, child) {
+            builder: (_,_) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -170,10 +172,17 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                   const SizedBox(height: AppSize.s20),
                   CustomButton(
                     title: _localizations!.add, 
-                    // onTap: () => widget.onAdd(descriptionText.text, rateText.text, quantityText.text),
                     onTap: () async {
-                      if (await _fieldValidation()) {
-                        widget.onAdd(descriptionText.text, rateText.text, quantityText.text);
+                      if (await _fieldValidation() && context.mounted) {
+                        // widget.onAdd(descriptionText.text, rateText.text, quantityText.text);
+                        widget.transactionBloc.add(SubTransactionAddEvent(
+                          transactionId: widget.transactionId,
+                          description: descriptionText.text,
+                          rate: double.parse(rateText.text),
+                          quantity: int.parse(quantityText.text),
+                          total: double.parse(rateText.text) * int.parse(quantityText.text)
+                        ));
+                        context.pop();
                       }
                     },
                     titleSize: AppSize.s15,

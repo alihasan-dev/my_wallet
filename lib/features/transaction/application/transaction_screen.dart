@@ -700,7 +700,15 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 transactionId = state.transactionId;
                 MyAppTheme.isThreeColumnMode(context)
                 ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionBloc: _transactionBloc, transactionId: state.transactionId, title: state.title)
-                : context.go('/dashboard/${widget.userModel!.userId}/transaction_details', extra: {'transaction_bloc': _transactionBloc, 'transaction_id': state.transactionId, 'user_data': widget.userModel, 'title': state.title});
+                : context.go(
+                    '/dashboard/${widget.userModel!.userId}/transaction_details', 
+                    extra: {
+                      'friend_id': widget.userModel?.userId,
+                      'transaction_id': state.transactionId, 
+                      'user_data': widget.userModel, 
+                      'title': state.title
+                    }
+                  );
               }
               break;
             case TransactionClearTransactionIdState _:

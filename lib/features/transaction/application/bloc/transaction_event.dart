@@ -88,11 +88,11 @@ class TransactionSelectListItemEvent extends TransactionEvent {
 
 class TransactionDeleteEvent extends TransactionEvent {}
 
-class TransactionSubDeleteEvent extends TransactionEvent {
-  String transactionId;
+// class TransactionSubDeleteEvent extends TransactionEvent {
+//   String transactionId;
 
-  TransactionSubDeleteEvent({required this.transactionId});
-}
+//   TransactionSubDeleteEvent({required this.transactionId});
+// }
 
 class TransactionEditEvent extends TransactionEvent {}
 
@@ -112,27 +112,27 @@ class TransactionDetailsEvent extends TransactionEvent {
   TransactionDetailsEvent({required this.transactionId});
 }
 
-class TransactionAddDetailsEvent extends TransactionEvent {
-  String transactionId;
-  String description;
-  double rate;
-  int quantity;
-  double total;
-  TransactionAddDetailsEvent({
-    required this.transactionId,
-    required this.description,
-    required this.rate,
-    required this.quantity,
-    required this.total
-  });
-}
+// class TransactionAddDetailsEvent extends TransactionEvent {
+//   String transactionId;
+//   String description;
+//   double rate;
+//   int quantity;
+//   double total;
+//   TransactionAddDetailsEvent({
+//     required this.transactionId,
+//     required this.description,
+//     required this.rate,
+//     required this.quantity,
+//     required this.total
+//   });
+// }
 
 class TransactionClearTransactionIdEvent extends TransactionEvent {}
 
 class TransactionSubDetailsEvent extends TransactionEvent {}
 
-class TransactionSelectSubDetailsEvent extends TransactionEvent {
-  int selectedIndex;
+// class TransactionSelectSubDetailsEvent extends TransactionEvent {
+//   int selectedIndex;
 
-  TransactionSelectSubDetailsEvent({this.selectedIndex = -1});
-}
+//   TransactionSelectSubDetailsEvent({this.selectedIndex = -1});
+// }

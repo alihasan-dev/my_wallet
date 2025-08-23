@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wallet/features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
 import 'package:my_wallet/features/transaction/application/transaction_sub_details_screen.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:my_wallet/constants/app_icons.dart';
@@ -132,19 +133,26 @@ class TransactionDetailsState extends State<TransactionDetails> {
                     ),
                   ),
                 ),
-                child: TransactionSubDetailsScreen(
+                child: BlocProvider(
                   key: ValueKey(transactionId),
-                  transactionBloc: _transactionBloc!, 
-                  transactionId: transactionId,
-                  title: title,
-                  closeButton: IconButton(
-                    tooltip: localizations.close,
-                    onPressed: () {
-                      context.read<DashboardBloc>().add(DashboardTransactionDetailsWindowCloseEvent());
-                      toggleTransactionDetailsColumn();
-                    }, 
-                    icon: const Icon(AppIcons.closeIcon)
+                  create: (_) => SubTransactionBloc(
+                    friendId: widget.userModel.userId, 
+                    transactionId: transactionId
                   ),
+                  child: TransactionSubDetailsScreen(
+                    key: ValueKey(transactionId),
+                    // transactionBloc: _transactionBloc!, 
+                    transactionId: transactionId,
+                    title: title,
+                    closeButton: IconButton(
+                      tooltip: localizations.close,
+                      onPressed: () {
+                        context.read<DashboardBloc>().add(DashboardTransactionDetailsWindowCloseEvent());
+                        toggleTransactionDetailsColumn();
+                      }, 
+                      icon: const Icon(AppIcons.closeIcon)
+                    ),
+                  )
                 ),
               );
             },

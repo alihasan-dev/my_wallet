@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
 import '../constants/app_theme.dart';
 import '../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../features/dashboard/application/dashboard_screen.dart';
@@ -128,7 +129,6 @@ class AppRoutes {
                     Preferences.getString(key: AppStrings.prefUserId).isNotEmpty && data != null
                     ? TransactionDetails(
                         key: Key((data)['user_data'].userId),
-                        // key: Key(data as Map ? data.userId : data['user_data'].userId),
                         userModel: (data)['user_data'],
                         dashboardBloc: context.read<DashboardBloc>(),
                       )
@@ -157,10 +157,12 @@ class AppRoutes {
                       return defaultPageBuilder(
                         context,
                         state,
-                        TransactionSubDetailsScreen(
-                          transactionBloc: data!['transaction_bloc']!,
-                          transactionId: data['transaction_id'],
-                          title: data['title'],
+                        BlocProvider(
+                          create: (_) => SubTransactionBloc(friendId: data['friend_id'], transactionId: data['transaction_id']),
+                          child: TransactionSubDetailsScreen(
+                            transactionId: data!['transaction_id'],
+                            title: data['title'],
+                          ),
                         )
                       );
                     }
