@@ -699,7 +699,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               if (state.transactionId.isNotEmpty) {
                 transactionId = state.transactionId;
                 MyAppTheme.isThreeColumnMode(context)
-                ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionBloc: _transactionBloc, transactionId: state.transactionId, title: state.title)
+                ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionId: state.transactionId, title: state.title)
                 : context.go(
                     '/dashboard/${widget.userModel!.userId}/transaction_details', 
                     extra: {

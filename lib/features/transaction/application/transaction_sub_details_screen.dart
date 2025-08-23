@@ -41,7 +41,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
 
   AppLocalizations? _localizations;
   List<TransactionDetailsModel> transactionDetailsList = [];
-  bool isLoading = false;
+  bool isLoading = true;
   late SubTransactionBloc subTransactionBloc;
 
   @override
@@ -324,7 +324,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                                     ? AppColors.backgroundColorDark 
                                     : AppColors.white, 
                                     child: CustomText(
-                                      title: data.quantity.toStringAsFixed(0), 
+                                      title: data.quantity.toStringAsFixed(0).currencyFormat, 
                                       textColor: Helper.isDark 
                                       ? AppColors.white.withValues(alpha: 0.9) 
                                       : AppColors.black,
@@ -391,7 +391,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSize.s10, 
@@ -411,6 +411,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                       ),
                     ),
                     Expanded(
+                      flex: 2,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSize.s10, 
@@ -420,6 +421,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                         ? AppColors.backgroundColorDark
                         : AppColors.white, 
                         child: CustomText(
+                          textAlign: TextAlign.end,
                           title: (transactionDetailsList.fold(0.0, (p1, p2) => p1 + p2.total)).balanceFormat,
                           textStyle: getSemiBoldStyle(),
                         ),

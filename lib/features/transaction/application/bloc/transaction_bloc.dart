@@ -38,7 +38,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late DateFormat dateFormat;
   String userId = '';
   late AudioPlayer audioPlayer;
-  var transactionDetailsList = <TransactionDetailsModel>[];
+  // var transactionDetailsList = <TransactionDetailsModel>[];
   int lastTransactionDate = 0;
 
   TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
@@ -70,9 +70,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     // on<TransactionDetailsEvent>(_onFetchTransactionDetails);
     // on<TransactionAddDetailsEvent>(_onAddTransactionDetails);
     on<TransactionClearTransactionIdEvent>(_onClearTransactionId);
-    on<TransactionSubDetailsEvent>(_onFetchTransactionSubDetailsEvent);
+    // on<TransactionSubDetailsEvent>(_onFetchTransactionSubDetailsEvent);
     // on<TransactionSelectSubDetailsEvent>(_onSelectSubTransactionDetails);
-    on<TransactionClearSubSelectionEvent>(_onClearSubSelectedTransaction);
+    // on<TransactionClearSubSelectionEvent>(_onClearSubSelectedTransaction);
     // on<TransactionSubDeleteEvent>(_onDeleteSubTransactionDetails);
 
     ///get last transaction time initially 
@@ -147,14 +147,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionClearTransactionIdState());
   }
 
-  void _onClearSubSelectedTransaction(TransactionClearSubSelectionEvent event, Emitter emit) {
-    if (transactionDetailsList.isNotEmpty) {
-      for (var item in transactionDetailsList) {
-        item.isSelected = false;
-      }
-      emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
-    }
-  }
+  // void _onClearSubSelectedTransaction(TransactionClearSubSelectionEvent event, Emitter emit) {
+  //   if (transactionDetailsList.isNotEmpty) {
+  //     for (var item in transactionDetailsList) {
+  //       item.isSelected = false;
+  //     }
+  //     emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+  //   }
+  // }
 
   // void _onSelectSubTransactionDetails(TransactionSelectSubDetailsEvent event, Emitter emit) {
   //   if (transactionDetailsList.isNotEmpty) {
@@ -192,9 +192,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   //   });
   // }
 
-  void _onFetchTransactionSubDetailsEvent(TransactionSubDetailsEvent event, Emitter emit) {
-    emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
-  }
+  // void _onFetchTransactionSubDetailsEvent(TransactionSubDetailsEvent event, Emitter emit) {
+  //   emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+  // }
 
   void _initializeAudioPlayer() => audioPlayer = AudioPlayer();
 

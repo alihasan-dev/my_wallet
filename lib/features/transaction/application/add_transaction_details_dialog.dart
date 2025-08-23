@@ -125,7 +125,7 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                     controller: quantityText,
                     onChanged: _onQuantityTextChange,
                     keyboardType: TextInputType.number,
-                    maxLength: 5,
+                    maxLength: 4,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: _localizations!.quantity,
@@ -149,7 +149,7 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                     controller: rateText,
                     onChanged: _onRateTextChange,
                     keyboardType: TextInputType.number,
-                    maxLength: 8,
+                    maxLength: 6,
                     textInputAction: TextInputAction.done,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
@@ -174,7 +174,6 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                     title: _localizations!.add, 
                     onTap: () async {
                       if (await _fieldValidation() && context.mounted) {
-                        // widget.onAdd(descriptionText.text, rateText.text, quantityText.text);
                         widget.transactionBloc.add(SubTransactionAddEvent(
                           transactionId: widget.transactionId,
                           description: descriptionText.text,

@@ -101,5 +101,6 @@
   "total": "Total",
   "noTransactionDetailsFound": "No transaction details found",
   "pin": "Pin",
-  "archive": "Archive"
+  "archive": "Archive",
+  "deleted": "Deleted"
 }

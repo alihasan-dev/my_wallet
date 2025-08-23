@@ -655,6 +655,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Archive'**
   String get archive;
+
+  /// No description provided for @deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deleted;
 }
 
 class _AppLocalizationsDelegate

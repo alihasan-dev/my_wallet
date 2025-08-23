@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:my_wallet/l10n/app_localizations.dart';
 import '../constants/app_size.dart';
 import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 
 class TransactionDeletedWidget extends StatelessWidget {
-
-  const TransactionDeletedWidget({super.key});
+  final AppLocalizations appLocalization;
+  const TransactionDeletedWidget({super.key, required this.appLocalization});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class TransactionDeletedWidget extends StatelessWidget {
         horizontal: AppSize.s5
       ),
       child: CustomText(
-        title: 'Deleted',
+        title: appLocalization.deleted,
         textStyle: TextStyle(
           fontStyle: FontStyle.italic,
           color: AppColors.grey,

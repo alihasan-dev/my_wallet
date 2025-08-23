@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wallet/utils/check_connectivity.dart';
-
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/preferences.dart';
 import '../../domain/transaction_details_model.dart';
@@ -30,6 +28,7 @@ class SubTransactionBloc extends Bloc<SubTransactionEvent, SubTransactionState>{
     on<SubTransactionAddEvent>(_onAddTransactionDetails);
     on<SubTransactionDeleteEvent>(_onDeleteSubTransactionDetails);
     on<SubTransactionSelectDetailsEvent>(_onSelectTransactionDetails);
+    on<SubTransactionClearSelectionEvent>(_onClearSubSelectedTransaction);
 
 
     streamSubscriptionTransactionDetails =  firebaseStoreInstance.collection('details').snapshots().listen((event) {
@@ -86,6 +85,15 @@ class SubTransactionBloc extends Bloc<SubTransactionEvent, SubTransactionState>{
     if (transactionDetailsList.isNotEmpty) {
       transactionDetailsList[event.selectedIndex].isSelected = !transactionDetailsList[event.selectedIndex].isSelected;
       // emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+      emit(SubTransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
+    }
+  }
+
+  void _onClearSubSelectedTransaction(SubTransactionClearSelectionEvent event, Emitter emit) {
+    if (transactionDetailsList.isNotEmpty) {
+      for (var item in transactionDetailsList) {
+        item.isSelected = false;
+      }
       emit(SubTransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
     }
   }

@@ -101,5 +101,6 @@
   "total": "कुल",
   "noTransactionDetailsFound": "कोई लेनदेन विवरण नहीं मिला",
   "pin": "पिन",
-  "archive": "आर्काइव"
+  "archive": "आर्काइव",
+  "deleted": "मिटा दिया गया"
 }

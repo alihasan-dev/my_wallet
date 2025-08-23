@@ -294,4 +294,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get archive => 'Archive';
+
+  @override
+  String get deleted => 'Deleted';
 }

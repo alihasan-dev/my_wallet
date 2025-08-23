@@ -294,4 +294,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get archive => 'आर्काइव';
+
+  @override
+  String get deleted => 'मिटा दिया गया';
 }

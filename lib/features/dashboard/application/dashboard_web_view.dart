@@ -253,13 +253,13 @@ class DashboardWebView extends StatelessWidget {
                                                     horizontal: AppSize.s4
                                                   ),
                                                   decoration: BoxDecoration(
-                                                    color: AppColors.primaryColor.withValues(alpha: 0.1),
+                                                    color: AppColors.orange.withValues(alpha: 0.1),
                                                     borderRadius: BorderRadius.circular(AppSize.s4)
                                                   ),
                                                   child: CustomText(
                                                     title: localizations.archive,
                                                     textStyle: getRegularStyle(
-                                                      color: AppColors.primaryColor,
+                                                      color: AppColors.orange,
                                                       fontSize: 11
                                                     ),
                                                   ),
@@ -288,7 +288,7 @@ class DashboardWebView extends StatelessWidget {
                                         child: data.amount.isEmpty
                                         ? const SizedBox.shrink()
                                         : data.amount == 'deleted'
-                                          ? TransactionDeletedWidget()
+                                          ? TransactionDeletedWidget(appLocalization: localizations)
                                           : CustomText(
                                           title: data.amount.amountFormat(type: data.type),
                                           textStyle: getMediumStyle(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wallet/features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
-import 'package:my_wallet/features/transaction/application/transaction_sub_details_screen.dart';
+import '../../../features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
+import '../../../features/transaction/application/transaction_sub_details_screen.dart';
 import '../../../l10n/app_localizations.dart';
-import 'package:my_wallet/constants/app_icons.dart';
+import '../../../constants/app_icons.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../features/dashboard/domain/user_model.dart';
@@ -29,7 +29,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
 
   late final ValueNotifier<bool> _displayProfileColumn;
   late final ValueNotifier<bool> _displayTransactionDetailsColumn;
-  TransactionBloc? _transactionBloc;
+  // TransactionBloc? _transactionBloc;
   String transactionId = '';
   String title = '';
 
@@ -47,7 +47,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
     _displayProfileColumn.value = !_displayProfileColumn.value;
   } 
 
-  void toggleTransactionDetailsColumn({TransactionBloc? transactionBloc, String? transactionId, String? title}) {
+  void toggleTransactionDetailsColumn({String? transactionId, String? title}) {
     if (_displayTransactionDetailsColumn.value && title == null) {
       _displayTransactionDetailsColumn.value = false;
     } else {
@@ -56,7 +56,7 @@ class TransactionDetailsState extends State<TransactionDetails> {
     if(_displayProfileColumn.value) {
       _displayProfileColumn.value = false;
     }
-    _transactionBloc = transactionBloc;
+    // _transactionBloc = transactionBloc;
     this.transactionId = transactionId ?? '';
     this.title = title ?? '';
     setState(() {});
