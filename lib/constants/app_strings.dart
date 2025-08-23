@@ -99,6 +99,11 @@ class AppStrings {
   static const String rateMsg = "Please enter rate";
   static const String invalidQuantityMsg = "Invalid quantity";
   static const String invalidRateMsg = "Invalid rate";
+  static const String phoneNumberAlreadyExist = "Phone number already exist";
+  static const String phoneNumberAlreadyExistMsg = "Phone number is already associated with other user";
+  static const String emailSentForgotPasswordMsg = "Email has been sent successfully, follow the link and reset your password";
+  static const String userDoesNotExist = "User does not exist";
+  static const String userDoesNotExistMsg = "User is not registered with this email.";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';

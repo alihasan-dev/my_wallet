@@ -38,7 +38,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late DateFormat dateFormat;
   String userId = '';
   late AudioPlayer audioPlayer;
-  // var transactionDetailsList = <TransactionDetailsModel>[];
   int lastTransactionDate = 0;
 
   TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
@@ -67,13 +66,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionEditEvent>(_onEditTransaction);
     on<TransactionClearSelectionEvent>(_onClearSelectionTransactionEvent);
     on<TransactionShowDetailsEvent>(_onShowTransactionDetails);
-    // on<TransactionDetailsEvent>(_onFetchTransactionDetails);
-    // on<TransactionAddDetailsEvent>(_onAddTransactionDetails);
     on<TransactionClearTransactionIdEvent>(_onClearTransactionId);
-    // on<TransactionSubDetailsEvent>(_onFetchTransactionSubDetailsEvent);
-    // on<TransactionSelectSubDetailsEvent>(_onSelectSubTransactionDetails);
-    // on<TransactionClearSubSelectionEvent>(_onClearSubSelectedTransaction);
-    // on<TransactionSubDeleteEvent>(_onDeleteSubTransactionDetails);
 
     ///get last transaction time initially 
     firebaseStoreInstance.get().then((data) {
@@ -125,76 +118,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return super.close();
   }
 
-  // Future<void> _onDeleteSubTransactionDetails(TransactionSubDeleteEvent event, Emitter emit) async {
-  //   if(listTransactionResult.isNotEmpty) {
-  //     final batch = FirebaseFirestore.instance.batch();
-  //     for(final transaction in transactionDetailsList) {
-  //       if(transaction.isSelected) {
-  //         final docRef = firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').doc(transaction.id);
-  //         batch.delete(docRef);
-  //       }
-  //     }
-  //     try {
-  //       await batch.commit();
-  //       log("Documents deleted successfully");
-  //     } catch (e) {
-  //       log("Error deleting documents: $e");
-  //     }
-  //   }
-  // }
-
   void _onClearTransactionId(TransactionClearTransactionIdEvent event, Emitter emit) {
     emit(TransactionClearTransactionIdState());
   }
-
-  // void _onClearSubSelectedTransaction(TransactionClearSubSelectionEvent event, Emitter emit) {
-  //   if (transactionDetailsList.isNotEmpty) {
-  //     for (var item in transactionDetailsList) {
-  //       item.isSelected = false;
-  //     }
-  //     emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
-  //   }
-  // }
-
-  // void _onSelectSubTransactionDetails(TransactionSelectSubDetailsEvent event, Emitter emit) {
-  //   if (transactionDetailsList.isNotEmpty) {
-  //     transactionDetailsList[event.selectedIndex].isSelected = !transactionDetailsList[event.selectedIndex].isSelected;
-  //     emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
-  //   }
-  // }
-
-  // Future<void> _onAddTransactionDetails(TransactionAddDetailsEvent event, Emitter emit) async {
-  //   await firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').add({
-  //     'description': event.description,
-  //     'quantity': event.quantity,
-  //     'rate': event.rate,
-  //     'total': event.total
-  //   });
-  // }
-
-  // void _onFetchTransactionDetails(TransactionDetailsEvent event, Emitter emit)  {
-  //   emit(TransactionDetailsLoadingState());
-  //   streamSubscriptionTransactionDetails = firebaseStoreInstance.collection('transactions').doc(event.transactionId).collection('details').snapshots().listen((event) {
-  //     transactionDetailsList.clear();
-  //     for (var item in event.docs) {
-  //       var mapData = item.data();
-  //       if (mapData.isNotEmpty) {
-  //         transactionDetailsList.add(TransactionDetailsModel(
-  //           id: item.id,
-  //           description: mapData['description'],
-  //           quantity: mapData['quantity'],
-  //           rate: mapData['rate'].toDouble(),
-  //           total: mapData['total'].toDouble()
-  //         ));
-  //       }
-  //     }
-  //     add(TransactionSubDetailsEvent());
-  //   });
-  // }
-
-  // void _onFetchTransactionSubDetailsEvent(TransactionSubDetailsEvent event, Emitter emit) {
-  //   emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
-  // }
 
   void _initializeAudioPlayer() => audioPlayer = AudioPlayer();
 
@@ -487,7 +413,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         await audioPlayer.setAsset(AppAudio.downloadSound);
         audioPlayer.play();
       } catch (e) {
-        emit(TransactionExportPDFState(message:'Something went wrong while exporting your transaction report'));
+        emit(TransactionExportPDFState(message: 'Something went wrong while exporting your transaction report'));
       }
     }
   }

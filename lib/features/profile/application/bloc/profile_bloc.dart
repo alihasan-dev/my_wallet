@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/preferences.dart';
@@ -15,16 +16,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   bool idVisible = false;
   late DocumentReference firebaseDocReference;
+  StreamSubscription<QuerySnapshot>? streamSubscriptionFriendList;
   late StreamSubscription<DocumentSnapshot> streamSubscription;
   late Reference firebaseStorage;
   var profileData = <String, dynamic>{};
   late CheckConnectivity checkConnectivity;
   String selectedImagePath = '';
   String friendId;
+  List<UserModel> usersList = [];
 
   ProfileBloc({this.friendId = ''}) : super(ProfileInitialState()) {
     checkConnectivity = CheckConnectivity();
-    var userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
+    final userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
     firebaseDocReference = friendId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
     firebaseStorage = FirebaseStorage.instance.ref();
 
@@ -38,6 +41,23 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileChooseImageEvent>(_onChooseImage);
     on<ProfileDeleteUserEvent>(_onDeleteUser);
 
+    if (!friendId.isBlank) {
+      streamSubscriptionFriendList = userCollectionRef.collection('friends').snapshots().listen((event) {
+        usersList.clear();
+        for(var item in event.docs) {
+          final user = item.data() as Map;
+          if(user.isNotEmpty) {
+            usersList.add(UserModel(
+              userId: user['user_id'] ?? '', 
+              name: user['name'] ?? '', 
+              email: user['email'] ?? '', 
+              phone: user['phone'] ?? ''
+            ));
+          }
+        }
+      });
+    }
+
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
       profileData = event.data() as Map<String, dynamic>;
       if(profileData['user_id'] == null) {
@@ -45,11 +65,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
       add(ProfileDataEvent());
     });
+    
   }
 
   @override
   Future<void> close() {
     streamSubscription.cancel();
+    streamSubscriptionFriendList?.cancel();
     return super.close();
   }
 
@@ -118,7 +140,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         'address': event.profileData['address'],
         'profile_img': updatedImageUrl.isEmpty ? event.profileData['profile_img'] : updatedImageUrl
       });
-    } 
+    }
   }
 
   Future<void> _onDeleteUser(ProfileDeleteUserEvent event, Emitter emit) async {
@@ -156,10 +178,27 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
       result = false;
     } 
-    if(!event.profileData['phone'].toString().isBlank) {
-      var data = event.profileData['phone'].toString();
-      if(data.length < 10) result = false;
+    final phone = event.profileData['phone'].toString();
+    if (friendId.isBlank && !phone.isBlank) {
+      if(phone.length < 10) result = false;
     }
+    if (!friendId.isBlank) {
+      if (phone.isBlank) {
+        result = false;
+      } else if (phone.length < 10) {
+        result = false;
+      } else {
+        for (var users in usersList) {
+          if (users.userId == friendId) continue;
+          if (users.phone == phone) {
+            emit(ProfileFailedState(title: AppStrings.phoneNumberAlreadyExist, message: AppStrings.phoneNumberAlreadyExistMsg));
+            result = false;
+            break;
+          }
+        }
+      }
+    }
+
     if (result && !await checkConnectivity.hasConnection) {
       emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       result = false;

@@ -93,7 +93,9 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
             },
             builder: (context, state) {
               return Scaffold(
-                backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
+                backgroundColor: Helper.isDark 
+                ? AppColors.backgroundColorDark
+                : AppColors.white,
                 appBar: AppBar(
                   centerTitle: true, 
                   elevation: 0,
@@ -160,6 +162,9 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                     onUserDelete(nameTextController.text, context);
                   }
                   break;
+                case ProfileFailedState _:
+                  hideLoadingDialog(context: context);
+                  showSnackBar(context: context, title: state.title, message: state.message);
                 default:
               }
             }
@@ -239,7 +244,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
         CustomTextField(
           title: _localizations!.phone, 
           isPasswordField: false,
-          isEnabled: widget.userId.isBlank ? true : false, 
+          // isEnabled: widget.userId.isBlank ? true : false, 
           isMandatory: widget.userId.isBlank ? false : true,
           textEditingController: phoneTextController,
           errorText: errorPhone,
@@ -435,21 +440,21 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   Container(
                     padding: const EdgeInsets.all(AppSize.s5),
                     decoration: BoxDecoration(
-                      color: AppColors.amber.withValues(alpha: 0.1),
+                      color: AppColors.orange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppSize.s4)
                     ),
                     child: Row(
                       children: [
                         const Icon(
                           AppIcons.warningIcon, 
-                          color: AppColors.amber, 
+                          color: AppColors.orange, 
                           size: AppSize.s20
                         ),
                         const SizedBox(width: AppSize.s5),
                         Expanded(
                           child: CustomText(
                             title: _localizations!.imageSizeMsg, 
-                            textColor: AppColors.amber
+                            textColor: AppColors.orange
                           ),
                         ),
                       ],
