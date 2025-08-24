@@ -1,6 +1,6 @@
-import 'package:my_wallet/features/dashboard/domain/user_model.dart';
+part of 'dashboard_bloc.dart';
 
-abstract class DashboardEvent {}
+sealed class DashboardEvent {}
 
 class DashboardInitialEvent extends DashboardEvent {}
 
@@ -17,10 +17,16 @@ class DashboardEmailChangeEvent extends DashboardEvent {
   DashboardEmailChangeEvent({required this.email});
 }
 
+class DashboardPhoneChangeEvent extends DashboardEvent {
+  String phone;
+  DashboardPhoneChangeEvent({required this.phone});
+}
+
 class DashboardAddUserEvent extends DashboardEvent {
   String name;
   String email;
-  DashboardAddUserEvent({required this.name, required this.email});
+  String phone;
+  DashboardAddUserEvent({this.name = '', this.email = '', this.phone = ''});
 }
 
 class DashboardDeleteUserEvent extends DashboardEvent {
@@ -33,3 +39,39 @@ class DashboardUserDetailsEvent extends DashboardEvent {
 
   DashboardUserDetailsEvent(this.userModel);
 }
+
+class DashboardSearchEvent extends DashboardEvent {
+  String text;
+
+  DashboardSearchEvent({required this.text});
+}
+
+class DashboardSelectedUserEvent extends DashboardEvent {
+  String userId;
+  DashboardSelectedUserEvent({this.userId = ''});
+}
+
+class DashboardSearchFieldEnableEvent extends DashboardEvent {
+  bool isSearchFieldClosed;
+
+  DashboardSearchFieldEnableEvent({this.isSearchFieldClosed = false});
+}
+
+class DashboardSelectedContactEvent extends DashboardEvent {
+  String selectedUserId;
+  DashboardSelectedContactEvent({this.selectedUserId = ''});
+}
+
+class DashboardCancelSelectedContactEvent extends DashboardEvent {}
+
+class DashboardPinnedContactEvent extends DashboardEvent {}
+
+class DashboardArchieveContactEvent extends DashboardEvent {}
+
+class DashboardBiometricAuthEvent extends DashboardEvent {
+  bool isAuthenticated;
+
+  DashboardBiometricAuthEvent({this.isAuthenticated = false});
+}
+
+class DashboardTransactionDetailsWindowCloseEvent extends DashboardEvent {}

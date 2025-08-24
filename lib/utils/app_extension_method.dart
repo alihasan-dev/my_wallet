@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../utils/helper.dart';
 import '../utils/preferences.dart';
 import '../constants/app_strings.dart';
 
@@ -10,7 +12,7 @@ extension StringExtension on String {
   }
 
   bool get isNetworkImage {
-    if(startsWith('http') || startsWith('https')){
+    if(startsWith('http') || startsWith('https')) {
       return true;
     }
     return false;
@@ -19,6 +21,14 @@ extension StringExtension on String {
   bool get isValidEmail {
     var regExp = RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
     return regExp.hasMatch(this);
+  }
+
+  bool get isValidPhone {
+    try {
+      return trim().length < 10 ? false : true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Locale get getLocale {
@@ -65,15 +75,38 @@ extension StringExtension on String {
   String amountFormat({required String type}) {
     try {
       if(type.isEmpty) return '₹0';
-      if(type == 'Transfer') {
-        return '- ₹$currencyFormat'; 
-      }
+      if(type == 'Transfer') return '- ₹$currencyFormat';
       return '+ ₹$currencyFormat';
     } catch (e) {
       return '₹${toString()}';
     }
   }
+
+  String get determineAppVersion {
+    try {
+      return isNotEmpty 
+      ? this 
+      : kIsWeb ? 'Web' : 'Unknown';
+    } catch (e) {
+      return kIsWeb ? 'Web' : 'Unknown';
+    }
+  }
   
+}
+
+extension DateTimeFormator on DateTime {
+
+  String get formatDateTime {
+    try {
+      return toString().substring(0,10).split('-').reversed.join('-');
+    } catch(e) {
+      return toString();
+    }
+  }
+
+  bool campareDateOnly(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
 }
 
 extension ScreenBuildContext on BuildContext {
@@ -97,6 +130,17 @@ extension NumberExtension on num {
       return '₹${toString().currencyFormat}';
     } catch (e) {
       return '₹${toString().currencyFormat}';
+    }
+  }
+
+  ScreenType get screenDimension {
+    var dimension = this;
+    if(dimension < 600) {
+      return ScreenType.mobile;
+    } else if(dimension >= 600 && dimension <= 720) {
+      return ScreenType.tablet;
+    } else {
+      return ScreenType.web;
     }
   }
 

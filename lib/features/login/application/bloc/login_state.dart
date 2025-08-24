@@ -1,27 +1,32 @@
+part of 'login_bloc.dart';
+
 sealed class LoginState {}
 
 class LoginInitialState extends LoginState {}
 
 class LoginSuccessState extends LoginState{
-  LoginSuccessState();
+  String title;
+  String message;
+  LoginSuccessState({this.title = '', this.message = ''});
 }
 
 class LoginFailedState extends LoginState{
   String message;
   String title;
-  LoginFailedState({required this.message,required this.title});
+  bool canShowSnackBar;
+  LoginFailedState({required this.message,required this.title, this.canShowSnackBar = true});
 }
 
 class LoginLoadingState extends LoginState{}
 
 class LoginEmailFieldState extends LoginState{
-  String emailMessage;
-  LoginEmailFieldState({required this.emailMessage});
+  String message;
+  LoginEmailFieldState({required this.message});
 }
 
 class LoginPasswordFieldState extends LoginState{
-  String passwordMessage;
-  LoginPasswordFieldState({required this.passwordMessage});
+  String message;
+  LoginPasswordFieldState({required this.message});
 }
 
 class LoginPasswordVisibilityState extends LoginState{

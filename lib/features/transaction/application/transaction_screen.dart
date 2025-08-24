@@ -1,10 +1,16 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/preferences.dart';
+import '../../transaction/application/transaction_dialog.dart';
+import '../../../constants/app_theme.dart';
+import '../../../features/transaction/application/transaction_details.dart';
+import '../../../features/transaction/application/transaction_filter_dialog.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -12,12 +18,8 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../features/dashboard/domain/user_model.dart';
-import '../../../features/transaction/application/add_transaction_dialog.dart';
 import '../../../features/transaction/application/bloc/transaction_bloc.dart';
-import '../../../features/transaction/application/bloc/transaction_event.dart';
-import '../../../features/transaction/application/bloc/transaction_state.dart';
 import '../../../features/transaction/domain/transaction_model.dart';
-import '../../../routes/app_routes.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../widgets/custom_text.dart';
@@ -25,10 +27,11 @@ import '../../../widgets/custom_verticle_divider.dart';
 
 class TransactionScreen extends StatefulWidget {
   final UserModel? userModel;
-
+  final TransactionDetailsState transactionDetailsState;
   const TransactionScreen({
     super.key,
-    required this.userModel
+    required this.userModel,
+    required this.transactionDetailsState
   });
 
   @override
@@ -39,6 +42,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
 
   String email = AppStrings.emptyString;
   String name = AppStrings.emptyString;
+  String profileImg = AppStrings.emptyString;
   String friendId = AppStrings.emptyString;
   bool errorAmount = false;
   bool errorDate = false;
@@ -48,12 +52,20 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   double appBarSize = 0.0;
   Color headerColor = Helper.isDark ? AppColors.backgroundColorDark : AppColors.white;
   double animatedBorderSide = 0.0;
-  Color textColor = Helper.isDark ? AppColors.white.withOpacity(0.9) : AppColors.black;
+  Color textColor = Helper.isDark ? AppColors.white.withValues(alpha: 0.9) : AppColors.black;
   bool isLoading = true;
   double availableBalance = 0.0;
   late DateFormat dateFormat;
   AppLocalizations? _localizations;
   late TransactionBloc _transactionBloc;
+  bool isFilterEnable = false;
+  RangeValues? amountChangeValue;
+  DateTimeRange? initialDateTimeRage;
+  String transactionType = AppStrings.all;
+  double maxAmount = - double.maxFinite;
+  double minAmount = double.maxFinite;
+  int _selectedTransactionCount = 0;
+  String? transactionId;
 
   @override
   void initState() {
@@ -71,10 +83,11 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       email = data!.email;
       name = data.name;
       friendId = data.userId;
+      profileImg = data.profileImg;
     }
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +107,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               AnimatedContainer(
                 height: appBarSize,
                 duration: const Duration(milliseconds: 450),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.primaryColor,
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -113,36 +126,37 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(width: AppSize.s10),
-                          Material(
-                            color: AppColors.transparent,
-                            child: InkWell(
-                              onTap: () => context.pop(),
-                              borderRadius: BorderRadius.circular(30),
-                              child: Ink(
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Platform.isIOS
-                                      ? AppIcons.backArrowIconIOS
-                                      : AppIcons.backArrowIcon, 
-                                      color: AppColors.white,
-                                      size: 22,
-                                    ),
-                                    Hero(
-                                      tag: 'profile',
-                                      child: CustomImageWidget(
-                                        imageUrl: widget.userModel == null
-                                        ? ''
-                                        : widget.userModel!.profileImg, 
-                                        imageSize: AppSize.s18,
-                                        circularPadding: AppSize.s5,
-                                        strokeWidth: AppSize.s1,
-                                        padding: 1.2,
-                                        borderWidth: 0,
-                                        fromProfile: false,
+                          Tooltip(
+                            message: _localizations!.back,
+                            child: Material(
+                              color: AppColors.transparent,
+                              child: InkWell(
+                                onTap: () => context.pop(),
+                                borderRadius: BorderRadius.circular(30),
+                                child: Ink(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        !kIsWeb && (Platform.isIOS || Platform.isMacOS)
+                                        ? AppIcons.backArrowIconIOS
+                                        : AppIcons.backArrowIcon, 
+                                        color: AppColors.white,
+                                        size: AppSize.s22,
                                       ),
-                                    ),
-                                  ],
+                                      Hero(
+                                        tag: 'profile',
+                                        child: CustomImageWidget(
+                                          imageUrl: profileImg, 
+                                          imageSize: AppSize.s40,
+                                          circularPadding: AppSize.s5,
+                                          strokeWidth: AppSize.s1,
+                                          padding: 1.2,
+                                          borderWidth: 0,
+                                          fromProfile: false,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -152,17 +166,18 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: Material(
                               color: AppColors.transparent,
                               child: InkWell(
-                                onTap: () => context.push(
-                                  AppRoutes.profileScreen, 
-                                  extra: widget.userModel!.userId
-                                ),
+                                onTap: _onTapProfile,
                                 child: SizedBox(
                                   height: double.maxFinite,
                                   child: Row(
                                     children: [
-                                      CustomText(
-                                        title: name, 
-                                        textStyle: getBoldStyle(color: AppColors.white)
+                                      Expanded(
+                                        child: CustomText(
+                                          title: name, 
+                                          textStyle: getBoldStyle(color: AppColors.white),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -173,41 +188,92 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         ],
                       ),
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => showAddUserSheet(),
-                          icon: const Icon(
-                            AppIcons.addIcon, 
-                            color: AppColors.white, 
-                            size: AppSize.s26
+                    AnimatedSize(
+                      duration: MyAppTheme.animationDuration,
+                      child: _selectedTransactionCount > 0
+                      ? Row(
+                          children: [
+                            OutlinedButton(
+                              onPressed: () => _transactionBloc.add(TransactionClearSelectionEvent()),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.white,
+                                padding: EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: 10),
+                                side: BorderSide(color: AppColors.white)
+                              ), 
+                              child: CustomText(
+                                title:'$_selectedTransactionCount  ${_localizations!.unselect}',
+                                textColor: AppColors.white,
+                              ),
+                            ),
+                            const SizedBox(width: AppSize.s6),
+                            IconButton(
+                              tooltip: _localizations!.delete,
+                              onPressed: () => _showDeleteTransactionDialog(context), 
+                              visualDensity: VisualDensity.compact,
+                              icon: const Icon(AppIcons.deleteIcon, color: AppColors.white)
+                            ),
+                            AnimatedSize(
+                              duration: MyAppTheme.animationDuration,
+                              child: _selectedTransactionCount > 1
+                              ? const SizedBox()
+                              : IconButton(
+                                tooltip: _localizations!.editTransaction,
+                                onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
+                                visualDensity: VisualDensity.compact,
+                                icon: const Icon(AppIcons.editIcon, color: AppColors.white)
+                              ),
+                            ),
+                          ],
+                        )
+                      : Row(
+                        children: [
+                          IconButton(
+                            tooltip: _localizations!.addTransaction,
+                            onPressed: () => _showAddTransactionDialog(),
+                            icon: const Icon(
+                              AppIcons.addIcon, 
+                              color: AppColors.white, 
+                              size: AppSize.s26
+                            ),
                           ),
-                        ),
-                        Offstage(
-                          offstage: availableBalance == 0.0 ? true : false,
-                          child: IconButton(
+                          Badge(
+                            backgroundColor: AppColors.red,
+                            isLabelVisible: isFilterEnable,
+                            alignment: const Alignment(0.4,- 0.5),
+                            smallSize: AppSize.s10,
+                            child: IconButton(
+                              tooltip: _localizations!.advanceFilter,
+                              onPressed: () => _transactionBloc.add(TransactionFilterEvent()),
+                              icon: const Icon(
+                                AppIcons.filterIcon,
+                                color: AppColors.white
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            tooltip: _localizations!.exportReport,
                             onPressed: () => _transactionBloc.add(TransactionExportPDFEvent()),
                             icon: const Icon(
-                              AppIcons.downloadIcon, 
+                              AppIcons.downloadIcon,
                               color: AppColors.white
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
               Expanded(
                 child: isLoading
-                ? const Center(child: CircularProgressIndicator(color: AppColors.primaryColor)) 
+                ? const Center(child: CircularProgressIndicator.adaptive()) 
                 : transactionDataList.isEmpty
                 ? Center(
                   child: Text(
                     _localizations!.noTransactionFound,
                     style: TextStyle(
                       color: Helper.isDark 
-                      ? AppColors.white.withOpacity(0.9) 
+                      ? AppColors.white.withValues(alpha: 0.9) 
                       : AppColors.black, 
                       fontSize: AppSize.s18, 
                       fontWeight: FontWeight.bold
@@ -218,12 +284,15 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
+                      height: appBarHeight,
                       decoration: BoxDecoration(
                         color: headerColor,
                         border: Border(
-                          top: BorderSide(
+                          top: kIsWeb
+                          ? BorderSide.none
+                          : BorderSide(
                             width: animatedBorderSide, 
-                            color: AppColors.white.withOpacity(0.8)
+                            color: AppColors.white.withValues(alpha: 0.8)
                           ),
                         ),
                       ),
@@ -265,7 +334,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: VerticalDivider(
                               thickness: AppSize.s05, 
                               width: AppSize.s05, 
-                              color: textColor.withOpacity(0.8)
+                              color: textColor.withValues(alpha: 0.8)
                             ),
                           ),
                           Expanded(
@@ -283,7 +352,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     children: [
                                       CustomText(
                                         title: _localizations!.type, 
-                                        textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                        textStyle: getSemiBoldStyle(
+                                          color: textColor, 
+                                          fontSize: AppSize.s14
+                                        ),
                                       ),
                                       Icon(
                                         AppIcons.swapIcon, 
@@ -301,7 +373,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                             child: VerticalDivider(
                               thickness: AppSize.s05, 
                               width: AppSize.s05, 
-                              color: textColor.withOpacity(0.8)
+                              color: textColor.withValues(alpha: 0.8)
                             ),
                           ),
                           Expanded(
@@ -319,7 +391,10 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     children: [
                                       CustomText(
                                         title: _localizations!.amount, 
-                                        textStyle: getSemiBoldStyle(color: textColor, fontSize: AppSize.s14)
+                                        textStyle: getSemiBoldStyle(
+                                          color: textColor, 
+                                          fontSize: AppSize.s14
+                                        ),
                                       ),
                                       Icon(
                                         AppIcons.swapIcon, 
@@ -338,7 +413,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     const Divider(color: AppColors.grey, thickness: AppSize.s05, height: AppSize.s05),
                     Expanded(
                       child: NotificationListener<ScrollNotification>(
-                        onNotification: (notification) {
+                        onNotification: (_) {
                           if(_scrollController.position.userScrollDirection != ScrollDirection.idle) {
                             if(_scrollController.position.userScrollDirection == ScrollDirection.forward && appBarSize != appBarHeight) {
                               _transactionBloc.add(TransactionScrollEvent(appbarSize: appBarHeight));
@@ -353,7 +428,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           controller: _scrollController,
                           itemCount: transactionDataList.length + 1,
                           itemBuilder: (context, index) {
-                            if(index == transactionDataList.length){
+                            if(index == transactionDataList.length) {
                               return const Divider(
                                 color: AppColors.grey, 
                                 thickness: AppSize.s05, 
@@ -361,66 +436,105 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               );
                             } else {
                               var subData = transactionDataList[index];
-                              return Container(
-                                color: AppColors.grey,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSize.s10, 
-                                          vertical: AppSize.s15
-                                        ),
-                                        color: Helper.isDark 
-                                        ? AppColors.backgroundColorDark
-                                        : AppColors.white, 
-                                        child: CustomText(
-                                          title: dateFormat.format(subData.date), 
-                                          textColor: Helper.isDark 
-                                          ? AppColors.white.withOpacity(0.9) 
-                                          : AppColors.black
-                                        ),
-                                      ),
-                                    ),
-                                    const CustomVerticalDivider(),
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSize.s10, 
-                                          vertical: AppSize.s15
-                                        ),
-                                        color: Helper.isDark 
-                                        ? AppColors.backgroundColorDark 
-                                        : AppColors.white, 
-                                        child: CustomText(
-                                          title: subData.type == AppStrings.transfer 
-                                          ? _localizations!.transfer 
-                                          : _localizations!.receive, 
-                                          textColor: subData.type == AppStrings.transfer 
-                                          ? AppColors.red 
-                                          : AppColors.green
-                                        ),
-                                      ),
-                                    ),
-                                    const CustomVerticalDivider(),
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSize.s10, 
-                                          vertical: AppSize.s15
-                                        ),
-                                        color: Helper.isDark 
-                                        ? AppColors.backgroundColorDark 
-                                        : AppColors.white, 
-                                        child: CustomText(
-                                          title: subData.amount.toString().currencyFormat, 
-                                          textColor: Helper.isDark 
-                                          ? AppColors.white.withOpacity(0.9) 
-                                          : AppColors.black
+                              return InkWell(
+                                onTap: () => _onTapTransaction(transactionId: subData.id, index: index),
+                                onLongPress: () => _transactionBloc.add(TransactionSelectListItemEvent(index: index)),
+                                child: Container(
+                                  color: AppColors.grey,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSize.s10, 
+                                            vertical: AppSize.s15
+                                          ),
+                                          color: transactionId == null || subData.id != transactionId 
+                                          ? Helper.isDark 
+                                            ? AppColors.backgroundColorDark
+                                            : AppColors.white
+                                          : Helper.isDark
+                                            ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            :AppColors.white.withValues(alpha: 0.8), 
+                                          child: Row(
+                                            children: [
+                                              AnimatedSize(
+                                                duration: MyAppTheme.animationDuration,
+                                                child: subData.selected
+                                                ? const Row(
+                                                    children: [
+                                                      Icon(
+                                                        AppIcons.checkCircleOutlineIcon, 
+                                                        size: AppSize.s18, 
+                                                        color: AppColors.green
+                                                      ),
+                                                      SizedBox(width: AppSize.s5),
+                                                    ],
+                                                  )
+                                                : const SizedBox.shrink()
+                                              ),
+                                              Expanded(
+                                                child: CustomText(
+                                                  title: dateFormat.format(subData.date), 
+                                                  textColor: Helper.isDark 
+                                                  ? AppColors.white.withValues(alpha: 0.9) 
+                                                  : AppColors.black,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      const CustomVerticalDivider(),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSize.s10, 
+                                            vertical: AppSize.s15
+                                          ),
+                                          color: transactionId == null || subData.id != transactionId 
+                                          ? Helper.isDark 
+                                            ? AppColors.backgroundColorDark
+                                            : AppColors.white
+                                          : Helper.isDark
+                                            ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            :AppColors.white.withValues(alpha: 0.8), 
+                                          child: CustomText(
+                                            title: subData.type == AppStrings.transfer 
+                                            ? _localizations!.transfer 
+                                            : _localizations!.receive, 
+                                            textColor: subData.type == AppStrings.transfer 
+                                            ? AppColors.red 
+                                            : AppColors.green
+                                          ),
+                                        ),
+                                      ),
+                                      const CustomVerticalDivider(),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSize.s10, 
+                                            vertical: AppSize.s15
+                                          ),
+                                          color: transactionId == null || subData.id != transactionId 
+                                          ? Helper.isDark 
+                                            ? AppColors.backgroundColorDark
+                                            : AppColors.white
+                                          : Helper.isDark
+                                            ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                            :AppColors.white.withValues(alpha: 0.8), 
+                                          child: CustomText(
+                                            title: subData.amount.toString().currencyFormat, 
+                                            textColor: Helper.isDark 
+                                            ? AppColors.white.withValues(alpha: 0.9) 
+                                            : AppColors.black
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }
@@ -439,12 +553,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             ],
           ),
           bottomNavigationBar: Offstage(
-            offstage: availableBalance == 0.0 ? true : false,
+            offstage: transactionDataList.isEmpty,
             child: Container(
               padding: EdgeInsets.only(
                 left: AppSize.s15,
                 right: AppSize.s15,
-                bottom: Platform.isIOS ? AppSize.s18 : AppSize.s4,
+                bottom: !kIsWeb && Platform.isIOS ? AppSize.s18 : AppSize.s4,
               ),
               decoration: BoxDecoration(
                 color: Helper.isDark 
@@ -452,7 +566,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 : AppColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.grey.withOpacity(0.5), 
+                    color: AppColors.grey.withValues(alpha: 0.5), 
                     blurRadius: AppSize.s2, 
                     offset: const Offset(0, -0.5)
                   ),
@@ -474,7 +588,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         title: _localizations!.availableBalance, 
                         textStyle: getSemiBoldStyle(
                           color: Helper.isDark 
-                          ? AppColors.white.withOpacity(0.9) 
+                          ? AppColors.white.withValues(alpha: 0.9) 
                           : AppColors.black
                         ),
                       ),
@@ -500,7 +614,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                     ),
                   ),
                 ],
-              )
+              ),
             ),
           ),
         );
@@ -509,9 +623,31 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         switch (state) {
           case AllTransactionState _:
             isLoading = false;
-            availableBalance = state.totalBalance;
-            transactionDataList.clear();
-            transactionDataList.addAll(state.listTransaction);
+            if(state.isTransactionAgainstFilter && initialDateTimeRage != null && (amountChangeValue != null || (maxAmount != - double.maxFinite.toInt()))) {
+              RangeValues? tempAmountChangeValue;
+              if(amountChangeValue == null) {
+                tempAmountChangeValue = RangeValues(minAmount.toDouble(), maxAmount.toDouble());
+              } else {
+                tempAmountChangeValue = RangeValues(amountChangeValue!.start, amountChangeValue!.end);
+              }
+              _transactionBloc.add(TransactionApplyFilterEvent(
+                dateTimeRange: initialDateTimeRage,
+                transactionType: transactionType,
+                amountRangeValues: tempAmountChangeValue
+              ));
+            }
+            if(!state.isTransactionAgainstFilter) {
+              availableBalance = state.totalBalance;
+              isFilterEnable = state.isFilterEnable;
+              transactionDataList.clear();
+              transactionDataList.addAll(state.listTransaction);
+              _selectedTransactionCount = transactionDataList.where((item) => item.selected).length;
+              if(!isFilterEnable) {
+                transactionType = AppStrings.all;
+                initialDateTimeRage = null;
+                amountChangeValue = null;
+              }
+            }
             break;
           case TransactionScrollState _:
             appBarSize = state.appbarSize;
@@ -521,40 +657,152 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               ? AppColors.backgroundColorDark 
               : AppColors.white;
               textColor = Helper.isDark 
-              ? AppColors.white.withOpacity(0.9) 
+              ? AppColors.white.withValues(alpha: 0.9) 
               : AppColors.black;
             } else {
               animatedBorderSide = AppSize.s05;
               headerColor = AppColors.primaryColor;
               textColor = Helper.isDark 
-              ? AppColors.white.withOpacity(0.9) 
+              ? AppColors.white.withValues(alpha: 0.9) 
               : AppColors.white;
             }
+            break;
+          case TransactionProfileUpdateState _:
+            name = state.userName;
+            profileImg = state.profileImage;
+            break;
+          case TransactionFilterState _:
+            _showFilterDialog();
             break;
           case TransactionLoadingState _:
             showLoadingDialog(context: context);
             break;
           case TransactionExportPDFState _:
             hideLoadingDialog(context: context);
-            if(state.isSuccess) {
+            if (state.isSuccess && !kIsWeb) {
               showSnackBar(context: context, title: state.message, color: AppColors.green);
-            } else {
+            } 
+            if (!state.isSuccess) {
               showSnackBar(context: context, title: state.message);
             }
             break;
+           case TransactionChangeAmountRangeState _:
+              amountChangeValue = state.rangeAmount;
+              break;
+            case TransactionTypeChangeState _:
+              transactionType = state.type;
+              break;
+            case TransactionEditState _:
+              _showAddTransactionDialog(transactionModel: state.selectedTransaction);
+              break;
+            case TransactionShowDetailsState _:
+              if (state.transactionId.isNotEmpty) {
+                transactionId = state.transactionId;
+                MyAppTheme.isThreeColumnMode(context)
+                ? widget.transactionDetailsState.toggleTransactionDetailsColumn(transactionId: state.transactionId, title: state.title)
+                : context.go(
+                    '/dashboard/${widget.userModel!.userId}/transaction_details', 
+                    extra: {
+                      'friend_id': widget.userModel?.userId,
+                      'transaction_id': state.transactionId, 
+                      'user_data': widget.userModel, 
+                      'title': state.title
+                    }
+                  );
+              }
+              break;
+            case TransactionClearTransactionIdState _:
+              transactionId = null;
           default:
         }
       },
     );
   }
 
-  void showAddUserSheet() {
+  void _onTapProfile() {
+    if(transactionId != null) _transactionBloc.add(TransactionClearTransactionIdEvent());
+    MyAppTheme.isThreeColumnMode(context)
+    ? widget.transactionDetailsState.toggleDisplayProfileColumn()
+    : context.go('/dashboard/${widget.userModel!.userId}/profile', extra: {'user_data': widget.userModel});
+  }
+
+  Future<void> _showDeleteTransactionDialog(BuildContext context) async {
+    if(await confirmationDialog(context: context, title: _localizations!.deleteTransaction, content: _localizations!.deleteTransactionMsg, localizations: _localizations!)) {
+      _transactionBloc.add(TransactionDeleteEvent());
+    }
+  }
+
+  void _showAddTransactionDialog({TransactionModel? transactionModel}) {
     errorAmount = false;
     errorDate = false;
-    showDialog(
+    showGeneralDialog(
       context: context, 
-      builder: (_) => AddTransactionDialog(userName: name, friendId: friendId)
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
+        child: AddTransactionDialog(
+          userName: name, 
+          friendId: friendId, 
+          transactionModel: transactionModel
+        ),
+      ),
     );
+  }
+
+  void _onTapTransaction({required String transactionId, required int index}) {
+    if(_selectedTransactionCount == 0 && Preferences.getBool(key: AppStrings.prefShowTransactionDetails) && !transactionId.isBlank) {
+      _transactionBloc.add(TransactionShowDetailsEvent(transactionId: transactionId, title: dateFormat.format(transactionDataList[index].date)));
+    } else {
+      _transactionBloc.add(TransactionSelectListItemEvent(index: index));
+    }
+  }
+
+  Future<void> _showFilterDialog() async {
+    if(maxAmount == - double.maxFinite) {
+      for(var item in transactionDataList) {
+        if(maxAmount < item.amount) {
+          maxAmount = item.amount;
+        }
+        if(minAmount > item.amount) {
+          minAmount = item.amount;
+        }
+      }
+    } 
+    if(maxAmount != - double.maxFinite) {
+      for(var item in transactionDataList) {
+        if(item.amount > maxAmount) {
+          maxAmount = item.amount;
+        }
+      }
+      var data = await showGeneralDialog<Map>(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: AppStrings.close,
+        pageBuilder: (_, a1, _) => ScaleTransition(
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+          child: TransactionFilterDialog(
+            amountChangeValue: amountChangeValue,
+            finalAmountRange: RangeValues(minAmount, maxAmount),
+            transactionBloc: _transactionBloc,
+            initialDateTimeRage: initialDateTimeRage,
+            transactionType: transactionType
+          ),
+        ),
+      );
+      if(data != null) {
+        if(data.isEmpty) {
+          _transactionBloc.add(TransactionClearFilterEvent(clearFilter: isFilterEnable));
+        } else {
+          initialDateTimeRage = data['initial_date_time_range'];
+          _transactionBloc.add(TransactionApplyFilterEvent(
+            dateTimeRange: data['initial_date_time_range'],
+            transactionType: data['transaction_type'],
+            amountRangeValues: data['amount_range']
+          ));
+        }
+      }
+    }
   }
 
 }

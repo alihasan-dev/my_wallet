@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'bloc/dashboard_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/helper.dart';
+import '../../../constants/app_theme.dart';
+import '../../../constants/app_icons.dart';
+import '../../../constants/app_style.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../features/dashboard/application/bloc/dashboard_event.dart';
-import '../../../features/dashboard/application/bloc/dashboard_state.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_text.dart';
-import '../../../utils/helper.dart';
-
+import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 
 class AddUserDialog extends StatefulWidget {
   const AddUserDialog({super.key});
@@ -22,11 +24,18 @@ class AddUserDialog extends StatefulWidget {
 class _AddUserDialogState extends State<AddUserDialog> {
 
   var emailTextController = TextEditingController();
+  var phoneTextController = TextEditingController();
   var nameTextController = TextEditingController();
   String errorName = '';
   String errorEmail = '';
+  String errorPhone = '';
   bool isFirstOpen = true;
   AppLocalizations? _localizations;
+  //US Phone Number Format
+  var maskFormatter = MaskTextInputFormatter(
+    mask: '+91 ####-###-###',
+    filter: {"#": RegExp(r'[0-9]')}
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +48,33 @@ class _AddUserDialogState extends State<AddUserDialog> {
         backgroundColor: Helper.isDark 
         ? AppColors.dialogColorDark 
         : AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
         content: BlocConsumer<DashboardBloc, DashboardState>(
-          builder: (context, state){
-            switch (state) {
-              case DashboardEmailFieldState _:
-                errorEmail = state.emailMessage;
-                break;
-              case DashboardNameFieldState _:
-                errorName = state.nameMessage;
-                break;
-              default:
-            }
+          builder: (context, _) {
             return SizedBox(
-              width: double.maxFinite,
+              width: MyAppTheme.columnWidth,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        title: _localizations!.addUser,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(10, 0),
+                        child: IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(AppIcons.clearIcon),
+                          visualDensity: VisualDensity.compact,
+                          tooltip: _localizations!.close,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s8),
                   TextField(
                     controller: nameTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
@@ -67,48 +86,76 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       label: CustomText(
                         title: '${_localizations!.name} *',
                         textColor: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.8)
+                        ? AppColors.white.withValues(alpha: 0.8)
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: AppSize.s10),
+                  const SizedBox(height: AppSize.s12),
                   TextField(
-                    controller: emailTextController,
-                    onChanged: (value) => context.read<DashboardBloc>().add(DashboardEmailChangeEvent(email: value)),
+                    controller: phoneTextController,
+                    onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: maskFormatter.unmaskText(value))),
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      hintText: AppStrings.email,
-                      errorText: errorEmail.isNotEmpty
-                      ? errorEmail
+                      hintText: AppStrings.phone,
+                      errorText: errorPhone.isNotEmpty
+                      ? errorPhone
                       : null,
                       label: CustomText(
-                        title: '${_localizations!.email} *',
+                        title: '${_localizations!.phone} *',
                         textColor: Helper.isDark 
-                        ? AppColors.white.withOpacity(0.8)
+                        ? AppColors.white.withValues(alpha: 0.8)
                         : AppColors.black
                       ),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: AppSize.s05, color: Helper.isDark ? AppColors.grey : AppColors.black))
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
                     ),
+                    inputFormatters: [maskFormatter],
                   ),
-                  const SizedBox(height: AppSize.s10),
+                  const SizedBox(height: AppSize.s15),
                   CustomButton(
-                    title: _localizations!.addUser, 
-                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(name: nameTextController.text, email: emailTextController.text))
+                    title: _localizations!.add, 
+                    onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
+                      name: nameTextController.text, 
+                      email: emailTextController.text,
+                      phone: maskFormatter.unmaskText(phoneTextController.text)
+                    )),
+                    titleSize: AppSize.s15,
                   ),
                 ],
               ),
             );
           }, 
-          listener: (_, state){
+          listener: (_, state) {
             switch (state) {
               case DashboardAllUserState _:
-                if(!isFirstOpen){
-                  Navigator.pop(context);
-                }
+                if(!isFirstOpen) Navigator.pop(context);
                 isFirstOpen = false;
+                break;
+              case DashboardEmailFieldState _:
+                errorEmail = state.emailMessage;
+                break;
+              case DashboardPhoneFieldState _:
+                errorPhone = state.phoneMessage;
+                break;
+              case DashboardNameFieldState _:
+                errorName = state.nameMessage;
                 break;
               default:
             }

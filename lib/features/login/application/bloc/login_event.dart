@@ -1,3 +1,5 @@
+part of 'login_bloc.dart';
+
 sealed class LoginEvent {}
 
 class LoginInitialEvent extends LoginEvent {}
@@ -27,4 +29,11 @@ class LoginShowPasswordEvent extends LoginEvent {
 class LoginRememberMeEvent extends LoginEvent {
   bool value;
   LoginRememberMeEvent({required this.value});
+}
+
+class LoginWithGoogleEvent extends LoginEvent {}
+
+class LoginWithGoogleStatusEvent extends LoginEvent {
+  GoogleSignInAccount? googleSignInAccount;
+  LoginWithGoogleStatusEvent(this.googleSignInAccount);
 }

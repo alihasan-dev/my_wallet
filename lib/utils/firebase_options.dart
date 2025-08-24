@@ -27,14 +27,14 @@ class DefaultFirebaseOptions {
     messagingSenderId: '976324609510',
     projectId: 'my-wallet-99fdf',
     authDomain: 'my-wallet-99fdf.firebaseapp.com',
-    //databaseURL: "https://flutter-firebase-web-25540-default-rtdb.firebaseio.com",
+    databaseURL: "https://my-wallet-99fdf-default-rtdb.firebaseio.com",
     storageBucket: 'my-wallet-99fdf.appspot.com',
     measurementId: 'G-TXX98KWH2B',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCTEJGQgG_CoNSfD8LaZpQj7uKFhFwYlY8',
-    appId: '1:976324609510:web:4d119a5ba6befc59e4c227',
+    apiKey: 'AIzaSyAdGnZegndZF2qOWwWA_RPrzC9iQvrydPc',
+    appId: '1:976324609510:android:62ceacf3c246006de4c227',
     messagingSenderId: '976324609510',
     projectId: 'my-wallet-99fdf',
     authDomain: 'my-wallet-99fdf.firebaseapp.com',

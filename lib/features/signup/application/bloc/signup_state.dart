@@ -1,32 +1,37 @@
+part of 'signup_bloc.dart';
+
 sealed class SignupState {}
 
 class SignupInitialState extends SignupState {}
 
 class SignupSuccessState extends SignupState{
-  SignupSuccessState();
+  String title;
+  String message;
+  SignupSuccessState({this.title = '', this.message = ''});
 }
 
 class SignupFailedState extends SignupState{
   String message;
   String title;
-  SignupFailedState({required this.message,required this.title});
+  bool canShowSnaclBar;
+  SignupFailedState({required this.message,required this.title, this.canShowSnaclBar = true});
 }
 
 class SignupLoadingState extends SignupState{}
 
 class SignupNameFieldState extends SignupState{
-  String nameMessage;
-  SignupNameFieldState({required this.nameMessage});
+  String message;
+  SignupNameFieldState({required this.message});
 }
 
 class SignupEmailFieldState extends SignupState{
-  String emailMessage;
-  SignupEmailFieldState({required this.emailMessage});
+  String message;
+  SignupEmailFieldState({required this.message});
 }
 
 class SignupPasswordFieldState extends SignupState{
-  String passwordMessage;
-  SignupPasswordFieldState({required this.passwordMessage});
+  String message;
+  SignupPasswordFieldState({required this.message});
 }
 
 class SignupPasswordVisibilityState extends SignupState{

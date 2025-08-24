@@ -1,30 +1,34 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../features/dashboard/domain/user_model.dart';
+import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
-import '../../../../features/profile/application/bloc/profile_event.dart';
-import '../../../../features/profile/application/bloc/profile_state.dart';
 import '../../../../utils/preferences.dart';
 import '../../../../utils/check_connectivity.dart';
+part 'profile_state.dart';
+part 'profile_event.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   bool idVisible = false;
   late DocumentReference firebaseDocReference;
+  StreamSubscription<QuerySnapshot>? streamSubscriptionFriendList;
   late StreamSubscription<DocumentSnapshot> streamSubscription;
   late Reference firebaseStorage;
   var profileData = <String, dynamic>{};
   late CheckConnectivity checkConnectivity;
   String selectedImagePath = '';
-  String userId;
+  String friendId;
+  List<UserModel> usersList = [];
 
-  ProfileBloc({this.userId = ''}) : super(ProfileInitialState()) {
+  ProfileBloc({this.friendId = ''}) : super(ProfileInitialState()) {
     checkConnectivity = CheckConnectivity();
-    var userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
-    firebaseDocReference = userId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(userId);
+    final userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
+    firebaseDocReference = friendId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
     firebaseStorage = FirebaseStorage.instance.ref();
 
     ///Register Event Here
@@ -33,21 +37,41 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileDataEvent>(_getProfileData);
     on<ProfileNameChangeEvent>(_onNameChange);
     on<ProfilePhoneChangeEvent>(_onPhoneChange);
+    on<ProfileEmailChangeEvent>(_onEmailChange);
     on<ProfileChooseImageEvent>(_onChooseImage);
     on<ProfileDeleteUserEvent>(_onDeleteUser);
+
+    if (!friendId.isBlank) {
+      streamSubscriptionFriendList = userCollectionRef.collection('friends').snapshots().listen((event) {
+        usersList.clear();
+        for(var item in event.docs) {
+          final user = item.data() as Map;
+          if(user.isNotEmpty) {
+            usersList.add(UserModel(
+              userId: item.id, 
+              name: user['name'] ?? '', 
+              email: user['email'] ?? '', 
+              phone: user['phone'] ?? ''
+            ));
+          }
+        }
+      });
+    }
 
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
       profileData = event.data() as Map<String, dynamic>;
       if(profileData['user_id'] == null) {
-        profileData['user_id'] = userId;
+        profileData['user_id'] = event.id;
       }
       add(ProfileDataEvent());
     });
+    
   }
 
   @override
   Future<void> close() {
     streamSubscription.cancel();
+    streamSubscriptionFriendList?.cancel();
     return super.close();
   }
 
@@ -59,15 +83,29 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
-    if(event.text.isNotEmpty){
-      if(event.text.length < 10){
-        emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
-      } else {
-        emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
-      }
+  void _onEmailChange(ProfileEmailChangeEvent event, Emitter emit) {
+    if (friendId.isNotEmpty && event.email.isEmpty) {
+      emit(ProfileErrorEmailState(message: AppStrings.emptyString));
+      return;
+    }
+    if(event.email.isEmpty) {
+      emit(ProfileErrorEmailState(message: AppStrings.emptyEmail));
+    } else if(!event.email.isValidEmail) {
+      emit(ProfileErrorEmailState(message: AppStrings.invalidEmail));
     } else {
-       emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
+      emit(ProfileErrorEmailState(message: AppStrings.emptyString));
+    }
+  }
+
+  void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
+    if (friendId.isEmpty && event.text.isEmpty) {
+      emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
+      return;
+    }
+    if(event.text.length < 10) {
+      emit(ProfileErrorPhoneState(message: AppStrings.invalidPhone));
+    } else {
+      emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
     }
   }
 
@@ -82,10 +120,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if(selectedImagePath.isNotEmpty) {
         emit(ProfileLoadingState());
         try {
-          final mountainImagesRef = userId.isEmpty 
+          final mountainImagesRef = friendId.isEmpty 
           ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
-          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$userId.jpg");
-          await mountainImagesRef.putFile(File(selectedImagePath)).then((value) async {
+          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
+          await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
             await mountainImagesRef.getDownloadURL().then((value) {
               updatedImageUrl = value;
             });
@@ -102,7 +140,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         'address': event.profileData['address'],
         'profile_img': updatedImageUrl.isEmpty ? event.profileData['profile_img'] : updatedImageUrl
       });
-    } 
+    }
   }
 
   Future<void> _onDeleteUser(ProfileDeleteUserEvent event, Emitter emit) async {
@@ -125,27 +163,47 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<bool> fieldValidation(ProfileUpdateEvent event, Emitter emit) async {
-    if(event.profileData['user_id'].isEmpty) {
+    bool result = true;
+    if(event.profileData['user_id'].toString().isBlank) {
       emit(ProfileErrorIdState(message: AppStrings.emptyEmail));
-      return false;
-    } else if(event.profileData['email'].isEmpty) {
-      emit(ProfileErrorEmailState(message: AppStrings.emptyEmail));
-      return false;
-    } else if(event.profileData['name'].isEmpty) {
-      emit(ProfileErrorNameState(message: AppStrings.emptyEmail));
-      return false;
-    } else if(event.profileData['phone'].isNotEmpty) {
-      var data = event.profileData['phone'];
-      if(data.length < 10){
-        return false;
-      } else {
-        return true;
+      result = false;
+    } 
+    if (!event.profileData['email'].toString().isBlank) { 
+      if (!event.profileData['email'].toString().isValidEmail) {
+        emit(ProfileErrorEmailState(message: AppStrings.invalidEmail));
+        result = false;
       }
-    } else if(!await checkConnectivity.hasConnection) {
-      emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
-      return false;
-    } else {
-      return true;
     }
+    if(event.profileData['name'].toString().isBlank) {
+      emit(ProfileErrorNameState(message: AppStrings.emptyName));
+      result = false;
+    } 
+    final phone = event.profileData['phone'].toString();
+    if (friendId.isBlank && !phone.isBlank) {
+      if(phone.length < 10) result = false;
+    }
+    if (!friendId.isBlank) {
+      if (phone.isBlank) {
+        result = false;
+      } else if (phone.length < 10) {
+        result = false;
+      } else {
+        for (var users in usersList) {
+          if (users.userId == friendId) continue;
+          if (users.phone == phone) {
+            emit(ProfileFailedState(title: AppStrings.phoneNumberAlreadyExist, message: AppStrings.phoneNumberAlreadyExistMsg));
+            result = false;
+            break;
+          }
+        }
+      }
+    }
+
+    if (result && !await checkConnectivity.hasConnection) {
+      emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
+      result = false;
+    } 
+    return result;
   }
+  
 }

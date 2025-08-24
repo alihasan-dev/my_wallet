@@ -1,6 +1,4 @@
-import '../../../../features/dashboard/domain/user_model.dart';
-import '../../../../constants/app_strings.dart';
-import '../../domain/transaction_model.dart';
+part of 'transaction_bloc.dart';
 
 sealed class TransactionState {}
 
@@ -8,11 +6,6 @@ class TransactionInitialState extends TransactionState {}
 
 class DashboardSuccessState extends TransactionState {
   DashboardSuccessState();
-}
-
-class DashboardAllUserState extends TransactionState {
-  List<UserModel> allUser;
-  DashboardAllUserState({required this.allUser});
 }
 
 class TransactionFailedState extends TransactionState {
@@ -23,9 +16,11 @@ class TransactionFailedState extends TransactionState {
 
 class TransactionLoadingState extends TransactionState {}
 
+class TransactionDetailsLoadingState extends TransactionState {}
+
 class TransactionAmountFieldState extends TransactionState {
-  bool isAmountEmpty;
-  TransactionAmountFieldState({required this.isAmountEmpty});
+  String errorAmountMsg;
+  TransactionAmountFieldState({this.errorAmountMsg = ''});
 }
 
 class TransactionUserNameFieldState extends TransactionState {
@@ -46,7 +41,9 @@ class TransactionDateChangeState extends TransactionState {
 class AllTransactionState extends TransactionState {
   List<TransactionModel> listTransaction;
   double totalBalance;
-  AllTransactionState({required this.listTransaction, required this.totalBalance});
+  bool isFilterEnable;
+  bool isTransactionAgainstFilter;
+  AllTransactionState({required this.listTransaction, required this.totalBalance, this.isFilterEnable = false, this.isTransactionAgainstFilter = false});
 }
 
 class TransactionScrollState extends TransactionState {
@@ -60,3 +57,40 @@ class TransactionExportPDFState extends TransactionState {
 
   TransactionExportPDFState({this.message = '', this.isSuccess = false});
 }
+
+class TransactionProfileUpdateState extends TransactionState {
+  String userName;
+  String profileImage;
+
+  TransactionProfileUpdateState({this.userName = '', this.profileImage = ''});
+}
+
+class TransactionFilterState extends TransactionState {}
+
+class TransactionChangeAmountRangeState extends TransactionState {
+  RangeValues rangeAmount;
+
+  TransactionChangeAmountRangeState({required this.rangeAmount});
+}
+
+class TransactionEditState extends TransactionState {
+  TransactionModel selectedTransaction;
+  TransactionEditState({required this.selectedTransaction});
+}
+
+class TransactionShowDetailsState extends TransactionState {
+  String transactionId;
+  String title;
+  TransactionShowDetailsState({
+    required this.transactionId,
+    required this.title
+  }) : assert(transactionId.isNotEmpty, "Please provide valid transaction id");
+}
+
+
+class TransactionFetchDetailsState extends TransactionState {
+  List<TransactionDetailsModel> transactionDetailsList;
+  TransactionFetchDetailsState({this.transactionDetailsList = const []});
+}
+
+class TransactionClearTransactionIdState extends TransactionState {}

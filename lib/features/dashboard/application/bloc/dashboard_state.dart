@@ -1,6 +1,6 @@
-import '../../../../features/dashboard/domain/user_model.dart';
+part of 'dashboard_bloc.dart';
 
-abstract class DashboardState {}
+sealed class DashboardState {}
 
 class DashboardInitialState extends DashboardState {}
 
@@ -10,7 +10,8 @@ class DashboardSuccessState extends DashboardState{
 
 class DashboardAllUserState extends DashboardState {
   List<UserModel> allUser;
-  DashboardAllUserState({required this.allUser});
+  bool isCancelSearch;
+  DashboardAllUserState({required this.allUser, this.isCancelSearch = false});
 }
 
 class DashboardFailedState extends DashboardState{
@@ -31,6 +32,11 @@ class DashboardEmailFieldState extends DashboardState{
   DashboardEmailFieldState({required this.emailMessage});
 }
 
+class DashboardPhoneFieldState extends DashboardState{
+  String phoneMessage;
+  DashboardPhoneFieldState({required this.phoneMessage});
+}
+
 class DashboardPasswordFieldState extends DashboardState{
   String passwordMessage;
   DashboardPasswordFieldState({required this.passwordMessage});
@@ -40,3 +46,19 @@ class DashboardPasswordVisibilityState extends DashboardState{
   bool isVisible;
   DashboardPasswordVisibilityState(this.isVisible);
 }
+
+class DashboardSelectedUserState extends DashboardState {
+  String userId;
+
+  DashboardSelectedUserState({this.userId = ''});
+}
+
+class DashboardSearchFieldEnableState extends DashboardState {}
+
+class DashboardBiometricAuthState extends DashboardState {
+  bool isAuthenticated;
+
+  DashboardBiometricAuthState({this.isAuthenticated = false});
+}
+
+class DashboardTransactionDetailsWindowCloseState extends DashboardState {}

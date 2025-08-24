@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  
   AppColors._();
 
   static const Color red = Colors.red;
@@ -11,6 +12,9 @@ class AppColors {
   static const Color green = Colors.green;
   static const Color amber = Colors.amber;
   static const Color transparent = Colors.transparent;
+  static const Color blue = Colors.blue;
+  static const Color lightBlue = Color(0xFF1871ff);
+  static const Color orange = Colors.orange;
 
   ///Dark Theme Color
   static const Color headerColorDark = Color(0xFF3A3A3C);

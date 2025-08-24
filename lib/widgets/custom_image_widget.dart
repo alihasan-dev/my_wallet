@@ -1,6 +1,8 @@
-import 'dart:io';
+import 'dart:convert';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wallet/constants/app_theme.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_color.dart';
 import '../constants/app_icons.dart';
@@ -15,6 +17,8 @@ class CustomImageWidget extends StatelessWidget {
   final double padding;
   final double borderWidth;
   final bool fromProfile;
+  final bool isSelected;
+  final Color borderColor;
 
   const CustomImageWidget({
     required this.imageUrl,
@@ -24,24 +28,35 @@ class CustomImageWidget extends StatelessWidget {
     this.strokeWidth = AppSize.s2,
     this.borderWidth = AppSize.s2,
     this.fromProfile = true,
+    this.isSelected = false,
+    this.borderColor = AppColors.primaryColor,
     super.key
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: MyAppTheme.animationDuration * 2,
+      width: imageSize,
+      height: imageSize,
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.primaryColor, width: borderWidth)
+        color: isSelected ? AppColors.primaryColor : null,
+        border: Border.all(
+          color: borderColor,
+          width: borderWidth
+        ),
       ),
-      child: ClipOval(
+      child: isSelected
+      ? const Icon(AppIcons.checkIcon, color: AppColors.white)
+      : ClipOval(
         child: SizedBox.fromSize(
           size: Size.fromRadius(imageSize),
           child: imageUrl.isEmpty
           ? Center(
               child: Icon(
-                AppIcons.personIcon, 
+                AppIcons.personIcon,
                 size: fromProfile ? AppSize.s60 : AppSize.s30
               ),
             )
@@ -50,12 +65,15 @@ class CustomImageWidget extends StatelessWidget {
                 imageUrl: imageUrl,
                 placeholder: (context, url) => Padding(
                   padding: EdgeInsets.all(circularPadding),
-                  child: CircularProgressIndicator(strokeWidth: strokeWidth)
+                  child: CircularProgressIndicator.adaptive(strokeWidth: strokeWidth)
                 ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+                errorWidget: (context, url, error) => const Icon(AppIcons.errorIcon),
                 fit: BoxFit.cover,
+                imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet
               )
-            : Image.file(File(imageUrl), fit: BoxFit.cover)
+            : imageUrl.startsWith('assets/')
+              ? Image.asset(imageUrl, fit: BoxFit.cover)
+              : Image.memory(base64Decode(imageUrl), fit: BoxFit.cover)
         ),
       )
     );

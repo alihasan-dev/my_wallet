@@ -1,3 +1,5 @@
+part of 'profile_bloc.dart';
+
 sealed class ProfileEvent {}
 
 class ProfileUpdateEvent extends ProfileEvent {
@@ -19,6 +21,10 @@ class ProfilePhoneChangeEvent extends ProfileEvent {
   ProfilePhoneChangeEvent({required this.text});
 }
 
+class ProfileEmailChangeEvent extends ProfileEvent {
+  String email;
+  ProfileEmailChangeEvent({required this.email});
+}
 
 class ProfileChooseImageEvent extends ProfileEvent {
   String imagePath;

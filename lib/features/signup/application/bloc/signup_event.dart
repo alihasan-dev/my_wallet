@@ -1,3 +1,5 @@
+part of 'signup_bloc.dart';
+
 sealed class SignupEvent {}
 
 class SignupInitialEvent extends SignupEvent {}
@@ -27,4 +29,11 @@ class SignupPasswordChangeEvent extends SignupEvent {
 class SignupShowPasswordEvent extends SignupEvent {
   bool isVisible;
   SignupShowPasswordEvent({required this.isVisible});
+}
+
+class SignupWithGoogleEvent extends SignupEvent {}
+
+class SignupWithGoogleStatusEvent extends SignupEvent {
+  GoogleSignInAccount? googleSignInAccount;
+  SignupWithGoogleStatusEvent(this.googleSignInAccount);
 }

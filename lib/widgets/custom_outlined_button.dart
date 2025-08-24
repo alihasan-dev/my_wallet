@@ -38,7 +38,8 @@ class CustomOutlinedButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s4)),
         backgroundColor: isSelected == null || !isSelected! 
         ? AppColors.transparent 
-        : backgroundColor ?? AppColors.primaryColor.withOpacity(0.2),
+        : backgroundColor ?? AppColors.primaryColor.withValues(alpha: 0.2),
+        padding: const EdgeInsets.symmetric(vertical: AppSize.s12)
       ), 
       child: CustomText(
         title: title, 

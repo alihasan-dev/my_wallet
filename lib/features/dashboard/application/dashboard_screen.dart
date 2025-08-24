@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../../../constants/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/app_extension_method.dart';
@@ -13,23 +20,35 @@ import '../../../constants/app_style.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
-import '../../../features/dashboard/application/bloc/dashboard_state.dart';
+import '../../../features/dashboard/application/add_user_dialog.dart';
 import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
-import 'add_user_dialog.dart';
+import '../../../widgets/transaction_deleted_widget.dart';
+part 'dashboard_web_view.dart';
 
-class DashboardScreen extends StatefulWidget{
-  const DashboardScreen({super.key});
+class DashboardScreen extends StatefulWidget {
+  final String? userId;
+  const DashboardScreen({super.key, this.userId});
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State createState() => DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen>  with Helper {
+class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsBindingObserver {
 
   List<UserModel> allUsers = [];
   bool isLoading = true;
   bool showUnverified = true;
+  late TextEditingController searchTextController;
+  AppLocalizations? _localizations;
+  late DashboardBloc _dashboardBloc;
+  bool searchFieldEnable = false;
+  bool isBioAuthenticated = false;
+  bool enableBiometricOnChangeLifeCycle = false;
+  bool isBiometricDialogOpen = false;
+  late LocalAuthentication _localAuthentication;
+  String? selectedUserId;
+  int selectedUserCount = 0;
 
   var maskFormatter = MaskTextInputFormatter(
     mask: '####-###-###',
@@ -39,174 +58,248 @@ class _DashboardScreenState extends State<DashboardScreen>  with Helper {
 
   @override
   void didChangeDependencies() {
+    WidgetsBinding.instance.addObserver(this);
+    _dashboardBloc = context.read<DashboardBloc>();
+    _localizations = AppLocalizations.of(context)!;
+    _localAuthentication = LocalAuthentication();
+    if(Preferences.getBool(key: AppStrings.prefBiometricAuthentication) && !kIsWeb && !isBiometricDialogOpen) {
+      openBiometricDialog();
+      Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+    } else {
+      isBioAuthenticated = true;
+    }
+    searchTextController = TextEditingController();
     dateFormat = DateFormat.yMMMd();
     super.didChangeDependencies();
   }
 
   @override
-  Widget build(BuildContext context){
-    return BlocProvider(
-      create: (_) => DashboardBloc(),
-      child: Builder(
-        builder: (context) {
-          return BlocConsumer<DashboardBloc, DashboardState>(
-            listener: (context, state) {
-              switch (state) {
-                case DashboardFailedState _:
-                  hideLoadingDialog(context: context);
-                  showSnackBar(context: context, title: state.title, message: state.message);
-                  break;
-                case DashboardAllUserState _:
-                  isLoading = false;
-                  allUsers.clear();
-                  allUsers.addAll(state.allUser);
-                  break;
-                case DashboardSuccessState _:
-                  hideLoadingDialog(context: context);
-                  break;
-                default:
-              }
-            },
-            builder: (context, state) {
-              return Stack(
-                children: [
-                  isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : allUsers.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: allUsers.length,
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (_, index) {
-                        var data = allUsers[index];
-                        return Column(
-                          children: [
-                            InkWell(
-                              onTap: () => context.push(AppRoutes.transactionScreen, extra: data),
-                              child: Ink(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSize.s16,
-                                  vertical: AppSize.s14
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomImageWidget(
-                                          imageUrl: data.profileImg, 
-                                          imageSize: AppSize.s18,
-                                          circularPadding: AppSize.s5,
-                                          strokeWidth: AppSize.s1,
-                                          padding: 1.5,
-                                          borderWidth: 1.5,
-                                        ),
-                                        const SizedBox(width: AppSize.s10),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                CustomText(
-                                                  title: data.name, 
-                                                  textStyle: getSemiBoldStyle(),
-                                                ),
-                                                Visibility(
-                                                  visible: !data.isUserVerified,
-                                                  child: Container(
-                                                    margin: const EdgeInsets.only(left: AppSize.s8),
-                                                    padding: const EdgeInsets.symmetric(
-                                                      vertical: 1.8,
-                                                      horizontal: AppSize.s5
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.amber.withOpacity(0.1),
-                                                      borderRadius: BorderRadius.circular(AppSize.s4)
-                                                    ),
-                                                    child: CustomText(
-                                                      title: 'Test',
-                                                      textStyle: getRegularStyle(
-                                                        color: Colors.amber,
-                                                        fontSize: AppSize.s14
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Visibility(
-                                              visible: !data.lastTransactionDate.isNegative,
-                                              child: CustomText(
-                                                title: data.lastTransactionDate.isNegative
-                                                ? ''
-                                                : dateFormat.format(DateTime.fromMillisecondsSinceEpoch(data.lastTransactionDate)),
-                                                textStyle: getRegularStyle(color: AppColors.grey)
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    CustomText(
-                                      title: data.amount.amountFormat(type: data.type),
-                                      textStyle: getMediumStyle(
-                                        color: data.type == AppStrings.transfer
-                                        ? AppColors.red
-                                        : AppColors.green
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: AppColors.grey, 
-                              thickness: AppSize.s05, 
-                              height: AppSize.s05
-                            ),
-                          ],
-                        );
-                      },
-                    )
-                  : const CustomEmptyWidget(title: AppStrings.noUserFound,icon: AppIcons.personIcon),
-                  Visibility(
-                    visible: !isLoading,
-                    child: Positioned(
-                      right: AppSize.s20,
-                      bottom: AppSize.s20,
-                      child: InkWell(
-                        onTap: () => addUserDialog(),
-                        borderRadius: BorderRadius.circular(AppSize.s30),
-                        child: Ink(
-                          child: Container(
-                            padding: const EdgeInsets.all(AppSize.s14),
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryColor,
-                              shape: BoxShape.circle
-                            ),
-                            child: const Icon(
-                              AppIcons.addIcon, 
-                              color: AppColors.white, 
-                              size: AppSize.s26
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    selectedUserId = widget.userId;
+    return Scaffold(
+      // backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
+      body: mainContent(context: context)
+    );
+  }
+
+  Widget mainContent({required BuildContext context}) {
+    return BlocConsumer<DashboardBloc, DashboardState>(
+      listener: (context, state) {
+        switch (state) {
+          case DashboardFailedState _:
+            hideLoadingDialog(context: context);
+            showSnackBar(context: context, title: state.title, message: state.message);
+            break;
+          case DashboardAllUserState _:
+            isLoading = false;
+            allUsers.clear();
+            allUsers.addAll(state.allUser);
+            if(state.isCancelSearch) {
+              searchFieldEnable = false;
+              searchTextController.clear();
             }
-          );
+            selectedUserCount = allUsers.where((item) => item.isSelected).length;
+            break;
+          case DashboardSuccessState _:
+            hideLoadingDialog(context: context);
+            break;
+          case DashboardSelectedUserState _:
+            selectedUserId = state.userId;
+            break;
+          case DashboardSearchFieldEnableState _:
+            searchFieldEnable = !searchFieldEnable;
+            break;
+          case DashboardLoadingState _:
+            isLoading = true;
+            break;
+          case DashboardBiometricAuthState _:
+            isBioAuthenticated = state.isAuthenticated;
+            break;
+          default:
         }
-      ),
+      },
+      builder: (context, state) {
+        return Stack(
+          children: [
+            DashboardWebView(
+              dashboardBloc: _dashboardBloc,
+              dashboardScreenState: this
+            ),
+            Visibility(
+              visible: !isBioAuthenticated && !kIsWeb,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 1000),
+                height: isBioAuthenticated ? 0 : double.maxFinite,
+                width: isBioAuthenticated ? 0 : double.maxFinite,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                  child: Container(
+                    color: AppColors.black.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 
   void addUserDialog() {
-    showDialog(
+    showGeneralDialog(
       context: context, 
-      builder: (_) => const AddUserDialog()
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
+        child: const AddUserDialog(),
+      )
     );
+  }
+
+  Future<void> onClickLogout({required BuildContext context}) async {
+    if(await confirmationDialog(context: context, title: _localizations!.logout, content: _localizations!.logoutMsg, localizations: _localizations!)) {
+      Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
+      await Preferences.clearPreferences(key: AppStrings.prefUserId);
+      await Preferences.clearPreferences(key: AppStrings.prefBiometric);
+      if(context.mounted){
+        while (GoRouter.of(context).canPop()) {
+          GoRouter.of(context).pop();
+        }
+        GoRouter.of(context).pushReplacement(AppRoutes.loginScreen);
+      }
+    }
+  }
+
+  ///method used to open the biometric failed info dialog
+  Future<void> openBiometricDialog() async {
+    if(!await biometricAuthentication()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false, 
+        builder: (_){
+          return PopScope(
+            canPop: false,
+            child: AlertDialog(
+              title: CustomText(
+                title: _localizations!.biometricAuthFailed, 
+                textStyle: getBoldStyle(
+                  color: Helper.isDark 
+                  ? AppColors.white.withValues(alpha: 0.9) 
+                  : AppColors.black
+                ),
+              ),
+              content: CustomText(
+                title: _localizations!.biometricAuthFailedMessage, 
+                textColor: Helper.isDark 
+                ? AppColors.white.withValues(alpha: 0.9) 
+                : AppColors.black
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => exit(0),
+                  child: CustomText(
+                    title: _localizations!.cancel,
+                    textStyle: getBoldStyle(color: AppColors.red),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                    Future.delayed(Duration.zero, () => openBiometricDialog());
+                  },
+                  child: CustomText(
+                    title: _localizations!.reAuthenticate,
+                    textStyle: getBoldStyle(color: AppColors.primaryColor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      );
+    }
+  }
+
+  ///method used to handle the biometric and FaceID authentication
+  Future<bool> biometricAuthentication() async {
+    var data = true;
+    if(await _localAuthentication.isDeviceSupported()) {
+      try {
+        isBiometricDialogOpen = true;
+        data =  await _localAuthentication.authenticate(
+          localizedReason: AppStrings.biometricMessage,
+          options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
+        );
+        isBiometricDialogOpen = !data;
+      } catch (e) {
+        showDialog(
+          context: context,
+          barrierDismissible: false, 
+          builder: (_) {
+            return PopScope(
+              canPop: false,
+              child: AlertDialog(
+                title: CustomText(
+                  title: _localizations!.biometricAuthFailed,
+                  textStyle: getBoldStyle(
+                    color: Helper.isDark 
+                    ? AppColors.white.withValues(alpha: 0.9) 
+                    : AppColors.black
+                  ),
+                ),
+                content: CustomText(
+                  title: _localizations!.bioAuthFailedTooManyAttemptMessage, 
+                  textColor: Helper.isDark 
+                  ? AppColors.white.withValues(alpha: 0.9) 
+                  : AppColors.black
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => exit(0),
+                    child: CustomText(
+                      title: _localizations!.cancel,
+                      textStyle: getBoldStyle(color: AppColors.red),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        );
+      }
+    }
+    _dashboardBloc.add(DashboardBiometricAuthEvent(isAuthenticated: data));
+    return data;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final location = GoRouter.of(context).routerDelegate.currentConfiguration.fullPath;
+    if(location != AppRoutes.dashboard) return;
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if(enableBiometricOnChangeLifeCycle && !isBioAuthenticated && !kIsWeb && !isBiometricDialogOpen && Preferences.getBool(key: AppStrings.prefEnableBiometric)) {
+          openBiometricDialog();
+        }
+        break;
+      case AppLifecycleState.inactive:
+        if(isBioAuthenticated && !kIsWeb && Preferences.getBool(key: AppStrings.prefEnableBiometric)) {
+          enableBiometricOnChangeLifeCycle = true;
+          _dashboardBloc.add(DashboardBiometricAuthEvent(isAuthenticated: false));
+        }
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        break;
+    }
   }
   
 }

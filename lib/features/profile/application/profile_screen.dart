@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:my_wallet/utils/location_service.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../constants/app_theme.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -11,8 +14,6 @@ import '../../../constants/app_size.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_style.dart';
 import '../../../features/profile/application/bloc/profile_bloc.dart';
-import '../../../features/profile/application/bloc/profile_event.dart';
-import '../../../features/profile/application/bloc/profile_state.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_outlined_button.dart';
@@ -23,13 +24,19 @@ import '../../../widgets/custom_text.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
-  const ProfileScreen({super.key, this.userId = ''});
+  final Widget? closeButton;
+
+  const ProfileScreen({
+    super.key, 
+    this.userId = '',
+    this.closeButton  
+  });
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with Helper {
+class ProfileScreenState extends State<ProfileScreen> with Helper {
   
   late TextEditingController emailTextController;
   late TextEditingController nameTextController;
@@ -46,6 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
   String errorPhone = '';
   String errorAddress = '';
   bool isFetchProfileData = false;
+  late LocationService _locationService;
 
   //US Phone Number Format
   var maskFormatter = MaskTextInputFormatter(
@@ -65,6 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
 
   @override
   void didChangeDependencies() {
+    _locationService = LocationService(context);
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
   }
@@ -72,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc(userId: widget.userId),
+      create: (_) => ProfileBloc(friendId: widget.userId),
       child: Builder(
         builder: (context) {
           return BlocConsumer<ProfileBloc, ProfileState>(
@@ -83,11 +92,14 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
               return true;
             },
             builder: (context, state) {
-              return widget.userId.isEmpty
-              ? mainWidget(bContext: context)
-              : Scaffold(
+              return Scaffold(
+                backgroundColor: Helper.isDark 
+                ? AppColors.backgroundColorDark
+                : AppColors.white,
                 appBar: AppBar(
                   centerTitle: true, 
+                  elevation: 0,
+                  leading: widget.closeButton ?? const Center(child: Tooltip(message: AppStrings.back ,child: BackButton())),
                   backgroundColor: AppColors.primaryColor,
                   title: CustomText(
                     title: _localizations!.profile, 
@@ -150,51 +162,71 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                     onUserDelete(nameTextController.text, context);
                   }
                   break;
+                case ProfileFailedState _:
+                  hideLoadingDialog(context: context);
+                  showSnackBar(context: context, title: state.title, message: state.message);
                 default:
               }
             }
           );
         }
-      )
+      ),
     );
   }
 
-  Future<void> onUserDelete(String name, BuildContext bContext) async {
-    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: "${_localizations!.deleteUserMsg} $name", localizations: _localizations!)) {
-      bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
+  Future<void> onUserDelete(String name, BuildContext mContext) async {
+    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: _localizations!.deleteUserMsg(name), localizations: _localizations!)) {
+      mContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
     }
   }
 
   Widget mainWidget({required BuildContext bContext}) {
     return ListView(
       shrinkWrap: true,
-      padding: const EdgeInsets.all(AppSize.s20),
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSize.s20,
+        horizontal: !kIsWeb 
+        ? AppSize.s20
+        : AppSize.s20
+      ),
       children: [
-        Stack(
-          alignment: Alignment.center,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Hero(
-              tag: 'profile',
-              child: CustomImageWidget(
-                imageUrl: imageUrl,
-                imageSize: AppSize.s45,
-              ),
-            ),
-            Positioned(
-              bottom: 10,
-              right: context.screenWidth / 2 - 75,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AppSize.s30),
-                onTap: () => showImagePickerSheet(bContext),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSize.s8),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    boxShadow: [BoxShadow(color: AppColors.grey, blurRadius: AppSize.s1)]
+            SizedBox(
+              width: 85,
+              height: 85,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Hero(
+                    tag: 'profile',
+                    child: CustomImageWidget(
+                      imageUrl: imageUrl,
+                      imageSize: 85,
+                    ),
                   ),
-                  child: const Icon(Icons.edit, size: AppSize.s16, color: AppColors.white),
-                ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(AppSize.s30),
+                      onTap: () => showImagePickerSheet(bContext),
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSize.s8),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primaryColor
+                        ),
+                        child: const Icon(
+                          AppIcons.editIcon, 
+                          size: AppSize.s16, 
+                          color: AppColors.white
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -206,17 +238,31 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
           textEditingController: userIdTextController,
           readOnly: true,
           isMandatory: true,
-          onShowPassword: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
+          onSuffixTap: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
           errorText: errorUserId,
+        ),
+        CustomTextField(
+          title: _localizations!.phone, 
+          isPasswordField: false,
+          // isEnabled: widget.userId.isBlank ? true : false, 
+          isMandatory: widget.userId.isBlank ? false : true,
+          textEditingController: phoneTextController,
+          errorText: errorPhone,
+          keyboardType: TextInputType.number,
+          maxLength: 12,
+          textInputFormatter: [maskFormatter],
+          onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
         ),
         CustomTextField(
           title: _localizations!.email, 
           isPasswordField: false, 
-          isEnabled: false,
-          isMandatory: true,
+          isEnabled: widget.userId.isBlank ? false : true, 
+          isMandatory: widget.userId.isBlank ? true : false,
           textEditingController: emailTextController,
           errorText: errorEmail,
+          onChange: (value) => bContext.read<ProfileBloc>().add(ProfileEmailChangeEvent(email: value)),
         ),
+        const SizedBox(height: AppSize.s4),
         CustomTextField(
           title: _localizations!.name, 
           isPasswordField: false, 
@@ -225,20 +271,14 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
           errorText: errorName,
           onChange: (value) => bContext.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
         ),
-        CustomTextField(
-          title: _localizations!.phone, 
-          isPasswordField: false, 
-          textEditingController: phoneTextController,
-          errorText: errorPhone,
-          maxLength: 12,
-          textInputFormatter: [maskFormatter],
-          onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
-        ),
+        const SizedBox(height: AppSize.s4),
         CustomTextField(
           title: _localizations!.address, 
           isPasswordField: false, 
           textEditingController: addressTextController,
-          errorText: errorAddress
+          errorText: errorAddress,
+          suffixIcon: kIsWeb ? null : Icons.location_pin,
+          onSuffixTap: kIsWeb ? null : () => _getCurrentLocation(context),
         ),
         const SizedBox(height: AppSize.s4),
         Row(
@@ -255,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                         icon: AppIcons.deleteIcon,
                         isSelected: true,
                         foregroundColor: AppColors.red,
-                        backgroundColor: AppColors.red.withOpacity(0.2),
+                        backgroundColor: AppColors.red.withValues(alpha: 0.1),
                       ),
                     ),
                     const SizedBox(width: AppSize.s8),
@@ -275,150 +315,163 @@ class _ProfileScreenState extends State<ProfileScreen> with Helper {
                 })),
                 title: _localizations!.update,
                 isSelected: true,
+                verticalPadding: AppSize.s12,
                 foregroundColor: AppColors.white,
                 backgroundColor: AppColors.primaryColor,
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }
 
   void showImagePickerSheet(BuildContext mContext) {
-    showModalBottomSheet(
+    showGeneralDialog(
       context: mContext, 
-      builder: (_) {
-        return Container(
-          width: context.screenWidth,
-          color: Helper.isDark
-          ? AppColors.backgroundColorDark
-          : AppColors.white,
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(AppSize.s20),
-            children: [
-              CustomText(
-                title: _localizations!.selectImg, 
-                textStyle: getMediumStyle(
-                  color: Helper.isDark
-                  ? AppColors.white.withOpacity(0.8)
-                  : AppColors.black, 
-                  fontSize: AppSize.s16
-                ),
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) {
+        return ScaleTransition(
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            insetPadding: const EdgeInsets.all(AppSize.s12),
+            alignment: Alignment.center,
+            content: Container(
+              width: MyAppTheme.columnWidth,
+              decoration: BoxDecoration(
+                color: Helper.isDark
+                ? AppColors.backgroundColorDark
+                : AppColors.white,
+                borderRadius: BorderRadius.circular(AppSize.s10)
               ),
-              const SizedBox(height: AppSize.s18),
-              Row(
+              child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(AppSize.s20),
                 children: [
-                  const SizedBox(width: AppSize.s10),
-                  InkWell(
-                    onTap: () async {
-                      context.pop();
-                      var data = await pickImage(imageSource: ImageSource.camera, context: context);
-                      if(data.isNotEmpty && context.mounted){
-                        mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: AppSize.s26,
-                          child: Icon(
-                            Icons.camera, 
-                            size: AppSize.s28, 
-                            color: Helper.isDark
-                            ? AppColors.white.withOpacity(0.8)
-                            : AppColors.primaryColor
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        title: _localizations!.selectImg,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(AppSize.s10, AppSize.s0),
+                        child: IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(AppIcons.clearIcon),
+                          visualDensity: VisualDensity.compact,
+                          tooltip: _localizations!.close,
                         ),
-                        const SizedBox(height: AppSize.s4),
-                        CustomText(
-                          title: _localizations!.camera, 
-                          textColor: Helper.isDark
-                          ? AppColors.white.withOpacity(0.8)
-                          : AppColors.black,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: AppSize.s30),
-                  InkWell(
-                    onTap: () async {
-                      context.pop();
-                      var data = await pickImage(imageSource: ImageSource.gallery, context: context);
-                      if(data.isNotEmpty && context.mounted){
-                        mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: AppSize.s26,
-                          child: Icon(
-                            Icons.photo, 
-                            size: AppSize.s28, 
-                            color: Helper.isDark
-                            ? AppColors.white.withOpacity(0.8)
-                            : AppColors.primaryColor
-                          ),
+                  const SizedBox(height: AppSize.s18),
+                  Row(
+                    children: [
+                      const SizedBox(width: AppSize.s10),
+                      InkWell(
+                        onTap: () async {
+                          context.pop();
+                          var data = await pickImage(imageSource: ImageSource.camera, context: context);
+                          if(data.isNotEmpty && context.mounted){
+                            mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: AppSize.s26,
+                              child: Icon(
+                                AppIcons.cameraIcon, 
+                                size: AppSize.s28, 
+                                color: Helper.isDark
+                                ? AppColors.white.withValues(alpha: 0.8)
+                                : AppColors.primaryColor
+                              ),
+                            ),
+                            const SizedBox(height: AppSize.s4),
+                            CustomText(
+                              title: _localizations!.camera, 
+                              textColor: Helper.isDark
+                              ? AppColors.white.withValues(alpha: 0.8)
+                              : AppColors.black,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: AppSize.s4),
-                        CustomText(
-                          title: _localizations!.gallery, 
-                          textColor: Helper.isDark
-                          ? AppColors.white.withOpacity(0.8)
-                          : AppColors.black,  
+                      ),
+                      const SizedBox(width: AppSize.s30),
+                      InkWell(
+                        onTap: () async {
+                          context.pop();
+                          var data = await pickImage(imageSource: ImageSource.gallery, context: context);
+                          if(data.isNotEmpty && context.mounted){
+                            mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: AppSize.s26,
+                              child: Icon(
+                                AppIcons.photoIcon, 
+                                size: AppSize.s28, 
+                                color: Helper.isDark
+                                ? AppColors.white.withValues(alpha: 0.8)
+                                : AppColors.primaryColor
+                              ),
+                            ),
+                            const SizedBox(height: AppSize.s4),
+                            CustomText(
+                              title: _localizations!.gallery, 
+                              textColor: Helper.isDark
+                              ? AppColors.white.withValues(alpha: 0.8)
+                              : AppColors.black,  
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s10),
+                  Container(
+                    padding: const EdgeInsets.all(AppSize.s5),
+                    decoration: BoxDecoration(
+                      color: AppColors.orange.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppSize.s4)
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          AppIcons.warningIcon, 
+                          color: AppColors.orange, 
+                          size: AppSize.s20
+                        ),
+                        const SizedBox(width: AppSize.s5),
+                        Expanded(
+                          child: CustomText(
+                            title: _localizations!.imageSizeMsg, 
+                            textColor: AppColors.orange
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: AppSize.s10),
-              Container(
-                padding: const EdgeInsets.all(AppSize.s5),
-                decoration: BoxDecoration(
-                  color: AppColors.amber.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppSize.s4)
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      AppIcons.warningIcon, 
-                      color: AppColors.amber, 
-                      size: AppSize.s20
-                    ),
-                    const SizedBox(width: AppSize.s5),
-                    CustomText(
-                      title: _localizations!.imageSizeMsg, 
-                      textColor: AppColors.amber
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         );
       }
     );
   }
 
-  Future<String> pickImage({required ImageSource imageSource, required BuildContext context}) async {
-    try {
-      var pickImage = await ImagePicker().pickImage(source: imageSource);
-      if(pickImage != null) {
-        final imageLength = await pickImage.length();
-        if(imageLength > 2000000 && context.mounted) {
-          showSnackBar(context: context, title: AppStrings.error, message: AppStrings.imageSizeMsg);
-          return AppStrings.emptyString;
-        }
-        return pickImage.path;
-      } else {
-        return AppStrings.emptyString;
-      }
-    } catch (e) {
-      return AppStrings.emptyString;
-    }
+  Future<void> _getCurrentLocation(BuildContext context) async {
+    var address = await _locationService.getCurrentAddress();
+    if (address.isEmpty) return;
+    addressTextController.text = address;
   }
 }

@@ -1,3 +1,5 @@
+part of 'transaction_bloc.dart';
+
 sealed class TransactionEvent {}
 
 class TransactionInitialEvent extends TransactionEvent {}
@@ -7,11 +9,14 @@ class TransactionAddEvent extends TransactionEvent {
   DateTime? date;
   String amount;
   String type;
+  String transactionId;
+
   TransactionAddEvent({
     required this.userName,
     required this.amount,
     required this.type,
     this.date,
+    this.transactionId = ''
   });
 } 
 
@@ -30,8 +35,8 @@ class TransactionDateChangeEvent extends TransactionEvent {
   TransactionDateChangeEvent({required this.isError});
 }
 
-class AllTransactionEvent extends TransactionEvent {
-  AllTransactionEvent();
+class TransactionAllEvent extends TransactionEvent {
+  TransactionAllEvent();
 }
 
 class TransactionDateSortEvent extends TransactionEvent {}
@@ -46,3 +51,88 @@ class TransactionScrollEvent extends TransactionEvent {
 }
 
 class TransactionExportPDFEvent extends TransactionEvent {}
+
+class TransactionProfileUpdateEvent extends TransactionEvent {
+  String userName;
+  String profileImage;
+
+  TransactionProfileUpdateEvent({this.userName = '', this.profileImage = ''});
+}
+
+class TransactionFilterEvent extends TransactionEvent {}
+
+class TransactionApplyFilterEvent extends TransactionEvent {
+  DateTimeRange? dateTimeRange;
+  String transactionType;
+  RangeValues? amountRangeValues;
+
+  TransactionApplyFilterEvent({this.dateTimeRange, this.transactionType = '', this.amountRangeValues});
+}
+
+class TransactionChangeAmountRangeEvent extends TransactionEvent {
+  RangeValues rangeAmount;
+
+  TransactionChangeAmountRangeEvent({required this.rangeAmount});
+}
+
+class TransactionClearFilterEvent extends TransactionEvent {
+  bool clearFilter;
+
+  TransactionClearFilterEvent({this.clearFilter = false});
+}
+
+class TransactionSelectListItemEvent extends TransactionEvent {
+  int index;
+  TransactionSelectListItemEvent({required this.index});
+}
+
+class TransactionDeleteEvent extends TransactionEvent {}
+
+// class TransactionSubDeleteEvent extends TransactionEvent {
+//   String transactionId;
+
+//   TransactionSubDeleteEvent({required this.transactionId});
+// }
+
+class TransactionEditEvent extends TransactionEvent {}
+
+class TransactionClearSelectionEvent extends TransactionEvent {}
+
+// class TransactionClearSubSelectionEvent extends TransactionEvent {}
+
+class TransactionShowDetailsEvent extends TransactionEvent {
+  String transactionId;
+  String title;
+
+  TransactionShowDetailsEvent({required this.transactionId, required this.title});
+}
+
+class TransactionDetailsEvent extends TransactionEvent {
+  String transactionId;
+  TransactionDetailsEvent({required this.transactionId});
+}
+
+// class TransactionAddDetailsEvent extends TransactionEvent {
+//   String transactionId;
+//   String description;
+//   double rate;
+//   int quantity;
+//   double total;
+//   TransactionAddDetailsEvent({
+//     required this.transactionId,
+//     required this.description,
+//     required this.rate,
+//     required this.quantity,
+//     required this.total
+//   });
+// }
+
+class TransactionClearTransactionIdEvent extends TransactionEvent {}
+
+class TransactionSubDetailsEvent extends TransactionEvent {}
+
+// class TransactionSelectSubDetailsEvent extends TransactionEvent {
+//   int selectedIndex;
+
+//   TransactionSelectSubDetailsEvent({this.selectedIndex = -1});
+// }

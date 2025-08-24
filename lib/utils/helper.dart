@@ -1,14 +1,24 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
+import '../constants/app_icons.dart';
+import '../l10n/app_localizations.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_strings.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
 import '../widgets/custom_text.dart';
+
+enum ScreenType {
+  mobile,
+  tablet,
+  web
+}
 
 mixin Helper {
 
@@ -21,7 +31,7 @@ mixin Helper {
     String? message, 
     Color? color
   }) {
-    var snackBar = SnackBar(
+    final snackBar = SnackBar(
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 3),
       padding: EdgeInsets.zero,
@@ -29,11 +39,16 @@ mixin Helper {
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(AppSize.s6)),
-        side: BorderSide(width: 1.0, color: Colors.grey.withOpacity(0.5))
+        side: BorderSide(
+          width: 1.0, 
+          color: AppColors.grey.withValues(alpha: 0.5)
+        ),
       ),
       margin: EdgeInsets.only(
         bottom: AppSize.s20, 
-        left: kIsWeb ? context.screenWidth * 0.65 : AppSize.s20, 
+        left: kIsWeb && context.screenWidth.screenDimension == ScreenType.web
+        ? context.screenWidth * 0.65  
+        : AppSize.s20, 
         right: AppSize.s20
       ),
       content: Container(
@@ -47,8 +62,12 @@ mixin Helper {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             color != null
-            ? Icon(Icons.check_circle, color: color, size: AppSize.s20)
-            : const Icon(Icons.warning, color: AppColors.amber, size: AppSize.s20),
+            ? Icon(AppIcons.checkCircleIcon, color: color, size: AppSize.s20)
+            : const Icon(
+                AppIcons.warningIcon, 
+                color: AppColors.amber, 
+                size: AppSize.s20
+              ),
             const SizedBox(width: AppSize.s10),
             Expanded(
               child: Column(
@@ -57,7 +76,10 @@ mixin Helper {
                 children: [
                   CustomText(
                     title: title,
-                    textStyle: getSemiBoldStyle(fontSize: AppSize.s14, color: color ?? AppColors.red),
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppSize.s14, 
+                      color: color ?? AppColors.red
+                    ),
                   ),
                   Visibility(
                     visible: message != null,
@@ -79,36 +101,43 @@ mixin Helper {
         ),
       ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(snackBar);
   }
 
   void showLoadingDialog({required BuildContext context}) {
     if(!isLoadingVisible) {
       isLoadingVisible = true;
-      showDialog(
+      showGeneralDialog(
         context: context, 
         barrierColor: AppColors.transparent,
-        builder: (_) {
-          return AlertDialog(
-            elevation: 0.0,
-            contentPadding: EdgeInsets.zero,
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: AppColors.transparent,
-            content: SizedBox(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 2.5,sigmaY: 2.5,
+        barrierDismissible: true,
+        barrierLabel: AppStrings.close,
+        pageBuilder: (_, a1, _) {
+          return ScaleTransition(
+            scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
+            child: AlertDialog(
+              elevation: 0.0,
+              contentPadding: EdgeInsets.zero,
+              insetPadding: EdgeInsets.zero,
+              backgroundColor: AppColors.transparent,
+              content: SizedBox(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 2.5,sigmaY: 2.5,
+                  ),
+                  child: const Center(child: CircularProgressIndicator.adaptive()),
                 ),
-                child: const Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
               ),
             ),
           );
         },
       );
     } else {
-      debugPrint(AppStrings.dialogShowingMessage);
+      log(AppStrings.dialogShowingMessage);
     }
   }
 
@@ -117,7 +146,7 @@ mixin Helper {
       isLoadingVisible = false;
       context.pop();
     } else {
-      debugPrint(AppStrings.dialogNotShowingMessage);
+      log(AppStrings.dialogNotShowingMessage);
     }
   }
 
@@ -127,51 +156,63 @@ mixin Helper {
     required String content,
     required AppLocalizations localizations
   }) async {
-    return await showDialog(
-      context: context, 
-      builder: (_) => AlertDialog(
-        backgroundColor: Helper.isDark 
-        ? AppColors.dialogColorDark 
-        : AppColors.white,
-        title: CustomText(
-          title: title, textStyle: 
-          getBoldStyle(
-            color: Helper.isDark 
-            ? AppColors.white.withOpacity(0.9) 
-            : AppColors.black
-          ),
-        ),
-        content: CustomText(
-          title: content, 
-          textStyle: getSemiBoldStyle(
-            color: Helper.isDark 
-            ? AppColors.white.withOpacity(0.9) 
-            : AppColors.black
-          ),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s6)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: CustomText(
-              title: localizations.cancel, 
-              textStyle: getSemiBoldStyle(color: AppColors.red)
+    return await showGeneralDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+        child: AlertDialog(
+          backgroundColor: Helper.isDark 
+          ? AppColors.dialogColorDark 
+          : AppColors.white,
+          title: CustomText(
+            title: title, textStyle: 
+            getBoldStyle(
+              color: Helper.isDark 
+              ? AppColors.white.withValues(alpha: 0.9) 
+              : AppColors.black
             ),
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true), 
-            child: CustomText(
-              title: localizations.yes, 
-              textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
+          content: CustomText(
+            title: content, 
+            textStyle: getMediumStyle(
+              color: Helper.isDark 
+              ? AppColors.white.withValues(alpha: 0.9) 
+              : AppColors.black,
+              fontSize: AppSize.s16
             ),
           ),
-        ],
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(false),
+              child: CustomText(
+                title: localizations.cancel, 
+                textStyle: getSemiBoldStyle(color: AppColors.red)
+              ),
+            ),
+            TextButton(
+              onPressed: () => context.pop(true), 
+              child: CustomText(
+                title: localizations.yes, 
+                textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
+              ),
+            ),
+          ],
+        ),
       )
     ) ?? false;
   }
 
   ////Transaction Constants
   static List<String> listTransactionType = [
+    AppStrings.transfer,
+    AppStrings.receive
+  ];
+
+  static List<String> filterTransactionTypeList = [
+    AppStrings.all,
     AppStrings.transfer,
     AppStrings.receive
   ];
@@ -192,6 +233,24 @@ mixin Helper {
       return false;
     }
     return true;
+  }
+
+  Future<String> pickImage({required ImageSource imageSource, required BuildContext context}) async {
+    try {
+      var pickImage = await ImagePicker().pickImage(source: imageSource);
+      if(pickImage != null) {
+        final imageLength = await pickImage.length();
+        if(imageLength > 2000000 && context.mounted) {
+          showSnackBar(context: context, title: AppStrings.error, message: AppStrings.imageSizeMsg);
+          return AppStrings.emptyString;
+        }
+        return base64Encode(await pickImage.readAsBytes());
+      } else {
+        return AppStrings.emptyString;
+      }
+    } catch (e) {
+      return AppStrings.emptyString;
+    }
   }
 
 }

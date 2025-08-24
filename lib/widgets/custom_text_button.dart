@@ -12,10 +12,13 @@ class CustomTextButton extends StatelessWidget {
   final IconData? icon;
   final bool? isSelected;
   final bool? showBorder;
+  final bool isShapeStadium;
   final Color? borderColor;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final MainAxisAlignment? mainAxisAlignment;
+  final double verticalPadding;
+  final double horizontalPadding;
    
 
   const CustomTextButton({
@@ -25,6 +28,9 @@ class CustomTextButton extends StatelessWidget {
     this.isSelected,
     this.onPressed,
     this.showBorder,
+    this.isShapeStadium = false,
+    this.verticalPadding = AppSize.s10,
+    this.horizontalPadding = AppSize.s0,
     this.borderColor,
     this.backgroundColor,
     this.foregroundColor,
@@ -36,7 +42,9 @@ class CustomTextButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        shape: RoundedRectangleBorder(
+        shape: isShapeStadium
+        ? const StadiumBorder()
+        : RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSize.s4), 
           side: showBorder == null || !showBorder!
           ? BorderSide.none
@@ -44,7 +52,8 @@ class CustomTextButton extends StatelessWidget {
         ),
         backgroundColor: isSelected == null || !isSelected! 
         ? AppColors.transparent 
-        : backgroundColor ?? AppColors.primaryColor.withOpacity(0.2),
+        : backgroundColor ?? AppColors.primaryColor.withValues(alpha: 0.2),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding)
       ), 
       child: Row(
         mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
@@ -58,7 +67,7 @@ class CustomTextButton extends StatelessWidget {
                   size: AppSize.s22, 
                   color: isSelected == null || !isSelected! 
                   ? Helper.isDark ? AppColors.grey : AppColors.black 
-                  : foregroundColor ?? AppColors.primaryColor
+                  : foregroundColor ?? Theme.of(context).colorScheme.primary
                 ),
                 const SizedBox(width: AppSize.s14),
               ],
@@ -69,7 +78,7 @@ class CustomTextButton extends StatelessWidget {
             textStyle: getMediumStyle(
               color: isSelected == null || !isSelected! 
               ? Helper.isDark ? AppColors.grey : AppColors.black 
-              : foregroundColor ?? AppColors.primaryColor
+              : foregroundColor ?? ThemeData().colorScheme.primary
             ),
           ),
         ],

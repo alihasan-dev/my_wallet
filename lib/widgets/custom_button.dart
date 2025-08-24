@@ -8,29 +8,31 @@ import '../constants/app_size.dart';
 class CustomButton extends StatelessWidget {
 
   final String title;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Color? buttonColor;
   final Color? titleColor;
   final double? titleSize;
+  final double? verticalPadding;
 
   const CustomButton({
     required this.title,
-    required this.onTap,
+    this.onTap,
     this.buttonColor,
     this.titleColor,
     this.titleSize,
+    this.verticalPadding,
     super.key
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return CustomInkWellWidget(
       onTap: onTap,
       widget: Ink(
         width: double.maxFinite,
-        padding: const EdgeInsets.symmetric(vertical: AppSize.s12),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding ?? AppSize.s12),
         decoration: BoxDecoration(
-          color: buttonColor ?? AppColors.primaryColor,
+          color: buttonColor ?? (onTap == null ? AppColors.grey.withValues(alpha: 0.3) : AppColors.primaryColor),
           borderRadius: BorderRadius.circular(AppSize.s4)
         ),
         child: CustomText(
@@ -38,7 +40,7 @@ class CustomButton extends StatelessWidget {
           textAlign: TextAlign.center,
           textStyle: getSemiBoldStyle(
             fontSize: titleSize ?? AppSize.s14, 
-            color: titleColor ?? AppColors.white
+            color: titleColor ?? (onTap == null ? AppColors.grey : AppColors.white)
           ),
         ),
       ),

@@ -18,42 +18,24 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="MyWallet">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="my_wallet">
+  <meta name="apple-mobile-web-app-title" content="demo_app">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Google signin Web Integration-->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <meta name="google-signin-client_id" content="976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>my_wallet</title>
+  <title>MyWallet</title>
   <link rel="manifest" href="manifest.json">
-
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
 </head>
 <body>
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

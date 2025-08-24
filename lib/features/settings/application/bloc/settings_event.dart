@@ -1,6 +1,5 @@
 part of 'settings_bloc.dart';
 
-
 sealed class SettingsEvent {}
 
 class SettingsChangeThemeEvent extends SettingsEvent {
@@ -15,6 +14,12 @@ class SettingsOnChangeVerifiedEvent extends SettingsEvent {
   bool isVerified;
 
   SettingsOnChangeVerifiedEvent({this.isVerified = false});
+}
+
+class SettingsOnChangeTransactionDetailsEvent extends SettingsEvent {
+  bool isEnable;
+
+  SettingsOnChangeTransactionDetailsEvent({this.isEnable = false});
 }
 
 class SettingsOnChangeBiometricEvent extends SettingsEvent {

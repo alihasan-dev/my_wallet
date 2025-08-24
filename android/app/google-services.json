@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "976324609510",
+    "firebase_url": "https://my-wallet-99fdf-default-rtdb.firebaseio.com",
     "project_id": "my-wallet-99fdf",
     "storage_bucket": "my-wallet-99fdf.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "976324609510-00o6lr2kedncbvk0j192jhn2pkp0i9o7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traversal.my_wallet",
+            "certificate_hash": "63b0add573cfa7fd8e01f4e28a55612bc10e4d4a"
+          }
+        },
         {
           "client_id": "976324609510-n7chclp3jhe9j9vfv508a7ah1h7b0tp8.apps.googleusercontent.com",
           "client_type": 1,
@@ -37,6 +46,13 @@
             {
               "client_id": "976324609510-ilctc0qqdoj7o7j52ggu0j38pe04h3d5.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "976324609510-j7a4pjpefgm3kfu9rrb3o2cqnggshn0k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.traversal.myWallet"
+              }
             }
           ]
         }

@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../constants/app_strings.dart';
-import '../../../../features/login/application/bloc/login_event.dart';
-import '../../../../features/login/application/bloc/login_state.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/check_connectivity.dart';
+import '../../../../utils/custom_exception.dart';
 import '../../../../utils/preferences.dart';
+part 'login_event.dart';
+part 'login_state.dart';
 
 ///The business logic layer's responsibilities is to respond to input from the presentation layer with new states.
 ///This layer can depend on one or more repositories to reterieve data needed to build up the aplication state.
@@ -19,16 +22,110 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   late CheckConnectivity checkConnectivity;
   late FirebaseAuth authInstance;
+  late CollectionReference _collectionReference;
   late DocumentReference firebaseDocumentReference;
+  late GoogleSignIn _googleSignIn;
+  bool _isGoogleSignedOut = false;
+  StreamSubscription? _googleSignInSubscription;
 
-  LoginBloc() : super(LoginInitialState()){
+  LoginBloc() : super(LoginInitialState()) {
+    _googleSignIn = GoogleSignIn(
+      clientId: "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
+      scopes: ["email"],
+    );
     authInstance = FirebaseAuth.instance;
+    _collectionReference = FirebaseFirestore.instance.collection('users');
     checkConnectivity = CheckConnectivity();
     on<LoginSubmitEvent>(_onLoginSubmit);
     on<LoginEmailChangeEvent>(_onEmailChange);
     on<LoginPasswordChangeEvent>(_onPasswordChange);
     on<LoginShowPasswordEvent>(_onShowHidePassword);
     on<LoginRememberMeEvent>(_onRememberMe);
+    on<LoginWithGoogleEvent>(_onLoginWithGoogle);
+    on<LoginWithGoogleStatusEvent>(_onLoginWithGoogleStatus);
+
+    _googleSignInSubscription = _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      if(!Preferences.getBool(key: AppStrings.prefGoogleSignInFromSignup)) {
+        add(LoginWithGoogleStatusEvent(account));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _googleSignInSubscription?.cancel();
+    return super.close();
+  }
+
+  Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoadingState());
+    if(event.googleSignInAccount != null) {
+      final displayName = event.googleSignInAccount!.displayName ?? '';
+      final photoUrl = event.googleSignInAccount!.photoUrl;
+      final email = event.googleSignInAccount!.email;
+      final authentication = await event.googleSignInAccount!.authentication;
+      final authCredential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken
+      );
+      final firebaseUserCredential = await authInstance.signInWithCredential(authCredential);
+      final user = firebaseUserCredential.user;
+      if(firebaseUserCredential.additionalUserInfo != null && user != null) {
+        if(!firebaseUserCredential.additionalUserInfo!.isNewUser) {
+          firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
+          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+          Preferences.setString(key: AppStrings.prefEmail, value: email);
+          await firebaseDocumentReference.get().then((data) {
+            var mapData = data.data() as Map;
+            if(mapData.isNotEmpty) {
+              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+              Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
+            }
+          });
+          emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
+        } else {
+          Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
+          Preferences.setString(key: AppStrings.prefEmail, value: email);
+          Preferences.setBool(key: AppStrings.prefRememberMe,value: false);
+          Preferences.setString(key: AppStrings.prefFullName, value: displayName);
+          ///store user in firebase firestore
+          await _collectionReference.doc(user.uid).set({
+            'name': displayName,
+            'email': email,
+            'user_id': user.uid,
+            'profile_img': photoUrl ?? AppStrings.sampleImg,
+            'showUnverified': true,
+            'enableBiometric': false
+          });
+          Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
+          emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessNewUserMsg));
+        }
+      } else {
+        _isGoogleSignedOut = true;
+        emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
+        await _googleSignIn.signOut();
+      }
+    } else {
+      emit(LoginFailedState(
+        title: AppStrings.failed, 
+        message: AppStrings.googleSigninFailedMsg, 
+        canShowSnackBar: !_isGoogleSignedOut
+      ));
+      _isGoogleSignedOut = true;
+    }
+  }
+
+  Future<void> _onLoginWithGoogle(LoginWithGoogleEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      final data = await _googleSignIn.signIn(); 
+      if (data == null) throw CustomException();
+    } on CustomException catch (_) {
+      emit(LoginFailedState(
+        title: AppStrings.failed, 
+        message: AppStrings.googleSigninFailedMsg,
+      ));
+    }
   }
 
   Future<void> _onLoginSubmit(LoginSubmitEvent event, Emitter<LoginState> emit) async {
@@ -48,10 +145,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           await firebaseDocumentReference.get().then((data) {
             var mapData = data.data() as Map;
             if(mapData.isNotEmpty) {
-              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric']);
+              Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
+              Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
             }
           });
-          emit(LoginSuccessState());
+          emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
         } else {
           emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
         }
@@ -65,38 +163,37 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onEmailChange(LoginEmailChangeEvent event, Emitter emit) {
     if(event.email.isEmpty) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.emptyEmail));
+      emit(LoginEmailFieldState(message: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.invalidEmail));
+      emit(LoginEmailFieldState(message: AppStrings.invalidEmail));
     } else {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.emptyString));
+      emit(LoginEmailFieldState(message: AppStrings.emptyString));
     }
   }
 
   void _onPasswordChange(LoginPasswordChangeEvent event, Emitter emit) {
     if(event.password.toString().isBlank) {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
+      emit(LoginPasswordFieldState(message: AppStrings.emptyPassword));
     } else {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyString));
+      emit(LoginPasswordFieldState(message: AppStrings.emptyString));
     }
   }
 
   //method used to show and hide password
   void _onShowHidePassword(LoginShowPasswordEvent event, Emitter emit){
-    var temp = event.isVisible ? false : true;
-    emit(LoginPasswordVisibilityState(temp));
+    emit(LoginPasswordVisibilityState(!event.isVisible));
   }
 
   ///this method is used to validate the email and password field
   Future<bool> validation(Emitter<LoginState> emit, {required String email, required String password}) async {
     if(email.isBlank) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.emptyEmail));
+      emit(LoginEmailFieldState(message: AppStrings.emptyEmail));
       return false;
     } else if(!email.isValidEmail) {
-      emit(LoginEmailFieldState(emailMessage: AppStrings.invalidEmail));
+      emit(LoginEmailFieldState(message: AppStrings.invalidEmail));
       return false;
     } else if(password.isBlank) {
-      emit(LoginPasswordFieldState(passwordMessage: AppStrings.emptyPassword));
+      emit(LoginPasswordFieldState(message: AppStrings.emptyPassword));
       return false;
     } else if(!await checkConnectivity.hasConnection) {
       emit(LoginFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));

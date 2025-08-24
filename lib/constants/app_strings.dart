@@ -2,6 +2,7 @@ class AppStrings {
   AppStrings._();
 
   static const String appName = 'MyWallet';
+  static String appVersion = '';
   static const String emptyString = '';
   static const String login = 'Login';
   static const String signup = 'Signup';
@@ -9,8 +10,9 @@ class AppStrings {
   static const String rememberMe = 'Remember Me';
   static const String forgotPassword = 'Forgot Password';
   static const String continueString = 'Continue';
-  static const String dontHaveAccount = "Don't have an account";
-  static const String alreadyHaveAccount = 'Already have an account';
+  static const String dontHaveAccount = "Don't have an account?";
+  static const String alreadyHaveAccount = 'Already have an account?';
+  static const String all = 'All';
   static const String transfer = 'Transfer';
   static const String receive = 'Receive';
   static const String amount = 'Amount';
@@ -60,6 +62,8 @@ class AppStrings {
   static const String settings = 'Settings';
   static const String viewProfile = 'View Profile';
   static const String success = 'Success';
+  static const String back = 'Back';
+  static const String archive = 'Archive';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
@@ -68,6 +72,7 @@ class AppStrings {
   static const String noInternetConnection = 'No Internet Connection';
   static const String noInternetConnectionMessage = 'Please check your internet connection';
   static const String emptyEmail = 'Please provide email';
+  static const String emptyPhone = 'Please provide phone number';
   static const String emptyName = 'Please provide name';
   static const String invalidEmail = 'Please provide valid email';
   static const String emptyPassword = 'Please provide password';
@@ -76,11 +81,29 @@ class AppStrings {
   static const String dialogNotShowingMessage = 'Loading dialog is not showing'; 
   static const String noUserFound = 'No user found';
   static const String emailAlreadyExist = 'Email already exist';
+  static const String phoneAlreadyExist = 'Phone number already exist';
   static const String deleteUserMsg = 'Are you sure you want to delete';
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
-  static const String invalidPhone = "Plase provide valid phone number";
+  static const String invalidPhone = "Please provide valid phone number";
   static const String imageSizeMsg = "Image size should not be more than 2MB";
-  static const String userDeletedMsg = "User has been deleted successfully";
+  static const String userDeletedMsg = "User deleted successfully";
+  static const String continueWithGoogle = "Continue with Google";
+  static const String termAndPolilcy = "  Terms & Privacy Policy";
+  static const String registerMsg = "Thank you for joining us! Your account has been successfully created.";
+  static const String loginSuccessMsg = "User login successfully";
+  static const String loginSuccessNewUserMsg = "User login successfully. Against a new user with profile creation";
+  static const String googleSigninFailedMsg = "Oops! Google sign-in failed. Please try again.";
+  static const String alreadyHaveAccountMsg = "Welcome back! It seems you already have an account with us. Please log in to continue.";
+  static const String descriptionMsg = "Please enter description";
+  static const String quantityMsg = "Please enter quantity";
+  static const String rateMsg = "Please enter rate";
+  static const String invalidQuantityMsg = "Invalid quantity";
+  static const String invalidRateMsg = "Invalid rate";
+  static const String phoneNumberAlreadyExist = "Phone number already exist";
+  static const String phoneNumberAlreadyExistMsg = "Phone number is already associated with other user";
+  static const String emailSentForgotPasswordMsg = "Email has been sent successfully, follow the link and reset your password";
+  static const String userDoesNotExist = "User does not exist";
+  static const String userDoesNotExistMsg = "User is not registered with this email.";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';
@@ -94,7 +117,11 @@ class AppStrings {
   static const String prefProfileImg = 'PREF_PROFILE_IMG';
   static const String prefLanguage = 'PREF_LANGUAGE';
   static const String prefTheme = 'PREF_THEME';
+  static const String prefGoogleSignInFromSignup = 'PREF_GOOGLE_SIGNIN_FROM';
+  static const String prefShowTransactionDetails = 'PREF_SHOW_TRANSACTION_DETAILS';
 
   ///sample image
   static const String sampleImg = "https://images.unsplash.com/photo-1613891188927-14c2774fb8d7?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTh8fGh1bWluZyUyMGJpcmR8ZW58MHx8MHx8fDA%3D";
+  static const String privacyPolicyUrl = 'https://alihasan-dev.github.io/my_wallet/privacy_policy.html';
+  static const String webUrl = 'https://my-wallet-99fdf.web.app/';
 }
