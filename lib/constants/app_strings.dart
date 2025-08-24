@@ -121,7 +121,7 @@ class AppStrings {
   static const String prefShowTransactionDetails = 'PREF_SHOW_TRANSACTION_DETAILS';
 
   ///sample image
-  static const String sampleImg = "https://images.unsplash.com/photo-1613891188927-14c2774fb8d7?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTh8fGh1bWluZyUyMGJpcmR8ZW58MHx8MHx8fDA%3D";
+  static const String sampleImg = "https://firebasestorage.googleapis.com/v0/b/my-wallet-99fdf.appspot.com/o/app_icon%2Ffile.png?alt=media&token=5f3ac404-8bcc-443d-af49-9a7457ee41da";
   static const String privacyPolicyUrl = 'https://alihasan-dev.github.io/my_wallet/privacy_policy.html';
   static const String webUrl = 'https://my-wallet-99fdf.web.app/';
 }

@@ -34,7 +34,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   bool isFilterApplied = false;
   bool amountAscending = true;
   bool typeAscending = true;
-  bool dateAscending = false;
+  bool dateAscending = true;
   late DateFormat dateFormat;
   String userId = '';
   late AudioPlayer audioPlayer;
@@ -184,7 +184,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       isFilterApplied = false;
       listTransactionResult.clear();
       listTransactionResult.addAll(originalTransactionResultList);
-      listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
+      listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
       double balance = totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
@@ -222,7 +222,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         }
       }
     }
-    listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
+    listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
     double balance = totalBalance(transactionList: listTransactionResult);
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: true));
   }
@@ -230,7 +230,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   void _allTransactionData(TransactionAllEvent event, Emitter emit) {
     listTransactionResult.clear();
     listTransactionResult.addAll(originalTransactionResultList);
-    listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
+    listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
     double balance = totalBalance(transactionList: listTransactionResult);
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isTransactionAgainstFilter: isFilterApplied));
   }
