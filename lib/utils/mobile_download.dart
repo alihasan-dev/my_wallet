@@ -11,24 +11,25 @@ Future<void> downloadFile({required List<int> bytes, required String downloadNam
       Directory? directory = await getApplicationDocumentsDirectory();
       file2 = File('${directory.path}/$downloadName');
     } else {
-      file2 = File("/storage/emulated/0/Download/$downloadName");
+      // file2 = File("/storage/emulated/0/Download/$downloadName");
+      final dir = await getDownloadsDirectory(); // ✅ Works Android 10+
+      if (dir == null) throw Exception("Downloads directory not available");
+      file2 = File('${dir.path}/$downloadName');
     }
     await file2.writeAsBytes(bytes);
   }
 }
 
 Future<bool> _checkStoragePermission() async {
-  var status = await Permission.storage.status;
-  if (status.isGranted) {
-    return true;
-  }
-  var requestStatus = await Permission.storage.request();
   final android = await DeviceInfoPlugin().androidInfo;
+
   if (android.version.sdkInt >= 33) {
-    requestStatus = PermissionStatus.granted;
-  }
-  if (requestStatus.isGranted) {
     return true;
   }
-  return false;
+
+  final status = await Permission.storage.status;
+  if (status.isGranted) return true;
+
+  final requestStatus = await Permission.storage.request();
+  return requestStatus.isGranted;
 }

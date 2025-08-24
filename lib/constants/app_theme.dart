@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../constants/app_color.dart';
 import '../constants/app_font.dart';
 import '../constants/app_style.dart';
@@ -45,7 +46,7 @@ abstract class MyAppTheme {
     return ThemeData(
       //main color of app
       primarySwatch: Colors.indigo,
-      primaryColor: Colors.indigo,
+      primaryColor: AppColors.primaryColor,
       primaryColorLight: Colors.indigo.withValues(alpha: 0.7),
       primaryColorDark: Colors.indigo,
       disabledColor: Colors.grey,
@@ -59,7 +60,7 @@ abstract class MyAppTheme {
       ///app bar theme
       appBarTheme: AppBarTheme(
         centerTitle: true,
-        backgroundColor: Colors.indigo,
+        backgroundColor: AppColors.primaryColor,
         elevation: AppSize.s4,
         shadowColor: Colors.grey,
         titleTextStyle: getRegularStyle(color: Colors.white),

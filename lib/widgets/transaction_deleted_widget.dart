@@ -15,17 +15,11 @@ class TransactionDeletedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSize.s2, 
-        horizontal: AppSize.s5
-      ),
-      child: CustomText(
-        title: appLocalization.deleted,
-        textStyle: TextStyle(
-          color: AppColors.grey,
-          fontSize: AppSize.s12
-        ),
+    return CustomText(
+      title: appLocalization.deleted,
+      textStyle: TextStyle(
+        color: AppColors.grey,
+        fontSize: AppSize.s14
       ),
     );
   }

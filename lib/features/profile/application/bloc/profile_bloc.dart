@@ -48,7 +48,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           final user = item.data() as Map;
           if(user.isNotEmpty) {
             usersList.add(UserModel(
-              userId: user['user_id'] ?? '', 
+              userId: item.id, 
               name: user['name'] ?? '', 
               email: user['email'] ?? '', 
               phone: user['phone'] ?? ''
@@ -61,7 +61,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
       profileData = event.data() as Map<String, dynamic>;
       if(profileData['user_id'] == null) {
-        profileData['user_id'] = friendId;
+        profileData['user_id'] = event.id;
       }
       add(ProfileDataEvent());
     });

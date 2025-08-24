@@ -337,7 +337,13 @@ class DashboardWebView extends StatelessWidget {
                     child: FloatingActionButton.extended(
                       onPressed: dashboardScreenState.addUserDialog,
                       backgroundColor: AppColors.primaryColor,
-                      label: CustomText(title: localizations.addUser, textStyle: getMediumStyle(fontSize: AppSize.s16, color: AppColors.white)),
+                      label: CustomText(
+                        title: localizations.addUser, 
+                        textStyle: getMediumStyle(
+                          fontSize: AppSize.s16, 
+                          color: AppColors.white
+                        ),
+                      ),
                       icon: const Icon(AppIcons.addIcon, color: AppColors.white),
                     ),
                   ),

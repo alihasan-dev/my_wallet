@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../l10n/app_localizations.dart';
-import 'package:my_wallet/utils/preferences.dart';
+import '../../../utils/preferences.dart';
 import '../../../features/my_app/presentation/bloc/my_app_bloc.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
             themeMode = state.themeMode;
             locale = state.locale;
             break;
-          }
+        }
         return MaterialApp.router(
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},

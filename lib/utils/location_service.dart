@@ -3,9 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:my_wallet/constants/app_color.dart';
-import 'package:my_wallet/utils/helper.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../constants/app_color.dart';
+import '../utils/app_extension_method.dart';
+import '../utils/helper.dart';
 
 class LocationService with Helper {
 
@@ -34,18 +35,33 @@ class LocationService with Helper {
       final LocationPermission permission = await _checkLocationPermission();
       switch (permission) {
         case LocationPermission.whileInUse:
-          // final LocationSettings locationSettings = LocationSettings(
-          //   accuracy: LocationAccuracy.best,
-          //   distanceFilter: 100
-          // );
           Position position = await Geolocator.getCurrentPosition();
           var placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
           if (placemark.isNotEmpty) {
             var local = placemark[1];
-            var address = '${local.subLocality}, ${local.locality} - ${local.postalCode}, ${local.administrativeArea}, ${local.country}';
+            String address = '';
+            if (!(local.subLocality ?? '').isBlank) {
+              address = local.subLocality!;
+            }
+            if (!(local.locality ?? '').isBlank) {
+              address = address.isBlank ? local.locality! : '$address, ${local.locality}';
+            }
+            if (!(local.postalCode ?? '').isBlank) {
+              address = address.isBlank 
+              ? local.postalCode!
+              : (local.locality ?? '').isBlank
+                ? '$address, ${local.postalCode}'
+                : '$address - ${local.postalCode}';
+            }
+            if (!(local.administrativeArea ?? '').isBlank) {
+              address = address.isBlank ? local.administrativeArea! : '$address, ${local.administrativeArea}';
+            }
+            if (!(local.country ?? '').isBlank) {
+              address = address.isBlank ? local.country! : '$address, ${local.country}';
+            }
             return address;
           }
-          return 'N/A';
+          return '';
         default:
           throw Exception('Permission denied to access the location');
       }
