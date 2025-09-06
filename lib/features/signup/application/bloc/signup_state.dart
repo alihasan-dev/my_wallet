@@ -13,8 +13,8 @@ class SignupSuccessState extends SignupState{
 class SignupFailedState extends SignupState{
   String message;
   String title;
-  bool canShowSnaclBar;
-  SignupFailedState({required this.message,required this.title, this.canShowSnaclBar = true});
+  bool canShowSnackBar;
+  SignupFailedState({required this.message,required this.title, this.canShowSnackBar = true});
 }
 
 class SignupLoadingState extends SignupState{}

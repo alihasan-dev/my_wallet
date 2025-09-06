@@ -84,7 +84,6 @@ class SubTransactionBloc extends Bloc<SubTransactionEvent, SubTransactionState>{
   void _onSelectTransactionDetails(SubTransactionSelectDetailsEvent event, Emitter emit) {
     if (transactionDetailsList.isNotEmpty) {
       transactionDetailsList[event.selectedIndex].isSelected = !transactionDetailsList[event.selectedIndex].isSelected;
-      // emit(TransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
       emit(SubTransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
     }
   }

@@ -59,7 +59,7 @@ class SignupScreenState extends State<SignupScreen> with Helper {
           switch (state) {
             case SignupFailedState _:
               hideLoadingDialog(context: context);
-              if(state.canShowSnaclBar) {
+              if(state.canShowSnackBar) {
                 showSnackBar(context: context, title: state.title, message: state.message);
               }
               break;

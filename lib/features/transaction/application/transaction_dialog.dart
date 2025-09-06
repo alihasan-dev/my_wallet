@@ -159,6 +159,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => context.read<TransactionBloc>().add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
+                      icon: Icon(AppIcons.arrowDown),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),

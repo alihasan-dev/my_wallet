@@ -244,7 +244,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _onChangeAmount(TransactionAmountChangeEvent event, Emitter emit) {
-    if (event.amount.isEmpty) {
+    if (event.amount.isBlank) {
       emit(TransactionAmountFieldState(errorAmountMsg: AppStrings.emptyAmount));
     } else {
       emit(TransactionAmountFieldState());
@@ -300,7 +300,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
-      if (event.transactionId.isEmpty) {
+      if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
         firebaseStoreInstance.update({
           'lastTransactionTime': event.date,

@@ -42,5 +42,6 @@ class AppIcons {
   static const IconData campaignIcon = Icons.campaign_rounded;
   static const IconData barChartIcon = Icons.bar_chart_sharp;
   static const IconData archive = Icons.archive;
+  static const IconData arrowDown = Icons.keyboard_arrow_down;
   
 }

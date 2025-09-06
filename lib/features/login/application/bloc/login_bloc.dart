@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc() : super(LoginInitialState()) {
     _googleSignIn = GoogleSignIn(
-      clientId: "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
+      clientId: AppStrings.googleSignInClientId,
       scopes: ["email"],
     );
     authInstance = FirebaseAuth.instance;
@@ -162,7 +162,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   void _onRememberMe(LoginRememberMeEvent event, Emitter emit) => emit(LoginRememberMeState(event.value));
 
   void _onEmailChange(LoginEmailChangeEvent event, Emitter emit) {
-    if(event.email.isEmpty) {
+    if(event.email.isBlank) {
       emit(LoginEmailFieldState(message: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
       emit(LoginEmailFieldState(message: AppStrings.invalidEmail));

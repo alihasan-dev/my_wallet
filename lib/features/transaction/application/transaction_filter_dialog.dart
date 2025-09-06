@@ -140,6 +140,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => widget.transactionBloc.add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
+                      icon: Icon(AppIcons.arrowDown),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),

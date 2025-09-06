@@ -22,7 +22,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
 
   SignupBloc() : super(SignupInitialState()) {
     _googleSignIn = GoogleSignIn(
-      clientId: "976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com",
+      clientId: AppStrings.googleSignInClientId,
       scopes: ["email"],
     );
     _authInstance = FirebaseAuth.instance;
@@ -93,7 +93,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
       emit(SignupFailedState(
         title: AppStrings.failed, 
         message: AppStrings.googleSigninFailedMsg, 
-        canShowSnaclBar: !_isGoogleSignedOut
+        canShowSnackBar: !_isGoogleSignedOut
       ));
       _isGoogleSignedOut = false;
     }
@@ -146,7 +146,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   }
 
   void _onEmailChange(SignupEmailChangeEvent event, Emitter emit) {
-    if(event.email.isEmpty) {
+    if(event.email.isBlank) {
       emit(SignupEmailFieldState(message: AppStrings.emptyEmail));
     } else  if(!event.email.toString().isValidEmail) {
       emit(SignupEmailFieldState(message: AppStrings.invalidEmail));
@@ -156,7 +156,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   }
 
   void _onNameChange(SignupNameChangeEvent event, Emitter emit) {
-    if(event.name.isEmpty) {
+    if(event.name.isBlank) {
       emit(SignupNameFieldState(message: AppStrings.emptyName));
     } else {
       emit(SignupNameFieldState(message: AppStrings.emptyString));

@@ -28,7 +28,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc({this.friendId = ''}) : super(ProfileInitialState()) {
     checkConnectivity = CheckConnectivity();
     final userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
-    firebaseDocReference = friendId.isEmpty ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
+    firebaseDocReference = friendId.isBlank ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
     firebaseStorage = FirebaseStorage.instance.ref();
 
     ///Register Event Here
@@ -76,7 +76,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onNameChange(ProfileNameChangeEvent event, Emitter emit) {
-    if(event.text.isEmpty){
+    if(event.text.isBlank){
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
     } else {
       emit(ProfileErrorNameState(message: AppStrings.emptyString));
@@ -84,11 +84,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onEmailChange(ProfileEmailChangeEvent event, Emitter emit) {
-    if (friendId.isNotEmpty && event.email.isEmpty) {
+    if (friendId.isNotEmpty && event.email.isBlank) {
       emit(ProfileErrorEmailState(message: AppStrings.emptyString));
       return;
     }
-    if(event.email.isEmpty) {
+    if(event.email.isBlank) {
       emit(ProfileErrorEmailState(message: AppStrings.emptyEmail));
     } else if(!event.email.isValidEmail) {
       emit(ProfileErrorEmailState(message: AppStrings.invalidEmail));
@@ -98,7 +98,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onPhoneChange(ProfilePhoneChangeEvent event, Emitter emit) {
-    if (friendId.isEmpty && event.text.isEmpty) {
+    if (friendId.isBlank && event.text.isBlank) {
       emit(ProfileErrorPhoneState(message: AppStrings.emptyString));
       return;
     }
@@ -120,7 +120,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if(selectedImagePath.isNotEmpty) {
         emit(ProfileLoadingState());
         try {
-          final mountainImagesRef = friendId.isEmpty 
+          final mountainImagesRef = friendId.isBlank 
           ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
           : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
           await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
@@ -138,7 +138,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         'user_id': event.profileData['user_id'],
         'phone': event.profileData['phone'],
         'address': event.profileData['address'],
-        'profile_img': updatedImageUrl.isEmpty ? event.profileData['profile_img'] : updatedImageUrl
+        'profile_img': updatedImageUrl.isBlank ? event.profileData['profile_img'] : updatedImageUrl
       });
     }
   }
