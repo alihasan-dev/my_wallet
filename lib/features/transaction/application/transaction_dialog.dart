@@ -237,7 +237,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
       context: context, 
       initialDate: initialDate, 
       firstDate: DateTime.parse('2022-01-01'), 
-      lastDate: DateTime.now()
+      lastDate: DateTime.now(),
+      initialEntryMode: DatePickerEntryMode.calendarOnly
     );
   }
 }

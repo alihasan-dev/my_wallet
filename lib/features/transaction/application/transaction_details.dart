@@ -29,7 +29,6 @@ class TransactionDetailsState extends State<TransactionDetails> {
 
   late final ValueNotifier<bool> _displayProfileColumn;
   late final ValueNotifier<bool> _displayTransactionDetailsColumn;
-  // TransactionBloc? _transactionBloc;
   String transactionId = '';
   String title = '';
 
@@ -56,7 +55,6 @@ class TransactionDetailsState extends State<TransactionDetails> {
     if(_displayProfileColumn.value) {
       _displayProfileColumn.value = false;
     }
-    // _transactionBloc = transactionBloc;
     this.transactionId = transactionId ?? '';
     this.title = title ?? '';
     setState(() {});
@@ -141,7 +139,6 @@ class TransactionDetailsState extends State<TransactionDetails> {
                   ),
                   child: TransactionSubDetailsScreen(
                     key: ValueKey(transactionId),
-                    // transactionBloc: _transactionBloc!, 
                     transactionId: transactionId,
                     title: title,
                     closeButton: IconButton(

@@ -226,7 +226,8 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
       initialDateRange: initialDateTimeRage,
       context: context, 
       firstDate: DateTime.parse('2022-01-01'), 
-      lastDate: DateTime.now().add(const Duration(days: 30))
+      lastDate: DateTime.now().add(const Duration(days: 30)),
+      initialEntryMode: DatePickerEntryMode.calendarOnly
     );
     if(dateTimeRange != null) {
       initialDateTimeRage = dateTimeRange;
