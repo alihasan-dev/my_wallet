@@ -135,7 +135,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       for (var item in listTransactionResult) {
         item.selected = false;
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
+      double balance = _totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
@@ -174,7 +174,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) async {
     if (listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
-      double balance = totalBalance(transactionList: listTransactionResult);
+      double balance = _totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
@@ -185,7 +185,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransactionResult.clear();
       listTransactionResult.addAll(originalTransactionResultList);
       listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
-      double balance = totalBalance(transactionList: listTransactionResult);
+      double balance = _totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
@@ -223,7 +223,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
     }
     listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
-    double balance = totalBalance(transactionList: listTransactionResult);
+    double balance = _totalBalance(transactionList: listTransactionResult);
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: true));
   }
 
@@ -231,7 +231,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     listTransactionResult.clear();
     listTransactionResult.addAll(originalTransactionResultList);
     listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
-    double balance = totalBalance(transactionList: listTransactionResult);
+    double balance = _totalBalance(transactionList: listTransactionResult);
     emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isTransactionAgainstFilter: isFilterApplied));
   }
 
@@ -260,7 +260,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         dateAscending = !dateAscending;
         listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
+      double balance = _totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
@@ -274,7 +274,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         amountAscending = !amountAscending;
         listTransactionResult.sort((a, b) => b.amount.compareTo(a.amount));
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
+      double balance = _totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
@@ -288,12 +288,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         typeAscending = !typeAscending;
         listTransactionResult.sort((a, b) => b.type.compareTo(a.type));
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
+      double balance = _totalBalance(transactionList: listTransactionResult);
       emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
     }
   }
 
-  double totalBalance({required List<TransactionModel> transactionList}) {
+  double _totalBalance({required List<TransactionModel> transactionList}) {
     double totalBalance = listTransactionResult.fold(0.0, (temp, item) => item.type == AppStrings.transfer ? temp - item.amount : temp + item.amount);
     return totalBalance;
   }
