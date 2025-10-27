@@ -136,7 +136,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         item.selected = false;
       }
       double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -175,7 +179,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
       double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -186,7 +194,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransactionResult.addAll(originalTransactionResultList);
       listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
       double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -224,7 +236,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
     listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
     double balance = _totalBalance(transactionList: listTransactionResult);
-    emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: true));
+    emit(AllTransactionState(
+      listTransaction: listTransactionResult, 
+      totalBalance: balance, 
+      isFilterEnable: true
+    ));
   }
 
   void _allTransactionData(TransactionAllEvent event, Emitter emit) {
@@ -232,7 +248,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     listTransactionResult.addAll(originalTransactionResultList);
     listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
     double balance = _totalBalance(transactionList: listTransactionResult);
-    emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isTransactionAgainstFilter: isFilterApplied));
+    emit(AllTransactionState(
+      listTransaction: listTransactionResult, 
+      totalBalance: balance, 
+      isTransactionAgainstFilter: isFilterApplied
+    ));
   }
 
   void _onChangeDateStatus(TransactionDateChangeEvent event, Emitter emit) {
@@ -261,7 +281,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
       }
       double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -275,7 +299,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransactionResult.sort((a, b) => b.amount.compareTo(a.amount));
       }
       double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -289,7 +317,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransactionResult.sort((a, b) => b.type.compareTo(a.type));
       }
       double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -308,7 +340,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'type': event.type
         });
       } else {
-        firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({'date': event.date, 'amount': event.amount, 'type': event.type});
+        firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({
+          'date': event.date, 
+          'amount': event.amount, 
+          'type': event.type
+        });
       }
     }
   }
