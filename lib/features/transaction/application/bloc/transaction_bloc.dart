@@ -421,8 +421,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                     child: subIndex == 0
                     ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
                     : subIndex == 1
-                      ? pw.Text(listTransactionResult[i - 1].type)
-                      : pw.Text(listTransactionResult[i - 1].amount.toString())
+                      ? pw.Text(
+                          listTransactionResult[i - 1].type,
+                          style: pw.TextStyle(
+                            color: listTransactionResult[i - 1].type == AppStrings.transfer 
+                            ? PdfColors.red 
+                            : PdfColors.green
+                          ),
+                        )
+                      : pw.Text(listTransactionResult[i - 1].amount.toString().currencyFormat)
                   ),
                 ),
               ),

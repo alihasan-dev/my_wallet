@@ -234,7 +234,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
         isBiometricDialogOpen = true;
         data =  await _localAuthentication.authenticate(
           localizedReason: AppStrings.biometricMessage,
-          options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
+          // options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
         );
         isBiometricDialogOpen = !data;
       } catch (e) {
