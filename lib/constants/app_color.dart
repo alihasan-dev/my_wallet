@@ -15,6 +15,7 @@ class AppColors {
   static const Color blue = Colors.blue;
   static const Color lightBlue = Color(0xFF1871ff);
   static const Color orange = Colors.orange;
+  static const Color pink = Colors.pink;
 
   ///Dark Theme Color
   static const Color headerColorDark = Color(0xFF3A3A3C);

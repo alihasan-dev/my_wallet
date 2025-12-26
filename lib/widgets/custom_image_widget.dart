@@ -53,7 +53,7 @@ class CustomImageWidget extends StatelessWidget {
       : ClipOval(
         child: SizedBox.fromSize(
           size: Size.fromRadius(imageSize),
-          child: imageUrl.isEmpty
+          child: imageUrl.isBlank
           ? Center(
               child: Icon(
                 AppIcons.personIcon,

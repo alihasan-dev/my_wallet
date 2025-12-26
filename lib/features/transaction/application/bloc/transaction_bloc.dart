@@ -334,8 +334,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
       if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
+        
+        var lastTransactionDateTime = event.date!; 
+        try {
+          final dateTimeLastTransaction = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
+          lastTransactionDateTime = dateTimeLastTransaction.isAfter(lastTransactionDateTime) ? dateTimeLastTransaction : lastTransactionDateTime;
+        } catch (_) {log('FAILED:::while comparing last transaction date with current transaction date');}
+
         firebaseStoreInstance.update({
-          'lastTransactionTime': event.date,
+          'lastTransactionTime': lastTransactionDateTime,
           'amount': event.amount,
           'type': event.type
         });
@@ -349,7 +356,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  Future<bool> _validate(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
+  Future<bool>  _validate(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
     if (amount.isBlank) {
       emit(TransactionAmountFieldState(errorAmountMsg: AppStrings.emptyAmount));
       return false;
@@ -364,6 +371,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       return false;
     } else if (!await checkConnectivity.hasConnection) {
       emit(TransactionFailedState(title: AppStrings.noInternetConnection,message: AppStrings.noInternetConnectionMessage));
+      await Future.delayed(const Duration(seconds: 3), () => emit(TransactionFailedState(message: '', title: '')));
       return false;
     }
     return true;
