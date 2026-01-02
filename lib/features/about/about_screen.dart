@@ -51,7 +51,7 @@ class AboutScreen extends StatelessWidget {
               textSize: AppSize.s12,
             ),
             const CustomText(
-              title: '  \u00a9 2025 Traversal Inc.',
+              title: '  \u00a9 2026 Traversal Inc.',
               textSize: AppSize.s12,
             ),
             Padding(
