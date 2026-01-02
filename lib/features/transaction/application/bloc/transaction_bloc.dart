@@ -334,18 +334,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
       if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
-        
-        var lastTransactionDateTime = event.date!; 
+        var currentTransactionDateTime = event.date!; 
         try {
-          final dateTimeLastTransaction = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
-          lastTransactionDateTime = dateTimeLastTransaction.isAfter(lastTransactionDateTime) ? dateTimeLastTransaction : lastTransactionDateTime;
+          final lastTransactionDateTime = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
+          if (lastTransactionDateTime.isBefore(currentTransactionDateTime) || lastTransactionDateTime.isAtSameMomentAs(currentTransactionDateTime)) {
+            firebaseStoreInstance.update({
+              'lastTransactionTime': currentTransactionDateTime,
+              'amount': event.amount,
+              'type': event.type
+            });
+          }
         } catch (_) {log('FAILED:::while comparing last transaction date with current transaction date');}
-
-        firebaseStoreInstance.update({
-          'lastTransactionTime': lastTransactionDateTime,
-          'amount': event.amount,
-          'type': event.type
-        });
       } else {
         firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({
           'date': event.date, 

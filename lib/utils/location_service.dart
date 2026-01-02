@@ -38,7 +38,7 @@ class LocationService with Helper {
           Position position = await Geolocator.getCurrentPosition();
           var placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
           if (placemark.isNotEmpty) {
-            var local = placemark[1];
+            var local = placemark.first;
             String address = '';
             if (!(local.subLocality ?? '').isBlank) {
               address = local.subLocality!;
