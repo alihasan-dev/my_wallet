@@ -131,7 +131,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   errorAddress = state.message;
                   break;
                 case ProfileChooseImageState _:
-                  imageUrl = state.imagePath.isEmpty ? AppStrings.sampleImg : state.imagePath;
+                  imageUrl = state.imagePath.isBlank ? AppStrings.sampleImg : state.imagePath;
                   break;
                 case ProfileSuccessState _:
                   var profileData = state.profileData;
@@ -471,7 +471,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
 
   Future<void> _getCurrentLocation(BuildContext context) async {
     var address = await _locationService.getCurrentAddress();
-    if (address.isEmpty) return;
+    if (address.isBlank) return;
     addressTextController.text = address;
   }
 }

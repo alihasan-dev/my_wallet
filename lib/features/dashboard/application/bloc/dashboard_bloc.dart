@@ -167,7 +167,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _onSearchEvent(DashboardSearchEvent event, Emitter emit) {
     if(originalUserList.isNotEmpty) {
       listUser.clear();
-      if(event.text.isEmpty) {
+      if(event.text.isBlank) {
         if(showUnverifiedUser) {
           listUser.addAll(originalUserList);
         } else {
@@ -229,7 +229,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     if(name.isBlank) {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
       return false;
-    } else if (phone.isEmpty) {
+    } else if (phone.isBlank) {
       emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyPhone));
       return false;
     } else if (!phone.isValidPhone) {
@@ -246,7 +246,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   void _onEmailChange(DashboardEmailChangeEvent event, Emitter emit) {
-    if(event.email.isEmpty){
+    if(event.email.isBlank){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.emptyEmail));
     } else if(!event.email.toString().isValidEmail){
       emit(DashboardEmailFieldState(emailMessage: AppStrings.invalidEmail));
@@ -256,7 +256,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   void _onPhoneChange(DashboardPhoneChangeEvent event, Emitter emit) {
-    if(event.phone.isEmpty) {
+    if(event.phone.isBlank) {
       emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyPhone));
     } else if(!event.phone.isValidPhone) {
       emit(DashboardPhoneFieldState(phoneMessage: AppStrings.invalidPhone));
@@ -266,7 +266,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   void _onNameChange(DashboardNameChangeEvent event, Emitter emit){
-    if(event.name.isEmpty){
+    if(event.name.isBlank){
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
     } else {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyString));

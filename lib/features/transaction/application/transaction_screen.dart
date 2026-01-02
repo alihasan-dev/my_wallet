@@ -95,6 +95,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            elevation: 0.0,
             toolbarHeight: 0, 
             shadowColor: AppColors.transparent, 
             backgroundColor: AppColors.primaryColor
@@ -109,13 +110,6 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 duration: const Duration(milliseconds: 450),
                 decoration: BoxDecoration(
                   color: AppColors.primaryColor,
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: Colors.black54,
-                      blurRadius: AppSize.s15,
-                      offset: Offset(0.0, 1.0)
-                    ),
-                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

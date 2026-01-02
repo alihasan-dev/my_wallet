@@ -34,7 +34,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   bool isFilterApplied = false;
   bool amountAscending = true;
   bool typeAscending = true;
-  bool dateAscending = false;
+  bool dateAscending = true;
   late DateFormat dateFormat;
   String userId = '';
   late AudioPlayer audioPlayer;
@@ -135,8 +135,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       for (var item in listTransactionResult) {
         item.selected = false;
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -174,8 +178,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> _onSelectListItemEvent(TransactionSelectListItemEvent event, Emitter emit) async {
     if (listTransactionResult.isNotEmpty) {
       listTransactionResult[event.index].selected = !listTransactionResult[event.index].selected;
-      double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -184,9 +192,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       isFilterApplied = false;
       listTransactionResult.clear();
       listTransactionResult.addAll(originalTransactionResultList);
-      listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
-      double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -222,17 +234,25 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         }
       }
     }
-    listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
-    double balance = totalBalance(transactionList: listTransactionResult);
-    emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: true));
+    listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
+    double balance = _totalBalance(transactionList: listTransactionResult);
+    emit(AllTransactionState(
+      listTransaction: listTransactionResult, 
+      totalBalance: balance, 
+      isFilterEnable: true
+    ));
   }
 
   void _allTransactionData(TransactionAllEvent event, Emitter emit) {
     listTransactionResult.clear();
     listTransactionResult.addAll(originalTransactionResultList);
-    listTransactionResult.sort((a, b) => a.date.compareTo(b.date));
-    double balance = totalBalance(transactionList: listTransactionResult);
-    emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isTransactionAgainstFilter: isFilterApplied));
+    listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
+    double balance = _totalBalance(transactionList: listTransactionResult);
+    emit(AllTransactionState(
+      listTransaction: listTransactionResult, 
+      totalBalance: balance, 
+      isTransactionAgainstFilter: isFilterApplied
+    ));
   }
 
   void _onChangeDateStatus(TransactionDateChangeEvent event, Emitter emit) {
@@ -244,7 +264,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _onChangeAmount(TransactionAmountChangeEvent event, Emitter emit) {
-    if (event.amount.isEmpty) {
+    if (event.amount.isBlank) {
       emit(TransactionAmountFieldState(errorAmountMsg: AppStrings.emptyAmount));
     } else {
       emit(TransactionAmountFieldState());
@@ -260,8 +280,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         dateAscending = !dateAscending;
         listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -274,8 +298,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         amountAscending = !amountAscending;
         listTransactionResult.sort((a, b) => b.amount.compareTo(a.amount));
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
@@ -288,32 +316,46 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         typeAscending = !typeAscending;
         listTransactionResult.sort((a, b) => b.type.compareTo(a.type));
       }
-      double balance = totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(listTransaction: listTransactionResult, totalBalance: balance, isFilterEnable: isFilterApplied));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: isFilterApplied
+      ));
     }
   }
 
-  double totalBalance({required List<TransactionModel> transactionList}) {
+  double _totalBalance({required List<TransactionModel> transactionList}) {
     double totalBalance = listTransactionResult.fold(0.0, (temp, item) => item.type == AppStrings.transfer ? temp - item.amount : temp + item.amount);
     return totalBalance;
   }
 
   Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
-      if (event.transactionId.isEmpty) {
+      if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
-        firebaseStoreInstance.update({
-          'lastTransactionTime': event.date,
-          'amount': event.amount,
+        var currentTransactionDateTime = event.date!; 
+        try {
+          final lastTransactionDateTime = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
+          if (lastTransactionDateTime.isBefore(currentTransactionDateTime) || lastTransactionDateTime.isAtSameMomentAs(currentTransactionDateTime)) {
+            firebaseStoreInstance.update({
+              'lastTransactionTime': currentTransactionDateTime,
+              'amount': event.amount,
+              'type': event.type
+            });
+          }
+        } catch (_) {log('FAILED:::while comparing last transaction date with current transaction date');}
+      } else {
+        firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({
+          'date': event.date, 
+          'amount': event.amount, 
           'type': event.type
         });
-      } else {
-        firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({'date': event.date, 'amount': event.amount, 'type': event.type});
       }
     }
   }
 
-  Future<bool> _validate(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
+  Future<bool>  _validate(Emitter<TransactionState> emit,{required String userName, DateTime? date, required String amount}) async {
     if (amount.isBlank) {
       emit(TransactionAmountFieldState(errorAmountMsg: AppStrings.emptyAmount));
       return false;
@@ -328,6 +370,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       return false;
     } else if (!await checkConnectivity.hasConnection) {
       emit(TransactionFailedState(title: AppStrings.noInternetConnection,message: AppStrings.noInternetConnectionMessage));
+      await Future.delayed(const Duration(seconds: 3), () => emit(TransactionFailedState(message: '', title: '')));
       return false;
     }
     return true;
@@ -385,8 +428,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                     child: subIndex == 0
                     ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
                     : subIndex == 1
-                      ? pw.Text(listTransactionResult[i - 1].type)
-                      : pw.Text(listTransactionResult[i - 1].amount.toString())
+                      ? pw.Text(
+                          listTransactionResult[i - 1].type,
+                          style: pw.TextStyle(
+                            color: listTransactionResult[i - 1].type == AppStrings.transfer 
+                            ? PdfColors.red 
+                            : PdfColors.green
+                          ),
+                        )
+                      : pw.Text(listTransactionResult[i - 1].amount.toString().currencyFormat)
                   ),
                 ),
               ),

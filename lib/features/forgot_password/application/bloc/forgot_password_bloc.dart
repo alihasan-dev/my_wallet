@@ -44,7 +44,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   }
 
   Future<bool> validation(String email, Emitter emit) async {
-    if (email.isEmpty) {
+    if (email.isBlank) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.emptyEmail));
       return false;
     } else if (!email.isValidEmail) {
@@ -63,7 +63,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   }
 
   void _onEmailChange(ForgotPasswordEmailChangeEvent event, Emitter emit) {
-    if (event.value.isEmpty) {
+    if (event.value.isBlank) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.emptyEmail));
     } else if(!event.value.toString().isValidEmail) {
       emit(ForgotPasswordEmailFieldState(message: AppStrings.invalidEmail));

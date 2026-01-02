@@ -443,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @imageSizeMsg.
   ///
   /// In en, this message translates to:
-  /// **'Image size should not be more than 2MB'**
+  /// **'Images size must be less than 2 MB'**
   String get imageSizeMsg;
 
   /// No description provided for @contacts.

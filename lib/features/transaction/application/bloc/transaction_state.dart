@@ -11,7 +11,7 @@ class DashboardSuccessState extends TransactionState {
 class TransactionFailedState extends TransactionState {
   String message;
   String title;
-  TransactionFailedState({required this.message, required this.title});
+  TransactionFailedState({this.message = '',this.title = ''});
 }
 
 class TransactionLoadingState extends TransactionState {}

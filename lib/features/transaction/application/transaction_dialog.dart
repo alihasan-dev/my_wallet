@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_style.dart';
 import '../../../constants/app_theme.dart';
@@ -36,6 +36,7 @@ class AddTransactionDialog extends StatefulWidget {
 class _AddTransactionDialogState extends State<AddTransactionDialog> {
 
   String errorAmount = '';
+  String errorMsg = '';
   bool errorDate = false;
   bool isFirst = true;
   DateTime? transactionDate;
@@ -82,6 +83,9 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                 break;
               case TransactionDateChangeState _:
                 errorDate = state.isEmpty;
+                break;
+              case TransactionFailedState _:
+                errorMsg = state.message;
                 break;
               default:
             }
@@ -159,6 +163,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => context.read<TransactionBloc>().add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
+                      icon: Icon(AppIcons.arrowDown),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),
@@ -193,7 +198,47 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSize.s20),
+                  const SizedBox(height: AppSize.s16),
+                  AnimatedSwitcher(
+                    duration: MyAppTheme.animationDuration,
+                    transitionBuilder: (child, animation) {
+                      final offsetAnimation = Tween<Offset>(
+                        begin: const Offset(0, -0.4), // from top
+                        end: Offset.zero,
+                      ).animate(animation);
+                      return ClipRect(
+                        child: SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: errorMsg.isBlank
+                    ? const SizedBox.shrink()
+                    : Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSize.s8,
+                          horizontal: AppSize.s12
+                        ),
+                        margin: const EdgeInsets.only(bottom: AppSize.s10),
+                        decoration: BoxDecoration(
+                          color: AppColors.pink.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(5.0)
+                        ),
+                        child: Row(
+                          spacing: AppSize.s6,
+                          children: [
+                            Icon(AppIcons.warningIcon, size: AppSize.s18, color: AppColors.pink),
+                            Expanded(
+                              child: CustomText(
+                                title: AppStrings.noInternetConnection,
+                                textStyle: getRegularStyle(color: AppColors.pink)
+                              )
+                            ),
+                          ],
+                        ),
+                      ),
+                  ),
                   CustomButton(
                     title: widget.transactionModel != null  
                     ? _localizations!.update
@@ -236,7 +281,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
       context: context, 
       initialDate: initialDate, 
       firstDate: DateTime.parse('2022-01-01'), 
-      lastDate: DateTime.now()
+      lastDate: DateTime.now(),
+      initialEntryMode: DatePickerEntryMode.calendarOnly
     );
   }
 }

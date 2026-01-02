@@ -285,7 +285,7 @@ class DashboardWebView extends StatelessWidget {
                                     children: [
                                       AnimatedSize(
                                         duration: MyAppTheme.animationDuration,
-                                        child: data.amount.isEmpty
+                                        child: data.amount.isBlank
                                         ? const SizedBox.shrink()
                                         : data.amount == 'deleted'
                                           ? TransactionDeletedWidget(appLocalization: localizations)

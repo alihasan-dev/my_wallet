@@ -140,6 +140,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => widget.transactionBloc.add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
+                      icon: Icon(AppIcons.arrowDown),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),
@@ -225,7 +226,8 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
       initialDateRange: initialDateTimeRage,
       context: context, 
       firstDate: DateTime.parse('2022-01-01'), 
-      lastDate: DateTime.now().add(const Duration(days: 30))
+      lastDate: DateTime.now().add(const Duration(days: 30)),
+      initialEntryMode: DatePickerEntryMode.calendarOnly
     );
     if(dateTimeRange != null) {
       initialDateTimeRage = dateTimeRange;

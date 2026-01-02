@@ -83,7 +83,6 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   Widget build(BuildContext context) {
     selectedUserId = widget.userId;
     return Scaffold(
-      // backgroundColor: Helper.isDark ? AppColors.backgroundColorDark: AppColors.white,
       body: mainContent(context: context)
     );
   }
@@ -159,7 +158,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
       pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: const AddUserDialog(),
-      )
+      ),
     );
   }
 
@@ -235,7 +234,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
         isBiometricDialogOpen = true;
         data =  await _localAuthentication.authenticate(
           localizedReason: AppStrings.biometricMessage,
-          options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
+          // options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
         );
         isBiometricDialogOpen = !data;
       } catch (e) {

@@ -185,7 +185,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get send => 'भेजें';
 
   @override
-  String get imageSizeMsg => 'फोटो का आकार 2MB से अधिक नहीं होना चाहिए';
+  String get imageSizeMsg => 'फोटो का आकार 2 MB से कम होना चाहिए।';
 
   @override
   String get contacts => 'संपर्क';

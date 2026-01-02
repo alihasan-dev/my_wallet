@@ -7,6 +7,7 @@ import '../features/dashboard/application/dashboard_screen.dart';
 import '../features/profile/application/bloc/profile_bloc.dart';
 import '../features/transaction/application/transaction_details.dart';
 import '../features/transaction/application/transaction_sub_details_screen.dart';
+import '../utils/app_extension_method.dart';
 import '../widgets/two_column_layout.dart';
 import '../features/settings/application/bloc/settings_bloc.dart';
 import '../features/settings/application/settings_screen.dart';
@@ -69,7 +70,7 @@ class AppRoutes {
       ),
       ShellRoute(
         redirect: (context, state) {
-          if(Preferences.getString(key: AppStrings.prefUserId).isEmpty && (state.fullPath == dashboard)) {
+          if(Preferences.getString(key: AppStrings.prefUserId).isBlank && (state.fullPath == dashboard)) {
             return loginScreen;
           }
           return null;

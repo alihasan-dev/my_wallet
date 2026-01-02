@@ -185,7 +185,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get send => 'Send';
 
   @override
-  String get imageSizeMsg => 'Image size should not be more than 2MB';
+  String get imageSizeMsg => 'Images size must be less than 2 MB';
 
   @override
   String get contacts => 'Contacts';

@@ -34,7 +34,7 @@ class MyAppBloc extends Bloc<MyAppEvent, MyAppState>{
   }
 
   Future<void> _initializeAppVersion() async {
-    if(AppStrings.appVersion.isEmpty) {
+    if(AppStrings.appVersion.isBlank) {
       try {
         final version = (await PackageInfo.fromPlatform()).version;
         log('App version : $version');
