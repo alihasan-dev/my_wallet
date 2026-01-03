@@ -45,3 +45,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MY_WALLET_99FDF }}
           channelId: live
           projectId: my-wallet-99fdf
+          entryPoint: build/web
