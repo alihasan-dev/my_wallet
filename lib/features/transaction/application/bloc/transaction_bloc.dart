@@ -25,13 +25,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   late CheckConnectivity checkConnectivity;
   late DocumentReference firebaseStoreInstance;
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
-  StreamSubscription<QuerySnapshot>? streamSubscriptionTransactionDetails;
   var listTransactionResult = <TransactionModel>[];
   var originalTransactionResultList = <TransactionModel>[];
   final String userName;
   final DashboardBloc dashboardBloc;
   final String friendId;
-  bool isFilterApplied = false;
+  bool hasFilterApplied = false;
   bool amountAscending = true;
   bool typeAscending = true;
   bool dateAscending = true;
@@ -114,7 +113,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> close() {
     audioPlayer.dispose();
     streamDocumentSnapshot.cancel();
-    streamSubscriptionTransactionDetails?.cancel();
     return super.close();
   }
 
@@ -139,7 +137,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: isFilterApplied
+        isFilterEnable: hasFilterApplied
       ));
     }
   }
@@ -182,22 +180,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: isFilterApplied
-      ));
-    }
-  }
-
-  void _onClearFilter(TransactionClearFilterEvent event, Emitter emit) {
-    if (event.clearFilter) {
-      isFilterApplied = false;
-      listTransactionResult.clear();
-      listTransactionResult.addAll(originalTransactionResultList);
-      listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
-      double balance = _totalBalance(transactionList: listTransactionResult);
-      emit(AllTransactionState(
-        listTransaction: listTransactionResult, 
-        totalBalance: balance, 
-        isFilterEnable: isFilterApplied
+        isFilterEnable: hasFilterApplied
       ));
     }
   }
@@ -218,8 +201,23 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionFilterState());
   }
 
+  void _onClearFilter(TransactionClearFilterEvent event, Emitter emit) {
+    if (event.clearFilter) {
+      hasFilterApplied = false;
+      listTransactionResult.clear();
+      listTransactionResult.addAll(originalTransactionResultList);
+      listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
+      double balance = _totalBalance(transactionList: listTransactionResult);
+      emit(AllTransactionState(
+        listTransaction: listTransactionResult, 
+        totalBalance: balance, 
+        isFilterEnable: hasFilterApplied
+      ));
+    }
+  }
+
   void _onApplyFilter(TransactionApplyFilterEvent event, Emitter emit) {
-    isFilterApplied = true;
+    hasFilterApplied = true;
     listTransactionResult.clear();
     final startDateTime = event.dateTimeRange?.start;
     final endDateTime = event.dateTimeRange?.end;
@@ -251,7 +249,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(AllTransactionState(
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
-      isTransactionAgainstFilter: isFilterApplied
+      isTransactionAgainstFilter: hasFilterApplied
     ));
   }
 
@@ -284,7 +282,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: isFilterApplied
+        isFilterEnable: hasFilterApplied
       ));
     }
   }
@@ -302,7 +300,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: isFilterApplied
+        isFilterEnable: hasFilterApplied
       ));
     }
   }
@@ -320,7 +318,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: isFilterApplied
+        isFilterEnable: hasFilterApplied
       ));
     }
   }
@@ -444,7 +442,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           }
           pdf.addPage(pw.Page(
             pageFormat: PdfPageFormat.a4,
-            build: (pw.Context context) => pw.Table(
+            build: (_) => pw.Table(
               border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),
               children: tableRowList
             ),
