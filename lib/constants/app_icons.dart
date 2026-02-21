@@ -43,5 +43,6 @@ class AppIcons {
   static const IconData barChartIcon = Icons.bar_chart_sharp;
   static const IconData archive = Icons.archive;
   static const IconData arrowDown = Icons.keyboard_arrow_down;
+  static const IconData currencyIcon = Icons.payments;
   
 }

@@ -418,7 +418,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                       padding: const pw.EdgeInsets.all(8.0),
                       child: pw.Text(
                         labelList[subIndex],
-                        style: pw.TextStyle(color: i == start ? PdfColors.white : PdfColors.black),
+                        style: pw.TextStyle(
+                          color: i == start 
+                          ? PdfColors.white 
+                          : PdfColors.black
+                        ),
                       ),
                     )
                   : pw.Padding(

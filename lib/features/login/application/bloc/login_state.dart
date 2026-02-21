@@ -14,7 +14,11 @@ class LoginFailedState extends LoginState{
   String message;
   String title;
   bool canShowSnackBar;
-  LoginFailedState({required this.message,required this.title, this.canShowSnackBar = true});
+  LoginFailedState({
+    required this.message,
+    required this.title, 
+    this.canShowSnackBar = true
+  });
 }
 
 class LoginLoadingState extends LoginState{}
