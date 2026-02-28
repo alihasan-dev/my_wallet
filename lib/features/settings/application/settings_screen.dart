@@ -21,7 +21,7 @@ import '../../../constants/app_strings.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
-import 'package:sample_formatter/sample_formatter.dart';
+// import 'package:sample_formatter/sample_formatter.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -36,13 +36,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
   late SettingsBloc _settingBloc;
-  CurrencyModel? currencyModel;
+  // CurrencyModel? currencyModel;
 
-  @override
-  void initState() {
-    currencyModel = CurrencyModel(countryCode: "IN");
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   currencyModel = CurrencyModel(countryCode: "IN");
+  //   super.initState();
+  // }
 
   @override
   void didChangeDependencies() {
@@ -235,21 +235,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void showCurrencyDialog({required BuildContext context}) {
-    showGeneralDialog(
-      context: context, 
-      barrierDismissible: true,
-      barrierLabel: AppStrings.close,
-      pageBuilder: (_, a1, _) => CurrencyDialogView(
-        selectedCurrency: currencyModel,
-        onSelect: (p0) {
-          currencyModel = p0;
-          setState(() {});
-          context.pop();
-        },
-      )
-    );
-  }
+  // void showCurrencyDialog({required BuildContext context}) {
+  //   showGeneralDialog(
+  //     context: context, 
+  //     barrierDismissible: true,
+  //     barrierLabel: AppStrings.close,
+  //     pageBuilder: (_, a1, _) => CurrencyDialogView(
+  //       selectedCurrency: currencyModel,
+  //       onSelect: (p0) {
+  //         currencyModel = p0;
+  //         setState(() {});
+  //         context.pop();
+  //       },
+  //     )
+  //   );
+  // }
 
   void showThemeDialog({required BuildContext context}) {
     showDialog(
