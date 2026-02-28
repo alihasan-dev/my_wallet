@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../constants/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
@@ -65,7 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       settingItemList.add(SettingModel(icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
       settingItemList.add(SettingModel(icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
     }
-    settingItemList.add(SettingModel(icon: AppIcons.currencyIcon, title: "Currency"));
+    // settingItemList.add(SettingModel(icon: AppIcons.currencyIcon, title: "Currency"));
     settingItemList.add(SettingModel(icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
   }
@@ -193,10 +192,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           break;
         case 4:
         case 6:
-          showCurrencyDialog(context: context);
-          break;
-        case 5:
-        case 7:
+        //   showCurrencyDialog(context: context);
+        //   break;
+        // case 5:
+        // case 7:
           showAboutAppDialog(context: context);
           break;
         default:
