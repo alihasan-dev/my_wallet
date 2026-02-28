@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
+import '../../../widgets/currency_dialog_view.dart';
 import '../../about/about_screen.dart';
 import '../domain/settings_language_model.dart';
 import '../domain/settings_model.dart';
@@ -20,6 +21,7 @@ import '../../../constants/app_strings.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
+// import 'package:sample_formatter/sample_formatter.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -34,6 +36,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
   late SettingsBloc _settingBloc;
+  // CurrencyModel? currencyModel;
+
+  // @override
+  // void initState() {
+  //   currencyModel = CurrencyModel(countryCode: "IN");
+  //   super.initState();
+  // }
 
   @override
   void didChangeDependencies() {
@@ -55,6 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       settingItemList.add(SettingModel(icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
       settingItemList.add(SettingModel(icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
     }
+    // settingItemList.add(SettingModel(icon: AppIcons.currencyIcon, title: "Currency"));
     settingItemList.add(SettingModel(icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
   }
@@ -182,6 +192,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           break;
         case 4:
         case 6:
+        //   showCurrencyDialog(context: context);
+        //   break;
+        // case 5:
+        // case 7:
           showAboutAppDialog(context: context);
           break;
         default:
@@ -220,6 +234,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+
+  // void showCurrencyDialog({required BuildContext context}) {
+  //   showGeneralDialog(
+  //     context: context, 
+  //     barrierDismissible: true,
+  //     barrierLabel: AppStrings.close,
+  //     pageBuilder: (_, a1, _) => CurrencyDialogView(
+  //       selectedCurrency: currencyModel,
+  //       onSelect: (p0) {
+  //         currencyModel = p0;
+  //         setState(() {});
+  //         context.pop();
+  //       },
+  //     )
+  //   );
+  // }
 
   void showThemeDialog({required BuildContext context}) {
     showDialog(

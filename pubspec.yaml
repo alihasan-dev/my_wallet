@@ -65,6 +65,9 @@ dependencies:
   text_marquee: ^0.0.2
   geolocator: ^14.0.2
   geocoding: ^4.0.0
+  # sample_formatter:
+  #   path: ../Package/sample_package
+
 
 dev_dependencies:
   flutter_test:

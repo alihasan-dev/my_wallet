@@ -37,7 +37,11 @@ class LoginMobileView extends StatelessWidget {
           onSuffixTap: () => loginBloc.add(LoginShowPasswordEvent(isVisible: loginScreenState.showPassword)),
           errorText: loginScreenState.errorPassword,
           onChange: (value) => loginBloc.add(LoginPasswordChangeEvent(password: value)),
-          onSubmitted: (_) => loginBloc.add(LoginSubmitEvent(email: loginScreenState.emailTextController.text, password: loginScreenState.passwordTextController.text, isRememberMe: loginScreenState.isRememberMe)),
+          onSubmitted: (_) => loginBloc.add(LoginSubmitEvent(
+            email: loginScreenState.emailTextController.text, 
+            password: loginScreenState.passwordTextController.text, 
+            isRememberMe: loginScreenState.isRememberMe
+          )),
           textInputAction: TextInputAction.done,
         ),
         const SizedBox(height: AppSize.s10),
@@ -114,10 +118,7 @@ class LoginMobileView extends StatelessWidget {
               ),
             ),
             CustomInkWellWidget(
-              onTap: () { 
-                // Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: true);
-                context.push(AppRoutes.signupScreen);
-              }, 
+              onTap: () => context.push(AppRoutes.signupScreen), 
               widget: CustomText(
                 title: localizations.signup, 
                 textStyle: getSemiBoldStyle(
