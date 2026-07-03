@@ -10,13 +10,17 @@ class TransactionAddEvent extends TransactionEvent {
   String amount;
   String type;
   String transactionId;
+  bool isActive;
+  String description;
 
   TransactionAddEvent({
     required this.userName,
     required this.amount,
     required this.type,
     this.date,
-    this.transactionId = ''
+    this.transactionId = '',
+    this.isActive = true,
+    this.description = ''
   });
 } 
 
@@ -89,6 +93,8 @@ class TransactionSelectListItemEvent extends TransactionEvent {
 class TransactionDeleteEvent extends TransactionEvent {}
 
 class TransactionEditEvent extends TransactionEvent {}
+
+class TransactionActiveEvent extends TransactionEvent {}
 
 class TransactionClearSelectionEvent extends TransactionEvent {}
 
