@@ -13,6 +13,7 @@ class CustomOutlinedButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? foregroundColor;
   final Color? borderColor;
+  final double verticalPadding;
 
   const CustomOutlinedButton({
     super.key,
@@ -22,7 +23,8 @@ class CustomOutlinedButton extends StatelessWidget {
     this.onPressed,
     this.borderColor,
     this.backgroundColor,
-    this.foregroundColor
+    this.foregroundColor,
+    this.verticalPadding = AppSize.s10,
   });
 
   @override
@@ -39,7 +41,7 @@ class CustomOutlinedButton extends StatelessWidget {
         backgroundColor: isSelected == null || !isSelected! 
         ? AppColors.transparent 
         : backgroundColor ?? AppColors.primaryColor.withValues(alpha: 0.2),
-        padding: const EdgeInsets.symmetric(vertical: AppSize.s12)
+        padding: EdgeInsets.symmetric(vertical: verticalPadding)
       ), 
       child: CustomText(
         title: title, 
