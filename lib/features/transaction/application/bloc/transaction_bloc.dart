@@ -147,14 +147,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onEditTransaction(TransactionEditEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
-      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected);
+      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected, orElse: () => TransactionModel.empty());
+      if (selectedTransaction.id.isBlank) return;
       emit(TransactionEditState(selectedTransaction: selectedTransaction));
     }
   }
 
   void _onActiveInActiveTransaction(TransactionActiveEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
-      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected);
+      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected, orElse: () => TransactionModel.empty());
+      if (selectedTransaction.id.isBlank) return;
       firebaseStoreInstance.collection('transactions').doc(selectedTransaction.id).update({
         'isActive': !selectedTransaction.isActive
       });
