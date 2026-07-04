@@ -63,6 +63,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionSelectListItemEvent>(_onSelectListItemEvent);
     on<TransactionDeleteEvent>(_onDeleteTransaction);
     on<TransactionEditEvent>(_onEditTransaction);
+    on<TransactionActiveEvent>(_onActiveInActiveTransaction);
     on<TransactionClearSelectionEvent>(_onClearSelectionTransactionEvent);
     on<TransactionShowDetailsEvent>(_onShowTransactionDetails);
     on<TransactionClearTransactionIdEvent>(_onClearTransactionId);
@@ -101,7 +102,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             id: item.id,
             date: DateTime.fromMillisecondsSinceEpoch(mapData['date'].millisecondsSinceEpoch),
             type: mapData['type'],
-            amount: double.parse(mapData['amount'])
+            amount: double.parse(mapData['amount']),
+            isActive: mapData['isActive'] ?? true,
+            description: mapData['description'] ?? ''
           ));
         }
       }
@@ -144,8 +147,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onEditTransaction(TransactionEditEvent event, Emitter emit) {
     if (listTransactionResult.isNotEmpty) {
-      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected);
+      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected, orElse: () => TransactionModel.empty());
+      if (selectedTransaction.id.isBlank) return;
       emit(TransactionEditState(selectedTransaction: selectedTransaction));
+    }
+  }
+
+  void _onActiveInActiveTransaction(TransactionActiveEvent event, Emitter emit) {
+    if (listTransactionResult.isNotEmpty) {
+      final selectedTransaction = listTransactionResult.firstWhere((element) => element.selected, orElse: () => TransactionModel.empty());
+      if (selectedTransaction.id.isBlank) return;
+      firebaseStoreInstance.collection('transactions').doc(selectedTransaction.id).update({
+        'isActive': !selectedTransaction.isActive
+      });
+      emit(TransactionActiveInActiveState(
+        message: 'Transaction status updated successfully'
+      ));
     }
   }
 
@@ -323,15 +340,26 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
+  ///calculate total balance
   double _totalBalance({required List<TransactionModel> transactionList}) {
-    double totalBalance = listTransactionResult.fold(0.0, (temp, item) => item.type == AppStrings.transfer ? temp - item.amount : temp + item.amount);
-    return totalBalance;
+    return transactionList.fold<double>(0.0, (previousValue, transaction) {
+    if (!transaction.isActive) return previousValue;
+    return transaction.type == AppStrings.transfer
+        ? previousValue - transaction.amount
+        : previousValue + transaction.amount;
+    });
   }
 
   Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
       if (event.transactionId.isBlank) {
-        firebaseStoreInstance.collection('transactions').add({'date': event.date, 'amount': event.amount, 'type': event.type});
+        firebaseStoreInstance.collection('transactions').add({
+          'date': event.date, 
+          'amount': event.amount, 
+          'type': event.type,
+          'isActive': event.isActive,
+          'description': event.description
+        });
         var currentTransactionDateTime = event.date!; 
         try {
           final lastTransactionDateTime = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
@@ -347,7 +375,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({
           'date': event.date, 
           'amount': event.amount, 
-          'type': event.type
+          'type': event.type,
+          'isActive': event.isActive,
+          'description': event.description
         });
       }
     }
