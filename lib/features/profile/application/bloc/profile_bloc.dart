@@ -19,7 +19,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   StreamSubscription<QuerySnapshot>? streamSubscriptionFriendList;
   late StreamSubscription<DocumentSnapshot> streamSubscription;
   late Reference firebaseStorage;
-  var profileData = <String, dynamic>{};
+  Map<String, dynamic>? profileData;
   late CheckConnectivity checkConnectivity;
   String selectedImagePath = '';
   String friendId;
@@ -59,9 +59,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     streamSubscription = firebaseDocReference.snapshots().listen((event) { 
-      profileData = event.data() as Map<String, dynamic>;
-      if(profileData['user_id'] == null) {
-        profileData['user_id'] = event.id;
+      profileData = event.data() as Map<String, dynamic>?;
+      if(profileData?['user_id'] == null) {
+        profileData?['user_id'] = event.id;
       }
       add(ProfileDataEvent());
     });
@@ -154,7 +154,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _getProfileData(ProfileDataEvent event, Emitter emit) {
-    emit(ProfileSuccessState(profileData: profileData));
+    emit(ProfileSuccessState(profileData: profileData ?? {}));
   }
 
   void _onProfileShowId(ProfileShowIdEvent event, Emitter emit) {
