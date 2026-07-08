@@ -78,6 +78,11 @@ class TransactionEditState extends TransactionState {
   TransactionEditState({required this.selectedTransaction});
 }
 
+class TransactionActiveInActiveState extends TransactionState {
+  String message;
+  TransactionActiveInActiveState({this.message = ''});
+}
+
 class TransactionShowDetailsState extends TransactionState {
   String transactionId;
   String title;

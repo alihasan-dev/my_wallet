@@ -121,7 +121,7 @@ class AppStrings {
   static const String prefShowTransactionDetails = 'PREF_SHOW_TRANSACTION_DETAILS';
 
   ///static url
-  static const String sampleImg = "https://firebasestorage.googleapis.com/v0/b/my-wallet-99fdf.appspot.com/o/app_icon%2Ffile.png?alt=media&token=5f3ac404-8bcc-443d-af49-9a7457ee41da";
+  static const String sampleImg = "https://lh3.googleusercontent.com/d/1UxpcEcgtN-krRXopTvdu1nLVlh37V5an";
   static const String privacyPolicyUrl = 'https://alihasan-dev.github.io/my_wallet/privacy_policy.html';
   static const String webUrl = 'https://my-wallet-99fdf.web.app/';
   static const String googleSignInClientId = '976324609510-qentcmeo7nidjnvtinmvsj4nv28etoif.apps.googleusercontent.com';

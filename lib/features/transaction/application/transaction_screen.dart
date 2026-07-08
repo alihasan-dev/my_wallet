@@ -210,11 +210,21 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               duration: MyAppTheme.animationDuration,
                               child: _selectedTransactionCount > 1
                               ? const SizedBox()
-                              : IconButton(
-                                tooltip: _localizations!.editTransaction,
-                                onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
-                                visualDensity: VisualDensity.compact,
-                                icon: const Icon(AppIcons.editIcon, color: AppColors.white)
+                              : Row(
+                                children: [
+                                  IconButton(
+                                    tooltip: _localizations!.editTransaction,
+                                    onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(AppIcons.editIcon, color: AppColors.white)
+                                  ),
+                                  IconButton(
+                                    tooltip: 'Active/Inactive Transaction',
+                                    onPressed: () => _transactionBloc.add(TransactionActiveEvent()), 
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(AppIcons.visibilityIcon, color: AppColors.white)
+                                  )
+                                ],
                               ),
                             ),
                           ],
@@ -469,12 +479,19 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                               ),
                                               Expanded(
                                                 child: CustomText(
-                                                  title: dateFormat.format(subData.date), 
-                                                  textColor: Helper.isDark 
-                                                  ? AppColors.white.withValues(alpha: 0.9) 
-                                                  : AppColors.black,
+                                                  title: dateFormat.format(subData.date),
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
+                                                  textStyle: TextStyle(
+                                                    color: !subData.isActive
+                                                    ? AppColors.grey
+                                                    :  Helper.isDark 
+                                                      ? AppColors.white.withValues(alpha: 0.9) 
+                                                      : AppColors.black,
+                                                    decoration: !subData.isActive
+                                                    ? TextDecoration.lineThrough
+                                                    : TextDecoration.none
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -498,10 +515,17 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                           child: CustomText(
                                             title: subData.type == AppStrings.transfer 
                                             ? _localizations!.transfer 
-                                            : _localizations!.receive, 
-                                            textColor: subData.type == AppStrings.transfer 
-                                            ? AppColors.red 
-                                            : AppColors.green
+                                            : _localizations!.receive,
+                                            textStyle: TextStyle(
+                                              color: !subData.isActive
+                                              ? AppColors.grey
+                                              : subData.type == AppStrings.transfer 
+                                                ? AppColors.red 
+                                                : AppColors.green,
+                                              decoration: !subData.isActive
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -520,10 +544,17 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                             ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
                                             :AppColors.white.withValues(alpha: 0.8), 
                                           child: CustomText(
-                                            title: subData.amount.toString().currencyFormat, 
-                                            textColor: Helper.isDark 
-                                            ? AppColors.white.withValues(alpha: 0.9) 
-                                            : AppColors.black
+                                            title: subData.amount.toString().currencyFormat,
+                                            textStyle: TextStyle(
+                                              color: !subData.isActive
+                                              ? AppColors.grey
+                                              : Helper.isDark 
+                                                ? AppColors.white.withValues(alpha: 0.9) 
+                                                : AppColors.black,
+                                              decoration: !subData.isActive
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -707,6 +738,14 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               break;
             case TransactionClearTransactionIdState _:
               transactionId = null;
+              break;
+            case TransactionActiveInActiveState _:
+              showSnackBar(
+                context: context, 
+                title: state.message, 
+                color: AppColors.green
+              );
+              break;
           default:
         }
       },

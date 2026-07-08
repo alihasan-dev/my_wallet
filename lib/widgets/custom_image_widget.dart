@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wallet/constants/app_strings.dart';
 import 'package:my_wallet/constants/app_theme.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_color.dart';
@@ -67,7 +68,14 @@ class CustomImageWidget extends StatelessWidget {
                   padding: EdgeInsets.all(circularPadding),
                   child: CircularProgressIndicator.adaptive(strokeWidth: strokeWidth)
                 ),
-                errorWidget: (context, url, error) => const Icon(AppIcons.errorIcon),
+                errorWidget: (context, url, error) {
+                  return CachedNetworkImage(
+                    imageUrl: AppStrings.sampleImg,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => CircularProgressIndicator.adaptive(strokeWidth: strokeWidth),
+                    errorWidget: (context, url, error) => const Icon(Icons.broken_image),
+                  );
+                },
                 fit: BoxFit.cover,
                 imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet
               )
