@@ -62,6 +62,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   RangeValues? amountChangeValue;
   DateTimeRange? initialDateTimeRage;
   String transactionType = AppStrings.all;
+  String transactionStatus = AppStrings.all;
   double maxAmount = - double.maxFinite;
   double minAmount = double.maxFinite;
   int _selectedTransactionCount = 0;
@@ -87,7 +88,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     }
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +182,17 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           ),
                         ],
                       ),
+                    ),
+                    IconButton(
+                      tooltip: 'Import Report',
+                      onPressed: () {
+                        showComingSoonDialog(
+                          context: context,
+                          title: "Import Transactions Coming Soon",
+                          description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
+                        );
+                      }, 
+                      icon: const Icon(Icons.upload, color: AppColors.white)
                     ),
                     AnimatedSize(
                       duration: MyAppTheme.animationDuration,
@@ -658,6 +670,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               _transactionBloc.add(TransactionApplyFilterEvent(
                 dateTimeRange: initialDateTimeRage,
                 transactionType: transactionType,
+                transactionStatus: transactionStatus,
                 amountRangeValues: tempAmountChangeValue
               ));
             }
@@ -669,6 +682,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               _selectedTransactionCount = transactionDataList.where((item) => item.selected).length;
               if(!isFilterEnable) {
                 transactionType = AppStrings.all;
+                transactionStatus = AppStrings.all;
                 initialDateTimeRage = null;
                 amountChangeValue = null;
               }
@@ -716,6 +730,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               break;
             case TransactionTypeChangeState _:
               transactionType = state.type;
+              break;
+            case TransactionStatusChangeState _:
+              transactionStatus = state.status;
               break;
             case TransactionEditState _:
               _showAddTransactionDialog(transactionModel: state.selectedTransaction);
@@ -819,7 +836,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             finalAmountRange: RangeValues(minAmount, maxAmount),
             transactionBloc: _transactionBloc,
             initialDateTimeRage: initialDateTimeRage,
-            transactionType: transactionType
+            transactionType: transactionType,
+            transactionStatus: transactionStatus
           ),
         ),
       );
@@ -831,6 +849,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
           _transactionBloc.add(TransactionApplyFilterEvent(
             dateTimeRange: data['initial_date_time_range'],
             transactionType: data['transaction_type'],
+            transactionStatus: data['transaction_status'],
             amountRangeValues: data['amount_range']
           ));
         }

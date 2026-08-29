@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:flutter/services.dart';
+import 'package:my_wallet/utils/helper.dart';
 import 'package:pdf/pdf.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../../constants/app_audio.dart';
+import '../../../../constants/app_images.dart';
 import '../../../../features/transaction/domain/transaction_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -15,6 +18,13 @@ import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
 import '../../../../utils/mobile_download.dart'
   if(dart.library.html) '../../../../utils/web_download.dart';
+import '../../../../utils/report_generator/report_filter_details.dart';
+import '../../../../utils/report_generator/report_footer.dart';
+import '../../../../utils/report_generator/report_header.dart' show ReportHeader;
+import '../../../../utils/report_generator/report_settlement_status.dart';
+import '../../../../utils/report_generator/report_transaction_insights.dart';
+import '../../../../utils/report_generator/report_transaction_timeilne_header.dart';
+import '../../../../utils/report_generator/report_user_details.dart';
 import '../../../dashboard/application/bloc/dashboard_bloc.dart';
 import '../../domain/transaction_details_model.dart';
 part 'transaction_event.dart';
@@ -38,6 +48,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   String userId = '';
   late AudioPlayer audioPlayer;
   int lastTransactionDate = 0;
+  Map? friendProfileData;
+  double totalBalance = 0.0;
+  int transferCount = 0;
+  int receiveCount = 0;
+  double transferAmount = 0.0;
+  double receiveAmount = 0.0;
+  int activeCount = 0;
+  TransactionApplyFilterEvent? filterStatus;
 
   TransactionBloc({required this.userName, required this.friendId, required this.dashboardBloc}) : super(TransactionInitialState()) {
     dateFormat = DateFormat.yMMMd();
@@ -48,6 +66,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionAddEvent>(_onAddTransaction);
     on<TransactionDateChangeEvent>(_onChangeDateStatus);
     on<TransactionTypeChangeEvent>(_onChangeTransactionType);
+    on<TransactionStatusChangeEvent>(_onChangeTransactionStatus);
     on<TransactionAmountChangeEvent>(_onChangeAmount);
     on<TransactionAllEvent>(_allTransactionData);
     on<TransactionDateSortEvent>(_onSortTransactionDate);
@@ -70,11 +89,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     ///get last transaction time initially 
     firebaseStoreInstance.get().then((data) {
-      var profileData = data.data() as Map;
-      if (profileData.isNotEmpty) {
-        lastTransactionDate = profileData['lastTransactionTime'] == null
+      friendProfileData = data.data() as Map?;
+      if ((friendProfileData ?? {}).isNotEmpty) {
+        lastTransactionDate = friendProfileData!['lastTransactionTime'] == null
         ? -1
-        : profileData['lastTransactionTime'].millisecondsSinceEpoch;
+        : friendProfileData!['lastTransactionTime'].millisecondsSinceEpoch;
       }
     });
 
@@ -221,6 +240,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   void _onClearFilter(TransactionClearFilterEvent event, Emitter emit) {
     if (event.clearFilter) {
       hasFilterApplied = false;
+      filterStatus = null;
       listTransactionResult.clear();
       listTransactionResult.addAll(originalTransactionResultList);
       listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
@@ -235,10 +255,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onApplyFilter(TransactionApplyFilterEvent event, Emitter emit) {
     hasFilterApplied = true;
+    filterStatus = event;
     listTransactionResult.clear();
     final startDateTime = event.dateTimeRange?.start;
     final endDateTime = event.dateTimeRange?.end;
     for(var item in originalTransactionResultList) {
+      if (item.isActive && event.transactionStatus == AppStrings.inactive) continue;
+      if (!item.isActive && event.transactionStatus == AppStrings.active) continue;
       if(event.dateTimeRange != null) {
         if(((item.date.isAfter(startDateTime!) || item.date.campareDateOnly(startDateTime)) && (item.date.isBefore(endDateTime!) || item.date.campareDateOnly(endDateTime))) && (item.amount >= event.amountRangeValues!.start  && item.amount <= event.amountRangeValues!.end) && (event.transactionType == AppStrings.all ? true : (item.type == event.transactionType))) {
           listTransactionResult.add(item);
@@ -250,7 +273,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
     }
     listTransactionResult.sort((a, b) => b.date.compareTo(a.date));
-    double balance = _totalBalance(transactionList: listTransactionResult);
+    double balance = _totalBalance(
+      transactionList: listTransactionResult,
+      considerActiveOnly: event.transactionStatus != AppStrings.inactive
+    );
     emit(AllTransactionState(
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
@@ -276,6 +302,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onChangeTransactionType(TransactionTypeChangeEvent event, Emitter emit) {
     emit(TransactionTypeChangeState(event.type));
+  }
+
+  void _onChangeTransactionStatus(TransactionStatusChangeEvent event, Emitter emit) {
+    emit(TransactionStatusChangeState(event.status));
   }
 
   void _onChangeAmount(TransactionAmountChangeEvent event, Emitter emit) {
@@ -341,13 +371,37 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   ///calculate total balance
-  double _totalBalance({required List<TransactionModel> transactionList}) {
-    return transactionList.fold<double>(0.0, (previousValue, transaction) {
-    if (!transaction.isActive) return previousValue;
-    return transaction.type == AppStrings.transfer
-        ? previousValue - transaction.amount
-        : previousValue + transaction.amount;
-    });
+  double _totalBalance({required List<TransactionModel> transactionList, bool considerActiveOnly = true}) {
+    // return  transactionList.fold<double>(0.0, (previousValue, transaction) {
+    // if (!transaction.isActive) return previousValue;
+    // return transaction.type == AppStrings.transfer
+    //     ? previousValue - transaction.amount
+    //     : previousValue + transaction.amount;
+    // });
+    totalBalance = 0.0;
+    transferCount = 0;
+    receiveCount = 0;
+    transferAmount = 0.0;
+    receiveAmount = 0.0;
+    activeCount = 0;
+    for (final item in transactionList) {
+      if (!item.isActive && considerActiveOnly) continue;
+      activeCount+=1;
+      switch (item.type) {
+        case AppStrings.transfer:
+          totalBalance-=item.amount;
+          transferCount+=1;
+          transferAmount+=item.amount;
+          break;
+        case AppStrings.receive:
+          totalBalance+=item.amount;
+          receiveCount+=1;
+          receiveAmount+=item.amount;
+          break;
+        default:
+      }
+    }
+    return totalBalance;
   }
 
   Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
@@ -404,87 +458,120 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return true;
   }
 
+  Future<pw.Document> _generatePDFLayout({List<TransactionModel> transactionList = const []}) async {
+    if (transactionList.isEmpty) throw Exception("Transactions not available");
+    final img = await rootBundle.load(AppImages.appImage);
+    final fontData = await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
+    final pw.Font regularFont = pw.Font.ttf(fontData);
+    final imageBytes = img.buffer.asUint8List();
+    final pdf = pw.Document();
+    final friendName = friendProfileData?['name'];
+    final reportNo = Helper.generateId(preffix: friendName);
+    final sortingLabel = dateAscending ? 'Newest to Oldest' : 'Oldest to Newest';
+    final hasDetailsEnable = Preferences.getBool(key: AppStrings.prefShowTransactionDetails);
+    String transactionType = 'All';
+    String transactionStatus = 'All';
+    String dateRange = 'All';
+    String amountRange = 'All';
+    if (filterStatus != null) {
+      transactionType = filterStatus!.transactionType;
+      transactionStatus = filterStatus!.transactionStatus;
+      if (filterStatus!.amountRangeValues != null) {
+        final minAmount = filterStatus!.amountRangeValues!.start.toString().currencyFormat;
+        final maxAmount = filterStatus!.amountRangeValues!.end.toString().currencyFormat;
+        amountRange = '$minAmount - $maxAmount';
+      }
+      if (filterStatus!.dateTimeRange != null) {
+        final dateFormatter = DateFormat.yMMMd();
+        final startDate = dateFormatter.format(filterStatus!.dateTimeRange!.start);
+        final endDate = dateFormatter.format(filterStatus!.dateTimeRange!.end);
+        dateRange = '$startDate - $endDate';
+      }
+    }
+    pdf.addPage(
+      pw.MultiPage(
+        maxPages: 1,
+        margin: pw.EdgeInsets.all(24),
+        build: (_) => [
+          ReportUserDetails(
+            userData: friendProfileData,
+            font: regularFont
+          ),
+          pw.SizedBox(height: 5),
+          ReportFilterDetails(
+            transactionType: transactionType,
+            transactionStatus: transactionStatus,
+            dateRange: dateRange,
+            amountRange: amountRange,
+            sorting: sortingLabel,
+            detailsFlag: hasDetailsEnable ? 'Enable' : 'Disable'
+          ),
+          pw.SizedBox(height: 5),
+          ReportTransactionInsights(
+            totalAmount: totalBalance, 
+            totalCount: transactionList.length, 
+            activeCount: activeCount, 
+            transferAmount: transferAmount, 
+            inactiveCount: transactionList.length - activeCount, 
+            receiveAmount: receiveAmount,
+            font: regularFont
+          ),
+          pw.SizedBox(height: 12),
+          ReportSettlementStatus(
+            friendName: friendName,
+            totalBalance: totalBalance,
+            font: regularFont
+          ),
+        ],
+        header: (_) => ReportHeader(image: imageBytes, reportNo: reportNo),
+        footer: (context) => ReportFooter(
+           currentPage: context.pageNumber,
+          totalPage: context.pagesCount, 
+          image: imageBytes
+        ),
+      ),
+    );
+    pdf.addPage(
+      pw.MultiPage(
+        maxPages: 200,
+        margin: pw.EdgeInsets.all(24),
+        build: (_) => List.generate(
+          transactionList.length,
+          (index) {
+            final item = transactionList[index];
+            return ReportTransactionTimelineItemWidget(
+              isHeader: false,
+              bgColor: index % 2 == 0 
+              ? PdfColors.grey100 
+              : PdfColors.white,
+              label1: dateFormat.format(item.date),
+              label2: item.description,
+              label3: item.type,
+              label4: item.isActive ? 'Active' : 'Inactive',
+              label5: item.amount.toString().currencyFormat
+            );
+          }
+        ),
+        header: (_) => ReportHeader(
+          image: imageBytes, 
+          reportNo: reportNo,
+          isHeader: false
+        ),
+        footer: (context) => ReportFooter(
+          currentPage: context.pageNumber,
+          totalPage: context.pagesCount, 
+          image: imageBytes
+        ),
+      ),
+    );
+    return pdf;
+  }
+
   Future<void> _onExportPDF(TransactionExportPDFEvent event, Emitter emit) async {
     if(listTransactionResult.isNotEmpty) {
       emit(TransactionLoadingState());
       try {
-        var labelList = <String>['Date', 'Type', 'Amount'];
-        final pdf = pw.Document();
-        int pageCount = 0;
-        if(listTransactionResult.length % 23 == 0) {
-          pageCount = listTransactionResult.length ~/ 23;
-        } else {
-          pageCount = (listTransactionResult.length ~/ 23 + 1);
-        }
-        int start = 0;
-        int end = 0;
-        int totalLength = listTransactionResult.length;
-        int count = 1;
-        while (pageCount > 0) {
-          if (!(totalLength - 23).isNegative) {
-            end = end + (24 + 1 - count);
-            totalLength -= 23;
-          } else {
-            if (end == 0) {
-              end = end + totalLength + 1;
-            } else {
-              end += totalLength;
-            }
-          }
-          List<pw.TableRow> tableRowList = [];
-          for (var i = start; i < end; i++) {
-            tableRowList.add(
-              pw.TableRow(
-                decoration: pw.BoxDecoration(
-                  color: i == start
-                  ? const PdfColor.fromInt(0xFF283593)
-                  : PdfColors.white,
-                  border: const pw.Border(right: pw.BorderSide(color: PdfColor.fromInt(0xFF000000)))
-                ),
-                children: List.generate(
-                  3,
-                  (subIndex) => i == start
-                  ? pw.Padding(
-                      padding: const pw.EdgeInsets.all(8.0),
-                      child: pw.Text(
-                        labelList[subIndex],
-                        style: pw.TextStyle(
-                          color: i == start 
-                          ? PdfColors.white 
-                          : PdfColors.black
-                        ),
-                      ),
-                    )
-                  : pw.Padding(
-                    padding: const pw.EdgeInsets.all(8.0),
-                    child: subIndex == 0
-                    ? pw.Text(dateFormat.format(listTransactionResult[i - 1].date))
-                    : subIndex == 1
-                      ? pw.Text(
-                          listTransactionResult[i - 1].type,
-                          style: pw.TextStyle(
-                            color: listTransactionResult[i - 1].type == AppStrings.transfer 
-                            ? PdfColors.red 
-                            : PdfColors.green
-                          ),
-                        )
-                      : pw.Text(listTransactionResult[i - 1].amount.toString().currencyFormat)
-                  ),
-                ),
-              ),
-            );
-          }
-          pdf.addPage(pw.Page(
-            pageFormat: PdfPageFormat.a4,
-            build: (_) => pw.Table(
-              border: pw.TableBorder.all(color: const PdfColor.fromInt(0xFF000000)),
-              children: tableRowList
-            ),
-          ));
-          pageCount -= 1;
-          start = end - 1;
-          count += 1;
-        }
+        final pdf = await _generatePDFLayout(transactionList: listTransactionResult);
         var dateTime = DateTime.now();
         var first = userName.replaceAll(' ', '');
         var last = dateTime.toString().substring(0, 10).replaceAll('-', '');

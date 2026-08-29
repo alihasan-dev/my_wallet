@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' hide log;
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../constants/app_icons.dart';
+import '../constants/app_theme.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/app_extension_method.dart';
 import '../constants/app_strings.dart';
@@ -24,6 +26,11 @@ mixin Helper {
 
   bool isLoadingVisible = false;
   static bool isDark = false;
+
+  static List<String> months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
 
   void showSnackBar({
     required BuildContext context, 
@@ -205,6 +212,71 @@ mixin Helper {
     ) ?? false;
   }
 
+  void showComingSoonDialog({
+    required BuildContext context,
+    required String title,
+    required String description
+  }) {
+    showGeneralDialog(
+      context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (context, a1, a2) => ScaleTransition(
+        scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+          backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
+          insetPadding: const EdgeInsets.all(AppSize.s12),
+          contentPadding: const EdgeInsets.all(AppSize.s15),
+          content: Container(
+            width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s40),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      AppIcons.campaignIcon, 
+                      size: AppSize.s28,
+                      color: AppColors.primaryColor
+                    ),
+                    const SizedBox(width: AppSize.s5),
+                    CustomText(
+                      title: title,
+                      textStyle: getSemiBoldStyle(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSize.s5),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 5),
+                  child: CustomText(
+                    title: description,
+                    textSize: AppSize.s14,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => context.pop(), 
+                      child: CustomText(
+                        title: "Got it", 
+                        textStyle: getSemiBoldStyle(color: AppColors.primaryColor)
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   ////Transaction Constants
   static List<String> listTransactionType = [
     AppStrings.transfer,
@@ -215,6 +287,12 @@ mixin Helper {
     AppStrings.all,
     AppStrings.transfer,
     AppStrings.receive
+  ];
+
+  static List<String> filterTransactionStatusList = [
+    AppStrings.all,
+    AppStrings.active,
+    AppStrings.inactive
   ];
 
   bool compareProfileMap(Map<String, dynamic> firstMap, Map<String, dynamic> secondMap) {
@@ -251,6 +329,30 @@ mixin Helper {
     } catch (e) {
       return AppStrings.emptyString;
     }
+  }
+
+  static String generateId({String preffix = '', int length = 8}) {
+    if (preffix.isBlank) preffix = AppStrings.appName;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    final rnd = Random.secure();
+    final suffix =  List.generate(length, (index) => chars[rnd.nextInt(chars.length)]).join();
+    return '${preffix.substring(0, 3)}-$suffix'.toUpperCase();
+  }
+
+  static String getFormattedDateTime([DateTime? dateTime]) {
+    final dt = dateTime ?? DateTime.now();
+    
+    final day = dt.day.toString().padLeft(2, '0');
+    final month = months[dt.month - 1];
+    final year = dt.year.toString();
+    
+    int hour12 = dt.hour % 12;
+    if (hour12 == 0) hour12 = 12;
+    final hour = hour12.toString().padLeft(2, '0');
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour >= 12 ? 'PM' : 'AM';
+    
+    return '$day $month $year, $hour:$minute $period';
   }
 
 }

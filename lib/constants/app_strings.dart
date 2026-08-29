@@ -64,6 +64,24 @@ class AppStrings {
   static const String success = 'Success';
   static const String back = 'Back';
   static const String archive = 'Archive';
+  static const String active = 'Active';
+  static const String inactive = 'Inactive';
+  static const String appliedFilter = 'Applied Filters';
+  static const String status = 'Status';
+  static const String dateRange = 'Date Range';
+  static const String amountRange = 'Amount Range';
+  static const String sorting = 'Sorting';
+  static const String details = 'Details';
+  static const String transactionStatement = 'Transaction Statement';
+  static const String reportNo = 'Report no';
+  static const String settlementStatus = 'Settlement Status';
+  static const String transactionSettled = 'All transactions are settled';
+  static const String transactionInsight = 'Transaction Insights';
+  static const String totalCount = 'Total Count';
+  static const String total = 'Total';
+  static const String reportDate = 'Report Date';
+  static const String currency = 'Currency';
+  static const String id = 'ID';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
@@ -104,6 +122,8 @@ class AppStrings {
   static const String emailSentForgotPasswordMsg = "Email has been sent successfully, follow the link and reset your password";
   static const String userDoesNotExist = "User does not exist";
   static const String userDoesNotExistMsg = "User is not registered with this email.";
+  static const String description = "Description";
+  static const String userDetails = "User Details";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';

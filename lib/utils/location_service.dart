@@ -32,11 +32,12 @@ class LocationService with Helper {
 
   Future<String> getCurrentAddress() async {
     try {
+      final geocoding = Geocoding();
       final LocationPermission permission = await _checkLocationPermission();
       switch (permission) {
         case LocationPermission.whileInUse:
           Position position = await Geolocator.getCurrentPosition();
-          var placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
+          var placemark = await geocoding.placemarkFromCoordinates(position.latitude, position.longitude);
           if (placemark.isNotEmpty) {
             var local = placemark.first;
             String address = '';

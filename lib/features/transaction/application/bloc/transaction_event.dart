@@ -33,6 +33,10 @@ class TransactionTypeChangeEvent extends TransactionEvent {
   String type;
   TransactionTypeChangeEvent({required this.type});
 }
+class TransactionStatusChangeEvent extends TransactionEvent {
+  String status;
+  TransactionStatusChangeEvent({required this.status});
+}
 
 class TransactionDateChangeEvent extends TransactionEvent {
   bool isError;
@@ -69,8 +73,9 @@ class TransactionApplyFilterEvent extends TransactionEvent {
   DateTimeRange? dateTimeRange;
   String transactionType;
   RangeValues? amountRangeValues;
+  String transactionStatus;
 
-  TransactionApplyFilterEvent({this.dateTimeRange, this.transactionType = '', this.amountRangeValues});
+  TransactionApplyFilterEvent({this.dateTimeRange, this.transactionType = '', this.amountRangeValues, this.transactionStatus = ''});
 }
 
 class TransactionChangeAmountRangeEvent extends TransactionEvent {
@@ -113,3 +118,5 @@ class TransactionDetailsEvent extends TransactionEvent {
 class TransactionClearTransactionIdEvent extends TransactionEvent {}
 
 class TransactionSubDetailsEvent extends TransactionEvent {}
+
+class TransactionImportTransactionEvent extends TransactionEvent {}

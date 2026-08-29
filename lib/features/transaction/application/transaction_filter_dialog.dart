@@ -19,9 +19,11 @@ class TransactionFilterDialog extends StatefulWidget {
   final TransactionBloc transactionBloc;
   final DateTimeRange? initialDateTimeRage;
   final String transactionType;
+  final String transactionStatus;
 
   const TransactionFilterDialog({
     required this.transactionType,
+    required this.transactionStatus,
     this.initialDateTimeRage,
     this.amountChangeValue,
     required this.finalAmountRange,
@@ -38,12 +40,14 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
   DateTimeRange? initialDateTimeRage;
   late RangeValues amountChangeValue;
   String transactionType = AppStrings.all;
+  String transactionStatus = AppStrings.all;
   late AppLocalizations localizations;
   late TextEditingController dateTimeRangeTextController;
 
   @override
   void didChangeDependencies() {
     transactionType = widget.transactionType;
+    transactionStatus = widget.transactionStatus;
     initialDateTimeRage = widget.initialDateTimeRage;
     dateTimeRangeTextController = TextEditingController();
     if(initialDateTimeRage != null) {
@@ -143,6 +147,33 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       icon: Icon(AppIcons.arrowDown),
                     ),
                   ),
+                  const SizedBox(height: AppSize.s20),
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      isDense: true,
+                      label: Text('Transaction Status'),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05,
+                          color: Helper.isDark
+                          ? AppColors.grey
+                          : AppColors.black
+                        ),
+                      ),
+                    ),
+                    child: DropdownButton(
+                      value: transactionStatus,
+                      isExpanded: true,
+                      items: Helper.filterTransactionStatusList.map((String value) {
+                        return DropdownMenuItem(value: value, child: Text(value));
+                      }).toList(),
+                      dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
+                      onChanged: (value) => widget.transactionBloc.add(TransactionStatusChangeEvent(status: value!.toString())),
+                      underline: const SizedBox(),
+                      icon: Icon(AppIcons.arrowDown),
+                    ),
+                  ),
                   const SizedBox(height: AppSize.s15),
                   CustomText(title: localizations.amountRange, textStyle: getMediumStyle()),
                   SizedBox(
@@ -191,7 +222,8 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                         onPressed: () => context.pop({
                           'initial_date_time_range': initialDateTimeRage, 
                           'transaction_type': transactionType, 
-                          'amount_range': amountChangeValue
+                          'amount_range': amountChangeValue,
+                          'transaction_status': transactionStatus
                         }),
                         child: CustomText(
                           title: localizations.apply,
@@ -205,13 +237,16 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
               ),
             );
           },
-          listener: (context, state) {
+          listener: (_, state) {
             switch (state) {
               case TransactionChangeAmountRangeState _:
                 amountChangeValue = state.rangeAmount;
                 break;
               case TransactionTypeChangeState _:
                 transactionType = state.type;
+                break;
+              case TransactionStatusChangeState _:
+                transactionStatus = state.status;
                 break;
               default:
             }

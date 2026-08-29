@@ -32,6 +32,10 @@ class TransactionTypeChangeState extends TransactionState {
   String type = AppStrings.transfer;
   TransactionTypeChangeState(this.type);
 }
+class TransactionStatusChangeState extends TransactionState {
+  String status = AppStrings.active;
+  TransactionStatusChangeState(this.status);
+}
 
 class TransactionDateChangeState extends TransactionState {
   bool isEmpty;
@@ -99,3 +103,5 @@ class TransactionFetchDetailsState extends TransactionState {
 }
 
 class TransactionClearTransactionIdState extends TransactionState {}
+
+class TransactionImportTransactionState extends TransactionState {}
