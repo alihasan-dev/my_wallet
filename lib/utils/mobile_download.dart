@@ -39,11 +39,7 @@ Future<void> downloadFile({
     final sdkInt = androidInfo.version.sdkInt;
 
     if (sdkInt >= 29) {
-      // Android 10+ (API 29+): use MediaStore, no storage permission needed
-      await MediaStore.ensureInitialized();
-      final mediaStore = MediaStore();
-
-      // MediaStore needs a source file path — write to temp dir first
+      final mediaStore = MediaStore(); // ensureInitialized() already done in main()
       final tempDir = await getTemporaryDirectory();
       final tempFile = File('${tempDir.path}/$downloadName');
       await tempFile.writeAsBytes(bytes);
@@ -54,7 +50,6 @@ Future<void> downloadFile({
         dirName: DirName.download,
       );
 
-      // Clean up temp file regardless of outcome
       if (await tempFile.exists()) {
         await tempFile.delete();
       }

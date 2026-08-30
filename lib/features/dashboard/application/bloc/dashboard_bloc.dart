@@ -210,14 +210,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onAddUser(DashboardAddUserEvent event, Emitter emit) async {
     if(await validation(emit, name: event.name, email: event.email, phone: event.phone)) {
-      await firebaseStoreInstance.doc(userId).collection('friends').add({
+      final docRef = await firebaseStoreInstance.doc(userId).collection('friends').add({
         'name': event.name,
         'email': event.email,
         'phone': event.phone,
         'address': '',
         'profile_img': AppStrings.sampleImg,
-        'isVerified': true 
+        'isVerified': true,
+        'pinned': false
       });
+      await docRef.update({'user_id': docRef.id});
     }
   }
 

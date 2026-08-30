@@ -1,3 +1,4 @@
+import 'package:my_wallet/utils/app_extension_method.dart';
 import 'package:my_wallet/utils/helper.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -33,7 +34,7 @@ class ReportUserDetails extends pw.StatelessWidget {
             ),
           ),
         ),
-        pw.SizedBox(height: AppSize.s5),
+        pw.SizedBox(height: AppSize.s8),
         pw.Padding(
           padding: pw.EdgeInsets.symmetric(horizontal: 6),
           child: pw.Column(
@@ -42,7 +43,7 @@ class ReportUserDetails extends pw.StatelessWidget {
             children: [
               pw.Row(
                 children: [
-                  pw.Expanded(child: _rowInfoTile(title: AppStrings.name, value: userData?['name'] ?? '')),
+                  pw.Expanded(child: _rowInfoTile(title: AppStrings.name, value: _getRowString(userData?['name']))),
                   pw.SizedBox(width: 20),
                   pw.Expanded(child: _rowInfoTile(title: AppStrings.reportDate, value: Helper.getFormattedDateTime())),
                 ]
@@ -50,7 +51,7 @@ class ReportUserDetails extends pw.StatelessWidget {
               pw.SizedBox(height: 12),
               pw.Row(
                 children: [
-                  pw.Expanded(child: _rowInfoTile(title: AppStrings.id, value: userData?['user_id'] ?? '')),
+                  pw.Expanded(child: _rowInfoTile(title: AppStrings.id, value:  _getRowString(userData?['user_id']))),
                   pw.SizedBox(width: 20),
                   pw.Expanded(child: _rowInfoTile(title: AppStrings.currency, value: 'INR (\u20B9)', font: font)),
                 ]
@@ -58,9 +59,9 @@ class ReportUserDetails extends pw.StatelessWidget {
               pw.SizedBox(height: 12),
               pw.Row(
                 children: [
-                  pw.Expanded(child: _rowInfoTile(title: AppStrings.email, value: userData?['email'] ?? '')),
+                  pw.Expanded(child: _rowInfoTile(title: AppStrings.email, value: _getRowString(userData?['email']))),
                   pw.SizedBox(width: 20),
-                  pw.Expanded(child: _rowInfoTile(title: AppStrings.phone, value: '+91 ${userData?['phone'] ?? ''}')),
+                  pw.Expanded(child: _rowInfoTile(title: AppStrings.phone, value: '+91 ${userData?['phone'] ?? '-'}')),
                 ]
               ),
             ]
@@ -68,6 +69,14 @@ class ReportUserDetails extends pw.StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _getRowString(String? value) {
+    try {
+      return (value ?? '').isBlank ? '-' : value!;
+    } catch(_) {
+      return '-';
+    }
   }
 
   pw.Widget _rowInfoTile({

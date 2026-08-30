@@ -56,16 +56,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     languageList.add(SettingLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
     settingItemList.clear();
-    settingItemList.add(SettingModel(icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-    settingItemList.add(SettingModel(icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-    settingItemList.add(SettingModel(icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
-    settingItemList.add(SettingModel(icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.language, icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+    settingItemList.add(SettingModel(id: SettingItemId.theme, icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(id: SettingItemId.transactionDetails, icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.archiveUser, icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
     if(!kIsWeb) {
-      settingItemList.add(SettingModel(icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
-      settingItemList.add(SettingModel(icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
+      settingItemList.add(SettingModel(id: SettingItemId.biometricToggle, icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
+      settingItemList.add(SettingModel(id: SettingItemId.webApp, icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
     }
-    settingItemList.add(SettingModel(icon: AppIcons.currencyIcon, title: "Currency"));
-    settingItemList.add(SettingModel(icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
+    // settingItemList.add(SettingModel(id: SettingItemId.currency, icon: AppIcons.currencyIcon, title: "Currency"));
+    settingItemList.add(SettingModel(id: SettingItemId.about, icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
   }
 
@@ -163,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: CupertinoSwitch(
                               value: data.switchValue, 
                               activeTrackColor: AppColors.primaryColor,
-                              onChanged: (value) => onChangeSwith(index: index, value: value)
+                              onChanged: (value) => onChangeSwith(id: data.id, value: value)
                             ),
                           ),
                       ],
@@ -180,22 +180,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void onTapOption({required SettingModel data, required int index}) {
     if(data.showSwitch || data.isLauncher) {
-      if(data.showSwitch) onChangeSwith(index: index, value: !data.switchValue);
+      if(data.showSwitch) onChangeSwith(id: data.id, value: !data.switchValue);
       if(data.isLauncher) launchPolicyUrl();
     } else {
-      switch (index) {
-        case 0:
+      switch (data.id) {
+        case SettingItemId.language:
           showLanguageDialog(context: context);
           break;
-        case 1:
+        case SettingItemId.theme:
           showThemeDialog(context: context);
           break;
-        case 4:
-        case 6:
+        case SettingItemId.currency:
           showCurrencyDialog(context: context);
           break;
-        case 5:
-        case 7:
+        case SettingItemId.about:
           showAboutAppDialog(context: context);
           break;
         default:
@@ -203,15 +201,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  void onChangeSwith({required int index, required bool value}) {
-    switch (index) {
-      case 2:
+  void onChangeSwith({required SettingItemId id, required bool value}) {
+    switch (id) {
+      case SettingItemId.transactionDetails:
         _settingBloc.add(SettingsOnChangeTransactionDetailsEvent(isEnable: value));
         break;
-      case 3:
+      case SettingItemId.archiveUser:
         _settingBloc.add(SettingsOnChangeVerifiedEvent(isVerified: value));
         break;
-      case 4: 
+      case SettingItemId.biometricToggle: 
         _settingBloc.add(SettingsOnChangeBiometricEvent(enableBiometric: value));
         break;
       default:

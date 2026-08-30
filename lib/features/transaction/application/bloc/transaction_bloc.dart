@@ -488,11 +488,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         maxPages: 1,
         margin: pw.EdgeInsets.all(24),
         build: (_) => [
-          ReportUserDetails(
-            userData: friendProfileData,
-            font: regularFont
-          ),
-          pw.SizedBox(height: 5),
+          if (friendProfileData != null) ...[
+            ReportUserDetails(
+              userData: friendProfileData,
+              font: regularFont
+            ),
+            pw.SizedBox(height: 5),
+          ],
           ReportFilterDetails(
             transactionType: transactionType,
             transactionStatus: transactionStatus,
@@ -577,6 +579,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         await audioPlayer.setAsset(AppAudio.downloadSound);
         audioPlayer.play();
       } catch (e) {
+        log('Export Error : $e');
         emit(TransactionExportPDFState(message: 'Something went wrong while exporting your transaction report'));
       }
     }

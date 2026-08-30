@@ -43,7 +43,7 @@ class ReportTransactionInsights extends pw.StatelessWidget {
             ),
           ),
         ),
-        pw.SizedBox(height: AppSize.s5),
+        pw.SizedBox(height: AppSize.s8),
         pw.Padding(
           padding: pw.EdgeInsets.symmetric(horizontal: 6),
           child: pw.Column(
