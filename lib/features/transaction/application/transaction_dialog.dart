@@ -14,6 +14,7 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../utils/helper.dart';
+import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../domain/transaction_model.dart';
 
@@ -39,11 +40,13 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
   String errorMsg = '';
   bool errorDate = false;
   bool isFirst = true;
+  bool isActiveTransaction = true;
   DateTime? transactionDate;
   late DateTime initialDateTime;
   late String transactionType;
   late TextEditingController amountTextController;
   late TextEditingController dateTextController;
+  late TextEditingController descriptionTextController;
   AppLocalizations? _localizations;
 
   @override
@@ -52,12 +55,15 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
     transactionType = AppStrings.transfer;
     amountTextController = TextEditingController();
     dateTextController = TextEditingController();
+    descriptionTextController = TextEditingController();
     if (widget.transactionModel != null) {
       final transactionModel = widget.transactionModel!;
       amountTextController.text = transactionModel.amount.toStringAsFixed(0);
       dateTextController.text = transactionModel.date.formatDateTime;
       initialDateTime = transactionDate = transactionModel.date;
       transactionType = transactionModel.type;
+      descriptionTextController.text = transactionModel.description;
+      isActiveTransaction = transactionModel.isActive;
     }
     super.initState();
   }
@@ -80,6 +86,9 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                 break;
               case TransactionTypeChangeState _:
                 transactionType = state.type;
+                break;
+              case TransactionStatusChangeState _:
+                isActiveTransaction = state.status == AppStrings.active;
                 break;
               case TransactionDateChangeState _:
                 errorDate = state.isEmpty;
@@ -141,7 +150,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       counterText: ''
                     ),
                   ),
-                  const SizedBox(height: AppSize.s15),
+                  const SizedBox(height: AppSize.s18),
                   InputDecorator(
                     decoration: InputDecoration(
                       isDense: true,
@@ -166,7 +175,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       icon: Icon(AppIcons.arrowDown),
                     ),
                   ),
-                  const SizedBox(height: AppSize.s15),
+                  const SizedBox(height: AppSize.s18),
                   TextField(
                     controller: dateTextController,
                     readOnly: true,
@@ -198,7 +207,48 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: AppSize.s18),
+                  TextField(
+                    controller: descriptionTextController,
+                    maxLines: null,
+                    maxLength: 50,
+                    decoration: InputDecoration(
+                      errorText: errorDate
+                      ? AppStrings.emptyDate
+                      : null,
+                      hintText: '${AppStrings.description} (Optional)',
+                      hintStyle: const TextStyle(color: AppColors.grey),
+                      label: Text(AppStrings.description),
+                      border: const OutlineInputBorder(),
+                      counterText: '',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
+                          : AppColors.black
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: AppSize.s16),
+                  Row(
+                    spacing: AppSize.s8,
+                    children: [
+                      CustomCheckBoxWidget(
+                        value: isActiveTransaction, 
+                        onChange: (value) {
+                          context.read<TransactionBloc>().add(TransactionStatusChangeEvent(
+                            status:value ?? true ? AppStrings.active : AppStrings.inactive
+                          ));
+                        }
+                      ),
+                      CustomText(
+                        title: '${AppStrings.transactionStatus} (${isActiveTransaction ? AppStrings.active : AppStrings.inactive})'
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s18),
                   AnimatedSwitcher(
                     duration: MyAppTheme.animationDuration,
                     transitionBuilder: (child, animation) {
@@ -250,7 +300,9 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         type: transactionType,
                         transactionId: widget.transactionModel == null 
                         ? '' 
-                        : widget.transactionModel!.id
+                        : widget.transactionModel!.id,
+                        description: descriptionTextController.text,
+                        isActive: isActiveTransaction
                       ),
                     ),
                     titleSize: AppSize.s15,

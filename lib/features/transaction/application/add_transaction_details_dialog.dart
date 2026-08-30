@@ -18,14 +18,12 @@ import '../../../widgets/custom_text.dart';
 
 class AddTransactionDetailsDialog extends StatefulWidget {
 
-  // final Function(String, String, String) onAdd;
   final SubTransactionBloc transactionBloc;
   final String transactionId;
   const AddTransactionDetailsDialog({
     super.key,
     required this.transactionId,
     required this.transactionBloc,
-    // required this.onAdd
   });
 
   @override

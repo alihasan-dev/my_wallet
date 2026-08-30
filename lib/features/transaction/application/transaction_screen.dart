@@ -183,17 +183,6 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         ],
                       ),
                     ),
-                    IconButton(
-                      tooltip: 'Import Report',
-                      onPressed: () {
-                        showComingSoonDialog(
-                          context: context,
-                          title: "Import Transactions Coming Soon",
-                          description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
-                        );
-                      }, 
-                      icon: const Icon(Icons.upload, color: AppColors.white)
-                    ),
                     AnimatedSize(
                       duration: MyAppTheme.animationDuration,
                       child: _selectedTransactionCount > 0
@@ -230,12 +219,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                     visualDensity: VisualDensity.compact,
                                     icon: const Icon(AppIcons.editIcon, color: AppColors.white)
                                   ),
-                                  IconButton(
-                                    tooltip: 'Active/Inactive Transaction',
-                                    onPressed: () => _transactionBloc.add(TransactionActiveEvent()), 
-                                    visualDensity: VisualDensity.compact,
-                                    icon: const Icon(AppIcons.visibilityIcon, color: AppColors.white)
-                                  )
+                                  // it's been shifted inside edit transaction dialog
+                                  // IconButton(
+                                  //   tooltip: 'Active/Inactive Transaction',
+                                  //   onPressed: () => _transactionBloc.add(TransactionActiveEvent()), 
+                                  //   visualDensity: VisualDensity.compact,
+                                  //   icon: const Icon(AppIcons.visibilityIcon, color: AppColors.white)
+                                  // )
                                 ],
                               ),
                             ),
@@ -243,6 +233,17 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                         )
                       : Row(
                         children: [
+                          IconButton(
+                            tooltip: 'Import Report',
+                            onPressed: () {
+                              showComingSoonDialog(
+                                context: context,
+                                title: "Import Transactions Coming Soon",
+                                description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
+                              );
+                            }, 
+                            icon: const Icon(Icons.upload, color: AppColors.white)
+                          ),
                           IconButton(
                             tooltip: _localizations!.addTransaction,
                             onPressed: () => _showAddTransactionDialog(),

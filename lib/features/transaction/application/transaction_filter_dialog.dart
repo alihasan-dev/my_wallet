@@ -151,7 +151,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                   InputDecorator(
                     decoration: InputDecoration(
                       isDense: true,
-                      label: Text('Transaction Status'),
+                      label: Text(AppStrings.transactionStatus),
                       contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -197,11 +197,11 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        title: '   ₹${amountChangeValue.start.toStringAsFixed(0)}',
+                        title: '   ₹${amountChangeValue.start.toStringAsFixed(0).currencyFormat}',
                         textStyle: getMediumStyle(),
                       ),
                       CustomText(
-                        title: '₹${amountChangeValue.end.toStringAsFixed(0)}   ',
+                        title: '₹${amountChangeValue.end.toStringAsFixed(0).currencyFormat}   ',
                         textStyle: getMediumStyle(),
                       ),
                     ],

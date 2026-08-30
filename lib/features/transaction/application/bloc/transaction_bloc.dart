@@ -372,12 +372,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   ///calculate total balance
   double _totalBalance({required List<TransactionModel> transactionList, bool considerActiveOnly = true}) {
-    // return  transactionList.fold<double>(0.0, (previousValue, transaction) {
-    // if (!transaction.isActive) return previousValue;
-    // return transaction.type == AppStrings.transfer
-    //     ? previousValue - transaction.amount
-    //     : previousValue + transaction.amount;
-    // });
     totalBalance = 0.0;
     transferCount = 0;
     receiveCount = 0;
@@ -406,6 +400,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
+      log(event.toString());
       if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({
           'date': event.date, 

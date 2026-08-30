@@ -22,6 +22,19 @@ class TransactionAddEvent extends TransactionEvent {
     this.isActive = true,
     this.description = ''
   });
+
+  @override
+  String toString() {
+    return 'TransactionAddEvent('
+        'userName: $userName, '
+        'date: $date, '
+        'amount: $amount, '
+        'type: $type, '
+        'transactionId: $transactionId, '
+        'isActive: $isActive, '
+        'description: $description'
+        ')';
+  }
 } 
 
 class TransactionAmountChangeEvent extends TransactionEvent {

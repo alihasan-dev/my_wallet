@@ -67,7 +67,8 @@ dependencies:
   geocoding: ^5.0.0
   sample_formatter:
     path: ../Package/sample_package
-  file_picker: ^3.0.4
+  file_picker: ^12.1.2
+  media_store_plus: ^0.1.3
 
 dev_dependencies:
   flutter_test:
