@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
+import '../../transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
 import '../../../constants/app_strings.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../utils/check_connectivity.dart';
@@ -164,6 +164,7 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                           : AppColors.black
                         ),
                       ),
+                      prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
                       errorText: errorRate.value
                     ),
                   ),

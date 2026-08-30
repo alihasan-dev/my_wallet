@@ -26,6 +26,8 @@ mixin Helper {
 
   bool isLoadingVisible = false;
   static bool isDark = false;
+  static int _lastTimestamp = 0;
+  static int _counter = 0;
 
   static List<String> months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -331,12 +333,43 @@ mixin Helper {
     }
   }
 
-  static String generateId({String preffix = '', int length = 8}) {
-    if (preffix.isBlank) preffix = AppStrings.appName;
+  static String generateId({String prefix = '', int length = 8}) {
+    // if (preffix.isBlank) preffix = AppStrings.appName;
+    // const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // final rnd = Random.secure();
+    // final suffix =  List.generate(length, (index) => chars[rnd.nextInt(chars.length)]).join();
+    // return '${preffix.substring(0, 3)}-$suffix'.toUpperCase();
+    if (prefix.isBlank) prefix = AppStrings.appName;
+
+    // Ensure prefix is at least 3 chars to avoid RangeError
+    final safePrefix = prefix.length >= 3
+        ? prefix.substring(0, 3)
+        : prefix.padRight(3, 'X');
+
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     final rnd = Random.secure();
-    final suffix =  List.generate(length, (index) => chars[rnd.nextInt(chars.length)]).join();
-    return '${preffix.substring(0, 3)}-$suffix'.toUpperCase();
+
+    // Timestamp component (base36 to keep it short)
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    // Monotonic counter guards against multiple IDs generated in the same millisecond
+    if (now == _lastTimestamp) {
+      _counter++;
+    } else {
+      _counter = 0;
+      _lastTimestamp = now;
+    }
+
+    final timePart = now.toRadixString(36).toUpperCase();
+    final counterPart = _counter.toRadixString(36).toUpperCase().padLeft(2, '0');
+
+    // Random component fills remaining length
+    final randomLength = (length - timePart.length - counterPart.length).clamp(4, length);
+    final randomPart = List.generate(
+      randomLength,
+      (index) => chars[rnd.nextInt(chars.length)],
+    ).join();
+    return '$safePrefix-$timePart$counterPart$randomPart'.toUpperCase();
   }
 
   static String getFormattedDateTime([DateTime? dateTime]) {

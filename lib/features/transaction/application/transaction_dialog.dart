@@ -147,6 +147,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                           : AppColors.black
                         ),
                       ),
+                      prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
                       counterText: ''
                     ),
                   ),

@@ -461,7 +461,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final imageBytes = img.buffer.asUint8List();
     final pdf = pw.Document();
     final friendName = friendProfileData?['name'];
-    final reportNo = Helper.generateId(preffix: friendName);
+    final reportNo = Helper.generateId(prefix: friendName);
     final sortingLabel = dateAscending ? 'Newest to Oldest' : 'Oldest to Newest';
     final hasDetailsEnable = Preferences.getBool(key: AppStrings.prefShowTransactionDetails);
     String transactionType = 'All';
