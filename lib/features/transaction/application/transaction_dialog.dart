@@ -212,11 +212,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                   TextField(
                     controller: descriptionTextController,
                     maxLines: null,
-                    maxLength: 50,
+                    maxLength: 100,
                     decoration: InputDecoration(
-                      errorText: errorDate
-                      ? AppStrings.emptyDate
-                      : null,
                       hintText: '${AppStrings.description} (Optional)',
                       hintStyle: const TextStyle(color: AppColors.grey),
                       label: Text(AppStrings.description),

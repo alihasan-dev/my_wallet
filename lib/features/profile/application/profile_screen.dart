@@ -144,7 +144,11 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
                   hideLoadingDialog(context: context);
                   if(isFetchProfileData) {
-                    showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
+                    showSnackBar(
+                      context: context, 
+                      title: _localizations!.profileUpdateMsg, 
+                      color: AppColors.green
+                    );
                   } else {
                     isFetchProfileData = true;
                   }
@@ -157,7 +161,12 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                     hideLoadingDialog(context: context);
                     context.pop();
                     context.pop();
-                    showSnackBar(context: context, title: AppStrings.success, message: AppStrings.userDeletedMsg, color: AppColors.green);
+                    showSnackBar(
+                      context: context, 
+                      title: AppStrings.success, 
+                      message: AppStrings.userDeletedMsg, 
+                      color: AppColors.green
+                    );
                   } else {
                     onUserDelete(nameTextController.text, context);
                   }
