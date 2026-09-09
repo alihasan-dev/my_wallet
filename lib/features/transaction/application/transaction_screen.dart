@@ -354,6 +354,41 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               color: textColor.withValues(alpha: 0.8)
                             ),
                           ),
+                          if (Preferences.getBool(key: AppStrings.prefShowTransactionDescription)) ...[
+                            Expanded(
+                              child: Material(
+                                color: AppColors.transparent,
+                                child: InkWell(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSize.s10, 
+                                      vertical: AppSize.s15
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CustomText(
+                                          title: 'Description', 
+                                          textStyle: getSemiBoldStyle(
+                                            color: textColor, 
+                                            fontSize: AppSize.s14
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: appBarHeight - AppSize.s8,
+                              child: VerticalDivider(
+                                thickness: AppSize.s05, 
+                                width: AppSize.s05, 
+                                color: textColor.withValues(alpha: 0.8)
+                              ),
+                            ),
+                          ],
                           Expanded(
                             child: Material(
                               color: AppColors.transparent,
@@ -511,6 +546,39 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                           ),
                                         ),
                                       ),
+                                      if (Preferences.getBool(key: AppStrings.prefShowTransactionDescription)) ...[
+                                        const CustomVerticalDivider(),
+                                        Expanded(
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: AppSize.s10, 
+                                              vertical: AppSize.s15
+                                            ),
+                                            color: transactionId == null || subData.id != transactionId 
+                                            ? Helper.isDark 
+                                              ? AppColors.backgroundColorDark
+                                              : AppColors.white
+                                            : Helper.isDark
+                                              ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                              :AppColors.white.withValues(alpha: 0.8), 
+                                            child: CustomText(
+                                              title: subData.description.isBlank
+                                              ? '-'
+                                              : subData.description,
+                                              textStyle: TextStyle(
+                                                color: !subData.isActive
+                                                ? AppColors.grey
+                                                :  Helper.isDark 
+                                                  ? AppColors.white.withValues(alpha: 0.9) 
+                                                  : AppColors.black,
+                                                decoration: !subData.isActive
+                                                ? TextDecoration.lineThrough
+                                                : TextDecoration.none
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                       const CustomVerticalDivider(),
                                       Expanded(
                                         child: Container(

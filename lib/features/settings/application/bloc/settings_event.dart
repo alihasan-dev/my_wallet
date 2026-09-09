@@ -27,3 +27,9 @@ class SettingsOnChangeBiometricEvent extends SettingsEvent {
 
   SettingsOnChangeBiometricEvent({this.enableBiometric = false});
 }
+class SettingsOnChangeTransactionDescriptionEvent extends SettingsEvent {
+  bool isEnable;
+
+  SettingsOnChangeTransactionDescriptionEvent({this.isEnable = false});
+}
+///transaction_description

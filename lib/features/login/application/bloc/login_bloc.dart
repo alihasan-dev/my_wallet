@@ -80,6 +80,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             if(mapData.isNotEmpty) {
               Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
               Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
+              Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: mapData['transaction_description'] ?? false);
+              Preferences.setString(
+                key: AppStrings.prefProfileImg, 
+                value: (mapData['profile_img'] ?? '').isBlank
+                ? AppStrings.sampleImg
+                : mapData['profile_img']
+              );
             }
           });
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
@@ -93,10 +100,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             'name': displayName,
             'email': email,
             'user_id': user.uid,
-            'profile_img': photoUrl ?? AppStrings.sampleImg,
+            'profile_img': !(photoUrl ?? '').isBlank 
+            ? photoUrl ?? ''
+            : AppStrings.sampleImg,
             'showUnverified': true,
             'enableBiometric': false
           });
+          Preferences.setString(
+            key: AppStrings.prefProfileImg, 
+            value: !(photoUrl ?? '').isBlank 
+            ? photoUrl ?? ''
+            : AppStrings.sampleImg,
+          );
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessNewUserMsg));
         }
@@ -147,6 +162,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             if(mapData.isNotEmpty) {
               Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
               Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
+              Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: mapData['transaction_description'] ?? false);
+              Preferences.setString(
+                key: AppStrings.prefProfileImg, 
+                value: (mapData['profile_img'] ?? '').toString().isBlank
+                ? AppStrings.sampleImg
+                : mapData['profile_img']
+              );
             }
           });
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));

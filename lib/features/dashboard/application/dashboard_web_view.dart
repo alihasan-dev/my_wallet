@@ -134,6 +134,10 @@ class DashboardWebView extends StatelessWidget {
                           iconColor: AppColors.white,
                           menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+                          child: CustomImageWidget(
+                            imageUrl: Preferences.getString(key: AppStrings.prefProfileImg),
+                            imageSize: 34,
+                          ),
                           itemBuilder: (_) {
                             return <PopupMenuEntry<String>> [
                               PopupMenuItem<String>(

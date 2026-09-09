@@ -78,8 +78,15 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'showUnverified': true,
             'enableBiometric': false
           });
+          Preferences.setString(
+            key: AppStrings.prefProfileImg, 
+            value: !(photoUrl ?? '').isBlank 
+            ? photoUrl ?? ''
+            : AppStrings.sampleImg,
+          );
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: false);
+          Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: false);
           emit(SignupSuccessState(title: AppStrings.success, message: AppStrings.registerMsg));
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
@@ -133,8 +140,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
             'showUnverified': true,
             'enableBiometric': false
           });
+          Preferences.setString(key: AppStrings.prefProfileImg, value: AppStrings.sampleImg);
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: false);
+          Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: false);
           emit(SignupSuccessState(title: AppStrings.success, message: AppStrings.registerMsg));
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));

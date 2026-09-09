@@ -42,6 +42,7 @@ class UserModel {
   int lastTransactionDate;
   String type;
   bool showTransactionDetails;
+  bool showTransactionDescription;
   bool isUserVerified;
   bool enableBiometric;
   bool isSelected;
@@ -57,6 +58,7 @@ class UserModel {
     this.lastTransactionDate = -1,
     this.type = '',
     this.showTransactionDetails = false,
+    this.showTransactionDescription = false,
     this.isUserVerified = false,
     this.enableBiometric = false,
     this.isPinned = false,
@@ -77,6 +79,7 @@ class UserModel {
         lastTransactionDate == other.lastTransactionDate &&
         type == other.type &&
         showTransactionDetails == other.showTransactionDetails &&
+        showTransactionDescription == other.showTransactionDescription &&
         isUserVerified == other.isUserVerified &&
         enableBiometric == other.enableBiometric &&
         isSelected == other.isSelected &&
@@ -94,6 +97,7 @@ class UserModel {
         lastTransactionDate,
         type,
         showTransactionDetails,
+        showTransactionDescription,
         isUserVerified,
         enableBiometric,
         isSelected,

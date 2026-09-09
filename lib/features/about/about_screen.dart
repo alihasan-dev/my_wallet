@@ -19,6 +19,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentYear = DateTime.now().year;
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
       backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
@@ -50,8 +51,8 @@ class AboutScreen extends StatelessWidget {
               title: '  Version ${AppStrings.appVersion.determineAppVersion}',
               textSize: AppSize.s12,
             ),
-            const CustomText(
-              title: '  \u00a9 2026 Traversal Inc.',
+            CustomText(
+              title: '  \u00a9 $currentYear Traversal Inc.',
               textSize: AppSize.s12,
             ),
             Padding(

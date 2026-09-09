@@ -141,7 +141,9 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
                   addressTextController.text = profileData['address'] ?? '';
                   imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
-                  Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
+                  if (widget.userId.isBlank) {
+                    Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
+                  }
                   hideLoadingDialog(context: context);
                   if(isFetchProfileData) {
                     showSnackBar(

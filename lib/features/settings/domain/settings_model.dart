@@ -26,6 +26,7 @@ enum SettingItemId {
   language,
   theme,
   transactionDetails,
+  transactionDescription,
   archiveUser,
   biometricToggle,
   webApp,

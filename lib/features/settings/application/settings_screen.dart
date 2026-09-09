@@ -59,6 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     settingItemList.add(SettingModel(id: SettingItemId.language, icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
     settingItemList.add(SettingModel(id: SettingItemId.theme, icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
     settingItemList.add(SettingModel(id: SettingItemId.transactionDetails, icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.transactionDescription, icon: AppIcons.description, title: 'Transaction Description', subTitle: 'Show or hide descriptions in your transactions', showSwitch: true));
     settingItemList.add(SettingModel(id: SettingItemId.archiveUser, icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
     if(!kIsWeb) {
       settingItemList.add(SettingModel(id: SettingItemId.biometricToggle, icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
@@ -89,11 +90,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (context, state) {
           switch (state) {
             case SettingsUserDetailsState _:
-              settingItemList[2].switchValue = state.userModel.showTransactionDetails;
-              settingItemList[3].switchValue = state.userModel.isUserVerified;
-              settingItemList[4].switchValue = state.userModel.enableBiometric;
-              settingItemList[3].subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
-              settingItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
+              for (final item in settingItemList) {
+                switch (item.id) {
+                  case SettingItemId.theme:
+                    item.subTitle = Preferences.getString(key: AppStrings.prefTheme);
+                    break;
+                  case SettingItemId.transactionDetails:
+                    item.switchValue = state.userModel.showTransactionDetails;
+                    break;
+                  case SettingItemId.transactionDescription:
+                    item.switchValue = state.userModel.showTransactionDescription;
+                    break;
+                  case SettingItemId.archiveUser:
+                    item.switchValue = state.userModel.isUserVerified;
+                    item.subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
+                    break;
+                  case SettingItemId.biometricToggle:
+                    item.switchValue = state.userModel.enableBiometric;
+                  default:
+                }
+              }
               break;
             default:
           }
@@ -211,6 +227,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
       case SettingItemId.biometricToggle: 
         _settingBloc.add(SettingsOnChangeBiometricEvent(enableBiometric: value));
+        break;
+      case SettingItemId.transactionDescription: 
+        _settingBloc.add(SettingsOnChangeTransactionDescriptionEvent(isEnable: value));
         break;
       default:
     }

@@ -140,6 +140,7 @@ class AppStrings {
   static const String prefTheme = 'PREF_THEME';
   static const String prefGoogleSignInFromSignup = 'PREF_GOOGLE_SIGNIN_FROM';
   static const String prefShowTransactionDetails = 'PREF_SHOW_TRANSACTION_DETAILS';
+  static const String prefShowTransactionDescription = 'PREF_SHOW_TRANSACTION_DESCRIPTION';
 
   ///static url
   static const String sampleImg = "https://lh3.googleusercontent.com/d/1UxpcEcgtN-krRXopTvdu1nLVlh37V5an";
