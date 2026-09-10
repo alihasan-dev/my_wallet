@@ -86,6 +86,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionClearSelectionEvent>(_onClearSelectionTransactionEvent);
     on<TransactionShowDetailsEvent>(_onShowTransactionDetails);
     on<TransactionClearTransactionIdEvent>(_onClearTransactionId);
+    on<TransactionImportEvent>(_onTransactionImport);
 
     ///get last transaction time initially 
     firebaseStoreInstance.get().then((data) {
@@ -583,5 +584,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         emit(TransactionExportPDFState(message: 'Something went wrong while exporting your transaction report'));
       }
     }
+  }
+
+  void _onTransactionImport(TransactionImportEvent event, Emitter emit) async {
+    emit(TransactionImportState());
   }
 }

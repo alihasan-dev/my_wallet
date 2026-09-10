@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:my_wallet/features/transaction/application/transaction_import_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/preferences.dart';
 import '../../transaction/application/transaction_dialog.dart';
@@ -236,11 +237,13 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           IconButton(
                             tooltip: 'Import Report',
                             onPressed: () {
-                              showComingSoonDialog(
-                                context: context,
-                                title: "Import Transactions Coming Soon",
-                                description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
-                              );
+
+                              _transactionBloc.add(TransactionImportEvent());
+                              // showComingSoonDialog(
+                              //   context: context,
+                              //   title: "Import Transactions Coming Soon",
+                              //   description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
+                              // );
                             }, 
                             icon: const Icon(Icons.upload, color: AppColors.white)
                           ),
@@ -832,6 +835,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 color: AppColors.green
               );
               break;
+            case TransactionImportState _:
+              _showImportDialog();
+              break;
           default:
         }
       },
@@ -924,6 +930,20 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         }
       }
     }
+  }
+
+  void _showImportDialog() {
+    showGeneralDialog(
+      context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
+        child: TransactionImportDialog(
+          friendId: friendId
+        ),
+      ),
+    );
   }
 
 }

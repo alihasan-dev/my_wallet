@@ -112,6 +112,8 @@ class TransactionDeleteEvent extends TransactionEvent {}
 
 class TransactionEditEvent extends TransactionEvent {}
 
+class TransactionImportEvent extends TransactionEvent {}
+
 class TransactionActiveEvent extends TransactionEvent {}
 
 class TransactionClearSelectionEvent extends TransactionEvent {}

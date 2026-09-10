@@ -104,4 +104,4 @@ class TransactionFetchDetailsState extends TransactionState {
 
 class TransactionClearTransactionIdState extends TransactionState {}
 
-class TransactionImportTransactionState extends TransactionState {}
+class TransactionImportState extends TransactionState {}

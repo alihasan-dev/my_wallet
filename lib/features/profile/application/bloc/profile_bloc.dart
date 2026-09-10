@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -24,9 +26,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   String selectedImagePath = '';
   String friendId;
   List<UserModel> usersList = [];
+  late SupabaseClient supabaseClient;
+  late String userId;
 
   ProfileBloc({this.friendId = ''}) : super(ProfileInitialState()) {
     checkConnectivity = CheckConnectivity();
+    supabaseClient = Supabase.instance.client;
+    userId = Preferences.getString(key: AppStrings.prefUserId);
     final userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
     firebaseDocReference = friendId.isBlank ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
     firebaseStorage = FirebaseStorage.instance.ref();
@@ -116,31 +122,104 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Future<void> _onProfileUpdate(ProfileUpdateEvent event, Emitter emit) async {
     if(await fieldValidation(event, emit)) {
-      var updatedImageUrl = '';
-      if(selectedImagePath.isNotEmpty) {
-        emit(ProfileLoadingState());
-        try {
-          final mountainImagesRef = friendId.isBlank 
-          ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
-          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
-          await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
-            await mountainImagesRef.getDownloadURL().then((value) {
-              updatedImageUrl = value;
-            });
-          });
-        } catch (e) {
-          debugPrint(AppStrings.somethingWentWrong);
+      try {
+        String updatedImageUrl = '';
+        if(!selectedImagePath.isBlank) {
+          emit(ProfileLoadingState());
+          updatedImageUrl = await supabaseStorageUpload();
         }
+        debugPrint("🎉 Firebase profile update initiated");
+        await firebaseDocReference.update({
+          'email': event.profileData['email'],
+          'name': event.profileData['name'],
+          'user_id': event.profileData['user_id'],
+          'phone': event.profileData['phone'],
+          'address': event.profileData['address'],
+          'profile_img': updatedImageUrl.isBlank ? event.profileData['profile_img'] : updatedImageUrl
+        });
+        debugPrint("🎉 Firestore document successfully updated!");
+      } catch (e, stackTrace) {
+        debugPrint("❌ FIRESTORE UPDATE CRASHED!");
+        debugPrint("Error details: $e");
+        debugPrint("Stack trace: $stackTrace");
       }
-      await firebaseDocReference.update({
-        'email': event.profileData['email'],
-        'name': event.profileData['name'],
-        'user_id': event.profileData['user_id'],
-        'phone': event.profileData['phone'],
-        'address': event.profileData['address'],
-        'profile_img': updatedImageUrl.isBlank ? event.profileData['profile_img'] : updatedImageUrl
-      });
     }
+  }
+
+  Future<String> firebaseStorageUpload() async {
+    try {
+      String updatedImageUrl = '';
+      final mountainImagesRef = friendId.isBlank 
+      ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
+      : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
+      await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
+        await mountainImagesRef.getDownloadURL().then((value) {
+          updatedImageUrl = value;
+        });
+      });
+      return updatedImageUrl;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  Future<String> supabaseStorageUpload() async {
+    // try {
+    //   final filePath = friendId.isBlank 
+    //   ? "$userId/profile_img.jpg"
+    //   : "$userId/friends/$friendId.jpg";
+    //   await supabaseClient.storage
+    //   .from('my_wallet_storage')
+    //   .uploadBinary(
+    //     filePath,
+    //     convertBase64ToUint8List(selectedImagePath),
+    //     fileOptions: FileOptions(upsert: true),
+    //   );
+    //   return supabaseClient.storage.from('my_wallet_storage').getPublicUrl(filePath);
+    // } catch (e) {
+    //   print("Supabase Storage Error: $e");
+    //   return '';
+    // }
+    try {
+      debugPrint("🟢 Step 1: Evaluating file path...");
+      final filePath = friendId.isEmpty // Using .isEmpty instead of .isBlank as it is standard in Dart
+      ? "$userId/profile_img.jpg"
+      : "$userId/friends/$friendId.jpg";
+      debugPrint("File path calculated: $filePath");
+      debugPrint("🟢 Step 2: Converting base64 to bytes...");
+      final bytes = convertBase64ToUint8List(selectedImagePath);
+      debugPrint("Bytes converted successfully. Total size: ${bytes.length} bytes");
+      debugPrint("🟢 Step 3: Attempting Supabase storage upload...");
+      await supabaseClient.storage
+      .from('my_wallet_storage')
+      .uploadBinary(
+        filePath,
+        bytes,
+        fileOptions: const FileOptions(upsert: true),
+      );
+      debugPrint("🎉 Upload successful!");
+      final publicUrl = supabaseClient.storage.from('my_wallet_storage').getPublicUrl(filePath);
+      debugPrint("Public URL generated: $publicUrl");
+      return publicUrl;
+
+    } catch (e, stackTrace) {
+      // 🔴 This will guarantee a full log with details on exactly where it crashed
+      debugPrint("❌ ERROR CAUGHT: $e");
+      debugPrint("❌ STACK TRACE: $stackTrace");
+      return '';
+    }
+  }
+
+  Uint8List convertBase64ToUint8List(String base64String) {
+    // Optional: Clean the Base64 string if it contains data URI headers (e.g., "data:image/png;base64,...")
+    String cleanedBase64 = base64String;
+    if (base64String.contains(',')) {
+      cleanedBase64 = base64String.split(',').last;
+    }
+
+    // Convert Base64 string to Uint8List
+    Uint8List bytes = base64Decode(cleanedBase64);
+    return bytes;
   }
 
   Future<void> _onDeleteUser(ProfileDeleteUserEvent event, Emitter emit) async {

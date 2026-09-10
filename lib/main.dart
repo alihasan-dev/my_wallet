@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:media_store_plus/media_store_plus.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../utils/firebase_options.dart';
 import '../features/my_app/presentation/bloc/my_app_bloc.dart';
@@ -15,10 +17,15 @@ import '../features/my_app/presentation/my_app.dart';
 Future<void> main() async {
   usePathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
   if (!kIsWeb) {
     MediaStore.appFolder = "MyWallet";
     await MediaStore.ensureInitialized();
   }
+  await Supabase.initialize(
+    url: dotenv.get('PROJECT_URL'),
+    publishableKey: dotenv.get('PUBLISHABLE_KEY'),
+  );
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // make status bar transparent
