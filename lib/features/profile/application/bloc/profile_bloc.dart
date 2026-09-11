@@ -171,7 +171,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       : "$userId/friends/$friendId.jpg";
       debugPrint("File path calculated: $filePath");
       debugPrint("🟢 Step 2: Converting base64 to bytes...");
-      final bytes = convertBase64ToUint8List(selectedImagePath);
+      final bytes = selectedImagePath.convertBase64ToUint8List;
       debugPrint("Bytes converted successfully. Total size: ${bytes.length} bytes");
       debugPrint("🟢 Step 3: Attempting Supabase storage upload...");
       await supabaseClient.storage
@@ -190,17 +190,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       debugPrint("❌ STACK TRACE: $stackTrace");
       return '';
     }
-  }
-
-  Uint8List convertBase64ToUint8List(String base64String) {
-    // Optional: Clean the Base64 string if it contains data URI headers (e.g., "data:image/png;base64,...")
-    String cleanedBase64 = base64String;
-    if (base64String.contains(',')) {
-      cleanedBase64 = base64String.split(',').last;
-    }
-    // Convert Base64 string to Uint8List
-    Uint8List bytes = base64Decode(cleanedBase64);
-    return bytes;
   }
 
   Future<void> _onDeleteUser(ProfileDeleteUserEvent event, Emitter emit) async {
@@ -258,7 +247,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       }
     }
-
     if (result && !await checkConnectivity.hasConnection) {
       emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       result = false;

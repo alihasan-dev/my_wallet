@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -90,6 +92,18 @@ extension StringExtension on String {
     } catch (e) {
       return kIsWeb ? 'Web' : 'Unknown';
     }
+  }
+
+  Uint8List get convertBase64ToUint8List {
+    // Optional: Clean the Base64 string if it contains data URI headers (e.g., "data:image/png;base64,...")
+    final base64String = this;
+    String cleanedBase64 = base64String;
+    if (base64String.contains(',')) {
+      cleanedBase64 = base64String.split(',').last;
+    }
+    // Convert Base64 string to Uint8List
+    Uint8List bytes = base64Decode(cleanedBase64);
+    return bytes;
   }
   
 }
