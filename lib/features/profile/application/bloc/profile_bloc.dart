@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
@@ -127,6 +126,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         if(!selectedImagePath.isBlank) {
           emit(ProfileLoadingState());
           updatedImageUrl = await supabaseStorageUpload();
+          updatedImageUrl = '$updatedImageUrl?v=${DateTime.now().millisecondsSinceEpoch}';
         }
         debugPrint("🎉 Firebase profile update initiated");
         await firebaseDocReference.update({
@@ -164,25 +164,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<String> supabaseStorageUpload() async {
-    // try {
-    //   final filePath = friendId.isBlank 
-    //   ? "$userId/profile_img.jpg"
-    //   : "$userId/friends/$friendId.jpg";
-    //   await supabaseClient.storage
-    //   .from('my_wallet_storage')
-    //   .uploadBinary(
-    //     filePath,
-    //     convertBase64ToUint8List(selectedImagePath),
-    //     fileOptions: FileOptions(upsert: true),
-    //   );
-    //   return supabaseClient.storage.from('my_wallet_storage').getPublicUrl(filePath);
-    // } catch (e) {
-    //   print("Supabase Storage Error: $e");
-    //   return '';
-    // }
     try {
       debugPrint("🟢 Step 1: Evaluating file path...");
-      final filePath = friendId.isEmpty // Using .isEmpty instead of .isBlank as it is standard in Dart
+      final filePath = friendId.isBlank
       ? "$userId/profile_img.jpg"
       : "$userId/friends/$friendId.jpg";
       debugPrint("File path calculated: $filePath");
@@ -201,9 +185,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final publicUrl = supabaseClient.storage.from('my_wallet_storage').getPublicUrl(filePath);
       debugPrint("Public URL generated: $publicUrl");
       return publicUrl;
-
     } catch (e, stackTrace) {
-      // 🔴 This will guarantee a full log with details on exactly where it crashed
       debugPrint("❌ ERROR CAUGHT: $e");
       debugPrint("❌ STACK TRACE: $stackTrace");
       return '';
@@ -216,7 +198,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (base64String.contains(',')) {
       cleanedBase64 = base64String.split(',').last;
     }
-
     // Convert Base64 string to Uint8List
     Uint8List bytes = base64Decode(cleanedBase64);
     return bytes;
