@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sample_formatter/sample_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/analytics/analytics_events.dart';
+import '../../../core/analytics/analytics_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
@@ -238,6 +240,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> launchPolicyUrl() async {
     final Uri uri = Uri.parse(AppStrings.webUrl);
     await launchUrl(uri);
+    AnalyticsService.instance.logEvent(
+      name: 'screen_view',
+      parameters: {'screen_name': 'app_web_view'},
+    );
   }
 
   void showAboutAppDialog({required BuildContext context}) {
@@ -302,6 +308,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
                     _settingBloc.add(SettingsUserDetailsEvent());
                     context.pop();
+                    AnalyticsService.instance.logEvent(
+                      name: AnalyticsEvents.settingsChanged,
+                      parameters: {'setting_name': 'theme'},
+                    );
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -371,6 +381,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onTap: () { 
                     context.read<MyAppBloc>().add(MyAppChangeLanguageEvent(locale: data.locale));
                     context.pop();
+                    AnalyticsService.instance.logEvent(
+                      name: AnalyticsEvents.settingsChanged,
+                      parameters: {'setting_name': 'language'},
+                    );
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(

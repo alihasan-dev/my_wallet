@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wallet/core/analytics/analytics_events.dart';
 import '../../../../constants/app_strings.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/preferences.dart';
 part 'settings_event.dart';
@@ -46,24 +48,52 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await _firebaseDocumentRef.update({
       'showUnverified': event.isVerified
     });
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.settingsChanged,
+      parameters: {
+        'setting_name': 'show_archived_user',
+        'value': event.isVerified ? 'true' : 'false',
+      },
+    );
   }
 
   Future<void> _onChangeTransactionDetails(SettingsOnChangeTransactionDetailsEvent event, Emitter emit) async {
     await _firebaseDocumentRef.update({
       'showTransactionDetails': event.isEnable
     });
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.settingsChanged,
+      parameters: {
+        'setting_name': 'show_transaction_details',
+        'value': event.isEnable ? 'true' : 'false',
+      },
+    );
   }
 
   Future<void> _onChangeTransactionDescription(SettingsOnChangeTransactionDescriptionEvent event, Emitter emit) async {
     await _firebaseDocumentRef.update({
       'transaction_description': event.isEnable
     });
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.settingsChanged,
+      parameters: {
+        'setting_name': 'show_transaction_description',
+        'value': event.isEnable ? 'true' : 'false',
+      },
+    );
   }
 
   Future<void> _onChangeEnableBiometric(SettingsOnChangeBiometricEvent event, Emitter emit) async {
     await _firebaseDocumentRef.update({
       'enableBiometric': event.enableBiometric
     });
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.settingsChanged,
+      parameters: {
+        'setting_name': 'enable_biometric',
+        'value': event.enableBiometric ? 'true' : 'false',
+      },
+    );
   }
 
   void _onUserDetails(SettingsUserDetailsEvent event, Emitter emit) {
@@ -72,6 +102,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   void _onLanguageChangeEvent(SettingsChangeThemeEvent event, Emitter emit){
     emit(SettingsThemeChangeState(themeMode: event.themeMode));
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.settingsChanged,
+      parameters: {'setting_name': 'language'},
+    );
   }
 
   @override

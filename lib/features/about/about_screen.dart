@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../utils/app_extension_method.dart';
 import '../../constants/app_theme.dart';
 import '../../constants/app_icons.dart';
@@ -88,6 +89,10 @@ class AboutScreen extends StatelessWidget {
     final Uri uri = Uri.parse(AppStrings.privacyPolicyUrl);
     if(await launchUrl(uri) && context.mounted) {
       context.pop();
+      AnalyticsService.instance.logEvent(
+        name: 'screen_view',
+        parameters: {'screen_name': 'about_us'},
+      );
     }
   }
   

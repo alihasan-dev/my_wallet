@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -99,6 +101,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   void _onBiometricAuthenticated(DashboardBiometricAuthEvent event, Emitter emit) {
     emit(DashboardBiometricAuthState(isAuthenticated: event.isAuthenticated));
+    ////capture biometric event
+    AnalyticsService.instance.logEvent(
+      name: 'biometric authentication',
+      parameters: {
+        'status': event.isAuthenticated ? 'success' : 'failed'
+      },
+    );
   }
 
   Future<void> _onPinnedContact(DashboardPinnedContactEvent event, Emitter emit) async {
@@ -221,6 +230,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         'pinned': false
       });
       await docRef.update({'user_id': docRef.id});
+      ////capture add friend event
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.friendAdded,
+        parameters: {
+          'friend_status': event.isArchived ? 'archived' : 'active'
+        },
+      );
     }
   }
 

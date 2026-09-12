@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
@@ -87,6 +89,12 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: false);
+          ///capture signup event
+          await AnalyticsService.instance.setUserId(user.uid);
+          await AnalyticsService.instance.logEvent(
+            name: AnalyticsEvents.signUp,
+            parameters: {'method': 'google'},
+          );
           emit(SignupSuccessState(title: AppStrings.success, message: AppStrings.registerMsg));
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
@@ -144,6 +152,12 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: false);
+          ///capture signup event
+          await AnalyticsService.instance.setUserId(user.uid);
+          await AnalyticsService.instance.logEvent(
+            name: AnalyticsEvents.signUp,
+            parameters: {'method': 'email'},
+          );
           emit(SignupSuccessState(title: AppStrings.success, message: AppStrings.registerMsg));
         } else {
           emit(SignupFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));

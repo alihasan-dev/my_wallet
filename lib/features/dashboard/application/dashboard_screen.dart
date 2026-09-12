@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_theme.dart';
+import '../../../core/analytics/analytics_events.dart';
+import '../../../core/analytics/analytics_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
@@ -173,6 +175,11 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
         }
         GoRouter.of(context).pushReplacement(AppRoutes.loginScreen);
       }
+      ///capture logout event
+      AnalyticsService.instance.clearUserId();
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.logout
+      );
     }
   }
 
@@ -234,7 +241,6 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
         isBiometricDialogOpen = true;
         data =  await _localAuthentication.authenticate(
           localizedReason: AppStrings.biometricMessage,
-          // options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
         );
         isBiometricDialogOpen = !data;
       } catch (e) {

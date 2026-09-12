@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
@@ -39,6 +41,11 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     if(await validation(event.email, emit)) {
       emit(ForgotPasswordLoadingState());
       await _firebaseAuth.sendPasswordResetEmail(email: event.email);
+      ///capture forgot password event
+      await AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.forgotPassword,
+        parameters: {'method': 'email'},
+      );
       emit(ForgotPasswordSuccessState(message: AppStrings.emailSentForgotPasswordMsg));
     }
   }

@@ -5,6 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -138,6 +140,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           'profile_img': updatedImageUrl.isBlank ? event.profileData['profile_img'] : updatedImageUrl
         });
         debugPrint("🎉 Firestore document successfully updated!");
+        ////capture update friend event
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.friendUpdated,
+          parameters: {
+            'profile_img': selectedImagePath.isBlank ? 'false' : 'true',
+            'friend_profile': friendId.isBlank ? 'false' : 'true'
+          }
+        );
       } catch (e, stackTrace) {
         debugPrint("❌ FIRESTORE UPDATE CRASHED!");
         debugPrint("Error details: $e");
@@ -197,6 +207,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoadingState());
       await firebaseDocReference.delete();
       emit(ProfileDeleteUserState(isDeleted: true));
+      ////capture delete friend event
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.friendDeleted
+      );
     } else {
       emit(ProfileDeleteUserState());
     }

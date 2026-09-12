@@ -13,6 +13,7 @@ import '../utils/firebase_options.dart';
 import '../features/my_app/presentation/bloc/my_app_bloc.dart';
 import '../utils/preferences.dart';
 import '../features/my_app/presentation/my_app.dart';
+import 'core/analytics/analytics_service.dart';
 
 Future<void> main() async {
   usePathUrlStrategy();
@@ -23,8 +24,10 @@ Future<void> main() async {
     await MediaStore.ensureInitialized();
   }
   await Supabase.initialize(
-    url: dotenv.get('PROJECT_URL'),
-    publishableKey: dotenv.get('PUBLISHABLE_KEY'),
+    url: "https://mopbzkfxhlhtebpcgdvw.supabase.co",
+    publishableKey: "sb_publishable_JtQtZ7okneKojY_ce8typw_aZpESb-K",
+    // url: dotenv.get('PROJECT_URL'),
+    // publishableKey: dotenv.get('PUBLISHABLE_KEY'),
   );
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -42,6 +45,10 @@ Future<void> main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+  await AnalyticsService.instance.logEvent(
+    name: 'app_started', 
+    parameters: {'platform': DefaultFirebaseOptions.getCurrentPlatform}
+  );
   await Preferences().init();
   runApp(
     MultiBlocProvider(

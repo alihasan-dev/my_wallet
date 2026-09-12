@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../constants/app_strings.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/custom_exception.dart';
@@ -89,6 +91,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               );
             }
           });
+          ///capture event
+          await AnalyticsService.instance.setUserId(user.uid);
+          await AnalyticsService.instance.logEvent(
+            name: AnalyticsEvents.login,
+            parameters: {'method': 'google'},
+          );
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
         } else {
           Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
@@ -113,6 +121,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             : AppStrings.sampleImg,
           );
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
+          ///capture event
+          await AnalyticsService.instance.setUserId(user.uid);
+          await AnalyticsService.instance.logEvent(
+            name: AnalyticsEvents.login,
+            parameters: {'method': 'google'},
+          );
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessNewUserMsg));
         }
       } else {
@@ -171,6 +185,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               );
             }
           });
+          ///capture log event
+          await AnalyticsService.instance.setUserId(user.uid);
+          await AnalyticsService.instance.logEvent(
+            name: AnalyticsEvents.login,
+            parameters: {'method': 'email'},
+          );
           emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
         } else {
           emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));

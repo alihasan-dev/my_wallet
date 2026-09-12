@@ -20,6 +20,19 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static String get getCurrentPlatform {
+    return kIsWeb
+    ? 'web'
+    : switch (defaultTargetPlatform) {
+      TargetPlatform.android => 'android',
+      TargetPlatform.iOS => 'ios',
+      TargetPlatform.macOS => 'macos',
+      TargetPlatform.windows => 'windows',
+      TargetPlatform.linux => 'linux',
+      TargetPlatform.fuchsia => 'fuchsia',
+    };
+  }
+
   // Generate this file with credentials with the FlutterFire CLI
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCTEJGQgG_CoNSfD8LaZpQj7uKFhFwYlY8',

@@ -11,6 +11,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../../constants/app_audio.dart';
 import '../../../../constants/app_images.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/transaction/domain/transaction_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -204,6 +206,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         if (isLastTransactionDeleting) {
           firebaseStoreInstance.update({'amount': 'deleted'});
         }
+        ///capture delete transaction event
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.transactionDeleted,
+          // parameters: {
+          //   'transaction_type': 'receive',
+          // },
+        );
       } catch (e) {
         log("Error deleting documents: $e");
       }
@@ -283,6 +292,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       totalBalance: balance, 
       isFilterEnable: true
     ));
+    ////capture transaction filter event
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.transactionFilterApplied
+    );
   }
 
   void _allTransactionData(TransactionAllEvent event, Emitter emit) {
@@ -421,6 +434,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             });
           }
         } catch (_) {log('FAILED:::while comparing last transaction date with current transaction date');}
+        ////capture tranaction event
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.transactionCreated,
+          parameters: {
+            'transaction_type': event.type.toLowerCase(),
+            'status': event.isActive ? 'active' : 'inactive',
+            'description': event.description.toLowerCase(),
+            'amount': event.amount
+          },
+        );
       } else {
         firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({
           'date': event.date, 
@@ -429,6 +452,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'isActive': event.isActive,
           'description': event.description
         });
+        ////capture tranaction event
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.transactionUpdated,
+          parameters: {
+            'transaction_type': event.type.toLowerCase(),
+            'status': event.isActive ? 'active' : 'inactive',
+            'description': event.description.toLowerCase(),
+            'amount': event.amount
+          },
+        );
       }
     }
   }
@@ -579,6 +612,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         });
         await audioPlayer.setAsset(AppAudio.downloadSound);
         audioPlayer.play();
+        ////capture transaction report event
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.reportGenerated,
+          parameters: {
+            'report_type': 'transaction_statement',
+            'format': 'pdf'
+          }
+        );
       } catch (e) {
         log('Export Error : $e');
         emit(TransactionExportPDFState(message: 'Something went wrong while exporting your transaction report'));
@@ -588,5 +629,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onTransactionImport(TransactionImportEvent event, Emitter emit) async {
     emit(TransactionImportState());
+    ////capture transaction import event
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.transactionImport,
+      parameters: {
+        'import_status': 'initiated',
+      }
+    );
   }
 }
