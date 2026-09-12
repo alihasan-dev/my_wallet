@@ -42,6 +42,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardArchieveContactEvent>(_onArchiveContact);
     on<DashboardBiometricAuthEvent>(_onBiometricAuthenticated);
     on<DashboardTransactionDetailsWindowCloseEvent>(_onCloseTransactionWindow);
+    on<DashboardArchieveUserEvent>(_onChangeArchive);
 
     _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event) {
       var userData = event.data() as Map;
@@ -216,7 +217,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         'phone': event.phone,
         'address': '',
         'profile_img': AppStrings.sampleImg,
-        'isVerified': true,
+        'isVerified': event.isArchived ? false : true,
         'pinned': false
       });
       await docRef.update({'user_id': docRef.id});
@@ -230,6 +231,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<bool> validation(Emitter emit, {required String name, String email = '', required String phone}) async {
     if(name.isBlank) {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
+      return false;
+    } else if (name.length < 3) {
+      emit(DashboardNameFieldState(nameMessage: 'Please provide a valid name'));
       return false;
     } else if (phone.isBlank) {
       emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyPhone));
@@ -273,6 +277,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     } else {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyString));
     }
+  }
+
+  void _onChangeArchive(DashboardArchieveUserEvent event, Emitter emit) async {
+    emit(DashboardArchieveUserState(isArchievedUser: event.isArchievedUser));
   }
 
 }

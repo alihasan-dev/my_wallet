@@ -11,6 +11,7 @@ import '../../../widgets/custom_button.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
+import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 
@@ -30,6 +31,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
   String errorEmail = '';
   String errorPhone = '';
   bool isFirstOpen = true;
+  bool isArchived = false;
   AppLocalizations? _localizations;
   //US Phone Number Format
   var maskFormatter = MaskTextInputFormatter(
@@ -74,10 +76,11 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSize.s8),
+                  const SizedBox(height: AppSize.s10),
                   TextField(
                     controller: nameTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
+                    maxLength: 50,
                     decoration: InputDecoration(
                       hintText: AppStrings.name,
                       errorText: errorName.isNotEmpty
@@ -98,9 +101,10 @@ class _AddUserDialogState extends State<AddUserDialog> {
                           : AppColors.black
                         ),
                       ),
+                      counterText: ''
                     ),
                   ),
-                  const SizedBox(height: AppSize.s12),
+                  const SizedBox(height: AppSize.s16),
                   TextField(
                     controller: phoneTextController,
                     onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: maskFormatter.unmaskText(value))),
@@ -128,13 +132,45 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     ),
                     inputFormatters: [maskFormatter],
                   ),
-                  const SizedBox(height: AppSize.s15),
+                  const SizedBox(height: AppSize.s16),
+                  Row(
+                    spacing: AppSize.s8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomCheckBoxWidget(
+                        value: isArchived, 
+                        onChange: (value) {
+                          context.read<DashboardBloc>().add(DashboardArchieveUserEvent(
+                            isArchievedUser: value ?? false
+                          ));
+                        }
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: AppSize.s2,
+                          children: [
+                            CustomText(title: 'Create as archived user'),
+                            CustomText(
+                              title: 'Archived users are hidden from the main list. Restore them anytime by long-pressing them and tapping "Unarchive".',
+                              textStyle: getLightStyle(
+                                fontSize: 11,
+                                color: AppColors.grey
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSize.s18),
                   CustomButton(
                     title: _localizations!.add, 
                     onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
                       name: nameTextController.text, 
                       email: emailTextController.text,
-                      phone: maskFormatter.unmaskText(phoneTextController.text)
+                      phone: maskFormatter.unmaskText(phoneTextController.text),
+                      isArchived: isArchived
                     )),
                     titleSize: AppSize.s15,
                   ),
@@ -156,6 +192,9 @@ class _AddUserDialogState extends State<AddUserDialog> {
                 break;
               case DashboardNameFieldState _:
                 errorName = state.nameMessage;
+                break;
+              case DashboardArchieveUserState _:
+                isArchived = state.isArchievedUser;
                 break;
               default:
             }

@@ -23,10 +23,19 @@ class DashboardPhoneChangeEvent extends DashboardEvent {
 }
 
 class DashboardAddUserEvent extends DashboardEvent {
+
   String name;
   String email;
   String phone;
-  DashboardAddUserEvent({this.name = '', this.email = '', this.phone = ''});
+  bool isArchived;
+
+  DashboardAddUserEvent({
+    this.name = '', 
+    this.email = '', 
+    this.phone = '',
+    this.isArchived = false
+  });
+  
 }
 
 class DashboardDeleteUserEvent extends DashboardEvent {
@@ -75,3 +84,9 @@ class DashboardBiometricAuthEvent extends DashboardEvent {
 }
 
 class DashboardTransactionDetailsWindowCloseEvent extends DashboardEvent {}
+
+class DashboardArchieveUserEvent extends DashboardEvent {
+  bool isArchievedUser;
+
+  DashboardArchieveUserEvent({this.isArchievedUser = false});
+}

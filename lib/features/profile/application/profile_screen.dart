@@ -53,6 +53,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   String errorPhone = '';
   String errorAddress = '';
   bool isFetchProfileData = false;
+  bool isArchived = true;
   late LocationService _locationService;
 
   //US Phone Number Format
@@ -140,6 +141,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   nameTextController.text = profileData['name'] ?? '';
                   phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
                   addressTextController.text = profileData['address'] ?? '';
+                  isArchived = profileData['isVerified'] ?? true;
                   imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
                   if (widget.userId.isBlank) {
                     Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
@@ -215,6 +217,11 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                     child: CustomImageWidget(
                       imageUrl: imageUrl,
                       imageSize: 85,
+                      padding: 1.5,
+                      borderWidth: 1.5,
+                      borderColor: isArchived
+                      ? AppColors.primaryColor
+                      : AppColors.orange
                     ),
                   ),
                   Positioned(

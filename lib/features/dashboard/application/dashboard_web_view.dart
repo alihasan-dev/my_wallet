@@ -235,7 +235,10 @@ class DashboardWebView extends StatelessWidget {
                                         strokeWidth: AppSize.s1,
                                         padding: 1.5,
                                         borderWidth: 1.5,
-                                        isSelected: data.isSelected
+                                        isSelected: data.isSelected,
+                                        borderColor: data.isUserVerified
+                                        ? AppColors.primaryColor
+                                        : AppColors.orange
                                       ),
                                       const SizedBox(width: AppSize.s10),
                                       Column(
@@ -251,23 +254,23 @@ class DashboardWebView extends StatelessWidget {
                                                 duration: MyAppTheme.animationDuration,
                                                 child: !data.isUserVerified
                                                 ? Container(
-                                                  margin: const EdgeInsets.only(left: AppSize.s8),
-                                                  padding: const EdgeInsets.symmetric(
-                                                    vertical: 1.8,
-                                                    horizontal: AppSize.s4
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.orange.withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(AppSize.s4)
-                                                  ),
-                                                  child: CustomText(
-                                                    title: localizations.archive,
-                                                    textStyle: getRegularStyle(
-                                                      color: AppColors.orange,
-                                                      fontSize: 11
+                                                    margin: const EdgeInsets.only(left: AppSize.s8),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 1.8,
+                                                      horizontal: AppSize.s4
                                                     ),
-                                                  ),
-                                                )
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.orange.withValues(alpha: 0.1),
+                                                      borderRadius: BorderRadius.circular(AppSize.s4)
+                                                    ),
+                                                    child: CustomText(
+                                                      title: localizations.archive,
+                                                      textStyle: getRegularStyle(
+                                                        color: AppColors.orange,
+                                                        fontSize: 11
+                                                      ),
+                                                    ),
+                                                  )
                                                 : const SizedBox.shrink()
                                               ),
                                             ],

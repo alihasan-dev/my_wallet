@@ -146,9 +146,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                           imageSize: AppSize.s40,
                                           circularPadding: AppSize.s5,
                                           strokeWidth: AppSize.s1,
-                                          padding: 1.2,
-                                          borderWidth: 0,
+                                          padding: 1.5,
+                                          borderWidth: 1.5,
                                           fromProfile: false,
+                                          borderColor: widget.userModel?.isUserVerified ?? true
+                                          ? AppColors.primaryColor
+                                          : AppColors.orange
                                         ),
                                       ),
                                     ],
@@ -568,6 +571,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                               title: subData.description.isBlank
                                               ? '-'
                                               : subData.description,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               textStyle: TextStyle(
                                                 color: !subData.isActive
                                                 ? AppColors.grey
