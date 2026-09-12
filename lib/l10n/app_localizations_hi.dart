@@ -298,4 +298,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get deleted => 'मिटा दिया गया';
+
+  @override
+  String get create_archived_user_label =>
+      'संग्रहीत (आर्काइव) उपयोगकर्ता के रूप में बनाएं';
+
+  @override
+  String get archived_user_hint =>
+      'संग्रहीत (आर्काइव) उपयोगकर्ता मुख्य सूची से छिपे रहते हैं (यदि सेटिंग्स में \'संग्रहीत उपयोगकर्ता दिखाएं\' विकल्प बंद है)। उन्हें कभी भी वापस लाने के लिए उन पर लॉन्ग-प्रेस करें और \'अनआर्काइव\' पर टैप करें।';
 }

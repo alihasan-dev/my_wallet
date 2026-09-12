@@ -102,5 +102,7 @@
   "noTransactionDetailsFound": "No transaction details found",
   "pin": "Pin",
   "archive": "Archive",
-  "deleted": "Deleted"
+  "deleted": "Deleted",
+  "create_archived_user_label": "Create as archived user",
+  "archived_user_hint": "Archived users are hidden from the main list (if the 'Show Archived Users' option is disabled in settings). Restore them anytime by long-pressing them and tapping 'Unarchive'."
 }

@@ -298,4 +298,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleted => 'Deleted';
+
+  @override
+  String get create_archived_user_label => 'Create as archived user';
+
+  @override
+  String get archived_user_hint =>
+      'Archived users are hidden from the main list (if the \'Show Archived Users\' option is disabled in settings). Restore them anytime by long-pressing them and tapping \'Unarchive\'.';
 }

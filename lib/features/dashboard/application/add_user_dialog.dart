@@ -150,9 +150,9 @@ class _AddUserDialogState extends State<AddUserDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: AppSize.s2,
                           children: [
-                            CustomText(title: 'Create as archived user'),
+                            CustomText(title: _localizations!.create_archived_user_label),
                             CustomText(
-                              title: 'Archived users are hidden from the main list. Restore them anytime by long-pressing them and tapping "Unarchive".',
+                              title: _localizations!.archived_user_hint,
                               textStyle: getLightStyle(
                                 fontSize: 11,
                                 color: AppColors.grey

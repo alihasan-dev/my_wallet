@@ -661,6 +661,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleted'**
   String get deleted;
+
+  /// No description provided for @create_archived_user_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Create as archived user'**
+  String get create_archived_user_label;
+
+  /// No description provided for @archived_user_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived users are hidden from the main list (if the \'Show Archived Users\' option is disabled in settings). Restore them anytime by long-pressing them and tapping \'Unarchive\'.'**
+  String get archived_user_hint;
 }
 
 class _AppLocalizationsDelegate
