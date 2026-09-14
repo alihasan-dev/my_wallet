@@ -20,8 +20,8 @@ import '../../../utils/preferences.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
-import 'package:my_wallet/widgets/mobile_google_sign_in_button.dart'
-  if(dart.library.html) 'package:my_wallet/widgets/web_google_sign_in_button.dart';
+import 'package:my_wallet/widgets/mobile_google_sign_in_button.dart';
+  // if(dart.library.html) 'package:my_wallet/widgets/web_google_sign_in_button.dart';
 part 'login_mobile_view.dart';
 part 'login_web_view.dart';
 

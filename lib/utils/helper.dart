@@ -21,7 +21,6 @@ enum ScreenType {
   tablet,
   web
 }
-
 mixin Helper {
 
   bool isLoadingVisible = false;
@@ -42,7 +41,6 @@ mixin Helper {
   }) {
     final snackBar = SnackBar(
       behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 3),
       padding: EdgeInsets.zero,
       elevation: 0,
       backgroundColor: Colors.white,

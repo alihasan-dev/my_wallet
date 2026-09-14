@@ -82,7 +82,7 @@ class SignupWebView extends StatelessWidget {
                 ),
               ),
             ),
-            const GoogleSigninCustomButton(key: Key(AppStrings.continueWithGoogle)),
+            GoogleSigninCustomButton(onTap: () => signupBloc.add(SignupWithGoogleEvent())),
             const SizedBox(height: AppSize.s20),
             Row(
               mainAxisSize: MainAxisSize.min,
