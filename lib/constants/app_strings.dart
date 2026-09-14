@@ -105,6 +105,7 @@ class AppStrings {
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
   static const String invalidPhone = "Please provide valid phone number";
   static const String imageSizeMsg = "Image size should not be more than 2MB";
+  static const String fileSizeMsg = "File size should not be more than 2MB";
   static const String userDeletedMsg = "User deleted successfully";
   static const String continueWithGoogle = "Continue with Google";
   static const String termAndPolilcy = "  Terms & Privacy Policy";

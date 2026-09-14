@@ -240,12 +240,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           IconButton(
                             tooltip: 'Import Report',
                             onPressed: () {
-                              // _transactionBloc.add(TransactionImportEvent());
-                              showComingSoonDialog(
-                                context: context,
-                                title: "Import Transactions Coming Soon",
-                                description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
-                              );
+                              _transactionBloc.add(TransactionImportEvent());
+                              // showComingSoonDialog(
+                              //   context: context,
+                              //   title: "Import Transactions Coming Soon",
+                              //   description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
+                              // );
                             }, 
                             icon: const Icon(Icons.upload, color: AppColors.white)
                           ),
@@ -261,7 +261,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           Badge(
                             backgroundColor: AppColors.red,
                             isLabelVisible: isFilterEnable,
-                            alignment: const Alignment(0.4,- 0.5),
+                            alignment: const Alignment(0.4, -0.5),
                             smallSize: AppSize.s10,
                             child: IconButton(
                               tooltip: _localizations!.advanceFilter,
@@ -688,7 +688,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 2,
+                    flex: Preferences.getBool(key: AppStrings.prefShowTransactionDescription)
+                    ? 3
+                    : 2,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSize.s10, 
