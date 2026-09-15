@@ -1,16 +1,13 @@
-import 'dart:convert';
-import 'package:csv/csv.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:excel_plus/excel_plus.dart' hide TextSpan;
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_wallet/features/transaction/application/transaction_import_bloc/transaction_import_bloc.dart';
 import 'package:my_wallet/features/transaction/domain/transaction_import_model.dart';
+import 'package:my_wallet/widgets/custom_button.dart';
+import 'package:my_wallet/widgets/custom_checkbox_widget.dart';
 import '../../../constants/app_icons.dart';
-import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_style.dart';
@@ -19,8 +16,6 @@ import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/horizontal_dashline.dart';
-import '../../../../utils/mobile_download.dart'
-  if(dart.library.html) '../../../../utils/web_download.dart';
 
 class TransactionImportDialog extends StatefulWidget {
 
@@ -44,14 +39,16 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
   int currentIndex = 0;
   final reportHeader = {'date','type','status', 'amount'};
   List<TransactionImportModel> importTransactionList = [];
+  bool finalCheckValue = false;
+  int validRow = 0;
+  int invalidRow = 0;
 
   @override
   void initState() {
     importStatusFlagList = [
-      ImportStatus(label: 'Upload', isCompleted: false),
+      ImportStatus(label: 'Upload'),
       ImportStatus(label: 'Review'),
       ImportStatus(label: 'Clean'),
-      // ImportStatus(label: 'Map'),
       ImportStatus(label: 'Confirm')
     ];
     importTransactionList.clear();
@@ -147,7 +144,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                                           : AppColors.black
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ),
                                   Text(
                                     item.label,
@@ -175,86 +172,25 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                                 ],
                               );
                             }
-                          )
+                          ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s20),
-                  DottedBorder(
-                    options: RoundedRectDottedBorderOptions(
-                      color: AppColors.primaryColor,
-                      strokeWidth: 1.4,
-                      dashPattern: const [10, 3], 
-                      radius: const Radius.circular(12),
-                    ),
-                    child: Container(
-                      height: 240,
-                      decoration: BoxDecoration(
-                        color: AppColors.grey.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12)
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 12,
-                          children: [
-                            Icon(
-                              Icons.upload,
-                              size: 28,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: 'Drag and drop or '
-                                  ),
-                                  TextSpan(
-                                    text: 'select files',
-                                    style: TextStyle(
-                                      color: AppColors.primaryColor
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                    ..onTap = () async{
-                                      await pickFile(context.read<TransactionImportBloc>());
-                                      if (importTransactionList.isNotEmpty && context.mounted) {
-                    
-                                        context.read<TransactionImportBloc>().add(TransactionImportInitiateEvent(
-                                          transactionImportList: importTransactionList
-                                        ));
-                                      }
-                                    }
-                                  )
-                                ]
-                              ),
-                            ),
-                            Text(
-                              'Upload your transaction file in CSV or Excel (.xlsx) format.\nThe maximum file size allowed is 2 MB',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 11
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () => context.read<TransactionImportBloc>().add(TransactionImportDownloadTemplateEvent()),
-                              child: Text(
-                                'Download sample template',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  AnimatedSize(
+                    duration: Duration(milliseconds: 250),
+                    child: currentIndex == 0
+                    ? _uploadStep(context)
+                    : currentIndex <= 2
+                      ? _reviewAndCleanStep(context, currentIndex)
+                      : importStatusFlagList[currentIndex].isCompleted
+                        ? _uploadSuccess(context, transactionCount: validRow)
+                        : _confirmStep(
+                            context,
+                            validRow: validRow,
+                            invalidRow: invalidRow
+                          )
                   ),
                   SizedBox(height: 14),
                   Padding(
@@ -267,13 +203,13 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Transform.translate(
-                              offset: Offset(0, 5),
-                              child: Icon(Icons.circle, size: 7, color: AppColors.grey)),
+                              offset: Offset(0, 6),
+                              child: Icon(Icons.circle, size: 6, color: AppColors.grey)),
                             Expanded(
                               child: Text(
                                 "Avoid re-uploading a file you've already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.",
                                 style: TextStyle(
-                                  fontSize: 12
+                                  fontSize: 11
                                 ),
                               ),
                             ),
@@ -285,13 +221,13 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Transform.translate(
-                              offset: Offset(0, 5),
-                              child: Icon(Icons.circle, size: 7, color: AppColors.grey)),
+                              offset: Offset(0, 6),
+                              child: Icon(Icons.circle, size: 6, color: AppColors.grey)),
                             Expanded(
                               child: Text(
                                 "Your file must match the sample template format, or it will be rejected.",
                                 style: TextStyle(
-                                  fontSize: 12
+                                  fontSize: 11
                                 ),
                               ),
                             ),
@@ -308,6 +244,23 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               switch (state) {
                 case TransactionImportStatusUpdateState _:
                   currentIndex = state.currentImportIndex;
+                  if (state.isCompleted) {
+                    importStatusFlagList[state.completeIndex].isCompleted = true;
+                  }
+                  validRow = state.validCount;
+                  invalidRow = state.invalidCount;
+                  break;
+                case TransactionImportDownloadTemplateState _:
+                  showSnackBar(
+                    context: context, 
+                    title: state.message,
+                    color: state.status
+                    ? AppColors.green
+                    : null
+                  );
+                  break;
+                case TransactionImportCheckedState _:
+                  finalCheckValue = state.value;
                   break;
                 default:
               }
@@ -317,201 +270,287 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
       ),
     );
   }
-
-
-  Future<void> pickFile(TransactionImportBloc transactionImportBloc) async {
-    try {
-      final file = await FilePicker.pickFile(
-        type: FileType.custom,
-        allowedExtensions: ['csv', 'xlsx', 'xls']
-      );
-      if (file == null) return;
-      final fileLength = await file.length();
-      if(fileLength > 2000000 && context.mounted) {
-        showSnackBar(context: context, title: AppStrings.error, message: AppStrings.fileSizeMsg);
-        return;
-      }
-      // final fileName = file.name;
-      final fileExtension = file.extension;
-      final fileBytes = await file.readAsBytes();
-      if (fileExtension == 'xlsx' || fileExtension == 'xls') {
-        final excel = Excel.decodeBytes(fileBytes);
-        final table = excel.tables[excel.tables.keys.first];
-        if (table != null) {
-          for (var row in table.rows) {
-            print(row.map((cell) => cell?.value).toList());
-          }
-        }
-      }
-      if (fileExtension == 'csv') {
-        importStatusFlagList[currentIndex].isCompleted = true;
-        transactionImportBloc.add(TransactionImportStateUpdateEvent(currentImportIndex: currentIndex+=1));
-        final csvString = utf8.decode(fileBytes);
-        final csvConverterRowList = csv.decode(csvString);
-        if (csvConverterRowList.isEmpty) return;
-        final header = csvConverterRowList.first.map((item) => item.toString().toLowerCase()).toSet();
-        if (csvConverterRowList.length < 6) {
-          debugPrint("Imported file should be min of 5 data points");
-          return;
-        }
-        if (header.length < 3) {
-          debugPrint("Imported file is not proper");
-          return;
-        }
-        if (!header.contains('date') || !header.contains('type') || !header.contains('amount')) {
-          debugPrint('File header is not proper');
-          return;
-        }
-        await Future.delayed(const Duration(seconds: 1));
-        importStatusFlagList[currentIndex].isCompleted = true;
-        transactionImportBloc.add(TransactionImportStateUpdateEvent(currentImportIndex: currentIndex+=1));
-        int dateCellIndex = 0;
-        int descriptionCellIndex = 0;
-        int typeCellIndex = 0;
-        int statusCellIndex = 0;
-        int amountCellIndex = 0;
-        importTransactionList.clear();
-        for (var i = 0; i < csvConverterRowList.length; i++) {
-          final row = csvConverterRowList[i];
-          DateTime? date;
-          String? type;
-          String? amount;
-          String? description;
-          bool? status;
-          for (var j = 0; j < row.length; j++) {
-            String columnItem = row[j];
-            if (i == 0) {
-              columnItem = columnItem.toString().toLowerCase();
-              switch (columnItem) {
-                case 'date':
-                  dateCellIndex = j;
-                  break;
-                case 'type':
-                  typeCellIndex = j;
-                  break;
-                case 'amount':
-                  amountCellIndex = j;
-                  break;
-                case 'description':
-                  descriptionCellIndex = j;
-                  break;
-                case 'status':
-                  statusCellIndex = j;
-                  break;
-              }
-            } else {
-              if (j == dateCellIndex) {
-                date = parseFlexibleDate(columnItem);
-              }
-              if (j == descriptionCellIndex) {
-                description = parseFlexibleDescription(columnItem);
-              }
-              if (j == typeCellIndex) {
-                type = parseFlexibleType(columnItem);
-              }
-              if (j == statusCellIndex) {
-                status = parseFlexibleStatus(columnItem);
-              }
-              if (j == amountCellIndex) {
-                amount = _parseFlexibleAmount(columnItem);
-              }
-            }
-          }
-          if (amount == null || type == null || date == null) continue;
-          final transactionImportModel = TransactionImportModel(
-            amount: amount,
-            date: date,
-            type: type,
-            description: description ?? '',
-            isActive: status ?? true
-          );
-          importTransactionList.add(transactionImportModel);
-        }
-        await Future.delayed(const Duration(seconds: 1));
-        importStatusFlagList[currentIndex].isCompleted = true;
-        transactionImportBloc.add(TransactionImportStateUpdateEvent(currentImportIndex: currentIndex+=1));
-      }
-      debugPrint("checking");
-      debugPrint('file picked successfully');
-    } catch (e) {
-      debugPrint('something went wrong');
-    }
+  
+  Widget _reviewAndCleanStep(BuildContext context, int index) {
+    return Container(
+      height: 240,
+      decoration: BoxDecoration(
+        color: AppColors.grey.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12)
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 14,
+              children: [
+                SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                ),
+                Text(
+                  index == 1
+                  ? "Reading your file..."
+                  : "Checking your data...",
+                  style: TextStyle(
+                    fontSize: 13
+                  ),
+                )
+              ],
+            ),
+            if (index == 2) ...[
+              SizedBox(height: 10),
+              Text(
+                "We're checking your data for\n✓ Invalid dates\n✓ Invalid transaction types\n✓ Invalid amounts\n✓ Missing required fields\n✓ Duplicate transactions\n✓ Formatting inconsistencies",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.grey
+                ),
+              )
+            ]
+          ],
+        ),
+      ),
+    );
   }
 
-  String parseFlexibleDescription(String? input) {
-    final description = (input ?? '').trim();
-    if (description.isEmpty) return '-';
-    if (description.length > 100) {
-      return description.substring(0, 100);
-    }
-    return description;
+  Widget _confirmStep(BuildContext context, {
+    int validRow = 0,
+    int invalidRow = 0
+  }) {
+    return Container(
+      width: double.maxFinite,
+      padding: EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.grey.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Import summary",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600
+            ),
+          ),
+          SizedBox(height: 8),
+          Row(
+            spacing: 4,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform.translate(
+                offset: Offset(0, 6),
+                child: Icon(Icons.circle, size: 5, color: AppColors.grey)),
+              Expanded(
+                child: Text(
+                  "$validRow transactions will be imported",
+                  style: TextStyle(
+                    fontSize: 12
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 4),
+          Row(
+            spacing: 4,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform.translate(
+                offset: Offset(0, 6),
+                child: Icon(Icons.circle, size: 5, color: AppColors.grey)),
+              Expanded(
+                child: Text(
+                  "$invalidRow invalid rows excluded",
+                  style: TextStyle(
+                    fontSize: 12
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 18),
+          Row(
+            spacing: 4,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform.translate(
+                offset: Offset(0, 3),
+                child: Icon(Icons.warning, size: 12, color: AppColors.amber)),
+              Expanded(
+                child: Text(
+                  "This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward.",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.amber
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 15),
+          Row(
+            spacing: 6,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform.scale(
+                scale: 0.75,
+                child: CustomCheckBoxWidget(
+                  value: finalCheckValue, 
+                  onChange: (value) => context.read<TransactionImportBloc>().add(
+                    TransactionImportCheckedEvent(value: value ?? false)
+                  )
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  "I have reviewed the data and want to import the validated transactions into MyWallet.",
+                  style: TextStyle(
+                    fontSize: 12
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 15),
+          CustomButton(
+            onTap: finalCheckValue
+            ? () => context.read<TransactionImportBloc>().add(TransactionImportUploadEvent())
+            : null,
+            expanded: false,
+            verticalPadding: 10,
+            horizontalPadding: 15,
+            title: 'Import $validRow Transactions',
+            titleSize: 12,
+          )
+        ],
+      )
+    );
   }
 
-  bool parseFlexibleStatus(String? input) {
-    final status = (input ?? '').toLowerCase();
-    if ({'active', 'true','false','inactive'}.contains(status)) {
-      return status == 'active' || status == 'true'
-      ? true
-      : false;
-    }
-    return true;
+  Widget _uploadSuccess(BuildContext context, {int transactionCount = 0}) {
+    return Container(
+      width: double.maxFinite,
+      padding: EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 14
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.grey.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.check_circle, color: AppColors.green, size: 40),
+          SizedBox(height: 8),
+          Text(
+            "Import completed",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "$transactionCount transactions imported successfully",
+            style: TextStyle(
+              fontSize: 12
+            ),
+          ),
+          SizedBox(height: 12),
+          CustomButton(
+            onTap: () => context.pop(),
+            expanded: false,
+            verticalPadding: 8,
+            horizontalPadding: 15,
+            title: 'Done',
+            titleSize: 13,
+          )
+        ],
+      )
+    );
   }
 
-  String? _parseFlexibleAmount(String? input) {
-    if (input == null || input.trim().isEmpty) return null;
-    final value = double.tryParse(input.trim());
-    if (value == null) return null;
-    return value.ceil().toString();
+  Widget _uploadStep(BuildContext context) {
+    return DottedBorder(
+      options: RoundedRectDottedBorderOptions(
+        color: AppColors.primaryColor,
+        strokeWidth: 1.2,
+        dashPattern: const [10, 3], 
+        radius: const Radius.circular(12),
+      ),
+      child: Container(
+        height: 240,
+        decoration: BoxDecoration(
+          color: AppColors.grey.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12)
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 12,
+            children: [
+              Icon(
+                Icons.upload,
+                size: 28,
+              ),
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Drag and drop or '
+                    ),
+                    TextSpan(
+                      text: 'select files',
+                      style: TextStyle(
+                        color: AppColors.primaryColor
+                      ),
+                      recognizer: TapGestureRecognizer()
+                      ..onTap = () => context.read<TransactionImportBloc>().add(TransactionImportInitiateEvent())
+                    )
+                  ]
+                ),
+              ),
+              Text(
+                'Upload your transaction file in CSV or Excel (.xlsx) format.\nThe maximum file size allowed is 2 MB',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11
+                ),
+              ),
+              GestureDetector(
+                onTap: () => context.read<TransactionImportBloc>().add(TransactionImportDownloadTemplateEvent()),
+                child: Text(
+                  'Download sample template',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
-
-  String? parseFlexibleType(String? input) {
-    final type = (input ?? '').toLowerCase();
-    if (type == AppStrings.transfer.toLowerCase() || type == AppStrings.receive.toLowerCase()) {
-      return type == AppStrings.transfer.toLowerCase() ? AppStrings.transfer : AppStrings.receive;
-    }
-    return null;
-  }
-
-  DateTime? parseFlexibleDate(String? input) {
-    if (input == null || input.trim().isEmpty) return null;
-    final value = input.trim();
-    // Try YYYY-MM-DD first (unambiguous, ISO format)
-    final isoMatch = RegExp(r'^(\d{4})-(\d{1,2})-(\d{1,2})$').firstMatch(value);
-    if (isoMatch != null) {
-      final year = int.parse(isoMatch.group(1)!);
-      final month = int.parse(isoMatch.group(2)!);
-      final day = int.parse(isoMatch.group(3)!);
-      return _tryBuildDate(year, month, day);
-    }
-    // Try DD-MM-YYYY
-    final dmyMatch = RegExp(r'^(\d{1,2})-(\d{1,2})-(\d{4})$').firstMatch(value);
-    if (dmyMatch != null) {
-      final day = int.parse(dmyMatch.group(1)!);
-      final month = int.parse(dmyMatch.group(2)!);
-      final year = int.parse(dmyMatch.group(3)!);
-      return _tryBuildDate(year, month, day);
-    }
-    // Try DD/MM/YYYY (slash variant, mentioned in your earlier spec)
-    final dmySlashMatch = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})$').firstMatch(value);
-    if (dmySlashMatch != null) {
-      final day = int.parse(dmySlashMatch.group(1)!);
-      final month = int.parse(dmySlashMatch.group(2)!);
-      final year = int.parse(dmySlashMatch.group(3)!);
-      return _tryBuildDate(year, month, day);
-    }
-    return null; // unrecognized format
-  }
-
-  /// Validates the components before constructing DateTime,
-  /// since DateTime(2026, 13, 45) would otherwise silently roll over
-  /// into an unexpected date instead of failing.
-  DateTime? _tryBuildDate(int year, int month, int day) {
-    if (month < 1 || month > 12) return null;
-    final daysInMonth = DateTime(year, month + 1, 0).day;
-    if (day < 1 || day > daysInMonth) return null;
-    return DateTime(year, month, day);
-  }
-
 
 }
 

@@ -6,7 +6,19 @@ class TransactionImportInitialState extends TransactionImportState {}
 
 class TransactionImportStatusUpdateState extends TransactionImportState {
   int currentImportIndex;
-  TransactionImportStatusUpdateState({this.currentImportIndex = 0});
+  int completeIndex;
+  bool isCompleted;
+  String message;
+  int validCount;
+  int invalidCount;
+  TransactionImportStatusUpdateState({
+    this.currentImportIndex = 0,
+    this.completeIndex = 0,
+    this.isCompleted = false,
+    this.message = '',
+    this.validCount = 0,
+    this.invalidCount = 0
+  });
 }
 
 class TransactionImportDownloadTemplateState extends TransactionImportState {
@@ -16,4 +28,27 @@ class TransactionImportDownloadTemplateState extends TransactionImportState {
     this.status = false,
     this.message = ''
   });
+}
+
+class TransactionImportPickFileState extends TransactionImportState {
+  bool status;
+  String message;
+  TransactionImportPickFileState({
+    this.status = false,
+    this.message = ''
+  });
+} 
+
+class TransactionImportInitiateState extends TransactionImportState {
+  bool status;
+  String message;
+  TransactionImportInitiateState({
+    this.status = false,
+    this.message = ''
+  });
+}
+
+class TransactionImportCheckedState extends TransactionImportState {
+  bool value;
+  TransactionImportCheckedState({this.value = false});
 }

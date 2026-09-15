@@ -7,9 +7,16 @@ class TransactionImportStateUpdateEvent extends TransactionImportEvent {
   TransactionImportStateUpdateEvent({this.currentImportIndex = 0});
 }
 
-class TransactionImportInitiateEvent extends TransactionImportEvent {
-  List<TransactionImportModel> transactionImportList;
-  TransactionImportInitiateEvent({this.transactionImportList = const []});
-}
+class TransactionImportUploadEvent extends TransactionImportEvent {}
 
 class TransactionImportDownloadTemplateEvent extends TransactionImportEvent {}
+
+class TransactionImportInitiateEvent extends TransactionImportEvent {
+  final PlatformFile? pickedFile;
+  TransactionImportInitiateEvent({this.pickedFile});
+}
+
+class TransactionImportCheckedEvent extends TransactionImportEvent {
+  bool value;
+  TransactionImportCheckedEvent({this.value = false});
+}

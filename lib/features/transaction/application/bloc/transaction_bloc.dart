@@ -120,6 +120,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       for (var item in event.docs) {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
+          if (mapData['amount'] == null || mapData['date'] == null ||  mapData['type'] == null) continue;
           originalTransactionResultList.add(TransactionModel(
             id: item.id,
             date: DateTime.fromMillisecondsSinceEpoch(mapData['date'].millisecondsSinceEpoch),

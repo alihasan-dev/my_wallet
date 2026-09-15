@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:media_store_plus/media_store_plus.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -22,14 +24,23 @@ import 'package:permission_handler/permission_handler.dart';
 // }
 
 Future<void> downloadFile({
-  required List<int> bytes,
+  List<int>? bytes,
   required String downloadName,
+  String? networkUrl
 }) async {
+  // --- Download file from network ---
+  if (!(networkUrl ?? '').isBlank) {
+    bytes = await downloadNetworkFile(networkUrl!);
+  }
+  ///check for bytes availability
+  if ((bytes ?? []).isEmpty) {
+    throw UnsupportedError('Unsupported file');
+  }
   // --- iOS: save to app's Documents directory ---
   if (Platform.isIOS) {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$downloadName');
-    await file.writeAsBytes(bytes);
+    await file.writeAsBytes(bytes!);
     return;
   }
 
@@ -42,7 +53,7 @@ Future<void> downloadFile({
       final mediaStore = MediaStore(); // ensureInitialized() already done in main()
       final tempDir = await getTemporaryDirectory();
       final tempFile = File('${tempDir.path}/$downloadName');
-      await tempFile.writeAsBytes(bytes);
+      await tempFile.writeAsBytes(bytes!);
 
       final result = await mediaStore.saveFile(
         tempFilePath: tempFile.path,
@@ -65,7 +76,7 @@ Future<void> downloadFile({
       }
 
       final file = File('/storage/emulated/0/Download/$downloadName');
-      await file.writeAsBytes(bytes);
+      await file.writeAsBytes(bytes!);
     }
     return;
   }
@@ -82,16 +93,15 @@ Future<bool> _requestLegacyStoragePermission() async {
   return requestStatus.isGranted;
 }
 
-// Future<bool> _checkStoragePermission() async {
-//   final android = await DeviceInfoPlugin().androidInfo;
-
-//   if (android.version.sdkInt >= 33) {
-//     return true;
-//   }
-
-//   final status = await Permission.storage.status;
-//   if (status.isGranted) return true;
-
-//   final requestStatus = await Permission.storage.request();
-//   return requestStatus.isGranted;
-// }
+Future<List<int>?> downloadNetworkFile(String fileUrl) async {
+  try {
+    final dio = Dio();
+    final response = await dio.get<List<int>>(
+      fileUrl,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return response.data;
+  } catch (e) {
+    return null;
+  }
+}

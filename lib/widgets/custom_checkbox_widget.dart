@@ -24,6 +24,7 @@ class CustomCheckBoxWidget extends StatelessWidget {
         activeColor: AppColors.primaryColor,
         checkColor: AppColors.white,
         value: value, 
+        visualDensity: VisualDensity.compact,
         onChanged: onChange
       ),
     );
