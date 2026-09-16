@@ -3,11 +3,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_wallet/features/transaction/application/transaction_import_bloc/transaction_import_bloc.dart';
-import 'package:my_wallet/features/transaction/domain/transaction_import_model.dart';
-import 'package:my_wallet/utils/app_extension_method.dart';
-import 'package:my_wallet/widgets/custom_button.dart';
-import 'package:my_wallet/widgets/custom_checkbox_widget.dart';
+import '../../transaction/application/transaction_import_bloc/transaction_import_bloc.dart';
+import '../../transaction/domain/transaction_import_model.dart';
+import '../../../utils/app_extension_method.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_theme.dart';
 import '../../../constants/app_color.dart';
@@ -46,6 +46,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
   int invalidRow = 0;
   String fileName = '';
   bool importLoading = false;
+  String errorMessage = "";
 
   @override
   void initState() {
@@ -184,15 +185,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   const SizedBox(height: AppSize.s20),
                   AnimatedSize(
                     duration: Duration(milliseconds: 250),
-                    // child: currentIndex == 0
-                    // ? _uploadStep(context)
-                    // : _reviewStep(
-                    //   context,
-                    //   totalRow: 16,
-                    //   totalCloumn: 5,
-                    //   fileName: 'Ali_Hasan_Checking_MyWallet_Transaction_Import_Sample.xlsx',
-                    //   errorMessage: "This is error message"
-                    // ),
                     child: currentIndex == 0
                     ? _uploadStep(context)
                     : currentIndex == 1
@@ -200,7 +192,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                           context,
                           fileName: fileName,
                           totalRow: validRow,
-                          totalCloumn: invalidRow
+                          totalCloumn: invalidRow,
+                          errorMessage: errorMessage
                         )
                       : currentIndex == 2
                         ? _cleanStep(context)
@@ -264,6 +257,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             listener: (_, state) {
               switch (state) {
                 case TransactionImportStatusUpdateState _:
+                  errorMessage = state.message;
                   currentIndex = state.currentImportIndex;
                   if (state.isCompleted) {
                     importStatusFlagList[state.completeIndex].isCompleted = true;
@@ -331,7 +325,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             ),
             SizedBox(height: 10),
             Text(
-              "Checking formats & duplicates",
+              "Checking formats",
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.grey

@@ -100,9 +100,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         ));
       });
     } catch (e) {
-      emit(TransactionImportDownloadTemplateState(
-        message: 'Download failed : $e',
-      ));
+      emit(TransactionImportDownloadTemplateState(message: 'Download failed : $e'));
     }
   }
 
@@ -197,29 +195,32 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
       ));
       final header = tableList.first.map((item) => item.toString().toLowerCase()).toSet();
       if (tableList.length < 6) {
+        await Future.delayed(const Duration(milliseconds: 2000));
         emit(TransactionImportStatusUpdateState(
           completeIndex: currentImportIndex,
           currentImportIndex: currentImportIndex,
           isCompleted: false,
-          message: 'Imported file should be min of 5 data points'
+          message: 'Please upload a file with at least 5 transactions to import.'
         ));
         return [];
       }
       if (header.length < 3) {
+        await Future.delayed(const Duration(milliseconds: 2000));
         emit(TransactionImportStatusUpdateState(
           completeIndex: currentImportIndex,
           currentImportIndex: currentImportIndex,
           isCompleted: false,
-          message: 'Imported file is not proper'
+          message: "Your file doesn't have enough columns. Please check the sample template."
         ));
         return [];
       }
       if (!header.contains('date') || !header.contains('type') || !header.contains('amount')) {
+        await Future.delayed(const Duration(milliseconds: 2000));
         emit(TransactionImportStatusUpdateState(
           completeIndex: currentImportIndex,
           currentImportIndex: currentImportIndex,
           isCompleted: false,
-          message: 'File header is not proper'
+          message: "Your file's columns don't match the expected format. Please check the sample template."
         ));
         return [];
       }
