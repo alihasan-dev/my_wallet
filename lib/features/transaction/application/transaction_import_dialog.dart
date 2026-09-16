@@ -454,53 +454,55 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               fontWeight: FontWeight.w600
             ),
           ),
-          SizedBox(height: 8),
-          Row(
-            spacing: 4,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Transform.translate(
-                offset: Offset(0, 6),
-                child: Icon(
-                  Icons.circle, 
-                  size: 5, 
-                  color: AppColors.grey
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  "$validRow transactions will be imported",
-                  style: TextStyle(
-                    fontSize: 12
+          if (validRow > 0) ...[
+            SizedBox(height: 8),
+            Row(
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Transform.translate(
+                  offset: Offset(0, 6),
+                  child: Icon(
+                    Icons.circle, 
+                    size: 5, 
+                    color: AppColors.grey
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Row(
-            spacing: 4,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Transform.translate(
-                offset: Offset(0, 6),
-                child: Icon(
-                  Icons.circle, 
-                  size: 5, 
-                  color: AppColors.grey
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  "$invalidRow invalid rows excluded",
-                  style: TextStyle(
-                    fontSize: 12
+                Expanded(
+                  child: Text(
+                    "$validRow transactions will be imported",
+                    style: TextStyle(
+                      fontSize: 12
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 18),
+              ],
+            ),
+            SizedBox(height: 4),
+            Row(
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Transform.translate(
+                  offset: Offset(0, 6),
+                  child: Icon(
+                    Icons.circle, 
+                    size: 5, 
+                    color: AppColors.grey
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    "$invalidRow invalid rows excluded",
+                    style: TextStyle(
+                      fontSize: 12
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          SizedBox(height: validRow > 0 ? 18 : 10),
           Row(
             spacing: 4,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -510,61 +512,84 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 child: Icon(
                   Icons.warning, 
                   size: 12, 
-                  color: AppColors.amber
+                  color: validRow > 0
+                  ? AppColors.amber
+                  : AppColors.red
                 ),
               ),
               Expanded(
                 child: Text(
-                  "This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward.",
+                  validRow > 0
+                  ? "This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward."
+                  : "No valid transactions to import",
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.amber
+                    color: validRow > 0
+                    ? AppColors.amber
+                    : AppColors.red
                   ),
                 ),
               ),
             ],
           ),
           SizedBox(height: 15),
-          Row(
-            spacing: 5,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Transform.translate(
-                offset: Offset(0, -1),
-                child: Transform.scale(
-                  scale: 0.75,
-                  child: CustomCheckBoxWidget(
-                    value: finalCheckValue, 
-                    onChange: importLoading
-                    ? null
-                    : (value) => context.read<TransactionImportBloc>().add(
-                      TransactionImportCheckedEvent(value: value ?? false)
+          if (validRow > 0) ...[
+            Row(
+              spacing: 5,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Transform.translate(
+                  offset: Offset(0, -1),
+                  child: Transform.scale(
+                    scale: 0.75,
+                    child: CustomCheckBoxWidget(
+                      value: finalCheckValue, 
+                      onChange: importLoading
+                      ? null
+                      : (value) => context.read<TransactionImportBloc>().add(
+                        TransactionImportCheckedEvent(value: value ?? false)
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  "I have reviewed the data and want to import the validated transactions into MyWallet.",
-                  style: TextStyle(
-                    fontSize: 12
+                Expanded(
+                  child: Text(
+                    "I have reviewed the data and want to import the validated transactions into MyWallet.",
+                    style: TextStyle(
+                      fontSize: 12
+                    ),
                   ),
                 ),
+              ],
+            ),
+          ],
+          if (validRow <=0 )...[
+            Text(
+              "All $invalidRow rows in your file had issues and were excluded. Nothing will be imported.",
+              style: TextStyle(
+                fontSize: 12
               ),
-            ],
-          ),
+            ),
+          ],
           SizedBox(height: 15),
           CustomButton(
-            onTap: finalCheckValue && !importLoading
-            ? () => context.read<TransactionImportBloc>().add(TransactionImportUploadEvent())
-            : null,
+            onTap: validRow <= 0
+            ? () => context.read<TransactionImportBloc>().add(TransactionResetImportEvent())
+            : finalCheckValue && !importLoading
+              ? () => context.read<TransactionImportBloc>().add(TransactionImportUploadEvent())
+              : null,
             expanded: false,
             verticalPadding: 10,
             horizontalPadding: 15,
             title: importLoading
             ? 'Loading...'
-            : 'Import $validRow Transactions',
+            : validRow <= 0
+              ? "Upload a different file"
+              : 'Import $validRow Transactions',
             titleSize: 12,
+            buttonColor: validRow <= 0
+            ? AppColors.red
+            : null
           ),
         ],
       )

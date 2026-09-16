@@ -295,18 +295,16 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         );
         importTransactionList.add(transactionImportModel);
       }
-      if (importTransactionList.isNotEmpty) {
-        validRow =  (tableList.length - 1)  - invalidRowCount;
-        invalidRow = invalidRowCount;
-        await Future.delayed(const Duration(milliseconds: 2000));
-        emit(TransactionImportStatusUpdateState(
-          completeIndex: currentImportIndex,
-          currentImportIndex: ++currentImportIndex,
-          isCompleted: true,
-          invalidCount: invalidRow,
-          validCount: validRow
-        ));
-      }
+      validRow =  (tableList.length - 1)  - invalidRowCount;
+      invalidRow = invalidRowCount;
+      await Future.delayed(const Duration(milliseconds: 2000));
+      emit(TransactionImportStatusUpdateState(
+        completeIndex: currentImportIndex,
+        currentImportIndex: ++currentImportIndex,
+        isCompleted: true,
+        invalidCount: invalidRow,
+        validCount: validRow
+      ));
       return importTransactionList;
     } catch (e) {
       return [];
