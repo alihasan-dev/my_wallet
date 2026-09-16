@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:excel_plus/excel_plus.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wallet/features/transaction/domain/transaction_import_model.dart';
 import 'package:my_wallet/utils/preferences.dart';
@@ -32,6 +31,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
     on<TransactionImportDownloadTemplateEvent>(_onDownloadTemplateFile);
     on<TransactionImportInitiateEvent>(_onInitiateTransactionImport);
     on<TransactionImportCheckedEvent>(_onChangeCheckValue);
+    on<TransactionResetImportEvent>(_onResetTransactionImport);
   }
 
   void _onUpdateImportStatus(TransactionImportStateUpdateEvent event, Emitter emit) {
@@ -42,10 +42,25 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
     emit(TransactionImportCheckedState(value: event.value));
   }
 
+  void _onResetTransactionImport(TransactionResetImportEvent event, Emitter emit) {
+    currentImportIndex = 0;
+    finalImportTransactionList.clear();
+    validRow = 0;
+    invalidRow = 0;
+    emit(TransactionImportStatusUpdateState(isReset: true));
+  }
+
   Future<void> _onUploadTransactionImport(TransactionImportUploadEvent event, Emitter emit) async {
     try {
       if (finalImportTransactionList.isEmpty) return;
-      await Future.delayed(const Duration(milliseconds: 1800));
+      emit(TransactionImportStatusUpdateState(
+        completeIndex: currentImportIndex,
+        currentImportIndex: currentImportIndex,
+        invalidCount: invalidRow,
+        validCount: validRow,
+        importLoading: true
+      ));
+      await Future.delayed(const Duration(milliseconds: 500));
       const chunkSize = 400;
       for (var i = 0; i < finalImportTransactionList.length; i += chunkSize) {
         final chunk = finalImportTransactionList.skip(i).take(chunkSize);
@@ -96,6 +111,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
       PlatformFile? file = event.pickedFile;
       file ??= await _onPickedFile(emit);
       if (file == null) return;
+      final fileName = file.name;
       final fileExtension = file.extension;
       final fileBytes = await file.readAsBytes();
       var importTransactionList = <TransactionImportModel>[];
@@ -107,7 +123,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
           final tempRow = row.map((item) =>item.toString()).toList();
           tableList.add(tempRow);
         }
-        importTransactionList = await _parseFile(tableList, emit);
+        importTransactionList = await _parseFile(fileName, tableList, emit);
       }
       if (fileExtension == 'xlsx' || fileExtension == 'xls') {
         final excel = Excel.decodeBytes(fileBytes);
@@ -118,9 +134,10 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
             final tempRow = row.map((cell) => cell?.value.toString() ?? '').toList();
             tableList.add(tempRow);
           }
-          importTransactionList = await _parseFile(tableList, emit);
+          importTransactionList = await _parseFile(fileName, tableList, emit);
         }
       }
+      if (importTransactionList.isEmpty) return;
       finalImportTransactionList.clear();
       finalImportTransactionList = importTransactionList;
     } catch (e) {
@@ -163,28 +180,50 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
   }
 
 
-  Future<List<TransactionImportModel>> _parseFile(List<List<String>> tableList, Emitter emit) async {
+  Future<List<TransactionImportModel>> _parseFile(
+    String fileName,
+    List<List<String>> tableList, 
+    Emitter emit
+  ) async {
     try {
+      if (tableList.isEmpty) return [];
       emit(TransactionImportStatusUpdateState(
         completeIndex: currentImportIndex,
         currentImportIndex: ++currentImportIndex,
-        isCompleted: true
+        isCompleted: true,
+        fileName: fileName,
+        validCount: tableList.length,
+        invalidCount: tableList.first.length
       ));
-      if (tableList.isEmpty) return [];
       final header = tableList.first.map((item) => item.toString().toLowerCase()).toSet();
       if (tableList.length < 6) {
-        debugPrint("Imported file should be min of 5 data points");
+        emit(TransactionImportStatusUpdateState(
+          completeIndex: currentImportIndex,
+          currentImportIndex: currentImportIndex,
+          isCompleted: false,
+          message: 'Imported file should be min of 5 data points'
+        ));
         return [];
       }
       if (header.length < 3) {
-        debugPrint("Imported file is not proper");
+        emit(TransactionImportStatusUpdateState(
+          completeIndex: currentImportIndex,
+          currentImportIndex: currentImportIndex,
+          isCompleted: false,
+          message: 'Imported file is not proper'
+        ));
         return [];
       }
       if (!header.contains('date') || !header.contains('type') || !header.contains('amount')) {
-        debugPrint('File header is not proper');
+        emit(TransactionImportStatusUpdateState(
+          completeIndex: currentImportIndex,
+          currentImportIndex: currentImportIndex,
+          isCompleted: false,
+          message: 'File header is not proper'
+        ));
         return [];
       }
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future.delayed(const Duration(milliseconds: 2000));
       emit(TransactionImportStatusUpdateState(
         completeIndex: currentImportIndex,
         currentImportIndex: ++currentImportIndex,
@@ -259,7 +298,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
       if (importTransactionList.isNotEmpty) {
         validRow =  (tableList.length - 1)  - invalidRowCount;
         invalidRow = invalidRowCount;
-        await Future.delayed(const Duration(milliseconds: 1500));
+        await Future.delayed(const Duration(milliseconds: 2000));
         emit(TransactionImportStatusUpdateState(
           completeIndex: currentImportIndex,
           currentImportIndex: ++currentImportIndex,
@@ -297,7 +336,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
     if (input == null || input.trim().isEmpty) return null;
     final value = double.tryParse(input.trim());
     if (value == null) return null;
-    return value.ceil().toString();
+    return value > 0 ? value.ceil().toString() : null;
   }
 
   String? parseFlexibleType(String? input) {
@@ -338,9 +377,6 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
     return null; // unrecognized format
   }
 
-  /// Validates the components before constructing DateTime,
-  /// since DateTime(2026, 13, 45) would otherwise silently roll over
-  /// into an unexpected date instead of failing.
   DateTime? _tryBuildDate(int year, int month, int day) {
     if (month < 1 || month > 12) return null;
     final daysInMonth = DateTime(year, month + 1, 0).day;

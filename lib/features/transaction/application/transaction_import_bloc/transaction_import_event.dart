@@ -20,3 +20,5 @@ class TransactionImportCheckedEvent extends TransactionImportEvent {
   bool value;
   TransactionImportCheckedEvent({this.value = false});
 }
+
+class TransactionResetImportEvent extends TransactionImportEvent {}

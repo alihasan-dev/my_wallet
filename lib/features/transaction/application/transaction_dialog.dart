@@ -232,21 +232,35 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                   const SizedBox(height: AppSize.s16),
                   Row(
                     spacing: AppSize.s8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomCheckBoxWidget(
                         value: isActiveTransaction, 
                         onChange: (value) {
                           context.read<TransactionBloc>().add(TransactionStatusChangeEvent(
-                            status:value ?? true ? AppStrings.active : AppStrings.inactive
+                            status: value ?? true ? AppStrings.active : AppStrings.inactive
                           ));
                         }
                       ),
-                      CustomText(
-                        title: '${AppStrings.transactionStatus} (${isActiveTransaction ? AppStrings.active : AppStrings.inactive})'
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: AppSize.s2,
+                          children: [
+                            CustomText(title: '${AppStrings.transactionStatus} (${isActiveTransaction ? AppStrings.active : AppStrings.inactive})'),
+                            CustomText(
+                              title: 'Active transactions count toward your balance. You can change this anytime by editing the transaction.',
+                              textStyle: getLightStyle(
+                                fontSize: 11,
+                                color: AppColors.grey
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSize.s18),
+                  const SizedBox(height: AppSize.s16),
                   AnimatedSwitcher(
                     duration: MyAppTheme.animationDuration,
                     transitionBuilder: (child, animation) {

@@ -19,6 +19,7 @@ class CustomTextButton extends StatelessWidget {
   final MainAxisAlignment? mainAxisAlignment;
   final double verticalPadding;
   final double horizontalPadding;
+  final double? borderRadius;
    
 
   const CustomTextButton({
@@ -34,7 +35,8 @@ class CustomTextButton extends StatelessWidget {
     this.borderColor,
     this.backgroundColor,
     this.foregroundColor,
-    this.mainAxisAlignment
+    this.mainAxisAlignment,
+    this.borderRadius
   });
 
   @override
@@ -45,7 +47,7 @@ class CustomTextButton extends StatelessWidget {
         shape: isShapeStadium
         ? const StadiumBorder()
         : RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSize.s4), 
+          borderRadius: BorderRadius.circular(borderRadius ?? AppSize.s4), 
           side: showBorder == null || !showBorder!
           ? BorderSide.none
           : BorderSide(color: borderColor ?? foregroundColor ?? AppColors.red)
@@ -57,6 +59,7 @@ class CustomTextButton extends StatelessWidget {
       ), 
       child: Row(
         mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Visibility(
             visible: icon == null ? false : true,

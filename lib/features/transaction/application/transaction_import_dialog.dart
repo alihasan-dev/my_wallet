@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_wallet/features/transaction/application/transaction_import_bloc/transaction_import_bloc.dart';
 import 'package:my_wallet/features/transaction/domain/transaction_import_model.dart';
+import 'package:my_wallet/utils/app_extension_method.dart';
 import 'package:my_wallet/widgets/custom_button.dart';
 import 'package:my_wallet/widgets/custom_checkbox_widget.dart';
 import '../../../constants/app_icons.dart';
@@ -15,6 +16,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
 import '../../../utils/helper.dart';
+import '../../../widgets/custom_text_button.dart';
 import '../../../widgets/horizontal_dashline.dart';
 
 class TransactionImportDialog extends StatefulWidget {
@@ -42,6 +44,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
   bool finalCheckValue = false;
   int validRow = 0;
   int invalidRow = 0;
+  String fileName = '';
+  bool importLoading = false;
 
   @override
   void initState() {
@@ -180,17 +184,34 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   const SizedBox(height: AppSize.s20),
                   AnimatedSize(
                     duration: Duration(milliseconds: 250),
+                    // child: currentIndex == 0
+                    // ? _uploadStep(context)
+                    // : _reviewStep(
+                    //   context,
+                    //   totalRow: 16,
+                    //   totalCloumn: 5,
+                    //   fileName: 'Ali_Hasan_Checking_MyWallet_Transaction_Import_Sample.xlsx',
+                    //   errorMessage: "This is error message"
+                    // ),
                     child: currentIndex == 0
                     ? _uploadStep(context)
-                    : currentIndex <= 2
-                      ? _reviewAndCleanStep(context, currentIndex)
-                      : importStatusFlagList[currentIndex].isCompleted
-                        ? _uploadSuccess(context, transactionCount: validRow)
-                        : _confirmStep(
-                            context,
-                            validRow: validRow,
-                            invalidRow: invalidRow
-                          )
+                    : currentIndex == 1
+                      ? _reviewStep(
+                          context,
+                          fileName: fileName,
+                          totalRow: validRow,
+                          totalCloumn: invalidRow
+                        )
+                      : currentIndex == 2
+                        ? _cleanStep(context)
+                        : importStatusFlagList[currentIndex].isCompleted
+                          ? _uploadSuccess(context, transactionCount: validRow)
+                          : _confirmStep(
+                              context,
+                              validRow: validRow,
+                              invalidRow: invalidRow,
+                              importLoading: importLoading
+                            )
                   ),
                   SizedBox(height: 14),
                   Padding(
@@ -249,6 +270,13 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   }
                   validRow = state.validCount;
                   invalidRow = state.invalidCount;
+                  importLoading = state.importLoading;
+                  fileName = state.fileName;
+                  if (state.isReset) {
+                    for (var status in importStatusFlagList) {
+                      status.isCompleted = false;
+                    }
+                  }
                   break;
                 case TransactionImportDownloadTemplateState _:
                   showSnackBar(
@@ -271,9 +299,9 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
     );
   }
   
-  Widget _reviewAndCleanStep(BuildContext context, int index) {
+  Widget _cleanStep(BuildContext context) {
     return Container(
-      height: 240,
+      padding: EdgeInsets.symmetric(vertical: 30),
       decoration: BoxDecoration(
         color: AppColors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12)
@@ -287,32 +315,114 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               spacing: 14,
               children: [
                 SizedBox(
-                  height: 25,
-                  width: 25,
+                  height: 22,
+                  width: 22,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                   ),
                 ),
                 Text(
-                  index == 1
-                  ? "Reading your file..."
-                  : "Checking your data...",
+                  "Checking your data...",
                   style: TextStyle(
                     fontSize: 13
                   ),
                 )
               ],
             ),
-            if (index == 2) ...[
+            SizedBox(height: 10),
+            Text(
+              "Checking formats & duplicates",
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.grey
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _reviewStep(
+    BuildContext context, {
+    String errorMessage = '',
+    String fileName = '',
+    int totalRow = 0,
+    int totalCloumn = 0
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 30),
+      decoration: BoxDecoration(
+        color: AppColors.grey.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12)
+      ),
+      child: Center(
+        child: errorMessage.isBlank
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 14,
+                children: [
+                  SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                  Text(
+                    "Reading your file...",
+                    style: TextStyle(
+                      fontSize: 13
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 10),
               Text(
-                "We're checking your data for\n✓ Invalid dates\n✓ Invalid transaction types\n✓ Invalid amounts\n✓ Missing required fields\n✓ Duplicate transactions\n✓ Formatting inconsistencies",
+                "Successfully read $totalRow rows and $totalCloumn columns from $fileName",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.grey
                 ),
-              )
-            ]
+              ),
+            ],
+          )
+        : Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.clear, 
+              color: AppColors.red, 
+              size: 35
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Import Failed to Parse",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              errorMessage,
+              style: TextStyle(
+                fontSize: 12
+              ),
+            ),
+            SizedBox(height: 12),
+            CustomTextButton(
+              title: 'Try a Different File',
+              horizontalPadding: AppSize.s16,
+              borderRadius: AppSize.s24,
+              isSelected: true,
+              backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
+              onPressed: () => context.read<TransactionImportBloc>().add(TransactionResetImportEvent())
+            ),
           ],
         ),
       ),
@@ -321,13 +431,14 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
 
   Widget _confirmStep(BuildContext context, {
     int validRow = 0,
-    int invalidRow = 0
+    int invalidRow = 0,
+    bool importLoading = false
   }) {
     return Container(
       width: double.maxFinite,
       padding: EdgeInsets.symmetric(
         horizontal: 12,
-        vertical: 10
+        vertical: 14
       ),
       decoration: BoxDecoration(
         color: AppColors.grey.withValues(alpha: 0.1),
@@ -350,7 +461,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             children: [
               Transform.translate(
                 offset: Offset(0, 6),
-                child: Icon(Icons.circle, size: 5, color: AppColors.grey)),
+                child: Icon(
+                  Icons.circle, 
+                  size: 5, 
+                  color: AppColors.grey
+                ),
+              ),
               Expanded(
                 child: Text(
                   "$validRow transactions will be imported",
@@ -368,7 +484,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             children: [
               Transform.translate(
                 offset: Offset(0, 6),
-                child: Icon(Icons.circle, size: 5, color: AppColors.grey)),
+                child: Icon(
+                  Icons.circle, 
+                  size: 5, 
+                  color: AppColors.grey
+                ),
+              ),
               Expanded(
                 child: Text(
                   "$invalidRow invalid rows excluded",
@@ -386,7 +507,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             children: [
               Transform.translate(
                 offset: Offset(0, 3),
-                child: Icon(Icons.warning, size: 12, color: AppColors.amber)),
+                child: Icon(
+                  Icons.warning, 
+                  size: 12, 
+                  color: AppColors.amber
+                ),
+              ),
               Expanded(
                 child: Text(
                   "This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward.",
@@ -400,16 +526,21 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           ),
           SizedBox(height: 15),
           Row(
-            spacing: 6,
+            spacing: 5,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Transform.scale(
-                scale: 0.75,
-                child: CustomCheckBoxWidget(
-                  value: finalCheckValue, 
-                  onChange: (value) => context.read<TransactionImportBloc>().add(
-                    TransactionImportCheckedEvent(value: value ?? false)
-                  )
+              Transform.translate(
+                offset: Offset(0, -1),
+                child: Transform.scale(
+                  scale: 0.75,
+                  child: CustomCheckBoxWidget(
+                    value: finalCheckValue, 
+                    onChange: importLoading
+                    ? null
+                    : (value) => context.read<TransactionImportBloc>().add(
+                      TransactionImportCheckedEvent(value: value ?? false)
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -424,15 +555,17 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           ),
           SizedBox(height: 15),
           CustomButton(
-            onTap: finalCheckValue
+            onTap: finalCheckValue && !importLoading
             ? () => context.read<TransactionImportBloc>().add(TransactionImportUploadEvent())
             : null,
             expanded: false,
             verticalPadding: 10,
             horizontalPadding: 15,
-            title: 'Import $validRow Transactions',
+            title: importLoading
+            ? 'Loading...'
+            : 'Import $validRow Transactions',
             titleSize: 12,
-          )
+          ),
         ],
       )
     );
@@ -469,13 +602,13 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             ),
           ),
           SizedBox(height: 12),
-          CustomButton(
-            onTap: () => context.pop(),
-            expanded: false,
-            verticalPadding: 8,
-            horizontalPadding: 15,
+          CustomTextButton(
             title: 'Done',
-            titleSize: 13,
+            horizontalPadding: AppSize.s16,
+            borderRadius: AppSize.s24,
+            isSelected: true,
+            backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
+            onPressed: () => context.pop()
           )
         ],
       )
@@ -485,13 +618,15 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
   Widget _uploadStep(BuildContext context) {
     return DottedBorder(
       options: RoundedRectDottedBorderOptions(
-        color: AppColors.primaryColor,
+        color: AppColors.grey,
         strokeWidth: 1.2,
         dashPattern: const [10, 3], 
         radius: const Radius.circular(12),
       ),
       child: Container(
-        height: 240,
+        padding: EdgeInsets.symmetric(
+          vertical: 24
+        ),
         decoration: BoxDecoration(
           color: AppColors.grey.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12)
@@ -508,8 +643,9 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'OpenSans'
                   ),
                   children: [
                     TextSpan(
@@ -522,7 +658,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                       ),
                       recognizer: TapGestureRecognizer()
                       ..onTap = () => context.read<TransactionImportBloc>().add(TransactionImportInitiateEvent())
-                    )
+                    ),
                   ]
                 ),
               ),
