@@ -30,6 +30,7 @@ class CustomTextField extends StatelessWidget {
   final TextStyle? hintStyle;
   final bool animatedError;
   final Function()? onTap;
+  final String? hintText;
 
   const CustomTextField({
     required this.title,
@@ -52,12 +53,13 @@ class CustomTextField extends StatelessWidget {
     this.hintStyle,
     this.animatedError = true,
     this.onTap,
+    this.hintText,
     super.key
   });
 
   @override 
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    // final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,7 +117,7 @@ class CustomTextField extends StatelessWidget {
                 ],
               ),
             ),
-            hintText: title,
+            hintText: hintText ?? title,
             counterText: '',
             hintStyle: hintStyle ?? getRegularStyle(
               color: Helper.isDark 

@@ -59,10 +59,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
     settingItemList.clear();
     settingItemList.add(SettingModel(id: SettingItemId.language, icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-    settingItemList.add(SettingModel(id: SettingItemId.theme, icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(id: SettingItemId.theme, icon: AppIcons.themeModeIcon, title: _localizations!.appearance, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
     settingItemList.add(SettingModel(id: SettingItemId.transactionDetails, icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
-    settingItemList.add(SettingModel(id: SettingItemId.transactionDescription, icon: AppIcons.description, title: 'Transaction Description', subTitle: 'Show or hide descriptions in your transactions', showSwitch: true));
-    settingItemList.add(SettingModel(id: SettingItemId.archiveUser, icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.transactionDescription, icon: AppIcons.description, title: _localizations!.transactionDescription, subTitle: _localizations!.transactionDescriptionMsg, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.archiveUser, icon: AppIcons.verifiedIcon, title: _localizations!.show_archived_friends, subTitle: _localizations!.show_archived_friends_msg, showSwitch: true));
     if(!kIsWeb) {
       settingItemList.add(SettingModel(id: SettingItemId.biometricToggle, icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
       settingItemList.add(SettingModel(id: SettingItemId.webApp, icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     break;
                   case SettingItemId.archiveUser:
                     item.switchValue = state.userModel.isUserVerified;
-                    item.subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
+                    // item.subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
                     break;
                   case SettingItemId.biometricToggle:
                     item.switchValue = state.userModel.enableBiometric;
@@ -280,7 +280,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (_) {
         return AlertDialog(
           title: CustomText(
-            title: _localizations!.theme,
+            title: _localizations!.appearance,
             textStyle: getMediumStyle(
               color: Helper.isDark 
               ? AppColors.white.withValues(alpha: 0.9) 

@@ -138,7 +138,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get camera => 'Camera';
 
   @override
-  String get appearance => 'Appearaance';
+  String get appearance => 'Appearance';
 
   @override
   String get theme => 'Theme';
@@ -173,7 +173,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get showUnverifiedUser => 'Show Archived User';
+  String get show_archived_friends => 'Show Archived Friends';
+
+  @override
+  String get show_archived_friends_msg =>
+      'Include archived friends in your friends list';
 
   @override
   String get forgotPassword => 'Forgot Password';
@@ -261,10 +265,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gotIt => 'Got it';
 
   @override
-  String get transactionBreakdown => 'Transaction Details';
+  String get transactionBreakdown => 'Show Transaction Details';
 
   @override
-  String get transactionBreakdownMsg => 'Details for Each Transaction';
+  String get transactionBreakdownMsg =>
+      'Display additional details for each transaction';
 
   @override
   String get unselect => 'Unselect';
@@ -305,4 +310,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get archived_user_hint =>
       'Archived users are hidden from the main list (if the \'Show Archived Users\' option is disabled in settings). Restore them anytime by long-pressing them and tapping \'Unarchive\'.';
+
+  @override
+  String get transactionDescription => 'Show Transaction Descriptions';
+
+  @override
+  String get transactionDescriptionMsg =>
+      'Display descriptions for your transactions';
+
+  @override
+  String get transactionStatus => 'Transaction Status';
+
+  @override
+  String get importReport => 'Import Report';
+
+  @override
+  String get transactionImport => 'Transaction Import';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String get transactionStatusMsg =>
+      'Active transactions count toward your balance. You can change this anytime by editing the transaction.';
 }

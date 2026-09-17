@@ -353,7 +353,7 @@ abstract class AppLocalizations {
   /// No description provided for @appearance.
   ///
   /// In en, this message translates to:
-  /// **'Appearaance'**
+  /// **'Appearance'**
   String get appearance;
 
   /// No description provided for @theme.
@@ -416,11 +416,17 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @showUnverifiedUser.
+  /// No description provided for @show_archived_friends.
   ///
   /// In en, this message translates to:
-  /// **'Show Archived User'**
-  String get showUnverifiedUser;
+  /// **'Show Archived Friends'**
+  String get show_archived_friends;
+
+  /// No description provided for @show_archived_friends_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Include archived friends in your friends list'**
+  String get show_archived_friends_msg;
 
   /// No description provided for @forgotPassword.
   ///
@@ -587,13 +593,13 @@ abstract class AppLocalizations {
   /// No description provided for @transactionBreakdown.
   ///
   /// In en, this message translates to:
-  /// **'Transaction Details'**
+  /// **'Show Transaction Details'**
   String get transactionBreakdown;
 
   /// No description provided for @transactionBreakdownMsg.
   ///
   /// In en, this message translates to:
-  /// **'Details for Each Transaction'**
+  /// **'Display additional details for each transaction'**
   String get transactionBreakdownMsg;
 
   /// No description provided for @unselect.
@@ -673,6 +679,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Archived users are hidden from the main list (if the \'Show Archived Users\' option is disabled in settings). Restore them anytime by long-pressing them and tapping \'Unarchive\'.'**
   String get archived_user_hint;
+
+  /// No description provided for @transactionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Transaction Descriptions'**
+  String get transactionDescription;
+
+  /// No description provided for @transactionDescriptionMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Display descriptions for your transactions'**
+  String get transactionDescriptionMsg;
+
+  /// No description provided for @transactionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Status'**
+  String get transactionStatus;
+
+  /// No description provided for @importReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Report'**
+  String get importReport;
+
+  /// No description provided for @transactionImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Import'**
+  String get transactionImport;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// No description provided for @transactionStatusMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Active transactions count toward your balance. You can change this anytime by editing the transaction.'**
+  String get transactionStatusMsg;
 }
 
 class _AppLocalizationsDelegate

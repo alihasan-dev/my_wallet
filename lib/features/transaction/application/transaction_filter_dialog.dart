@@ -12,6 +12,7 @@ import '../../../constants/app_size.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/app_theme.dart';
 import '../../../utils/helper.dart';
+import '../../../widgets/custom_text_field.dart';
 
 class TransactionFilterDialog extends StatefulWidget {
   final RangeValues? amountChangeValue;
@@ -101,36 +102,56 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  TextField(
-                    controller: dateTimeRangeTextController,
-                    onTap: () => chooseDateRange(context),
+                  // TextField(
+                  //   controller: dateTimeRangeTextController,
+                  //   onTap: () => chooseDateRange(context),
+                  //   readOnly: true,
+                  //   decoration: InputDecoration(
+                  //     hintText: "DD-MM-YYYY to DD-MM-YYY",
+                  //     label: Text(localizations.dateRange),
+                  //     border: const OutlineInputBorder(),
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05,
+                  //         color: Helper.isDark
+                  //         ? AppColors.grey
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: localizations.dateRange,
+                    hintText: 'DD-MM-YYYY to DD-MM-YYY',
+                    isPasswordField: false,
                     readOnly: true,
-                    decoration: InputDecoration(
-                      hintText: "DD-MM-YYYY to DD-MM-YYY",
-                      label: Text(localizations.dateRange),
-                      border: const OutlineInputBorder(),
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05,
-                          color: Helper.isDark
-                          ? AppColors.grey
-                          : AppColors.black
-                        ),
-                      ),
-                    ),
+                    textEditingController: dateTimeRangeTextController,
+                    animatedError: false,
+                    onTap: () => chooseDateRange(context),
+                    hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s20),
                   InputDecorator(
                     decoration: InputDecoration(
                       isDense: true,
-                      label: Text(localizations.transferType),
+                      label: RichText(
+                        text: TextSpan(
+                          text: localizations.transferType,
+                          style: TextStyle(
+                            color: Helper.isDark 
+                            ? AppColors.white.withValues(alpha: 0.8)
+                            : AppColors.black.withValues(alpha: 0.7),
+                            fontFamily: 'OpenSans'
+                          ),
+                        ),
+                      ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          width: AppSize.s05,
-                          color: Helper.isDark
-                          ? AppColors.grey
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
                           : AppColors.black
                         ),
                       ),
@@ -138,26 +159,57 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     child: DropdownButton(
                       value: transactionType,
                       isExpanded: true,
-                      items: Helper.filterTransactionTypeList.map((String value) {
-                        return DropdownMenuItem(value: value, child: Text(value));
-                      }).toList(),
+                      items: Helper.filterTransactionTypeList.map((value) {
+                        return DropdownMenuItem(
+                          value: value, 
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'OpenSans',
+                              fontWeight: FontWeight.w500,
+                              color: Helper.isDark 
+                              ? AppColors.white 
+                              : AppColors.black
+                            ),
+                          ),
+                        );
+                      }).toList(), 
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => widget.transactionBloc.add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
                       icon: Icon(AppIcons.arrowDown),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.w500,
+                        color: Helper.isDark 
+                        ? AppColors.white 
+                        : AppColors.black
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s20),
                   InputDecorator(
                     decoration: InputDecoration(
                       isDense: true,
-                      label: Text(AppStrings.transactionStatus),
+                      label: RichText(
+                        text: TextSpan(
+                          text: AppStrings.transactionStatus,
+                          style: TextStyle(
+                            color: Helper.isDark 
+                            ? AppColors.white.withValues(alpha: 0.8)
+                            : AppColors.black.withValues(alpha: 0.7),
+                            fontFamily: 'OpenSans'
+                          ),
+                        ),
+                      ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          width: AppSize.s05,
-                          color: Helper.isDark
-                          ? AppColors.grey
+                          width: AppSize.s05, 
+                          color: Helper.isDark 
+                          ? AppColors.grey 
                           : AppColors.black
                         ),
                       ),
@@ -165,17 +217,41 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     child: DropdownButton(
                       value: transactionStatus,
                       isExpanded: true,
-                      items: Helper.filterTransactionStatusList.map((String value) {
-                        return DropdownMenuItem(value: value, child: Text(value));
-                      }).toList(),
+                      items: Helper.filterTransactionStatusList.map((value) {
+                        return DropdownMenuItem(
+                          value: value, 
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'OpenSans',
+                              fontWeight: FontWeight.w500,
+                              color: Helper.isDark 
+                              ? AppColors.white 
+                              : AppColors.black
+                            ),
+                          ),
+                        );
+                      }).toList(), 
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => widget.transactionBloc.add(TransactionStatusChangeEvent(status: value!.toString())),
                       underline: const SizedBox(),
                       icon: Icon(AppIcons.arrowDown),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.w500,
+                        color: Helper.isDark 
+                        ? AppColors.white 
+                        : AppColors.black
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s15),
-                  CustomText(title: localizations.amountRange, textStyle: getMediumStyle()),
+                  CustomText(
+                    title: localizations.amountRange, 
+                    textStyle: getMediumStyle()
+                  ),
                   SizedBox(
                     width: double.maxFinite,
                     child: SliderTheme(
@@ -206,7 +282,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSize.s10),
+                  const SizedBox(height: AppSize.s16),
                   Row(
                     spacing: AppSize.s12,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -232,7 +308,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSize.s5),
+                  const SizedBox(height: AppSize.s8),
                 ],
               ),
             );

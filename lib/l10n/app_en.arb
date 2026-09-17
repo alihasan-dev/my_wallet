@@ -61,7 +61,8 @@
   "reAuthenticate": "Re-Authenticate",
   "viewProfile": "View Profile",
   "settings": "Settings",
-  "showUnverifiedUser": "Show Archived User",
+  "show_archived_friends": "Show Archived Friends",
+  "show_archived_friends_msg": "Include archived friends in your friends list",
   "forgotPassword": "Forgot Password",
   "forgotPasswordMsg": "Enter the email address associated with your account and we'll send you a link to reset your password",
   "send": "Send",
@@ -90,8 +91,8 @@
   "importantNote": "Important Note",
   "signupWarningMsg": "If you signed up before using a Google account with the same email address, signing up again with that Google account now will replace your existing account. Please be careful!",
   "gotIt": "Got it",
-  "transactionBreakdown": "Transaction Details",
-  "transactionBreakdownMsg": "Details for Each Transaction",
+  "transactionBreakdown": "Show Transaction Details",
+  "transactionBreakdownMsg": "Display additional details for each transaction",
   "unselect": "Unselect",
   "add": "Add",
   "addTransactionDetails": "Add Transaction Details",
@@ -104,5 +105,18 @@
   "archive": "Archive",
   "deleted": "Deleted",
   "create_archived_user_label": "Create as archived user",
-  "archived_user_hint": "Archived users are hidden from the main list (if the 'Show Archived Users' option is disabled in settings). Restore them anytime by long-pressing them and tapping 'Unarchive'."
+  "archived_user_hint": "Archived users are hidden from the main list (if the 'Show Archived Users' option is disabled in settings). Restore them anytime by long-pressing them and tapping 'Unarchive'.",
+  "appearance": "Appearance",
+  "transactionDescription": "Show Transaction Descriptions",
+  "transactionDescriptionMsg": "Display descriptions for your transactions",
+
+  "transactionStatus": "Transaction Status",
+  "importReport": "Import Report",
+  "transactionImport": "Transaction Import",
+  "description": "Description",
+  "optional": "Optional",
+  "active": "Active",
+  "inactive": "Inactive",
+  "transactionStatusMsg": "Active transactions count toward your balance. You can change this anytime by editing the transaction."
+  
 }

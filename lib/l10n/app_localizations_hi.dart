@@ -138,7 +138,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get camera => 'कैमरा';
 
   @override
-  String get appearance => 'दिखावट';
+  String get appearance => 'उपस्थिति';
 
   @override
   String get theme => 'विषय';
@@ -173,7 +173,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings => 'सेटिंग्स';
 
   @override
-  String get showUnverifiedUser => 'शो आर्चीवड यूजर';
+  String get show_archived_friends => 'संग्रहीत मित्र दिखाएं';
+
+  @override
+  String get show_archived_friends_msg =>
+      'अपनी मित्र सूची में संग्रहीत मित्रों को शामिल करें';
 
   @override
   String get forgotPassword => 'पासवर्ड भूल गए';
@@ -261,10 +265,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get gotIt => 'समझ गया';
 
   @override
-  String get transactionBreakdown => 'लेन-देन विवरण';
+  String get transactionBreakdown => 'लेन-देन का ब्यौरा दिखाएं';
 
   @override
-  String get transactionBreakdownMsg => 'प्रत्येक लेनदेन का विवरण';
+  String get transactionBreakdownMsg =>
+      'प्रत्येक लेन-देन के लिए अतिरिक्त जानकारी प्रदर्शित करें';
 
   @override
   String get unselect => 'अचयनित';
@@ -276,7 +281,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get addTransactionDetails => 'लेन-देन विवरण जोड़ें';
 
   @override
-  String get description => 'विवरण';
+  String get description => 'Description';
 
   @override
   String get rate => 'दर प्रति पीस';
@@ -306,4 +311,33 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get archived_user_hint =>
       'संग्रहीत (आर्काइव) उपयोगकर्ता मुख्य सूची से छिपे रहते हैं (यदि सेटिंग्स में \'संग्रहीत उपयोगकर्ता दिखाएं\' विकल्प बंद है)। उन्हें कभी भी वापस लाने के लिए उन पर लॉन्ग-प्रेस करें और \'अनआर्काइव\' पर टैप करें।';
+
+  @override
+  String get transactionDescription => 'लेन-देन विवरण दिखाएं';
+
+  @override
+  String get transactionDescriptionMsg =>
+      'अपने लेन-देन के लिए विवरण प्रदर्शित करें';
+
+  @override
+  String get transactionStatus => 'Transaction Status';
+
+  @override
+  String get importReport => 'Import Report';
+
+  @override
+  String get transactionImport => 'Transaction Import';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String get transactionStatusMsg =>
+      'Active transactions count toward your balance. You can change this anytime by editing the transaction.';
 }

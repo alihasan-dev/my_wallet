@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+// import 'package:flutter/material.dart';
+// import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:my_wallet/utils/app_extension_method.dart';
 import 'package:my_wallet/utils/helper.dart';
 import 'package:pdf/pdf.dart';
@@ -76,15 +76,15 @@ class ReportUserDetails extends pw.StatelessWidget {
   String _getFormatedPhoneNumber(String number) {
     try {
       final countryCode = '+91';
-      final maskFormatter = MaskTextInputFormatter(
-        mask: '####-###-###',
-        filter: {"#": RegExp(r'[0-9]')},
-      );
-      final result = maskFormatter.formatEditUpdate(
-        TextEditingValue.empty,
-        TextEditingValue(text: number),
-      );
-      return '$countryCode ${result.text}';
+      // final maskFormatter = MaskTextInputFormatter(
+      //   mask: '####-###-###',
+      //   filter: {"#": RegExp(r'[0-9]')},
+      // );
+      // final result = maskFormatter.formatEditUpdate(
+      //   TextEditingValue.empty,
+      //   TextEditingValue(text: number),
+      // );
+      return '$countryCode ${number.formatIndianMobileNumber}';
     } catch(_) {
       return '-';
     }

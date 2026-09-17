@@ -227,7 +227,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                               child: Text(
                                 "Avoid re-uploading a file you've already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.",
                                 style: TextStyle(
-                                  fontSize: 11
+                                  fontSize: 11,
+                                  color: AppColors.grey
                                 ),
                               ),
                             ),
@@ -245,7 +246,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                               child: Text(
                                 "Your file must match the sample template format, or it will be rejected.",
                                 style: TextStyle(
-                                  fontSize: 11
+                                  fontSize: 11,
+                                  color: AppColors.grey,
                                 ),
                               ),
                             ),
@@ -402,7 +404,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               "Import Failed to Parse",
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w600
+                fontWeight: FontWeight.w500
               ),
             ),
             SizedBox(height: 8),
@@ -449,7 +451,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             "Import summary",
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600
+              fontWeight: FontWeight.w500
             ),
           ),
           if (validRow > 0) ...[
@@ -614,14 +616,15 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             "Import completed",
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600
+              fontWeight: FontWeight.w500
             ),
           ),
           SizedBox(height: 8),
           Text(
             "$transactionCount transactions imported successfully",
             style: TextStyle(
-              fontSize: 12
+              fontSize: 12,
+              color: AppColors.grey
             ),
           ),
           SizedBox(height: 12),
@@ -694,7 +697,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 'Upload your transaction file in CSV (.csv) or Excel (.xlsx/.xls) format.\nThe maximum file size allowed is 2 MB',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 11
+                  fontSize: 11,
+                  color: AppColors.grey
                 ),
               ),
               GestureDetector(
