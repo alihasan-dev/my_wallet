@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/helper.dart';
 import '../../../constants/app_theme.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/app_style.dart';
+import '../../../utils/text_input_formatter.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../constants/app_color.dart';
-import '../../../constants/app_strings.dart';
 import '../../../constants/app_size.dart';
 import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
+import '../../../widgets/custom_text_field.dart';
 
 class AddUserDialog extends StatefulWidget {
   const AddUserDialog({super.key});
@@ -32,12 +32,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
   String errorPhone = '';
   bool isFirstOpen = true;
   bool isArchived = false;
-  AppLocalizations? _localizations;
-  //US Phone Number Format
-  var maskFormatter = MaskTextInputFormatter(
-    mask: '+91 ####-###-###',
-    filter: {"#": RegExp(r'[0-9]')}
-  );
+  AppLocalizations? _localizations;  
 
   @override
   Widget build(BuildContext context) {
@@ -77,60 +72,109 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  TextField(
-                    controller: nameTextController,
-                    onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
-                    maxLength: 50,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.name,
-                      errorText: errorName.isNotEmpty
-                      ? errorName
-                      : null,
-                      label: CustomText(
-                        title: '${_localizations!.name} *',
-                        textColor: Helper.isDark 
-                        ? AppColors.white.withValues(alpha: 0.8)
-                        : AppColors.black
-                      ),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
-                      counterText: ''
-                    ),
+                  // TextField(
+                  //   controller: nameTextController,
+                  //   onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
+                  //   maxLength: 50,
+                  //   decoration: InputDecoration(
+                  //     hintText: '${_localizations!.name} *',
+                  //     hintStyle: TextStyle(
+                  //       fontSize: 16,
+                  //       color: AppColors.grey
+                  //     ),
+                  //     errorText: errorName.isNotEmpty
+                  //     ? errorName
+                  //     : null,
+                  //     label: CustomText(
+                  //       title: '${_localizations!.name} *',
+                  //       textColor: Helper.isDark 
+                  //       ? AppColors.white.withValues(alpha: 0.8)
+                  //       : AppColors.black
+                  //     ),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //     counterText: ''
+                  //   ),
+                  //   inputFormatters: [NameInputFormatter()],
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.name,
+                    isPasswordField: false,
+                    isMandatory: true,
+                    textEditingController: nameTextController,
+                    errorText: errorName,
+                    onChange: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
+                    textInputAction: TextInputAction.next,
+                    textInputFormatter: [NameInputFormatter()],
+                    animatedError: false
                   ),
                   const SizedBox(height: AppSize.s16),
-                  TextField(
-                    controller: phoneTextController,
-                    onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: maskFormatter.unmaskText(value))),
+                  // TextField(
+                  //   controller: phoneTextController,
+                  //   onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: phoneTextController.text.replaceAll('-', ''))),
+                  //   keyboardType: TextInputType.number,
+                  //   decoration: InputDecoration(
+                  //     hintText: '${_localizations!.phone} *',
+                  //     hintStyle: TextStyle(
+                  //       fontSize: 16,
+                  //       color: AppColors.grey
+                  //     ),
+                  //     errorText: errorPhone.isNotEmpty
+                  //     ? errorPhone
+                  //     : null,
+                  //     label: CustomText(
+                  //       title: '${_localizations!.phone} *',
+                  //       textColor: Helper.isDark 
+                  //       ? AppColors.white.withValues(alpha: 0.8)
+                  //       : AppColors.black,
+                  //     ),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //     prefix: Text(
+                  //       '+91 ',
+                  //       style: TextStyle(
+                  //         color: AppColors.black,
+                  //         fontSize: 16
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   inputFormatters: [IndianMobileNumberFormatter()],
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.phone,
+                    isPasswordField: false,
+                    isMandatory: true,
+                    textEditingController: phoneTextController,
+                    errorText: errorPhone,
+                    onChange: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: phoneTextController.text.replaceAll('-', ''))),
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.phone,
-                      errorText: errorPhone.isNotEmpty
-                      ? errorPhone
-                      : null,
-                      label: CustomText(
-                        title: '${_localizations!.phone} *',
-                        textColor: Helper.isDark 
-                        ? AppColors.white.withValues(alpha: 0.8)
-                        : AppColors.black
-                      ),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
+                    textInputFormatter: [IndianMobileNumberFormatter()],
+                    animatedError: false,
+                    prefix: Text(
+                      '+91 ',
+                      style: TextStyle(
+                        color: Helper.isDark 
+                        ? AppColors.white 
+                        : AppColors.black,
+                        fontSize: AppSize.s14
                       ),
                     ),
-                    inputFormatters: [maskFormatter],
+                    hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s16),
                   Row(
@@ -154,7 +198,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                             CustomText(
                               title: _localizations!.archived_user_hint,
                               textStyle: getLightStyle(
-                                fontSize: 11,
+                                fontSize: 12,
                                 color: AppColors.grey
                               ),
                             ),
@@ -169,7 +213,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     onTap: () => context.read<DashboardBloc>().add(DashboardAddUserEvent(
                       name: nameTextController.text, 
                       email: emailTextController.text,
-                      phone: maskFormatter.unmaskText(phoneTextController.text),
+                      phone: phoneTextController.text.replaceAll('-', ''),
                       isArchived: isArchived
                     )),
                     titleSize: AppSize.s15,

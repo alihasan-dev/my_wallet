@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_font.dart';
 import 'app_size.dart';
 
-TextStyle _getStyle(double fontSize, String fontFamily, FontWeight fontWeight, Color? color) {
+TextStyle _getStyle(double fontSize, String fontFamily, FontWeight? fontWeight, Color? color) {
   return TextStyle(
     fontFamily: fontFamily,
     fontSize: fontSize,
@@ -22,7 +22,7 @@ TextStyle getLightStyle({double fontSize = AppSize.s10, Color? color}) {
 }
 
 ///medium style
-TextStyle getMediumStyle({double fontSize = AppSize.s14, Color? color}) {
+TextStyle getMediumStyle({double fontSize = AppSize.s14, Color? color, FontWeight? fontWeight}) {
   return _getStyle(fontSize, AppFontConstant.fontFamily, AppFontWeight.medium, color);
 }
 

@@ -391,7 +391,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 3,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSize.s10, 
@@ -411,7 +411,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSize.s10, 
@@ -421,7 +421,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                         ? AppColors.backgroundColorDark
                         : AppColors.white, 
                         child: CustomText(
-                          textAlign: TextAlign.end,
+                          textAlign: TextAlign.center,
                           title: (transactionDetailsList.fold(0.0, (p1, p2) => p1 + p2.total)).balanceFormat,
                           textStyle: getSemiBoldStyle(),
                         ),

@@ -154,7 +154,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with Helper
           onSubmitted: (value) => _forgotPasswordBloc.add(ForgotPasswordSubmitEvent(email: value)),
           textInputAction: TextInputAction.next,
         ),
-        const SizedBox(height: AppSize.s12),
+        const SizedBox(height: AppSize.s15),
         CustomButton(
           title: _localizations!.send,
           titleSize: AppSize.s16, 

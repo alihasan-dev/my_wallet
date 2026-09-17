@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:my_wallet/features/transaction/application/transaction_import_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/preferences.dart';
-import '../../transaction/application/transaction_dialog.dart';
+import 'add_transaction_dialog.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/transaction/application/transaction_details.dart';
 import '../../../features/transaction/application/transaction_filter_dialog.dart';

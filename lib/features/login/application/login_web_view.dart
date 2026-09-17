@@ -32,7 +32,7 @@ class LoginWebView extends StatelessWidget {
               onChange: (value) => loginBloc.add(LoginEmailChangeEvent(email: value)),
               textInputAction: TextInputAction.next,
             ),
-            const SizedBox(height: AppSize.s10),
+            const SizedBox(height: AppSize.s12),
             CustomTextField(
               title: localizations.password,
               isPasswordField: loginScreenState.showPassword,

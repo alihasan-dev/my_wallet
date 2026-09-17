@@ -143,10 +143,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 12,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w500,
                                           color: currentIndex == index
                                           ? AppColors.white
-                                          : AppColors.black
+                                          : Helper.isDark
+                                            ? AppColors.white.withValues(alpha: 0.9)
+                                            : AppColors.black
                                         ),
                                       ),
                                     ),
@@ -154,12 +156,14 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                                   Text(
                                     item.label,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.w500,
                                       color: item.isCompleted
                                       ? AppColors.green
                                       : currentIndex == index
                                         ? AppColors.primaryColor
-                                        : AppColors.black
+                                        : Helper.isDark
+                                          ? AppColors.white.withValues(alpha: 0.9)
+                                          : AppColors.black
                                     ),
                                   ),
                                   if (index < importStatusFlagList.length - 1) ...[
@@ -668,7 +672,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   ),
                   children: [
                     TextSpan(
-                      text: 'Drag and drop or '
+                      text: 'Drag and drop or ',
+                      style: TextStyle(
+                        color: Helper.isDark
+                        ? AppColors.white.withValues(alpha: 0.9)
+                        : AppColors.black
+                      ),
                     ),
                     TextSpan(
                       text: 'select files',
@@ -682,7 +691,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 ),
               ),
               Text(
-                'Upload your transaction file in CSV or Excel (.xlsx) format.\nThe maximum file size allowed is 2 MB',
+                'Upload your transaction file in CSV (.csv) or Excel (.xlsx/.xls) format.\nThe maximum file size allowed is 2 MB',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 11

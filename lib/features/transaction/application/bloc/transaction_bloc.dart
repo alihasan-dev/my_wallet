@@ -106,6 +106,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         final userState = event;
         var userEvent = userState.allUser.where((item) => item.userId == friendId).toList();
         if(userEvent.isNotEmpty) {
+          friendProfileData?['email'] = userEvent.first.email;
           lastTransactionDate = userEvent.first.lastTransactionDate;
           add(TransactionProfileUpdateEvent(userName: userEvent.first.name, profileImage: userEvent.first.profileImg));
         }

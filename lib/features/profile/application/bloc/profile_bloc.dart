@@ -85,6 +85,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _onNameChange(ProfileNameChangeEvent event, Emitter emit) {
     if(event.text.isBlank){
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
+    } else if (event.text.length < 3) {
+      emit(ProfileErrorNameState(message: 'Please provide a valid name'));
     } else {
       emit(ProfileErrorNameState(message: AppStrings.emptyString));
     }
@@ -240,7 +242,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if(event.profileData['name'].toString().isBlank) {
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
       result = false;
-    } 
+    } else if (event.profileData['name'].toString().length < 3) {
+      emit(ProfileErrorNameState(message: 'Please provide a valid name'));
+      result = false;
+    }
     final phone = event.profileData['phone'].toString();
     if (friendId.isBlank && !phone.isBlank) {
       if(phone.length < 10) result = false;

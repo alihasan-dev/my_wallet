@@ -9,7 +9,6 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
-import '../../../../utils/custom_exception.dart';
 import '../../../../utils/preferences.dart';
 part 'signup_event.dart';
 part 'signup_state.dart';

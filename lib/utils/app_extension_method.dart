@@ -105,6 +105,19 @@ extension StringExtension on String {
     Uint8List bytes = base64Decode(cleanedBase64);
     return bytes;
   }
+
+  String get formatIndianMobileNumber {
+    final digits = replaceAll(RegExp(r'\D'), '');
+    if (digits.length != 10) {
+      return this;
+    }
+    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+      return this;
+    }
+    return '${digits.substring(0, 4)}-'
+        '${digits.substring(4, 7)}-'
+        '${digits.substring(7, 10)}';
+  }
   
 }
 

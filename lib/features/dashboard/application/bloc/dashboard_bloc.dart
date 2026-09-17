@@ -290,6 +290,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _onNameChange(DashboardNameChangeEvent event, Emitter emit){
     if(event.name.isBlank){
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
+    } else if (event.name.length < 3){
+      emit(DashboardNameFieldState(nameMessage: 'Please provide a valid name'));
     } else {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyString));
     }

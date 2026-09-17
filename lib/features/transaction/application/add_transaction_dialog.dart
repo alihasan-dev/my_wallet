@@ -16,6 +16,7 @@ import '../../../widgets/custom_button.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/custom_checkbox_widget.dart';
 import '../../../widgets/custom_text.dart';
+import '../../../widgets/custom_text_field.dart';
 import '../domain/transaction_model.dart';
 
 class AddTransactionDialog extends StatefulWidget {
@@ -124,38 +125,77 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  TextField(
-                    controller: amountTextController,
-                    onChanged: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
+                  // TextField(
+                  //   controller: amountTextController,
+                  //   onChanged: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
+                  //   keyboardType: TextInputType.number,
+                  //   textInputAction: TextInputAction.done,
+                  //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  //   maxLength: 8,
+                  //   decoration: InputDecoration(
+                  //     errorText: errorAmount.isBlank
+                  //     ? null
+                  //     : errorAmount,
+                  //     hintText: AppStrings.amount,
+                  //     label: Text('${_localizations!.amount} *'),
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //     prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
+                  //     counterText: ''
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.amount,
+                    isPasswordField: false,
+                    isMandatory: true,
+                    textEditingController: amountTextController,
+                    errorText: errorAmount,
+                    onChange: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     maxLength: 8,
-                    decoration: InputDecoration(
-                      errorText: errorAmount.isBlank
-                      ? null
-                      : errorAmount,
-                      hintText: AppStrings.amount,
-                      label: Text('${_localizations!.amount} *'),
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
+                    animatedError: false,
+                    prefix: Text(
+                      '₹ ',
+                      style: TextStyle(
+                        color: Helper.isDark 
+                        ? AppColors.white 
+                        : AppColors.black,
+                        fontSize: AppSize.s14
                       ),
-                      prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
-                      counterText: ''
                     ),
+                    textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
+                    hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s18),
                   InputDecorator(
                     decoration: InputDecoration(
                       isDense: true,
-                      label: Text(_localizations!.transferType),
+                      label: RichText(
+                        text: TextSpan(
+                          text: _localizations!.transferType,
+                          style: TextStyle(
+                            color: Helper.isDark 
+                            ? AppColors.white.withValues(alpha: 0.8)
+                            : AppColors.black.withValues(alpha: 0.7),
+                            fontFamily: 'OpenSans'
+                          ),
+                          children: const [
+                            TextSpan(
+                              text: ' *',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s14),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -169,17 +209,79 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     child: DropdownButton(
                       value: transactionType,
                       isExpanded: true,
-                      items: Helper.listTransactionType.map((String value) => DropdownMenuItem(value: value, child: Text(value))).toList(), 
+                      items: Helper.listTransactionType.map((value) {
+                        return DropdownMenuItem(
+                          value: value, 
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'OpenSans',
+                              fontWeight: FontWeight.w500,
+                              color: Helper.isDark 
+                              ? AppColors.white 
+                              : AppColors.black
+                            ),
+                          ),
+                        );
+                      }).toList(), 
                       dropdownColor: Helper.isDark ? AppColors.dialogColorDark : AppColors.white,
                       onChanged: (value) => context.read<TransactionBloc>().add(TransactionTypeChangeEvent(type: value!.toString())),
                       underline: const SizedBox(),
                       icon: Icon(AppIcons.arrowDown),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.w500,
+                        color: Helper.isDark 
+                        ? AppColors.white 
+                        : AppColors.black
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s18),
-                  TextField(
-                    controller: dateTextController,
+                  // TextField(
+                  //   controller: dateTextController,
+                  //   readOnly: true,
+                  //   onTap: () async {
+                  //     var date = await openCalendar(context: context, initialDate: initialDateTime);
+                  //     if(date != null && context.mounted) {
+                  //       initialDateTime = date;
+                  //       context.read<TransactionBloc>().add(TransactionDateChangeEvent(isError: false));
+                  //       final currentTime = DateTime.now();
+                  //       transactionDate = DateTime(date.year, date.month, date.day, currentTime.hour, currentTime.minute, currentTime.second);
+                  //       dateTextController.text = date.formatDateTime;
+                  //     }
+                  //   },
+                  //   decoration: InputDecoration(
+                  //     errorText: errorDate
+                  //     ? AppStrings.emptyDate
+                  //     : null,
+                  //     hintText: AppStrings.emptyDate,
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     label: Text('${_localizations!.date} *'),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.date,
+                    isPasswordField: false,
+                    isMandatory: true,
                     readOnly: true,
+                    textEditingController: dateTextController,
+                    textInputAction: TextInputAction.done,
+                    animatedError: false,
+                    errorText: errorDate
+                    ? AppStrings.emptyDate
+                    : null,
                     onTap: () async {
                       var date = await openCalendar(context: context, initialDate: initialDateTime);
                       if(date != null && context.mounted) {
@@ -190,44 +292,38 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         dateTextController.text = date.formatDateTime;
                       }
                     },
-                    decoration: InputDecoration(
-                      errorText: errorDate
-                      ? AppStrings.emptyDate
-                      : null,
-                      hintText: AppStrings.emptyDate,
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      label: Text('${_localizations!.date} *'),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
-                    ),
+                    // hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s18),
-                  TextField(
-                    controller: descriptionTextController,
+                  // TextField(
+                  //   controller: descriptionTextController,
+                  //   maxLines: null,
+                  //   maxLength: 100,
+                  //   decoration: InputDecoration(
+                  //     hintText: '${AppStrings.description} (Optional)',
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     label: Text(AppStrings.description),
+                  //     border: const OutlineInputBorder(),
+                  //     counterText: '',
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: '${AppStrings.description} (Optional)',
+                    isPasswordField: false,
+                    textEditingController: descriptionTextController,
                     maxLines: null,
+                    textInputAction: TextInputAction.done,
                     maxLength: 100,
-                    decoration: InputDecoration(
-                      hintText: '${AppStrings.description} (Optional)',
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      label: Text(AppStrings.description),
-                      border: const OutlineInputBorder(),
-                      counterText: '',
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
-                    ),
+                    animatedError: false,
+                    // hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s16),
                   Row(
@@ -251,7 +347,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                             CustomText(
                               title: 'Active transactions count toward your balance. You can change this anytime by editing the transaction.',
                               textStyle: getLightStyle(
-                                fontSize: 11,
+                                fontSize: 12,
                                 color: AppColors.grey
                               ),
                             ),

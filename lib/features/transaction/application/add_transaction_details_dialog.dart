@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../widgets/custom_text_field.dart';
 import '../../transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
 import '../../../constants/app_strings.dart';
 import '../../../utils/app_extension_method.dart';
@@ -96,77 +97,126 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  TextField(
-                    controller: descriptionText,
-                    onChanged: _onDescriptionTextChange,
-                    keyboardType: TextInputType.text,
+                  // TextField(
+                  //   controller: descriptionText,
+                  //   onChanged: _onDescriptionTextChange,
+                  //   keyboardType: TextInputType.text,
+                  //   maxLength: 50,
+                  //   decoration: InputDecoration(
+                  //     hintText: _localizations!.description,
+                  //     label: Text(_localizations!.description),
+                  //     counterText: '',
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //     errorText: errorDescription.value
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.description,
+                    isPasswordField: false,
+                    isMandatory: true,
+                    textEditingController: descriptionText,
+                    errorText: errorDescription.value,
+                    onChange: _onDescriptionTextChange,
+                    textInputAction: TextInputAction.next,
                     maxLength: 50,
-                    decoration: InputDecoration(
-                      hintText: _localizations!.description,
-                      label: Text(_localizations!.description),
-                      counterText: '',
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
-                      errorText: errorDescription.value
-                    ),
+                    animatedError: false,
+                    hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s15),
-                  TextField(
-                    controller: quantityText,
-                    onChanged: _onQuantityTextChange,
+                  // TextField(
+                  //   controller: quantityText,
+                  //   onChanged: _onQuantityTextChange,
+                  //   keyboardType: TextInputType.number,
+                  //   maxLength: 4,
+                  //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  //   decoration: InputDecoration(
+                  //     hintText: _localizations!.quantity,
+                  //     counterText: '',
+                  //     label: Text(_localizations!.quantity),
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //     errorText: errorQuantity.value
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.quantity,
+                    isPasswordField: false,
+                    isMandatory: true,
+                    textEditingController: quantityText,
+                    errorText: errorQuantity.value,
+                    onChange: _onQuantityTextChange,
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
                     maxLength: 4,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      hintText: _localizations!.quantity,
-                      counterText: '',
-                      label: Text(_localizations!.quantity),
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
-                      ),
-                      errorText: errorQuantity.value
-                    ),
+                    animatedError: false,
+                    textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
+                    hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s15),
-                  TextField(
-                    controller: rateText,
-                    onChanged: _onRateTextChange,
+                  // TextField(
+                  //   controller: rateText,
+                  //   onChanged: _onRateTextChange,
+                  //   keyboardType: TextInputType.number,
+                  //   maxLength: 6,
+                  //   textInputAction: TextInputAction.done,
+                  //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  //   decoration: InputDecoration(
+                  //     counterText: '',
+                  //     hintText: _localizations!.rate,
+                  //     label: Text(_localizations!.rate),
+                  //     hintStyle: const TextStyle(color: AppColors.grey),
+                  //     border: const OutlineInputBorder(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderSide: BorderSide(
+                  //         width: AppSize.s05, 
+                  //         color: Helper.isDark 
+                  //         ? AppColors.grey 
+                  //         : AppColors.black
+                  //       ),
+                  //     ),
+                  //     prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
+                  //     errorText: errorRate.value
+                  //   ),
+                  // ),
+                  CustomTextField(
+                    title: _localizations!.rate,
+                    isPasswordField: false,
+                    isMandatory: true,
+                    textEditingController: rateText,
+                    errorText: errorRate.value,
+                    onChange: _onRateTextChange,
+                    textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.number,
                     maxLength: 6,
-                    textInputAction: TextInputAction.done,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      counterText: '',
-                      hintText: _localizations!.rate,
-                      label: Text(_localizations!.rate),
-                      hintStyle: const TextStyle(color: AppColors.grey),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: AppSize.s05, 
-                          color: Helper.isDark 
-                          ? AppColors.grey 
-                          : AppColors.black
-                        ),
+                    animatedError: false,
+                    prefix: Text(
+                      '₹ ',
+                      style: TextStyle(
+                        color: Helper.isDark 
+                        ? AppColors.white 
+                        : AppColors.black,
+                        fontSize: AppSize.s14
                       ),
-                      prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
-                      errorText: errorRate.value
                     ),
+                    textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
+                    hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s20),
                   CustomButton(
@@ -175,7 +225,7 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                       if (await _fieldValidation() && context.mounted) {
                         widget.transactionBloc.add(SubTransactionAddEvent(
                           transactionId: widget.transactionId,
-                          description: descriptionText.text,
+                          description: descriptionText.text.trim(),
                           rate: double.parse(rateText.text),
                           quantity: int.parse(quantityText.text),
                           total: double.parse(rateText.text) * int.parse(quantityText.text)

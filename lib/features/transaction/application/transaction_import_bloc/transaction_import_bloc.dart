@@ -13,7 +13,6 @@ import '../../../../utils/mobile_download.dart'
 part 'transaction_import_event.dart';
 part 'transaction_import_state.dart';
 
-
 class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImportState> {
   
   late String userId;
