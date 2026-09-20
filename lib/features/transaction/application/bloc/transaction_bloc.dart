@@ -65,7 +65,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
     checkConnectivity = CheckConnectivity();
     _initializeAudioPlayer();
-    on<TransactionAddEvent>(_onAddTransaction);
+    on<TransactionAddEvent>(_onAddUpdateTransaction);
     on<TransactionDateChangeEvent>(_onChangeDateStatus);
     on<TransactionTypeChangeEvent>(_onChangeTransactionType);
     on<TransactionStatusChangeEvent>(_onChangeTransactionStatus);
@@ -195,25 +195,33 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       final batch = FirebaseFirestore.instance.batch();
       final savedLastTransaction = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
       bool isLastTransactionDeleting = false;
+      double deletedTotalAmount = 0.0;
       for(final transaction in listTransactionResult) {
         if(transaction.selected) {
+          if (transaction.isActive) {
+            if (transaction.type == AppStrings.transfer) {
+              deletedTotalAmount-=transaction.amount;
+            } else {
+              deletedTotalAmount+=transaction.amount;
+            }
+          }
           if (transaction.date.compareTo(savedLastTransaction) == 0) isLastTransactionDeleting = true;
           final docRef = firebaseStoreInstance.collection('transactions').doc(transaction.id);
           batch.delete(docRef);
         }
       }
+      final finalTotalBal = deletedTotalAmount.isNegative ? totalBalance + deletedTotalAmount.abs() : totalBalance - deletedTotalAmount;
       try {
         await batch.commit();
         log("Documents deleted successfully");
         if (isLastTransactionDeleting) {
-          firebaseStoreInstance.update({'amount': 'deleted'});
+          firebaseStoreInstance.update({'amount': 'deleted', 'outstanding_amount': finalTotalBal});
+        } else {
+          firebaseStoreInstance.update({'outstanding_amount': finalTotalBal});
         }
         ///capture delete transaction event
         AnalyticsService.instance.logEvent(
           name: AnalyticsEvents.transactionDeleted,
-          // parameters: {
-          //   'transaction_type': 'receive',
-          // },
         );
       } catch (e) {
         log("Error deleting documents: $e");
@@ -414,9 +422,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return totalBalance;
   }
 
-  Future<void> _onAddTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
+  Future<void> _onAddUpdateTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
-      log(event.toString());
       if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({
           'date': event.date, 
@@ -426,14 +433,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'description': event.description
         });
         var currentTransactionDateTime = event.date!; 
+        final doubleParseAmount = double.tryParse(event.amount) ?? 0.0;
+        final outstandingAmount = event.type == AppStrings.transfer ? totalBalance - doubleParseAmount : totalBalance + doubleParseAmount;
         try {
           final lastTransactionDateTime = DateTime.fromMillisecondsSinceEpoch(lastTransactionDate);
           if (lastTransactionDateTime.isBefore(currentTransactionDateTime) || lastTransactionDateTime.isAtSameMomentAs(currentTransactionDateTime)) {
             firebaseStoreInstance.update({
               'lastTransactionTime': currentTransactionDateTime,
               'amount': event.amount,
-              'type': event.type
+              'type': event.type,
+              'outstanding_amount': outstandingAmount
             });
+          } else {
+            firebaseStoreInstance.update({'outstanding_amount': outstandingAmount});
           }
         } catch (_) {log('FAILED:::while comparing last transaction date with current transaction date');}
         ////capture tranaction event

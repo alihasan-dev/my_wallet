@@ -31,7 +31,6 @@
 // }
 
 
-
 class UserModel {
   String name;
   String email;
@@ -47,6 +46,7 @@ class UserModel {
   bool enableBiometric;
   bool isSelected;
   bool isPinned;
+  double outstandingAmount;
 
   UserModel({
     required this.userId,
@@ -63,6 +63,7 @@ class UserModel {
     this.enableBiometric = false,
     this.isPinned = false,
     this.isSelected = false,
+    this.outstandingAmount = 0.0
   });
 
   @override
@@ -83,7 +84,8 @@ class UserModel {
         isUserVerified == other.isUserVerified &&
         enableBiometric == other.enableBiometric &&
         isSelected == other.isSelected &&
-        isPinned == other.isPinned;
+        isPinned == other.isPinned &&
+        outstandingAmount == other.outstandingAmount;
   }
 
   @override
@@ -102,5 +104,6 @@ class UserModel {
         enableBiometric,
         isSelected,
         isPinned,
+        outstandingAmount
       );
 }

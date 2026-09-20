@@ -449,4 +449,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String import_valid_transaction(Object valid_row) {
     return 'Import $valid_row transactions';
   }
+
+  @override
+  String get transaction_mode => 'Transactions Mode';
+
+  @override
+  String get latest_transaction => 'Latest Transaction';
+
+  @override
+  String get latest_transaction_msg =>
+      'Show the amount from the most recent transaction';
+
+  @override
+  String get total_outstanding => 'Total Outstanding';
+
+  @override
+  String get total_outstanding_msg =>
+      'Show the current outstanding amount with each friend';
+
+  @override
+  String get transaction_mode_info_msg =>
+      'Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update. (Currently not supprted for transaction update)';
 }

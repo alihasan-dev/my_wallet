@@ -125,33 +125,6 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  // TextField(
-                  //   controller: amountTextController,
-                  //   onChanged: (value) => context.read<TransactionBloc>().add(TransactionAmountChangeEvent(amount: value)),
-                  //   keyboardType: TextInputType.number,
-                  //   textInputAction: TextInputAction.done,
-                  //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  //   maxLength: 8,
-                  //   decoration: InputDecoration(
-                  //     errorText: errorAmount.isBlank
-                  //     ? null
-                  //     : errorAmount,
-                  //     hintText: AppStrings.amount,
-                  //     label: Text('${_localizations!.amount} *'),
-                  //     hintStyle: const TextStyle(color: AppColors.grey),
-                  //     border: const OutlineInputBorder(),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05, 
-                  //         color: Helper.isDark 
-                  //         ? AppColors.grey 
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //     prefix: Text('₹ ',style: TextStyle(color: AppColors.black)),
-                  //     counterText: ''
-                  //   ),
-                  // ),
                   CustomTextField(
                     title: _localizations!.amount,
                     isPasswordField: false,
@@ -240,37 +213,6 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     ),
                   ),
                   const SizedBox(height: AppSize.s18),
-                  // TextField(
-                  //   controller: dateTextController,
-                  //   readOnly: true,
-                  //   onTap: () async {
-                  //     var date = await openCalendar(context: context, initialDate: initialDateTime);
-                  //     if(date != null && context.mounted) {
-                  //       initialDateTime = date;
-                  //       context.read<TransactionBloc>().add(TransactionDateChangeEvent(isError: false));
-                  //       final currentTime = DateTime.now();
-                  //       transactionDate = DateTime(date.year, date.month, date.day, currentTime.hour, currentTime.minute, currentTime.second);
-                  //       dateTextController.text = date.formatDateTime;
-                  //     }
-                  //   },
-                  //   decoration: InputDecoration(
-                  //     errorText: errorDate
-                  //     ? AppStrings.emptyDate
-                  //     : null,
-                  //     hintText: AppStrings.emptyDate,
-                  //     hintStyle: const TextStyle(color: AppColors.grey),
-                  //     label: Text('${_localizations!.date} *'),
-                  //     border: const OutlineInputBorder(),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05, 
-                  //         color: Helper.isDark 
-                  //         ? AppColors.grey 
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   CustomTextField(
                     title: _localizations!.date,
                     isPasswordField: false,
@@ -292,29 +234,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         dateTextController.text = date.formatDateTime;
                       }
                     },
-                    // hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s18),
-                  // TextField(
-                  //   controller: descriptionTextController,
-                  //   maxLines: null,
-                  //   maxLength: 100,
-                  //   decoration: InputDecoration(
-                  //     hintText: '${AppStrings.description} (Optional)',
-                  //     hintStyle: const TextStyle(color: AppColors.grey),
-                  //     label: Text(AppStrings.description),
-                  //     border: const OutlineInputBorder(),
-                  //     counterText: '',
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05, 
-                  //         color: Helper.isDark 
-                  //         ? AppColors.grey 
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   CustomTextField(
                     title: '${_localizations!.description} (${_localizations!.optional})',
                     isPasswordField: false,
@@ -323,7 +244,6 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     textInputAction: TextInputAction.done,
                     maxLength: 100,
                     animatedError: false,
-                    // hintStyle: TextStyle(fontSize: AppSize.s14, color: AppColors.grey),
                   ),
                   const SizedBox(height: AppSize.s16),
                   Row(

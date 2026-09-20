@@ -32,4 +32,9 @@ class SettingsOnChangeTransactionDescriptionEvent extends SettingsEvent {
 
   SettingsOnChangeTransactionDescriptionEvent({this.isEnable = false});
 }
-///transaction_description
+
+class SettingsOnDashboardTransactionModeEvent extends SettingsEvent {
+  DashboardAmountMode mode;
+
+  SettingsOnDashboardTransactionModeEvent({required this.mode});
+}

@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
-// import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_theme.dart';
 import '../../../core/analytics/analytics_events.dart';
 import '../../../core/analytics/analytics_service.dart';
@@ -27,6 +26,7 @@ import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/transaction_deleted_widget.dart';
+import '../../settings/domain/settings_model.dart';
 part 'dashboard_web_view.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -51,10 +51,6 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   late LocalAuthentication _localAuthentication;
   String? selectedUserId;
   int selectedUserCount = 0;
-  // var maskFormatter = MaskTextInputFormatter(
-  //   mask: '####-###-###',
-  //   filter: {"#": RegExp(r'[0-9]')}
-  // );
   late DateFormat dateFormat;
 
   @override

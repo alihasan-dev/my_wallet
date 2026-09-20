@@ -10,6 +10,7 @@ import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../utils/check_connectivity.dart';
 import '../../../../utils/preferences.dart';
+import '../../../settings/domain/settings_model.dart';
 part 'signup_event.dart';
 part 'signup_state.dart';
 
@@ -167,6 +168,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
         Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
         Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: false);
         Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: false);
+        Preferences.setString(key: AppStrings.prefDashboardAmountMode, value: DashboardAmountMode.latestTransaction.value);
         ///capture signup event
         await AnalyticsService.instance.setUserId(userId);
         await AnalyticsService.instance.logEvent(
@@ -310,6 +312,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: false);
           Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: false);
+          Preferences.setString(key: AppStrings.prefDashboardAmountMode, value: DashboardAmountMode.latestTransaction.value);
           ///capture signup event
           await AnalyticsService.instance.setUserId(user.uid);
           await AnalyticsService.instance.logEvent(

@@ -25,6 +25,7 @@ class SettingModel {
 enum SettingItemId {
   language,
   theme,
+  dashboardTransactionMode,
   transactionDetails,
   transactionDescription,
   archiveUser,
@@ -32,4 +33,9 @@ enum SettingItemId {
   webApp,
   currency,
   about
+}
+
+enum DashboardAmountMode {
+  latestTransaction,
+  totalOutstanding,
 }

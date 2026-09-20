@@ -78,7 +78,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             : mapData['lastTransactionTime'].millisecondsSinceEpoch,
             type: mapData['type'] ?? '',
             isUserVerified: mapData['isVerified'] ?? false,
-            isPinned: mapData['pinned'] ?? false
+            isPinned: mapData['pinned'] ?? false,
+            outstandingAmount: mapData['outstanding_amount'] ?? 0.0
           ));
         }
       }

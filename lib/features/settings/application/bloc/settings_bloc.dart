@@ -6,7 +6,9 @@ import 'package:my_wallet/core/analytics/analytics_events.dart';
 import '../../../../constants/app_strings.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
+import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/preferences.dart';
+import '../../domain/settings_model.dart';
 part 'settings_event.dart';
 part 'settings_state.dart';
 
@@ -25,6 +27,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsOnChangeBiometricEvent>(_onChangeEnableBiometric);
     on<SettingsOnChangeTransactionDetailsEvent>(_onChangeTransactionDetails);
     on<SettingsOnChangeTransactionDescriptionEvent>(_onChangeTransactionDescription);
+    on<SettingsOnDashboardTransactionModeEvent>(_onChangeDashboardTransactionMode);
 
     _streamSubscription = _firebaseDocumentRef.snapshots().listen((event) {
       var userData = event.data() as Map;
@@ -39,6 +42,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         Preferences.setBool(key: AppStrings.prefEnableBiometric, value: userData['enableBiometric'] ?? false);
         Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: userData['showTransactionDetails'] ?? false);
         Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: userData['transaction_description'] ?? false);
+        Preferences.setString(key: AppStrings.prefDashboardAmountMode, value: userData['dashboard_amount_mode'] ?? DashboardAmountMode.latestTransaction.value);
       }
       add(SettingsUserDetailsEvent());
     });
@@ -79,6 +83,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       parameters: {
         'setting_name': 'show_transaction_description',
         'value': event.isEnable ? 'true' : 'false',
+      },
+    );
+  }
+
+  Future<void> _onChangeDashboardTransactionMode(SettingsOnDashboardTransactionModeEvent event, Emitter emit) async {
+    final modeStringValue = event.mode.value;
+    await _firebaseDocumentRef.update({'dashboard_amount_mode': modeStringValue});
+    AnalyticsService.instance.logEvent(
+      name: AnalyticsEvents.settingsChanged,
+      parameters: {
+        'setting_name': 'dashboard_amount_mode',
+        'value': modeStringValue,
       },
     );
   }

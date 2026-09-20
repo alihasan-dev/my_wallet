@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../features/settings/domain/settings_model.dart';
 import '../utils/helper.dart';
 import '../utils/preferences.dart';
 import '../constants/app_strings.dart';
@@ -166,4 +167,40 @@ extension NumberExtension on num {
     }
   }
 
+}
+
+extension DashboardAmountModeExtension on DashboardAmountMode {
+
+  String get value {
+    switch (this) {
+      case DashboardAmountMode.latestTransaction:
+        return 'latest_transaction';
+
+      case DashboardAmountMode.totalOutstanding:
+        return 'total_outstanding';
+    }
+  }
+
+  static DashboardAmountMode fromValue(String? value) {
+    switch (value ?? '') {
+      case 'total_outstanding':
+        return DashboardAmountMode.totalOutstanding;
+
+      case 'latest_transaction':
+      default:
+        return DashboardAmountMode.latestTransaction;
+    }
+  }
+
+  static String label() {
+    final prefValue = Preferences.getString(key: AppStrings.prefDashboardAmountMode);
+    switch (prefValue) {
+      case 'total_outstanding':
+        return 'Total Outstanding';
+
+      case 'latest_transaction':
+      default:
+        return 'Latest Transaction';
+    }
+  }
 }

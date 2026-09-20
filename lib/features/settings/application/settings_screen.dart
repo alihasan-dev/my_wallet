@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/features/settings/application/transaction_mode_dialog.dart';
 import 'package:sample_formatter/sample_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/analytics/analytics_events.dart';
@@ -12,6 +13,7 @@ import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../widgets/currency_dialog_view.dart';
 import '../../about/about_screen.dart';
+import '../domain/setting_dashboard_transaction_mode_model.dart';
 import '../domain/settings_language_model.dart';
 import '../domain/settings_model.dart';
 import '../domain/settings_theme_model.dart';
@@ -35,6 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   var settingItemList = <SettingModel>[];
   var themeModeList = <SettingThemeModel>[];
+  var dashboardTransactionModeList = <SettingDashboardAmountModeModel>[];
   var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
   late SettingsBloc _settingBloc;
@@ -57,9 +60,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     languageList.clear();
     languageList.add(SettingLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
+    dashboardTransactionModeList.clear();
+    dashboardTransactionModeList.add(SettingDashboardAmountModeModel(title: _localizations!.latest_transaction, subtitle:  _localizations!.latest_transaction_msg, mode: DashboardAmountMode.latestTransaction));
+    dashboardTransactionModeList.add(SettingDashboardAmountModeModel(title: _localizations!.total_outstanding, subtitle:  _localizations!.total_outstanding_msg, mode: DashboardAmountMode.totalOutstanding));
     settingItemList.clear();
     settingItemList.add(SettingModel(id: SettingItemId.language, icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
     settingItemList.add(SettingModel(id: SettingItemId.theme, icon: AppIcons.themeModeIcon, title: _localizations!.appearance, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(id: SettingItemId.dashboardTransactionMode, icon: AppIcons.swaphorizIcon, title: _localizations!.transaction_mode, subTitle: DashboardAmountModeExtension.label()));
     settingItemList.add(SettingModel(id: SettingItemId.transactionDetails, icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
     settingItemList.add(SettingModel(id: SettingItemId.transactionDescription, icon: AppIcons.description, title: _localizations!.transactionDescription, subTitle: _localizations!.transactionDescriptionMsg, showSwitch: true));
     settingItemList.add(SettingModel(id: SettingItemId.archiveUser, icon: AppIcons.verifiedIcon, title: _localizations!.show_archived_friends, subTitle: _localizations!.show_archived_friends_msg, showSwitch: true));
@@ -105,10 +112,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     break;
                   case SettingItemId.archiveUser:
                     item.switchValue = state.userModel.isUserVerified;
-                    // item.subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
                     break;
                   case SettingItemId.biometricToggle:
                     item.switchValue = state.userModel.enableBiometric;
+                  case SettingItemId.dashboardTransactionMode:
+                    item.subTitle = DashboardAmountModeExtension.label();
                   default:
                 }
               }
@@ -213,6 +221,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           break;
         case SettingItemId.about:
           showAboutAppDialog(context: context);
+          break;
+        case SettingItemId.dashboardTransactionMode:
+          showDashboardTransactionModeDialog(context: context);
           break;
         default:
       }
@@ -348,6 +359,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         );
       }
+    );
+  }
+
+  void showDashboardTransactionModeDialog({required BuildContext context}) {
+    showGeneralDialog(
+      context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+        child: TransactionModeDialog(
+          dashboardTransactionModeList: dashboardTransactionModeList,
+          onChange: (mode) {
+            _settingBloc.add(SettingsOnDashboardTransactionModeEvent(mode: mode));
+            context.pop();
+          },
+        )
+      ),
     );
   }
 

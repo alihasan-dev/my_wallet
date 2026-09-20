@@ -45,5 +45,6 @@ class AppIcons {
   static const IconData arrowDown = Icons.keyboard_arrow_down;
   static const IconData currencyIcon = Icons.payments;
   static const IconData description = Icons.article;
+  static const IconData swaphorizIcon = Icons.swap_horiz;
   
 }

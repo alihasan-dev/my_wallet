@@ -450,4 +450,24 @@ class AppLocalizationsHi extends AppLocalizations {
   String import_valid_transaction(Object valid_row) {
     return '$valid_row लेन-देन आयात करें';
   }
+
+  @override
+  String get transaction_mode => 'लेन-देन मोड';
+
+  @override
+  String get latest_transaction => 'नवीनतम लेन-देन';
+
+  @override
+  String get latest_transaction_msg => 'सबसे हाल के लेन-देन की राशि दिखाएं';
+
+  @override
+  String get total_outstanding => 'कुल बकाया';
+
+  @override
+  String get total_outstanding_msg =>
+      'प्रत्येक मित्र के साथ वर्तमान बकाया राशि दिखाएं';
+
+  @override
+  String get transaction_mode_info_msg =>
+      'जब आप कोई लेन-देन जोड़ेंगे, संपादित करेंगे, या बदलेंगे, तो आपकी बकाया राशि अपडेट हो जाएगी। मौजूदा लेन-देन आपके अगले लेन-देन अपडेट के बाद शामिल किए जाएंगे। (वर्तमान में लेन-देन अपडेट के लिए समर्थित नहीं है)';
 }

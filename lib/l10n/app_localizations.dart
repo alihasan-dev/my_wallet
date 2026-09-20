@@ -911,6 +911,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import {valid_row} transactions'**
   String import_valid_transaction(Object valid_row);
+
+  /// No description provided for @transaction_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions Mode'**
+  String get transaction_mode;
+
+  /// No description provided for @latest_transaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Transaction'**
+  String get latest_transaction;
+
+  /// No description provided for @latest_transaction_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the amount from the most recent transaction'**
+  String get latest_transaction_msg;
+
+  /// No description provided for @total_outstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Outstanding'**
+  String get total_outstanding;
+
+  /// No description provided for @total_outstanding_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the current outstanding amount with each friend'**
+  String get total_outstanding_msg;
+
+  /// No description provided for @transaction_mode_info_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update. (Currently not supprted for transaction update)'**
+  String get transaction_mode_info_msg;
 }
 
 class _AppLocalizationsDelegate

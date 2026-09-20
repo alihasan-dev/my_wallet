@@ -27,7 +27,7 @@ class AboutScreen extends StatelessWidget {
       insetPadding: const EdgeInsets.all(AppSize.s12),
       contentPadding: const EdgeInsets.all(AppSize.s15),
       content: Container(
-        width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s40),
+        width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),
         child: ListView(
           shrinkWrap: true,

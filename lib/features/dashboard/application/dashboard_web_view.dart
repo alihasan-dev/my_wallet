@@ -290,21 +290,24 @@ class DashboardWebView extends StatelessWidget {
                                   ),
                                   Row(
                                     children: [
-                                      AnimatedSize(
-                                        duration: MyAppTheme.animationDuration,
-                                        child: data.amount.isBlank
-                                        ? const SizedBox.shrink()
-                                        : data.amount == 'deleted'
-                                          ? TransactionDeletedWidget(appLocalization: localizations)
-                                          : CustomText(
-                                          title: data.amount.amountFormat(type: data.type),
-                                          textStyle: getMediumStyle(
-                                            color: data.type == AppStrings.transfer
-                                            ? AppColors.red
-                                            : AppColors.green
-                                          ),
-                                        ),
-                                      ),
+                                      _buildAmountWidget(data, localizations),
+                                      // AnimatedSize(
+                                      //   duration: MyAppTheme.animationDuration,
+                                      //   child: data.amount.isBlank || (DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.totalOutstanding && data.outstandingAmount == 0.0)
+                                      //   ? const SizedBox.shrink()
+                                      //   : data.amount == 'deleted' && DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.latestTransaction
+                                      //     ? TransactionDeletedWidget(appLocalization: localizations)
+                                      //     : CustomText(
+                                      //     title: DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.latestTransaction
+                                      //     ? data.amount.amountFormat(type: data.type)
+                                      //     : data.outstandingAmount.balanceFormat,
+                                      //     textStyle: getMediumStyle(
+                                      //       color: DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.latestTransaction
+                                      //       ? data.type == AppStrings.transfer ? AppColors.red : AppColors.green
+                                      //       : data.outstandingAmount.isNegative  ? AppColors.red : AppColors.green
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       AnimatedSize(
                                         duration: MyAppTheme.animationDuration,
                                         child: !data.isPinned
@@ -360,6 +363,39 @@ class DashboardWebView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAmountWidget(UserModel data, AppLocalizations localizations) {
+    final displayMode = DashboardAmountModeExtension.fromValue(
+      Preferences.getString(key: AppStrings.prefDashboardAmountMode),
+    );
+    final isLatestMode = displayMode == DashboardAmountMode.latestTransaction;
+    final isOutstandingMode = displayMode == DashboardAmountMode.totalOutstanding;
+
+    final shouldHide = data.amount.isBlank || (isOutstandingMode && data.outstandingAmount == 0.0);
+    final isDeletedLatest = data.amount == 'deleted' && isLatestMode;
+
+    Widget child;
+    if (shouldHide) {
+      child = const SizedBox.shrink();
+    } else if (isDeletedLatest) {
+      child = TransactionDeletedWidget(appLocalization: localizations);
+    } else {
+      final title = isLatestMode
+          ? data.amount.amountFormat(type: data.type)
+          : data.outstandingAmount.balanceFormat;
+      final color = isLatestMode
+          ? (data.type == AppStrings.transfer ? AppColors.red : AppColors.green)
+          : (data.outstandingAmount.isNegative ? AppColors.red : AppColors.green);
+      child = CustomText(
+        title: title,
+        textStyle: getMediumStyle(color: color),
+      );
+    }
+    return AnimatedSize(
+      duration: MyAppTheme.animationDuration,
+      child: child,
     );
   }
 }

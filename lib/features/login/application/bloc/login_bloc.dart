@@ -11,6 +11,7 @@ import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/check_connectivity.dart';
 // import '../../../../utils/custom_exception.dart';
 import '../../../../utils/preferences.dart';
+import '../../../settings/domain/settings_model.dart';
 part 'login_event.dart';
 part 'login_state.dart';
 
@@ -262,6 +263,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
             Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
             Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: mapData['transaction_description'] ?? false);
+            Preferences.setString(key: AppStrings.prefDashboardAmountMode, value: mapData['dashboard_amount_mode'] ?? DashboardAmountMode.latestTransaction.value);
             Preferences.setString(
               key: AppStrings.prefProfileImg, 
               value: (mapData['profile_img'] ?? '').toString().isBlank
@@ -344,6 +346,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
               Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
               Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: mapData['transaction_description'] ?? false);
+              Preferences.setString(key: AppStrings.prefDashboardAmountMode, value: mapData['dashboard_amount_mode'] ?? DashboardAmountMode.latestTransaction.value);
               Preferences.setString(
                 key: AppStrings.prefProfileImg, 
                 value: (mapData['profile_img'] ?? '').toString().isBlank

@@ -21,6 +21,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
   var finalImportTransactionList = <TransactionImportModel>[];
   int validRow = 0;
   int invalidRow = 0;
+  double outstandingAmount = 0.0;
 
   TransactionImportBloc({required String friendId}) : super(TransactionImportInitialState()) {
     userId = Preferences.getString(key: AppStrings.prefUserId);
@@ -76,6 +77,8 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         }
         await batch.commit();
       }
+      print("total outstanding amount $outstandingAmount");
+      firebaseStoreInstance.update({'outstanding_amount': outstandingAmount});
       emit(TransactionImportStatusUpdateState(
         completeIndex: currentImportIndex,
         currentImportIndex: currentImportIndex,
@@ -236,6 +239,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
       int amountCellIndex = 0;
       var importTransactionList = <TransactionImportModel>[];
       int invalidRowCount = 0;
+      outstandingAmount = 0.0;
       for (var i = 0; i < tableList.length; i++) {
         final row = tableList[i];
         DateTime? date;
@@ -278,13 +282,18 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
               status = parseFlexibleStatus(columnItem);
             }
             if (j == amountCellIndex) {
-              amount = _parseFlexibleAmount(columnItem);
+              amount = _parseFlexibleAmount(columnItem); 
             }
           }
         }
         if (amount == null || type == null || date == null) {
           if (i != 0) invalidRowCount+=1;
           continue;
+        }
+        if (status ?? true) {
+          final parsedAmount = double.tryParse(amount) ?? 0.0;
+          final signedAmount = type == AppStrings.transfer ? -parsedAmount : parsedAmount;
+          outstandingAmount += signedAmount;
         }
         final transactionImportModel = TransactionImportModel(
           amount: amount,

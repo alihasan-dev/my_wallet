@@ -145,6 +145,11 @@
   "checking_your_data": "Checking your data",
   "transaction_import_msg_second": "Your file must match the sample template format, or it will be rejected.",
   "transaction_import_msg_first": "Avoid re-uploading a file you've already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.",
-  "import_valid_transaction": "Import {valid_row} transactions"
-  
+  "import_valid_transaction": "Import {valid_row} transactions",
+  "transaction_mode": "Transactions Mode",
+  "latest_transaction": "Latest Transaction",
+  "latest_transaction_msg": "Show the amount from the most recent transaction",
+  "total_outstanding": "Total Outstanding",
+  "total_outstanding_msg": "Show the current outstanding amount with each friend",
+  "transaction_mode_info_msg": "Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update. (Currently not supprted for transaction update)"
 }
