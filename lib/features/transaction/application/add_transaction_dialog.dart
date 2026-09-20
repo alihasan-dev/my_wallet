@@ -316,7 +316,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                   //   ),
                   // ),
                   CustomTextField(
-                    title: '${AppStrings.description} (Optional)',
+                    title: '${_localizations!.description} (${_localizations!.optional})',
                     isPasswordField: false,
                     textEditingController: descriptionTextController,
                     maxLines: null,
@@ -343,9 +343,9 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: AppSize.s2,
                           children: [
-                            CustomText(title: '${AppStrings.transactionStatus} (${isActiveTransaction ? AppStrings.active : AppStrings.inactive})'),
+                            CustomText(title: '${_localizations!.transactionStatus} (${isActiveTransaction ? _localizations!.active : _localizations!.inactive})'),
                             CustomText(
-                              title: 'Active transactions count toward your balance. You can change this anytime by editing the transaction.',
+                              title: _localizations!.transactionStatusMsg,
                               textStyle: getLightStyle(
                                 fontSize: 12,
                                 color: AppColors.grey

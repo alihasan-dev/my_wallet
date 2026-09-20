@@ -215,30 +215,19 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               duration: MyAppTheme.animationDuration,
                               child: _selectedTransactionCount > 1
                               ? const SizedBox()
-                              : Row(
-                                children: [
-                                  IconButton(
-                                    tooltip: _localizations!.editTransaction,
-                                    onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
-                                    visualDensity: VisualDensity.compact,
-                                    icon: const Icon(AppIcons.editIcon, color: AppColors.white)
-                                  ),
-                                  // it's been shifted inside edit transaction dialog
-                                  // IconButton(
-                                  //   tooltip: 'Active/Inactive Transaction',
-                                  //   onPressed: () => _transactionBloc.add(TransactionActiveEvent()), 
-                                  //   visualDensity: VisualDensity.compact,
-                                  //   icon: const Icon(AppIcons.visibilityIcon, color: AppColors.white)
-                                  // )
-                                ],
-                              ),
+                              : IconButton(
+                                  tooltip: _localizations!.editTransaction,
+                                  onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
+                                  visualDensity: VisualDensity.compact,
+                                  icon: const Icon(AppIcons.editIcon, color: AppColors.white)
+                                )
                             ),
                           ],
                         )
                       : Row(
                         children: [
                           IconButton(
-                            tooltip: 'Import Report',
+                            tooltip: _localizations!.importReport,
                             onPressed: () {
                               _transactionBloc.add(TransactionImportEvent());
                               // showComingSoonDialog(
@@ -373,7 +362,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         CustomText(
-                                          title: 'Description', 
+                                          title: _localizations!.description, 
                                           textStyle: getSemiBoldStyle(
                                             color: textColor, 
                                             fontSize: AppSize.s14

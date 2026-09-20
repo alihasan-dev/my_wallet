@@ -24,19 +24,19 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   late CheckConnectivity checkConnectivity;
-  late FirebaseAuth authInstance;
+  late FirebaseAuth _authInstance;
   late CollectionReference _collectionReference;
   late DocumentReference firebaseDocumentReference;
-  // late GoogleSignIn _googleSignIn;
+  late GoogleSignIn _googleSignIn;
   // bool _isGoogleSignedOut = false;
   // StreamSubscription? _googleSignInSubscription;
 
   LoginBloc() : super(LoginInitialState()) {
-    // _googleSignIn = GoogleSignIn(
-    //   clientId: AppStrings.googleSignInClientId,
-    //   scopes: ["email"],
-    // );
-    authInstance = FirebaseAuth.instance;
+    _googleSignIn = GoogleSignIn(
+      clientId: AppStrings.googleSignInClientId,
+      scopes: ["email"],
+    );
+    _authInstance = FirebaseAuth.instance;
     _collectionReference = FirebaseFirestore.instance.collection('users');
     checkConnectivity = CheckConnectivity();
     on<LoginSubmitEvent>(_onLoginSubmit);
@@ -203,8 +203,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoadingState());
     try {
-      final googleProvider = GoogleAuthProvider();
-      final firebaseUserCredential = await authInstance.signInWithPopup(googleProvider);
+      // final googleProvider = GoogleAuthProvider();
+      // final firebaseUserCredential = 
+      // kIsWeb
+      // ? await authInstance.signInWithPopup(googleProvider)
+      // : await signInWithGoogle();
+      final firebaseUserCredential = await signInWithGoogle();
+      if (firebaseUserCredential == null) {
+        throw FirebaseAuthException(
+          code: 'faiLed',
+          message: 'user cancelled the sign-in flow'
+        );
+      }
       final user = firebaseUserCredential.user;
       if (user == null) {
         emit(
@@ -297,11 +307,28 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+  Future<UserCredential?> signInWithGoogle() async {
+    if (kIsWeb) {
+      return await _authInstance.signInWithPopup(GoogleAuthProvider());
+    }
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      // user cancelled the sign-in flow
+      return null;
+    }
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   Future<void> _onLoginSubmit(LoginSubmitEvent event, Emitter<LoginState> emit) async {
     if(await validation(emit, email: event.email, password: event.password)) {
       emit(LoginLoadingState());
       try {
-        var userCredential = await authInstance.signInWithEmailAndPassword(email: event.email, password: event.password);
+        var userCredential = await _authInstance.signInWithEmailAndPassword(email: event.email, password: event.password);
         var user = userCredential.user;
         if (user != null) {
           firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
@@ -378,7 +405,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginPasswordFieldState(message: AppStrings.emptyPassword));
       return false;
     } else if(!await checkConnectivity.hasConnection) {
-      emit(LoginFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
+      emit(LoginFailedState(
+        title: AppStrings.noInternetConnection, 
+        message: AppStrings.noInternetConnectionMessage
+      ));
       return false;
     } else {
       return true;

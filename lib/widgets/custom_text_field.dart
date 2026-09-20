@@ -59,29 +59,9 @@ class CustomTextField extends StatelessWidget {
 
   @override 
   Widget build(BuildContext context) {
-    // final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // RichText(
-        //   text: TextSpan(
-        //     children: [
-        //       TextSpan(
-        //         text: '  $title', 
-        //         style: TextStyle(
-        //           color: textTheme.bodyLarge!.color
-        //         ),
-        //       ),
-        //       TextSpan(
-        //         text: isMandatory == null || !isMandatory! 
-        //         ? '' 
-        //         : ' *', 
-        //         style: const TextStyle(color: AppColors.red)
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // const SizedBox(height: AppSize.s4),
         TextField(
           obscureText: isPasswordField,
           controller: textEditingController,
@@ -148,7 +128,7 @@ class CustomTextField extends StatelessWidget {
                 color: Helper.isDark 
                 ? AppColors.grey 
                 : errorText == null || errorText!.isBlank 
-                  ? AppColors.primaryColor
+                  ? AppColors.grey
                   : AppColors.red
               )
             ),

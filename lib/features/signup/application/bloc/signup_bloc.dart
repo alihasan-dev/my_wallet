@@ -18,15 +18,15 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   late CheckConnectivity _checkConnectivity;
   late FirebaseAuth _authInstance;
   late CollectionReference _collectionReference;
-  // late GoogleSignIn _googleSignIn;
+  late GoogleSignIn _googleSignIn;
   // bool _isGoogleSignedOut = false;
   // StreamSubscription? _googleSignInSubscription;
 
   SignupBloc() : super(SignupInitialState()) {
-    // _googleSignIn = GoogleSignIn(
-    //   clientId: AppStrings.googleSignInClientId,
-    //   scopes: ["email"],
-    // );
+    _googleSignIn = GoogleSignIn(
+      clientId: AppStrings.googleSignInClientId,
+      scopes: ["email"],
+    );
     _authInstance = FirebaseAuth.instance;
     _collectionReference = FirebaseFirestore.instance.collection('users');
     _checkConnectivity = CheckConnectivity();
@@ -117,8 +117,15 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
   Future<void> _onSignupWithGoogle(SignupWithGoogleEvent event, Emitter<SignupState> emit) async {
     emit(SignupLoadingState());
     try {
-      final googleProvider = GoogleAuthProvider();
-      final firebaseUserCredential = await _authInstance.signInWithPopup(googleProvider);
+      // final googleProvider = GoogleAuthProvider();
+      // final firebaseUserCredential = await _authInstance.signInWithPopup(googleProvider);
+      final firebaseUserCredential = await signInWithGoogle();
+      if (firebaseUserCredential == null) {
+        throw FirebaseAuthException(
+          code: 'faiLed',
+          message: 'user cancelled the sign-in flow'
+        );
+      }
       final user = firebaseUserCredential.user;
       if (user == null) {
         emit(
@@ -259,6 +266,23 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
     //     message: AppStrings.googleSigninFailedMsg,
     //   ));
     // }
+  }
+
+  Future<UserCredential?> signInWithGoogle() async {
+    if (kIsWeb) {
+      return await _authInstance.signInWithPopup(GoogleAuthProvider());
+    }
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      // user cancelled the sign-in flow
+      return null;
+    }
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   Future<void> onSignupSubmit(SignupSubmitEvent event, Emitter emit) async {

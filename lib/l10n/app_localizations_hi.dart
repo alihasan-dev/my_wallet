@@ -281,7 +281,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get addTransactionDetails => 'लेन-देन विवरण जोड़ें';
 
   @override
-  String get description => 'Description';
+  String get description => 'विवरण';
 
   @override
   String get rate => 'दर प्रति पीस';
@@ -320,24 +320,134 @@ class AppLocalizationsHi extends AppLocalizations {
       'अपने लेन-देन के लिए विवरण प्रदर्शित करें';
 
   @override
-  String get transactionStatus => 'Transaction Status';
+  String get transactionStatus => 'लेन-देन स्थिति';
 
   @override
-  String get importReport => 'Import Report';
+  String get importReport => 'आयात रिपोर्ट';
 
   @override
-  String get transactionImport => 'Transaction Import';
+  String get transactionImport => 'लेन-देन आयात';
 
   @override
-  String get optional => 'Optional';
+  String get optional => 'वैकल्पिक';
 
   @override
-  String get active => 'Active';
+  String get active => 'सक्रिय';
 
   @override
-  String get inactive => 'Inactive';
+  String get inactive => 'निष्क्रिय';
 
   @override
   String get transactionStatusMsg =>
-      'Active transactions count toward your balance. You can change this anytime by editing the transaction.';
+      'सक्रिय लेन-देन आपके बैलेंस में गिने जाते हैं। आप इसे कभी भी लेन-देन संपादित करके बदल सकते हैं।';
+
+  @override
+  String get upload => 'अपलोड';
+
+  @override
+  String get review => 'समीक्षा';
+
+  @override
+  String get clean => 'सफ़ाई';
+
+  @override
+  String get confirm => 'पुष्टि करें';
+
+  @override
+  String get drag_drop_msg => 'खींचें और छोड़ें या ';
+
+  @override
+  String get select_files => 'फ़ाइलें चुनें';
+
+  @override
+  String get upload_file_msg =>
+      'अपनी लेन-देन फ़ाइल CSV (.csv) या Excel (.xlsx/.xls) प्रारूप में अपलोड करें।\nअधिकतम फ़ाइल आकार 2 MB है';
+
+  @override
+  String get download_sample_template => 'नमूना टेम्पलेट डाउनलोड करें';
+
+  @override
+  String get done => 'पूर्ण';
+
+  @override
+  String get import_completed => 'आयात पूर्ण हुआ';
+
+  @override
+  String import_complete_msg(Object transaction_count) {
+    return '$transaction_count लेन-देन सफलतापूर्वक आयात किए गए';
+  }
+
+  @override
+  String get try_different_file => 'दूसरी फ़ाइल आज़माएं';
+
+  @override
+  String get loading => 'लोड हो रहा है';
+
+  @override
+  String import_valid_transaction_msg(Object row) {
+    return '$row लेन-देन आयात करें';
+  }
+
+  @override
+  String invalid_row_msg(Object invalid_row) {
+    return 'आपकी फ़ाइल की सभी $invalid_row पंक्तियों में समस्याएं थीं और उन्हें बाहर रखा गया। कुछ भी आयात नहीं किया जाएगा।';
+  }
+
+  @override
+  String get import_review_msg =>
+      'मैंने डेटा की समीक्षा कर ली है और सत्यापित लेन-देन को MyWallet में आयात करने के लिए सहमत हूं।';
+
+  @override
+  String get no_valid_import => 'आयात करने के लिए कोई मान्य लेन-देन नहीं';
+
+  @override
+  String get import_warning_msg =>
+      'इस क्रिया को स्वचालित रूप से पूर्ववत नहीं किया जा सकता — आयातित लेन-देन को बाद में अलग-अलग संपादित या हटाया जा सकता है।';
+
+  @override
+  String invalid_row_exclude_msg(Object invalid_row) {
+    return '$invalid_row अमान्य पंक्तियाँ बाहर रखी गईं';
+  }
+
+  @override
+  String valid_row_include_msg(Object valid_row) {
+    return '$valid_row लेन-देन आयात किए जाएंगे';
+  }
+
+  @override
+  String get import_summary => 'आयात सारांश';
+
+  @override
+  String get import_failed_parse => 'आयात पार्स करने में विफल';
+
+  @override
+  String successful_read_file_msg(
+    Object file_name,
+    Object total_column,
+    Object total_row,
+  ) {
+    return '$file_name से $total_row पंक्तियाँ और $total_column कॉलम सफलतापूर्वक पढ़े गए';
+  }
+
+  @override
+  String get reading_file => 'आपकी फ़ाइल पढ़ी जा रही है';
+
+  @override
+  String get checking_formats => 'प्रारूप जांचे जा रहे हैं';
+
+  @override
+  String get checking_your_data => 'आपका डेटा जांचा जा रहा है';
+
+  @override
+  String get transaction_import_msg_second =>
+      'आपकी फ़ाइल नमूना टेम्पलेट प्रारूप से मेल खानी चाहिए, अन्यथा इसे अस्वीकार कर दिया जाएगा।';
+
+  @override
+  String get transaction_import_msg_first =>
+      'पहले से आयात की गई फ़ाइल को दोबारा अपलोड करने से बचें — केवल पूर्ण रूप से मेल खाने वाली प्रविष्टियाँ ही डुप्लिकेट के रूप में पकड़ी जाती हैं, इसलिए संपादित या आंशिक रूप से दोबारा अपलोड की गई फ़ाइलें दोहराई गई प्रविष्टियाँ बना सकती हैं।';
+
+  @override
+  String import_valid_transaction(Object valid_row) {
+    return '$valid_row लेन-देन आयात करें';
+  }
 }

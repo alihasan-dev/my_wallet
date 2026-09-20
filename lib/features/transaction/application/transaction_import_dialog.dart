@@ -50,12 +50,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
 
   @override
   void initState() {
-    importStatusFlagList = [
-      ImportStatus(label: 'Upload'),
-      ImportStatus(label: 'Review'),
-      ImportStatus(label: 'Clean'),
-      ImportStatus(label: 'Confirm')
-    ];
     importTransactionList.clear();
     super.initState();
   }
@@ -63,6 +57,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
   @override
   void didChangeDependencies() {
     _localizations = AppLocalizations.of(context)!;
+    importStatusFlagList = [
+      ImportStatus(label: _localizations!.upload),
+      ImportStatus(label: _localizations!.review),
+      ImportStatus(label: _localizations!.clean),
+      ImportStatus(label: _localizations!.confirm)
+    ];
     super.didChangeDependencies();
   }
 
@@ -90,7 +90,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        title: 'Transaction Import',
+                        title: _localizations!.transactionImport,
                         textStyle: getSemiBoldStyle(),
                       ),
                       Transform.translate(
@@ -225,7 +225,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                               child: Icon(Icons.circle, size: 6, color: AppColors.grey)),
                             Expanded(
                               child: Text(
-                                "Avoid re-uploading a file you've already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.",
+                               _localizations!.transaction_import_msg_first,
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: AppColors.grey
@@ -244,7 +244,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                               child: Icon(Icons.circle, size: 6, color: AppColors.grey)),
                             Expanded(
                               child: Text(
-                                "Your file must match the sample template format, or it will be rejected.",
+                                _localizations!.transaction_import_msg_second,
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: AppColors.grey,
@@ -322,7 +322,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   ),
                 ),
                 Text(
-                  "Checking your data...",
+                  "${_localizations!.checking_your_data}...",
                   style: TextStyle(
                     fontSize: 13
                   ),
@@ -331,7 +331,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             ),
             SizedBox(height: 10),
             Text(
-              "Checking formats",
+              _localizations!.checking_formats,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.grey
@@ -373,7 +373,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                     ),
                   ),
                   Text(
-                    "Reading your file...",
+                    "${_localizations!.reading_file}...",
+                    // "Reading your file...",
                     style: TextStyle(
                       fontSize: 13
                     ),
@@ -382,7 +383,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               ),
               SizedBox(height: 10),
               Text(
-                "Successfully read $totalRow rows and $totalCloumn columns from $fileName",
+                _localizations!.successful_read_file_msg(fileName, totalCloumn, totalRow),
+                // "Successfully read $totalRow rows and $totalCloumn columns from $fileName",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
@@ -401,7 +403,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             ),
             SizedBox(height: 8),
             Text(
-              "Import Failed to Parse",
+              _localizations!.import_failed_parse,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500
@@ -416,12 +418,12 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             ),
             SizedBox(height: 12),
             CustomTextButton(
-              title: 'Try a Different File',
+              title: _localizations!.try_different_file,
               horizontalPadding: AppSize.s16,
               borderRadius: AppSize.s24,
               isSelected: true,
               backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
-              onPressed: () => context.read<TransactionImportBloc>().add(TransactionResetImportEvent())
+              onPressed: () => context.read<TransactionImportBloc>().add(TransactionImportResetEvent())
             ),
           ],
         ),
@@ -448,7 +450,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Import summary",
+            _localizations!.import_summary,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500
@@ -470,7 +472,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 ),
                 Expanded(
                   child: Text(
-                    "$validRow transactions will be imported",
+                    _localizations!.valid_row_include_msg(validRow),
+                    // "$validRow transactions will be imported",
                     style: TextStyle(
                       fontSize: 12
                     ),
@@ -493,7 +496,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 ),
                 Expanded(
                   child: Text(
-                    "$invalidRow invalid rows excluded",
+                    _localizations!.invalid_row_exclude_msg(invalidRow),
+                    // "$invalidRow invalid rows excluded",
                     style: TextStyle(
                       fontSize: 12
                     ),
@@ -520,8 +524,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               Expanded(
                 child: Text(
                   validRow > 0
-                  ? "This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward."
-                  : "No valid transactions to import",
+                  ? _localizations!.import_warning_msg
+                  : _localizations!.no_valid_import,
                   style: TextStyle(
                     fontSize: 12,
                     color: validRow > 0
@@ -554,7 +558,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 ),
                 Expanded(
                   child: Text(
-                    "I have reviewed the data and want to import the validated transactions into MyWallet.",
+                    _localizations!.import_review_msg,
                     style: TextStyle(
                       fontSize: 12
                     ),
@@ -565,7 +569,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           ],
           if (validRow <=0 )...[
             Text(
-              "All $invalidRow rows in your file had issues and were excluded. Nothing will be imported.",
+              _localizations!.invalid_row_msg(invalidRow),
+              // "All $invalidRow rows in your file had issues and were excluded. Nothing will be imported.",
               style: TextStyle(
                 fontSize: 12
               ),
@@ -574,7 +579,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           SizedBox(height: 15),
           CustomButton(
             onTap: validRow <= 0
-            ? () => context.read<TransactionImportBloc>().add(TransactionResetImportEvent())
+            ? () => context.read<TransactionImportBloc>().add(TransactionImportResetEvent())
             : finalCheckValue && !importLoading
               ? () => context.read<TransactionImportBloc>().add(TransactionImportUploadEvent())
               : null,
@@ -582,10 +587,10 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             verticalPadding: 10,
             horizontalPadding: 15,
             title: importLoading
-            ? 'Loading...'
+            ? '${_localizations!.loading}...'
             : validRow <= 0
-              ? "Upload a different file"
-              : 'Import $validRow Transactions',
+              ? _localizations!.try_different_file
+              : _localizations!.import_valid_transaction(validRow),
             titleSize: 12,
             buttonColor: validRow <= 0
             ? AppColors.red
@@ -613,7 +618,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           Icon(Icons.check_circle, color: AppColors.green, size: 40),
           SizedBox(height: 8),
           Text(
-            "Import completed",
+            _localizations!.import_completed,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500
@@ -621,7 +626,8 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           ),
           SizedBox(height: 8),
           Text(
-            "$transactionCount transactions imported successfully",
+            _localizations!.import_complete_msg(transactionCount),
+            // "$transactionCount transactions imported successfully",
             style: TextStyle(
               fontSize: 12,
               color: AppColors.grey
@@ -629,7 +635,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           ),
           SizedBox(height: 12),
           CustomTextButton(
-            title: 'Done',
+            title: _localizations!.done,
             horizontalPadding: AppSize.s16,
             borderRadius: AppSize.s24,
             isSelected: true,
@@ -675,7 +681,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   ),
                   children: [
                     TextSpan(
-                      text: 'Drag and drop or ',
+                      text: _localizations!.drag_drop_msg,
                       style: TextStyle(
                         color: Helper.isDark
                         ? AppColors.white.withValues(alpha: 0.9)
@@ -683,7 +689,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                       ),
                     ),
                     TextSpan(
-                      text: 'select files',
+                      text: _localizations!.select_files,
                       style: TextStyle(
                         color: AppColors.primaryColor
                       ),
@@ -694,7 +700,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 ),
               ),
               Text(
-                'Upload your transaction file in CSV (.csv) or Excel (.xlsx/.xls) format.\nThe maximum file size allowed is 2 MB',
+                _localizations!.upload_file_msg,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 11,
@@ -704,7 +710,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               GestureDetector(
                 onTap: () => context.read<TransactionImportBloc>().add(TransactionImportDownloadTemplateEvent()),
                 child: Text(
-                  'Download sample template',
+                  _localizations!.download_sample_template,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.primaryColor,

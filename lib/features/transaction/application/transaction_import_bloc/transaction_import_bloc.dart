@@ -30,7 +30,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
     on<TransactionImportDownloadTemplateEvent>(_onDownloadTemplateFile);
     on<TransactionImportInitiateEvent>(_onInitiateTransactionImport);
     on<TransactionImportCheckedEvent>(_onChangeCheckValue);
-    on<TransactionResetImportEvent>(_onResetTransactionImport);
+    on<TransactionImportResetEvent>(_onResetTransactionImport);
   }
 
   void _onUpdateImportStatus(TransactionImportStateUpdateEvent event, Emitter emit) {
@@ -41,7 +41,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
     emit(TransactionImportCheckedState(value: event.value));
   }
 
-  void _onResetTransactionImport(TransactionResetImportEvent event, Emitter emit) {
+  void _onResetTransactionImport(TransactionImportResetEvent event, Emitter emit) {
     currentImportIndex = 0;
     finalImportTransactionList.clear();
     validRow = 0;

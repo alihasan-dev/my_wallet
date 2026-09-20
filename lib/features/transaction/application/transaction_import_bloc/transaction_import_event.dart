@@ -21,4 +21,4 @@ class TransactionImportCheckedEvent extends TransactionImportEvent {
   TransactionImportCheckedEvent({this.value = false});
 }
 
-class TransactionResetImportEvent extends TransactionImportEvent {}
+class TransactionImportResetEvent extends TransactionImportEvent {}

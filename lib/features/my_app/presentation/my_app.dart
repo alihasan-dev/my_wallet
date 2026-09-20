@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,9 +59,11 @@ class _MyAppState extends State<MyApp> {
             textTheme: const TextTheme().apply(bodyColor: AppColors.white.withValues(alpha: 0.9)),
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: <TargetPlatform, PageTransitionsBuilder>{
-                TargetPlatform.android: ZoomPageTransitionsBuilder(
-                  allowEnterRouteSnapshotting: false
-                )
+                // TargetPlatform.android: ZoomPageTransitionsBuilder(
+                //   allowEnterRouteSnapshotting: false
+                // )
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(), // ⬅ forces iOS-style slide on Android
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               }
             )
           ),

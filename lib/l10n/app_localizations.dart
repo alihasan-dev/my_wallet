@@ -733,6 +733,184 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Active transactions count toward your balance. You can change this anytime by editing the transaction.'**
   String get transactionStatusMsg;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// No description provided for @review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get review;
+
+  /// No description provided for @clean.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean'**
+  String get clean;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @drag_drop_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag and drop or '**
+  String get drag_drop_msg;
+
+  /// No description provided for @select_files.
+  ///
+  /// In en, this message translates to:
+  /// **'select files'**
+  String get select_files;
+
+  /// No description provided for @upload_file_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your transaction file in CSV (.csv) or Excel (.xlsx/.xls) format.\nThe maximum file size allowed is 2 MB'**
+  String get upload_file_msg;
+
+  /// No description provided for @download_sample_template.
+  ///
+  /// In en, this message translates to:
+  /// **'Download sample template'**
+  String get download_sample_template;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @import_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import completed'**
+  String get import_completed;
+
+  /// No description provided for @import_complete_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'{transaction_count} transactions imported successfully'**
+  String import_complete_msg(Object transaction_count);
+
+  /// No description provided for @try_different_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different file'**
+  String get try_different_file;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get loading;
+
+  /// No description provided for @import_valid_transaction_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {row} Transactions'**
+  String import_valid_transaction_msg(Object row);
+
+  /// No description provided for @invalid_row_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'All {invalid_row} rows in your file had issues and were excluded. Nothing will be imported.'**
+  String invalid_row_msg(Object invalid_row);
+
+  /// No description provided for @import_review_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'I have reviewed the data and want to import the validated transactions into MyWallet.'**
+  String get import_review_msg;
+
+  /// No description provided for @no_valid_import.
+  ///
+  /// In en, this message translates to:
+  /// **'No valid transactions to import'**
+  String get no_valid_import;
+
+  /// No description provided for @import_warning_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward.'**
+  String get import_warning_msg;
+
+  /// No description provided for @invalid_row_exclude_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'{invalid_row} invalid rows excluded'**
+  String invalid_row_exclude_msg(Object invalid_row);
+
+  /// No description provided for @valid_row_include_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'{valid_row} transactions will be imported'**
+  String valid_row_include_msg(Object valid_row);
+
+  /// No description provided for @import_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Import summary'**
+  String get import_summary;
+
+  /// No description provided for @import_failed_parse.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Failed to Parse'**
+  String get import_failed_parse;
+
+  /// No description provided for @successful_read_file_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully read {total_row} rows and {total_column} columns from {file_name}'**
+  String successful_read_file_msg(
+    Object file_name,
+    Object total_column,
+    Object total_row,
+  );
+
+  /// No description provided for @reading_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your file'**
+  String get reading_file;
+
+  /// No description provided for @checking_formats.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking formats'**
+  String get checking_formats;
+
+  /// No description provided for @checking_your_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your data'**
+  String get checking_your_data;
+
+  /// No description provided for @transaction_import_msg_second.
+  ///
+  /// In en, this message translates to:
+  /// **'Your file must match the sample template format, or it will be rejected.'**
+  String get transaction_import_msg_second;
+
+  /// No description provided for @transaction_import_msg_first.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid re-uploading a file you\'ve already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.'**
+  String get transaction_import_msg_first;
+
+  /// No description provided for @import_valid_transaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {valid_row} transactions'**
+  String import_valid_transaction(Object valid_row);
 }
 
 class _AppLocalizationsDelegate
