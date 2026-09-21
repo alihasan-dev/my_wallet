@@ -44,6 +44,10 @@ abstract class MyAppTheme {
 
   static ThemeData get getAppTheme {
     return ThemeData(
+      scaffoldBackgroundColor: Colors.white,
+      popupMenuTheme: const PopupMenuThemeData(
+        color: Colors.white
+      ),
       //main color of app
       primarySwatch: Colors.indigo,
       primaryColor: AppColors.primaryColor,

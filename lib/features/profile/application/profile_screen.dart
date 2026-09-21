@@ -421,7 +421,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           var data = await pickImage(imageSource: ImageSource.camera, context: context);
                           if(data.isNotEmpty && context.mounted){
                             profileBloc.add(ProfileChooseImageEvent(imagePath: data));
-                            // mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                           }
                         },
                         child: Column(
