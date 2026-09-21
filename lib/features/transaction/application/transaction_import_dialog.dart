@@ -22,12 +22,14 @@ import '../../../widgets/horizontal_dashline.dart';
 class TransactionImportDialog extends StatefulWidget {
 
   final String friendId;
+  final double totalAmount;
   final Widget? closeButton;
 
   const TransactionImportDialog({
     super.key,
     required this.friendId,
-    this.closeButton
+    this.closeButton,
+    this.totalAmount = 0.0
   });
 
   @override
@@ -69,7 +71,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TransactionImportBloc>(
-      create: (context) => TransactionImportBloc(friendId: widget.friendId),
+      create: (context) => TransactionImportBloc(friendId: widget.friendId, totalAmount: widget.totalAmount),
       child: AlertDialog(
         contentPadding: const EdgeInsets.symmetric(
           vertical: AppSize.s15, 

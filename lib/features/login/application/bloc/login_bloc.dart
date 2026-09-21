@@ -9,7 +9,6 @@ import '../../../../core/analytics/analytics_events.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../utils/check_connectivity.dart';
-// import '../../../../utils/custom_exception.dart';
 import '../../../../utils/preferences.dart';
 import '../../../settings/domain/settings_model.dart';
 part 'login_event.dart';
@@ -212,8 +211,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final firebaseUserCredential = await signInWithGoogle();
       if (firebaseUserCredential == null) {
         throw FirebaseAuthException(
-          code: 'faiLed',
-          message: 'user cancelled the sign-in flow'
+          code: 'sign-in-cancelled',
+          message: 'Google sign-in was cancelled.'
         );
       }
       final user = firebaseUserCredential.user;

@@ -123,8 +123,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState>{
       final firebaseUserCredential = await signInWithGoogle();
       if (firebaseUserCredential == null) {
         throw FirebaseAuthException(
-          code: 'faiLed',
-          message: 'user cancelled the sign-in flow'
+          code: 'sign-in-cancelled',
+          message: 'Google sign-in was cancelled.'
         );
       }
       final user = firebaseUserCredential.user;

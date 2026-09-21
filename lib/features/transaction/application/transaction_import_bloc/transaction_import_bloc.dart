@@ -16,6 +16,7 @@ part 'transaction_import_state.dart';
 class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImportState> {
   
   late String userId;
+  double totalAmount;
   late DocumentReference firebaseStoreInstance;
   int currentImportIndex = 0;
   var finalImportTransactionList = <TransactionImportModel>[];
@@ -23,7 +24,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
   int invalidRow = 0;
   double outstandingAmount = 0.0;
 
-  TransactionImportBloc({required String friendId}) : super(TransactionImportInitialState()) {
+  TransactionImportBloc({required String friendId, this.totalAmount = 0.0}) : super(TransactionImportInitialState()) {
     userId = Preferences.getString(key: AppStrings.prefUserId);
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
     on<TransactionImportStateUpdateEvent>(_onUpdateImportStatus);
@@ -77,8 +78,8 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         }
         await batch.commit();
       }
-      developer.log("total outstanding amount $outstandingAmount");
-      firebaseStoreInstance.update({'outstanding_amount': outstandingAmount});
+      developer.log("total outstanding amount ${totalAmount + outstandingAmount}");
+      firebaseStoreInstance.update({'outstanding_amount': totalAmount + outstandingAmount});
       emit(TransactionImportStatusUpdateState(
         completeIndex: currentImportIndex,
         currentImportIndex: currentImportIndex,

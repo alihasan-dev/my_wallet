@@ -68,6 +68,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   double minAmount = double.maxFinite;
   int _selectedTransactionCount = 0;
   String? transactionId;
+  double originalTotalBalance = 0.0;
 
   @override
   void initState() {
@@ -741,6 +742,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 amountRangeValues: tempAmountChangeValue
               ));
             }
+            originalTotalBalance = state.originalTotalBalance;
             if(!state.isTransactionAgainstFilter) {
               availableBalance = state.totalBalance;
               isFilterEnable = state.isFilterEnable;
@@ -935,7 +937,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: TransactionImportDialog(
-          friendId: friendId
+          friendId: friendId,
+          totalAmount: originalTotalBalance,
         ),
       ),
     );

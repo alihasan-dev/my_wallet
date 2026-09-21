@@ -51,6 +51,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   int lastTransactionDate = 0;
   Map? friendProfileData;
   double totalBalance = 0.0;
+  double originalTotalBalance = 0.0;
   int transferCount = 0;
   int receiveCount = 0;
   double transferAmount = 0.0;
@@ -121,6 +122,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
           if (mapData['amount'] == null || mapData['date'] == null ||  mapData['type'] == null) continue;
+          originalAmount(mapData);
           originalTransactionResultList.add(TransactionModel(
             id: item.id,
             date: DateTime.fromMillisecondsSinceEpoch(mapData['date'].millisecondsSinceEpoch),
@@ -133,6 +135,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
       add(TransactionAllEvent());
     });
+  }
+
+  void originalAmount(Map<String, dynamic> mapData) {
+    if (mapData['isActive'] ?? true) {
+      final parseAmount = double.parse(mapData['amount']);
+      if (mapData['type'] == AppStrings.transfer) {
+        originalTotalBalance-=parseAmount;
+      } else {
+        originalTotalBalance+=parseAmount;
+      }
+    }
   }
 
   @override
@@ -163,7 +176,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: hasFilterApplied
+        isFilterEnable: hasFilterApplied,
+        originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -235,7 +249,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: hasFilterApplied
+        isFilterEnable: hasFilterApplied,
+        originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -267,7 +282,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: hasFilterApplied
+        isFilterEnable: hasFilterApplied,
+        originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -299,7 +315,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(AllTransactionState(
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
-      isFilterEnable: true
+      isFilterEnable: true,
+      originalTotalBalance: originalTotalBalance
     ));
     ////capture transaction filter event
     AnalyticsService.instance.logEvent(
@@ -315,7 +332,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(AllTransactionState(
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
-      isTransactionAgainstFilter: hasFilterApplied
+      isTransactionAgainstFilter: hasFilterApplied,
+      originalTotalBalance: originalTotalBalance
     ));
   }
 
@@ -352,7 +370,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: hasFilterApplied
+        isFilterEnable: hasFilterApplied,
+        originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -370,7 +389,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: hasFilterApplied
+        isFilterEnable: hasFilterApplied,
+        originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -388,7 +408,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(AllTransactionState(
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
-        isFilterEnable: hasFilterApplied
+        isFilterEnable: hasFilterApplied,
+        originalTotalBalance: originalTotalBalance
       ));
     }
   }
