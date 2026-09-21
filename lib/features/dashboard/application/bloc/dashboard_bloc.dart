@@ -79,7 +79,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             type: mapData['type'] ?? '',
             isUserVerified: mapData['isVerified'] ?? false,
             isPinned: mapData['pinned'] ?? false,
-            outstandingAmount: mapData['outstanding_amount'] ?? 0.0
+            outstandingAmount: (mapData['outstanding_amount'] ?? 0.0).toDouble()
           ));
         }
       }

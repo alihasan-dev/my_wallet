@@ -16,6 +16,7 @@ import '../../../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../../../widgets/custom_text_field.dart';
 
 class AddUserDialog extends StatefulWidget {
+  
   const AddUserDialog({super.key});
 
   @override
@@ -72,38 +73,6 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  // TextField(
-                  //   controller: nameTextController,
-                  //   onChanged: (value) => context.read<DashboardBloc>().add(DashboardNameChangeEvent(name: value)),
-                  //   maxLength: 50,
-                  //   decoration: InputDecoration(
-                  //     hintText: '${_localizations!.name} *',
-                  //     hintStyle: TextStyle(
-                  //       fontSize: 16,
-                  //       color: AppColors.grey
-                  //     ),
-                  //     errorText: errorName.isNotEmpty
-                  //     ? errorName
-                  //     : null,
-                  //     label: CustomText(
-                  //       title: '${_localizations!.name} *',
-                  //       textColor: Helper.isDark 
-                  //       ? AppColors.white.withValues(alpha: 0.8)
-                  //       : AppColors.black
-                  //     ),
-                  //     border: const OutlineInputBorder(),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05, 
-                  //         color: Helper.isDark 
-                  //         ? AppColors.grey 
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //     counterText: ''
-                  //   ),
-                  //   inputFormatters: [NameInputFormatter()],
-                  // ),
                   CustomTextField(
                     title: _localizations!.name,
                     isPasswordField: false,
@@ -116,44 +85,6 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     animatedError: false
                   ),
                   const SizedBox(height: AppSize.s16),
-                  // TextField(
-                  //   controller: phoneTextController,
-                  //   onChanged: (value) => context.read<DashboardBloc>().add(DashboardPhoneChangeEvent(phone: phoneTextController.text.replaceAll('-', ''))),
-                  //   keyboardType: TextInputType.number,
-                  //   decoration: InputDecoration(
-                  //     hintText: '${_localizations!.phone} *',
-                  //     hintStyle: TextStyle(
-                  //       fontSize: 16,
-                  //       color: AppColors.grey
-                  //     ),
-                  //     errorText: errorPhone.isNotEmpty
-                  //     ? errorPhone
-                  //     : null,
-                  //     label: CustomText(
-                  //       title: '${_localizations!.phone} *',
-                  //       textColor: Helper.isDark 
-                  //       ? AppColors.white.withValues(alpha: 0.8)
-                  //       : AppColors.black,
-                  //     ),
-                  //     border: const OutlineInputBorder(),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05, 
-                  //         color: Helper.isDark 
-                  //         ? AppColors.grey 
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //     prefix: Text(
-                  //       '+91 ',
-                  //       style: TextStyle(
-                  //         color: AppColors.black,
-                  //         fontSize: 16
-                  //       ),
-                  //     ),
-                  //   ),
-                  //   inputFormatters: [IndianMobileNumberFormatter()],
-                  // ),
                   CustomTextField(
                     title: _localizations!.phone,
                     isPasswordField: false,

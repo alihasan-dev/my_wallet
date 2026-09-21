@@ -47,6 +47,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileEmailChangeEvent>(_onEmailChange);
     on<ProfileChooseImageEvent>(_onChooseImage);
     on<ProfileDeleteUserEvent>(_onDeleteUser);
+    on<ProfileLoadingEvent>(_onLoadingEvent);
 
     if (!friendId.isBlank) {
       streamSubscriptionFriendList = userCollectionRef.collection('friends').snapshots().listen((event) {
@@ -80,6 +81,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     streamSubscription.cancel();
     streamSubscriptionFriendList?.cancel();
     return super.close();
+  }
+
+  void _onLoadingEvent(ProfileLoadingEvent event, Emitter emit) {
+    emit(ProfileLoadingState(showLoading: event.showLoading));
   }
 
   void _onNameChange(ProfileNameChangeEvent event, Emitter emit) {

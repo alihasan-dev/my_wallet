@@ -25,7 +25,7 @@ class ReportFilterDetails extends pw.StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-         pw.SizedBox(height: AppSize.s10),
+        pw.SizedBox(height: AppSize.s10),
         pw.Container(
           width: double.maxFinite,
           padding: pw.EdgeInsets.symmetric(horizontal: 6, vertical: 6),

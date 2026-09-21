@@ -77,7 +77,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         }
         await batch.commit();
       }
-      print("total outstanding amount $outstandingAmount");
+      developer.log("total outstanding amount $outstandingAmount");
       firebaseStoreInstance.update({'outstanding_amount': outstandingAmount});
       emit(TransactionImportStatusUpdateState(
         completeIndex: currentImportIndex,

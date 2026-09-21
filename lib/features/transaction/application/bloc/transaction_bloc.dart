@@ -33,7 +33,6 @@ part 'transaction_event.dart';
 part 'transaction_state.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-  // late DateFormat dateFormat;
   late CheckConnectivity checkConnectivity;
   late DocumentReference firebaseStoreInstance;
   late StreamSubscription<QuerySnapshot> streamDocumentSnapshot;
@@ -65,7 +64,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
     checkConnectivity = CheckConnectivity();
     _initializeAudioPlayer();
-    on<TransactionAddEvent>(_onAddUpdateTransaction);
+    on<TransactionAddUpdateEvent>(_onAddUpdateTransaction);
     on<TransactionDateChangeEvent>(_onChangeDateStatus);
     on<TransactionTypeChangeEvent>(_onChangeTransactionType);
     on<TransactionStatusChangeEvent>(_onChangeTransactionStatus);
@@ -422,7 +421,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return totalBalance;
   }
 
-  Future<void> _onAddUpdateTransaction(TransactionAddEvent event, Emitter<TransactionState> emit) async {
+  Future<void> _onAddUpdateTransaction(TransactionAddUpdateEvent event, Emitter<TransactionState> emit) async {
     if (await _validate(emit, userName: event.userName, date: event.date, amount: event.amount)) {
       if (event.transactionId.isBlank) {
         firebaseStoreInstance.collection('transactions').add({
@@ -459,6 +458,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           },
         );
       } else {
+        if (event.prevTransactionState != null) {
+          final finalizeTotalAmount = event.prevTransactionState?.type == AppStrings.transfer
+          ? totalBalance + event.prevTransactionState!.amount
+          : totalBalance - event.prevTransactionState!.amount;
+          final doubleParseAmount = double.tryParse(event.amount) ?? 0.0;
+          final finalOutstandingAmount = event.type == AppStrings.transfer
+          ? finalizeTotalAmount - doubleParseAmount
+          : finalizeTotalAmount + doubleParseAmount;
+          firebaseStoreInstance.update({'outstanding_amount': finalOutstandingAmount});
+        }
         firebaseStoreInstance.collection('transactions').doc(event.transactionId).update({
           'date': event.date, 
           'amount': event.amount, 

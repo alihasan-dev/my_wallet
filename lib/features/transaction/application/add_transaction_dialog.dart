@@ -321,7 +321,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     title: widget.transactionModel != null  
                     ? _localizations!.update
                     : _localizations!.add, 
-                    onTap: () => context.read<TransactionBloc>().add(TransactionAddEvent(
+                    onTap: () => context.read<TransactionBloc>().add(TransactionAddUpdateEvent(
                         userName: widget.userName, 
                         date: transactionDate, 
                         amount: amountTextController.text, 
@@ -330,7 +330,8 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         ? '' 
                         : widget.transactionModel!.id,
                         description: descriptionTextController.text,
-                        isActive: isActiveTransaction
+                        isActive: isActiveTransaction,
+                        prevTransactionState: widget.transactionModel
                       ),
                     ),
                     titleSize: AppSize.s15,

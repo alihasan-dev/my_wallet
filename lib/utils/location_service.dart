@@ -68,6 +68,7 @@ class LocationService with Helper {
       }
       
     } catch(e) {
+      if (!context.mounted) return '';
       final message = e.toString();
       showSnackBar(context: context, title: message.replaceAll('Exception: ', ''), color: AppColors.red);
       return '';

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:my_wallet/utils/location_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../constants/app_theme.dart';
@@ -56,12 +55,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   bool isFetchProfileData = false;
   bool isArchived = true;
   late LocationService _locationService;
-
-  //India Phone Number Format
-  // var maskFormatter = MaskTextInputFormatter(
-  //   mask: '####-###-###',
-  //   filter: {"#": RegExp(r'[0-9]')}
-  // );
 
   @override
   void initState() {
@@ -141,7 +134,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   emailTextController.text = profileData['email'] ?? '';
                   nameTextController.text = profileData['name'] ?? '';
                   phoneTextController.text = (profileData['phone'] ?? '').toString().formatIndianMobileNumber;
-                  // phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
                   addressTextController.text = profileData['address'] ?? '';
                   isArchived = profileData['isVerified'] ?? true;
                   imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
@@ -160,7 +152,11 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   }
                   break;
                 case ProfileLoadingState _:
-                  showLoadingDialog(context: context);
+                  if (state.showLoading) {
+                    showLoadingDialog(context: context);
+                  } else {
+                    hideLoadingDialog(context: context);
+                  }
                   break;
                 case ProfileDeleteUserState _:
                   if(state.isDeleted) {
@@ -190,7 +186,12 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   Future<void> onUserDelete(String name, BuildContext mContext) async {
-    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: _localizations!.deleteUserMsg(name), localizations: _localizations!)) {
+    if(await confirmationDialog(
+      context: context, 
+      title: _localizations!.deleteUser, 
+      content: _localizations!.deleteUserMsg(name), 
+      localizations: _localizations!) && mContext.mounted
+    ) {
       mContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
     }
   }
@@ -260,23 +261,18 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           readOnly: true,
           isMandatory: true,
           onSuffixTap: () => profileBloc.add(ProfileShowIdEvent()),
-          // onSuffixTap: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
           errorText: errorUserId,
         ),
         const SizedBox(height: 14),
         CustomTextField(
           title: _localizations!.phone, 
           isPasswordField: false,
-          // isEnabled: widget.userId.isBlank ? true : false, 
           isMandatory: widget.userId.isBlank ? false : true,
           textEditingController: phoneTextController,
           errorText: errorPhone,
           keyboardType: TextInputType.number,
           maxLength: 12,
-          textInputFormatter: [
-            IndianMobileNumberFormatter()
-            // maskFormatter
-          ],
+          textInputFormatter: [IndianMobileNumberFormatter()],
           hintStyle: getRegularStyle(
             fontSize: 14,
             color: Helper.isDark 
@@ -286,12 +282,13 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           prefix: Text(
             '+91 ',
             style: TextStyle(
-              color: AppColors.black,
+              color: Helper.isDark 
+              ? AppColors.white 
+              : AppColors.black,
               fontSize: 14,
               fontWeight: FontWeight.w500
             ),
           ),
-          // onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
           onChange: (value) => profileBloc.add(ProfilePhoneChangeEvent(text: phoneTextController.text.replaceAll('-', ''))),
         ),
         const SizedBox(height: 14),
@@ -302,7 +299,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           isMandatory: widget.userId.isBlank ? true : false,
           textEditingController: emailTextController,
           errorText: errorEmail,
-          // onChange: (value) => bContext.read<ProfileBloc>().add(ProfileEmailChangeEvent(email: value)),
           onChange: (value) => profileBloc.add(ProfileEmailChangeEvent(email: value)),
         ),
         const SizedBox(height: 14),
@@ -312,7 +308,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           isMandatory: true,
           textEditingController: nameTextController,
           errorText: errorName,
-          // onChange: (value) => bContext.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
           onChange: (value) => profileBloc.add(ProfileNameChangeEvent(text: value)),
           textInputFormatter: [NameInputFormatter()],
         ),
@@ -323,7 +318,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           textEditingController: addressTextController,
           errorText: errorAddress,
           suffixIcon: kIsWeb ? null : Icons.location_pin,
-          onSuffixTap: kIsWeb ? null : () => _getCurrentLocation(context),
+          onSuffixTap: kIsWeb ? null : () => _getCurrentLocation(profileBloc),
         ),
         const SizedBox(height: 14),
         Row(
@@ -335,7 +330,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   children: [
                     Expanded(
                       child: CustomOutlinedButton(
-                        // onPressed: () => bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent()),
                         onPressed: () => profileBloc.add(ProfileDeleteUserEvent()),
                         title: _localizations!.deleteUser, 
                         icon: AppIcons.deleteIcon,
@@ -357,7 +351,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   'email': emailTextController.text,
                   'name': nameTextController.text,
                   'phone':  phoneTextController.text.replaceAll('-', ''),
-                  // 'phone':  maskFormatter.unmaskText(phoneTextController.text),
                   'address': addressTextController.text,
                   'profile_img': imageUrl
                 })),
@@ -460,7 +453,6 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           var data = await pickImage(imageSource: ImageSource.gallery, context: context);
                           if(data.isNotEmpty && context.mounted){
                             profileBloc.add(ProfileChooseImageEvent(imagePath: data));
-                            // mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
                           }
                         },
                         child: Column(
@@ -520,8 +512,10 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
     );
   }
 
-  Future<void> _getCurrentLocation(BuildContext context) async {
+  Future<void> _getCurrentLocation(ProfileBloc profileBloc) async {
+    profileBloc.add(ProfileLoadingEvent());
     var address = await _locationService.getCurrentAddress();
+    profileBloc.add(ProfileLoadingEvent(showLoading: false));
     if (address.isBlank) return;
     addressTextController.text = address;
   }

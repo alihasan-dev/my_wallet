@@ -54,8 +54,13 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   late DateFormat dateFormat;
 
   @override
-  void didChangeDependencies() {
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
     _dashboardBloc = context.read<DashboardBloc>();
     _localizations = AppLocalizations.of(context)!;
     _localAuthentication = LocalAuthentication();
@@ -180,7 +185,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
 
   ///method used to open the biometric failed info dialog
   Future<void> openBiometricDialog() async {
-    if(!await biometricAuthentication()) {
+    if(!await biometricAuthentication() && context.mounted) {
       showDialog(
         context: context,
         barrierDismissible: false, 
@@ -281,6 +286,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
     final location = GoRouter.of(context).routerDelegate.currentConfiguration.fullPath;
     if(location != AppRoutes.dashboard) return;
     switch (state) {
