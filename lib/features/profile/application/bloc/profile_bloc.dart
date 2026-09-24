@@ -135,7 +135,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         if(!selectedImagePath.isBlank) {
           emit(ProfileLoadingState());
           updatedImageUrl = await supabaseStorageUpload();
-          updatedImageUrl = '$updatedImageUrl?v=${DateTime.now().millisecondsSinceEpoch}';
+          if (!updatedImageUrl.isBlank) {
+            updatedImageUrl = '$updatedImageUrl?v=${DateTime.now().millisecondsSinceEpoch}';
+            selectedImagePath = '';
+          }
         }
         debugPrint("🎉 Firebase profile update initiated");
         await firebaseDocReference.update({
