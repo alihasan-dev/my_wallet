@@ -359,7 +359,7 @@ class _TransactionSubDetailsScreenState extends State<TransactionSubDetailsScree
                         );
                       }
                     },
-                    separatorBuilder: (context, index) => const Divider(
+                    separatorBuilder: (_, _) => const Divider(
                       color: AppColors.grey, 
                       thickness: AppSize.s05, 
                       height: AppSize.s05

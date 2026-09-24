@@ -328,7 +328,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   style: TextStyle(
                     fontSize: 13
                   ),
-                )
+                ),
               ],
             ),
             SizedBox(height: 10),
@@ -338,7 +338,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 fontSize: 12,
                 color: AppColors.grey
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -370,13 +370,10 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                   SizedBox(
                     height: 22,
                     width: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                   Text(
                     "${_localizations!.reading_file}...",
-                    // "Reading your file...",
                     style: TextStyle(
                       fontSize: 13
                     ),
@@ -386,7 +383,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
               SizedBox(height: 10),
               Text(
                 _localizations!.successful_read_file_msg(fileName, totalCloumn, totalRow),
-                // "Successfully read $totalRow rows and $totalCloumn columns from $fileName",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
@@ -475,7 +471,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 Expanded(
                   child: Text(
                     _localizations!.valid_row_include_msg(validRow),
-                    // "$validRow transactions will be imported",
                     style: TextStyle(
                       fontSize: 12
                     ),
@@ -499,7 +494,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
                 Expanded(
                   child: Text(
                     _localizations!.invalid_row_exclude_msg(invalidRow),
-                    // "$invalidRow invalid rows excluded",
                     style: TextStyle(
                       fontSize: 12
                     ),
@@ -572,7 +566,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           if (validRow <=0 )...[
             Text(
               _localizations!.invalid_row_msg(invalidRow),
-              // "All $invalidRow rows in your file had issues and were excluded. Nothing will be imported.",
               style: TextStyle(
                 fontSize: 12
               ),
@@ -599,7 +592,7 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             : null
           ),
         ],
-      )
+      ),
     );
   }
 
@@ -629,7 +622,6 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
           SizedBox(height: 8),
           Text(
             _localizations!.import_complete_msg(transactionCount),
-            // "$transactionCount transactions imported successfully",
             style: TextStyle(
               fontSize: 12,
               color: AppColors.grey
@@ -643,9 +635,9 @@ class _TransactionImportDialogState extends State<TransactionImportDialog> with 
             isSelected: true,
             backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
             onPressed: () => context.pop()
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 

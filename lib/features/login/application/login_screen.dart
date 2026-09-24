@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_images.dart';
 import '../../../constants/app_color.dart';
@@ -21,7 +20,6 @@ import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
 import 'package:my_wallet/widgets/mobile_google_sign_in_button.dart';
-  // if(dart.library.html) 'package:my_wallet/widgets/web_google_sign_in_button.dart';
 part 'login_mobile_view.dart';
 part 'login_web_view.dart';
 
@@ -41,7 +39,6 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
   var errorPassword = AppStrings.emptyString;
   bool showPassword = true;
   bool isRememberMe = false;
-  // GoogleSignIn? gsi;
 
   @override
   void initState() {
@@ -66,7 +63,11 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
             case LoginFailedState _:
               hideLoadingDialog(context: context);
               if(state.canShowSnackBar) {
-                showSnackBar(context: context, title: state.title, message: state.message);
+                showSnackBar(
+                  context: context, 
+                  title: state.title, 
+                  message: state.message
+                );
               }
               break;
             case LoginLoadingState _:
@@ -74,7 +75,12 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
               break;
             case LoginSuccessState _:
               hideLoadingDialog(context: context);
-              showSnackBar(context: context, title: state.title, message: state.message, color: AppColors.green);
+              showSnackBar(
+                context: context, 
+                title: state.title, 
+                message: state.message, 
+                color: AppColors.green
+              );
               Preferences.setBool(key: AppStrings.prefBiometricAuthentication, value: false);
               context.go(AppRoutes.dashboard);
               break;

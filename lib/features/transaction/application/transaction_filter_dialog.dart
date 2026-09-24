@@ -102,25 +102,6 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     ],
                   ),
                   const SizedBox(height: AppSize.s10),
-                  // TextField(
-                  //   controller: dateTimeRangeTextController,
-                  //   onTap: () => chooseDateRange(context),
-                  //   readOnly: true,
-                  //   decoration: InputDecoration(
-                  //     hintText: "DD-MM-YYYY to DD-MM-YYY",
-                  //     label: Text(localizations.dateRange),
-                  //     border: const OutlineInputBorder(),
-                  //     hintStyle: const TextStyle(color: AppColors.grey),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderSide: BorderSide(
-                  //         width: AppSize.s05,
-                  //         color: Helper.isDark
-                  //         ? AppColors.grey
-                  //         : AppColors.black
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   CustomTextField(
                     title: localizations.dateRange,
                     hintText: 'DD-MM-YYYY to DD-MM-YYY',

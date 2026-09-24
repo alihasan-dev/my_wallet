@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class CustomInkWellWidget extends StatelessWidget {
   final Widget widget;
   final Function()? onTap;

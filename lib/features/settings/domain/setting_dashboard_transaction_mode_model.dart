@@ -1,5 +1,4 @@
-import 'package:my_wallet/features/settings/domain/settings_model.dart';
-
+import '../../../features/settings/domain/settings_model.dart';
 class SettingDashboardAmountModeModel {
   String title;
   String subtitle;

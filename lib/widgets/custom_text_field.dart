@@ -7,7 +7,6 @@ import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
-
 class CustomTextField extends StatelessWidget {
 
   final String title;
@@ -180,7 +179,7 @@ class CustomTextField extends StatelessWidget {
                 textStyle: getRegularStyle(color: AppColors.red),
               ),
             ),
-          )
+          ),
         ]
       ],
     );

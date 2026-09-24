@@ -1,4 +1,5 @@
 class AppStrings {
+
   AppStrings._();
 
   static const String appName = 'MyWallet';
@@ -139,7 +140,6 @@ class AppStrings {
   static const String prefProfileImg = 'PREF_PROFILE_IMG';
   static const String prefLanguage = 'PREF_LANGUAGE';
   static const String prefTheme = 'PREF_THEME';
-  static const String prefGoogleSignInFromSignup = 'PREF_GOOGLE_SIGNIN_FROM';
   static const String prefShowTransactionDetails = 'PREF_SHOW_TRANSACTION_DETAILS';
   static const String prefShowTransactionDescription = 'PREF_SHOW_TRANSACTION_DESCRIPTION';
   static const String prefDashboardAmountMode = 'PREF_DASHBOARD_AMOUNT_MODE';

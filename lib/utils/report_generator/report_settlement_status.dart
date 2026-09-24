@@ -1,6 +1,6 @@
-import 'package:my_wallet/constants/app_strings.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import '../../constants/app_strings.dart';
 import '../../constants/app_size.dart';
 import '../app_extension_method.dart';
 

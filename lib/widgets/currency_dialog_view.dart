@@ -1,16 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:my_wallet/constants/app_color.dart';
 import 'package:sample_formatter/sample_formatter.dart';
+import '../constants/app_color.dart';
 import '../constants/app_size.dart';
 import '../constants/app_theme.dart';
 import '../utils/app_extension_method.dart';
 import '../utils/helper.dart';
 
 class CurrencyDialogView extends StatelessWidget {
+  
   final Function(CurrencyModel?)? onSelect;
   final CurrencyModel? selectedCurrency;
-  const CurrencyDialogView({this.onSelect, this.selectedCurrency, super.key});
+
+  const CurrencyDialogView({
+    this.onSelect, 
+    this.selectedCurrency, 
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +30,7 @@ class CurrencyDialogView extends StatelessWidget {
         height: context.screenHeight * 0.70,
         child: CurrencyPickerView(
           backgroundColor: AppColors.white,
-          selectedCountryModel:  selectedCurrency, //CurrencyModel(currencyCode: "INR"),
+          selectedCountryModel:  selectedCurrency,
           onSelect: onSelect
         ),
       ),

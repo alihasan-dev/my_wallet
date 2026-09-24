@@ -291,23 +291,6 @@ class DashboardWebView extends StatelessWidget {
                                   Row(
                                     children: [
                                       _buildAmountWidget(data, localizations),
-                                      // AnimatedSize(
-                                      //   duration: MyAppTheme.animationDuration,
-                                      //   child: data.amount.isBlank || (DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.totalOutstanding && data.outstandingAmount == 0.0)
-                                      //   ? const SizedBox.shrink()
-                                      //   : data.amount == 'deleted' && DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.latestTransaction
-                                      //     ? TransactionDeletedWidget(appLocalization: localizations)
-                                      //     : CustomText(
-                                      //     title: DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.latestTransaction
-                                      //     ? data.amount.amountFormat(type: data.type)
-                                      //     : data.outstandingAmount.balanceFormat,
-                                      //     textStyle: getMediumStyle(
-                                      //       color: DashboardAmountModeExtension.fromValue(Preferences.getString(key: AppStrings.prefDashboardAmountMode)) == DashboardAmountMode.latestTransaction
-                                      //       ? data.type == AppStrings.transfer ? AppColors.red : AppColors.green
-                                      //       : data.outstandingAmount.isNegative  ? AppColors.red : AppColors.green
-                                      //     ),
-                                      //   ),
-                                      // ),
                                       AnimatedSize(
                                         duration: MyAppTheme.animationDuration,
                                         child: !data.isPinned
@@ -383,11 +366,11 @@ class DashboardWebView extends StatelessWidget {
       child = TransactionDeletedWidget(appLocalization: localizations);
     } else {
       final title = isLatestMode
-          ? data.amount.amountFormat(type: data.type)
-          : data.outstandingAmount.balanceFormat;
+      ? data.amount.amountFormat(type: data.type)
+      : data.outstandingAmount.balanceFormat;
       final color = isLatestMode
-          ? (data.type == AppStrings.transfer ? AppColors.red : AppColors.green)
-          : (data.outstandingAmount.isNegative ? AppColors.red : AppColors.green);
+      ? (data.type == AppStrings.transfer ? AppColors.red : AppColors.green)
+      : (data.outstandingAmount.isNegative ? AppColors.red : AppColors.green);
       child = CustomText(
         title: title,
         textStyle: getMediumStyle(color: color),

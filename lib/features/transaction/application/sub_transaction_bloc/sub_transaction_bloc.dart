@@ -53,7 +53,6 @@ class SubTransactionBloc extends Bloc<SubTransactionEvent, SubTransactionState>{
     emit(SubTransactionFetchDetailsState(transactionDetailsList: transactionDetailsList));
   }
 
-
   Future<void> _onAddTransactionDetails(SubTransactionAddEvent event, Emitter emit) async {
     await firebaseStoreInstance.collection('details').add({
       'description': event.description,

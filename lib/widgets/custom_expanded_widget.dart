@@ -22,7 +22,10 @@ class CustomExpandedWidget extends StatelessWidget {
     return Expanded(
       flex: flex ?? 1,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSize.s10, vertical: AppSize.s15),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSize.s10, 
+          vertical: AppSize.s15
+        ),
         color: AppColors.white,
         child: CustomText(
           title: title, 

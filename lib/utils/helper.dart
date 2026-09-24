@@ -330,11 +330,6 @@ mixin Helper {
   }
 
   static String generateId({String prefix = '', int length = 8}) {
-    // if (preffix.isBlank) preffix = AppStrings.appName;
-    // const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    // final rnd = Random.secure();
-    // final suffix =  List.generate(length, (index) => chars[rnd.nextInt(chars.length)]).join();
-    // return '${preffix.substring(0, 3)}-$suffix'.toUpperCase();
     if (prefix.isBlank) prefix = AppStrings.appName;
 
     // Ensure prefix is at least 3 chars to avoid RangeError

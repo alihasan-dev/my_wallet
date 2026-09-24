@@ -3,7 +3,6 @@ import '../utils/helper.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
-
 class CustomText extends StatelessWidget {
   final String title;
   final Color? textColor;

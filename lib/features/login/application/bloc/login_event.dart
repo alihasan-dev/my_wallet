@@ -36,8 +36,3 @@ class LoginRememberMeEvent extends LoginEvent {
 }
 
 class LoginWithGoogleEvent extends LoginEvent {}
-
-// class LoginWithGoogleStatusEvent extends LoginEvent {
-//   GoogleSignInAccount? googleSignInAccount;
-//   LoginWithGoogleStatusEvent(this.googleSignInAccount);
-// }

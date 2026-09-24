@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import '../widgets/custom_text.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
-
 class CustomEmptyWidget extends StatelessWidget {
   final String title;
   final IconData icon;

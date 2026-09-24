@@ -1,18 +1,3 @@
-// class TransactionImportModel {
-//   DateTime? date;
-//   String? type;
-//   double? amount;
-//   bool? isActive;
-//   String? description;
-
-//   TransactionImportModel({
-//     this.date, 
-//     this.type, 
-//     this.amount,
-//     this.isActive,
-//     this.description
-//   });
-// }
 class TransactionImportModel {
   DateTime? date;
   String? type;
@@ -28,7 +13,6 @@ class TransactionImportModel {
     this.description,
   });
 
-  /// Empty/default instance
   factory TransactionImportModel.empty() {
     return TransactionImportModel(
       date: null,
@@ -39,7 +23,6 @@ class TransactionImportModel {
     );
   }
 
-  /// Returns a copy with optional overrides
   TransactionImportModel copyWith({
     DateTime? date,
     String? type,

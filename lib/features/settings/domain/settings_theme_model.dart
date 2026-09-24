@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class SettingThemeModel {
   String title;
   String theme;

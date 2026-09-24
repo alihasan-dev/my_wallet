@@ -28,8 +28,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   late CollectionReference _collectionReference;
   late DocumentReference firebaseDocumentReference;
   late GoogleSignIn _googleSignIn;
-  // bool _isGoogleSignedOut = false;
-  // StreamSubscription? _googleSignInSubscription;
 
   LoginBloc() : super(LoginInitialState()) {
     _googleSignIn = GoogleSignIn(
@@ -45,157 +43,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginShowPasswordEvent>(_onShowHidePassword);
     on<LoginRememberMeEvent>(_onRememberMe);
     on<LoginWithGoogleEvent>(_onLoginWithGoogle);
-    // on<LoginWithGoogleStatusEvent>(_onLoginWithGoogleStatus);
-
-    // _googleSignInSubscription = _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-    //   if(!Preferences.getBool(key: AppStrings.prefGoogleSignInFromSignup)) {
-    //     add(LoginWithGoogleStatusEvent(account));
-    //   }
-    // });
   }
-
-  // @override
-  // Future<void> close() {
-  //   _googleSignInSubscription?.cancel();
-  //   return super.close();
-  // }
-
-  // Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
-    // emit(LoginLoadingState());
-    // if(event.googleSignInAccount != null) {
-    //   final displayName = event.googleSignInAccount!.displayName ?? '';
-    //   final photoUrl = event.googleSignInAccount!.photoUrl;
-    //   final email = event.googleSignInAccount!.email;
-    //   final authentication = await event.googleSignInAccount!.authentication;
-    //   final authCredential = GoogleAuthProvider.credential(
-    //     idToken: authentication.idToken,
-    //     accessToken: authentication.accessToken
-    //   );
-    //   final firebaseUserCredential = await authInstance.signInWithCredential(authCredential);
-    //   final user = firebaseUserCredential.user;
-    //   if(firebaseUserCredential.additionalUserInfo != null && user != null) {
-    //     if(!firebaseUserCredential.additionalUserInfo!.isNewUser) {
-    //       firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
-    //       Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
-    //       Preferences.setString(key: AppStrings.prefEmail, value: email);
-    //       await firebaseDocumentReference.get().then((data) {
-    //         var mapData = data.data() as Map;
-    //         if(mapData.isNotEmpty) {
-    //           Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
-    //           Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
-    //           Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: mapData['transaction_description'] ?? false);
-    //           Preferences.setString(
-    //             key: AppStrings.prefProfileImg, 
-    //             value: (mapData['profile_img'] ?? '').toString().isBlank
-    //             ? AppStrings.sampleImg
-    //             : mapData['profile_img']
-    //           );
-    //         }
-    //       });
-    //       ///capture event
-    //       await AnalyticsService.instance.setUserId(user.uid);
-    //       await AnalyticsService.instance.logEvent(
-    //         name: AnalyticsEvents.login,
-    //         parameters: {'method': 'google'},
-    //       );
-    //       emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
-    //     } else {
-    //       Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
-    //       Preferences.setString(key: AppStrings.prefEmail, value: email);
-    //       Preferences.setBool(key: AppStrings.prefRememberMe,value: false);
-    //       Preferences.setString(key: AppStrings.prefFullName, value: displayName);
-    //       ///store user in firebase firestore
-    //       await _collectionReference.doc(user.uid).set({
-    //         'name': displayName,
-    //         'email': email,
-    //         'user_id': user.uid,
-    //         'profile_img': !(photoUrl ?? '').isBlank 
-    //         ? photoUrl ?? ''
-    //         : AppStrings.sampleImg,
-    //         'showUnverified': true,
-    //         'enableBiometric': false
-    //       });
-    //       Preferences.setString(
-    //         key: AppStrings.prefProfileImg, 
-    //         value: !(photoUrl ?? '').isBlank 
-    //         ? photoUrl ?? ''
-    //         : AppStrings.sampleImg,
-    //       );
-    //       Preferences.setBool(key: AppStrings.prefEnableBiometric, value: false);
-    //       ///capture event
-    //       await AnalyticsService.instance.setUserId(user.uid);
-    //       await AnalyticsService.instance.logEvent(
-    //         name: AnalyticsEvents.login,
-    //         parameters: {'method': 'google'},
-    //       );
-    //       emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessNewUserMsg));
-    //     }
-    //   } else {
-    //     _isGoogleSignedOut = true;
-    //     emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
-    //     // await _googleSignIn.signOut();
-    //   }
-    // } else {
-    //   emit(LoginFailedState(
-    //     title: AppStrings.failed, 
-    //     message: AppStrings.googleSigninFailedMsg, 
-    //     canShowSnackBar: !_isGoogleSignedOut
-    //   ));
-    //   _isGoogleSignedOut = true;
-    // }
-  // }
-
-  // Future<void> _onLoginWithGoogle(LoginWithGoogleEvent event, Emitter<LoginState> emit) async {
-  //   try {
-  //     emit(LoginLoadingState());
-  //     final userCredential = await authInstance.signInWithPopup(GoogleAuthProvider());
-  //     var user = userCredential.user;
-  //     // if (user != null) {
-  //     //   firebaseDocumentReference = FirebaseFirestore.instance.collection('users').doc(user.uid);
-  //     //   Preferences.setString(key: AppStrings.prefUserId, value: user.uid);
-  //     //   Preferences.setString(key: AppStrings.prefEmail, value: user.email);
-  //     //   Preferences.setBool(key: AppStrings.prefRememberMe,value: event.isRememberMe);
-  //     //   if(event.isRememberMe) {
-  //     //     Preferences.setString(key: AppStrings.prefPassword, value: event.password);
-  //     //   }
-  //     //   await firebaseDocumentReference.get().then((data) {
-  //     //     var mapData = data.data() as Map;
-  //     //     if(mapData.isNotEmpty) {
-  //     //       Preferences.setBool(key: AppStrings.prefEnableBiometric, value: mapData['enableBiometric'] ?? false);
-  //     //       Preferences.setBool(key: AppStrings.prefShowTransactionDetails, value: mapData['showTransactionDetails'] ?? false);
-  //     //       Preferences.setBool(key: AppStrings.prefShowTransactionDescription, value: mapData['transaction_description'] ?? false);
-  //     //       Preferences.setString(
-  //     //         key: AppStrings.prefProfileImg, 
-  //     //         value: (mapData['profile_img'] ?? '').toString().isBlank
-  //     //         ? AppStrings.sampleImg
-  //     //         : mapData['profile_img']
-  //     //       );
-  //     //     }
-  //     //   });
-  //     //   ///capture log event
-  //     //   await AnalyticsService.instance.setUserId(user.uid);
-  //     //   await AnalyticsService.instance.logEvent(
-  //     //     name: AnalyticsEvents.login,
-  //     //     parameters: {'method': 'email'},
-  //     //   );
-  //     //   emit(LoginSuccessState(title: AppStrings.success, message: AppStrings.loginSuccessMsg));
-  //     // } else {
-  //     //   emit(LoginFailedState(title: AppStrings.error, message: AppStrings.somethingWentWrong));
-  //     // }
-  //   } on FirebaseAuthException catch (e) {
-  //     emit(LoginFailedState(title: AppStrings.failed, message: e.message!));
-  //   }
-
-  //   // try {
-  //   //   final data = await _googleSignIn.signIn(); 
-  //   //   if (data == null) throw CustomException();
-  //   // } on CustomException catch (_) {
-  //   //   emit(LoginFailedState(
-  //   //     title: AppStrings.failed, 
-  //   //     message: AppStrings.googleSigninFailedMsg,
-  //   //   ));
-  //   // }
-  // }
 
   Future<void> _onLoginWithGoogle(
     LoginWithGoogleEvent event,
@@ -203,11 +51,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoadingState());
     try {
-      // final googleProvider = GoogleAuthProvider();
-      // final firebaseUserCredential = 
-      // kIsWeb
-      // ? await authInstance.signInWithPopup(googleProvider)
-      // : await signInWithGoogle();
       final firebaseUserCredential = await signInWithGoogle();
       if (firebaseUserCredential == null) {
         throw FirebaseAuthException(
@@ -313,10 +156,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       return await _authInstance.signInWithPopup(GoogleAuthProvider());
     }
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) {
-      // user cancelled the sign-in flow
-      return null;
-    }
+    if (googleUser == null) return null;
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,

@@ -4,7 +4,6 @@ import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
-
 class CustomButton extends StatelessWidget {
 
   final String title;

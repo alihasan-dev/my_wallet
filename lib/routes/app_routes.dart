@@ -168,7 +168,7 @@ class AppRoutes {
                         )
                       );
                     }
-                  )
+                  ),
                 ]
               ),
             ]
@@ -201,15 +201,6 @@ class CustomObserver extends NavigatorObserver {
     final screenName = topRoute.settings.name;
     if(!(screenName ?? '').isBlank) {
       final screenName = topRoute.settings.name;
-      switch (screenName) {
-        case AppRoutes.signupScreen:
-          Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: true);
-          break;
-        case AppRoutes.loginScreen:
-          Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: false);
-          break;
-        default:
-      }
       AnalyticsService.instance.logEvent(
         name: 'screen_view',
         parameters: {'screen_name': screenName ?? ''},

@@ -94,7 +94,6 @@ class ReportFilterDetails extends pw.StatelessWidget {
             ),
           ),
         ),
-        // pw.SizedBox(height: 4),
         pw.Expanded(
           flex: 2,
           child: pw.Text(

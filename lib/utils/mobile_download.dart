@@ -6,23 +6,6 @@ import 'package:my_wallet/utils/app_extension_method.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
-// Future<void> downloadFile({required List<int> bytes, required String downloadName}) async {
-//   if(await _checkStoragePermission()) {
-//     late File file2;
-//     if(Platform.isIOS) {
-//       Directory? directory = await getApplicationDocumentsDirectory();
-//       file2 = File('${directory.path}/$downloadName');
-//     } else {
-//       // file2 = File("/storage/emulated/0/Download/$downloadName");
-//       final dir = await getDownloadsDirectory(); // ✅ Works Android 10+
-//       if (dir == null) throw Exception("Downloads directory not available");
-//       file2 = File('${dir.path}/$downloadName');
-//     }
-//     await file2.writeAsBytes(bytes);
-//   }
-// }
-
 Future<void> downloadFile({
   List<int>? bytes,
   required String downloadName,
