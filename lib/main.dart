@@ -23,12 +23,28 @@ Future<void> main() async {
     MediaStore.appFolder = "MyWallet";
     await MediaStore.ensureInitialized();
   }
+
+  late final String projectUrl;
+  late final String publishableKey;
+
+  if (kIsWeb) {
+    projectUrl = const String.fromEnvironment('PROJECT_URL');
+    publishableKey = const String.fromEnvironment('PUBLISHABLE_KEY');
+    ////Build with values injected at compile time
+    ///flutter build web --release \
+    ///--dart-define=PROJECT_URL=https://mopbzkfxhlhtebpcgdvw.supabase.co \
+    ///--dart-define=PUBLISHABLE_KEY=sb_publishable_JtQtZ7okneKojY_ce8typw_aZpESb-K
+  } else {
+    await dotenv.load();
+    projectUrl = dotenv.get('PROJECT_URL');
+    publishableKey = dotenv.get('PUBLISHABLE_KEY');
+  }
+
   await Supabase.initialize(
-    url: "https://mopbzkfxhlhtebpcgdvw.supabase.co",
-    publishableKey: "sb_publishable_JtQtZ7okneKojY_ce8typw_aZpESb-K",
-    // url: dotenv.get('PROJECT_URL'),
-    // publishableKey: dotenv.get('PUBLISHABLE_KEY'),
+    url: projectUrl,
+    publishableKey: publishableKey,
   );
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // make status bar transparent
@@ -37,14 +53,35 @@ Future<void> main() async {
     ),
   );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+
+  // FlutterError.onError = (errorDetails) {
+  //   FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  // };
+  // // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  // PlatformDispatcher.instance.onError = (error, stack) {
+  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  //   return true;
+  // };
+  if (!kIsWeb) {
+    // Crashlytics has no web implementation — only wire it up on mobile/desktop
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  } else {
+    // Web fallback: at least surface errors to the browser console
+    FlutterError.onError = (errorDetails) {
+      FlutterError.presentError(errorDetails);
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      debugPrint('Uncaught error: $error\n$stack');
+      return true;
+    };
+  }
+
   await AnalyticsService.instance.logEvent(
     name: 'app_started', 
     parameters: {'platform': DefaultFirebaseOptions.getCurrentPlatform}

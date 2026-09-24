@@ -373,7 +373,7 @@ class DashboardWebView extends StatelessWidget {
     final isLatestMode = displayMode == DashboardAmountMode.latestTransaction;
     final isOutstandingMode = displayMode == DashboardAmountMode.totalOutstanding;
 
-    final shouldHide = data.amount.isBlank || (isOutstandingMode && data.outstandingAmount == 0.0);
+    final shouldHide = data.amount.isBlank && (isOutstandingMode && data.outstandingAmount == 0.0);
     final isDeletedLatest = data.amount == 'deleted' && isLatestMode;
 
     Widget child;

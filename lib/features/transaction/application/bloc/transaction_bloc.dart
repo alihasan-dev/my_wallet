@@ -118,6 +118,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     streamDocumentSnapshot = firebaseStoreInstance.collection('transactions').snapshots().listen((event) {
       originalTransactionResultList.clear();
+      originalTotalBalance = 0.0;
       for (var item in event.docs) {
         var mapData = item.data();
         if (mapData.isNotEmpty) {
@@ -177,7 +178,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        originalTotalBalance: originalTotalBalance
+        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -250,7 +251,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        originalTotalBalance: originalTotalBalance
+        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -283,7 +284,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        originalTotalBalance: originalTotalBalance
+        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -316,7 +317,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
       isFilterEnable: true,
-      originalTotalBalance: originalTotalBalance
+      // originalTotalBalance: originalTotalBalance
     ));
     ////capture transaction filter event
     AnalyticsService.instance.logEvent(
@@ -333,7 +334,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
       isTransactionAgainstFilter: hasFilterApplied,
-      originalTotalBalance: originalTotalBalance
+      // originalTotalBalance: originalTotalBalance
     ));
   }
 
@@ -371,7 +372,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        originalTotalBalance: originalTotalBalance
+        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -390,7 +391,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        originalTotalBalance: originalTotalBalance
+        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -409,7 +410,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        originalTotalBalance: originalTotalBalance
+        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -672,7 +673,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   void _onTransactionImport(TransactionImportEvent event, Emitter emit) async {
-    emit(TransactionImportState());
+    emit(TransactionImportState(finalTotalAmount: originalTotalBalance));
     ////capture transaction import event
     AnalyticsService.instance.logEvent(
       name: AnalyticsEvents.transactionImport,

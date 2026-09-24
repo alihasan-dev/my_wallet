@@ -25,6 +25,7 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
   double outstandingAmount = 0.0;
 
   TransactionImportBloc({required String friendId, this.totalAmount = 0.0}) : super(TransactionImportInitialState()) {
+    developer.log("total amount $totalAmount");
     userId = Preferences.getString(key: AppStrings.prefUserId);
     firebaseStoreInstance = FirebaseFirestore.instance.collection('users').doc(userId).collection('friends').doc(friendId);
     on<TransactionImportStateUpdateEvent>(_onUpdateImportStatus);
@@ -78,7 +79,8 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         }
         await batch.commit();
       }
-      developer.log("total outstanding amount ${totalAmount + outstandingAmount}");
+      developer.log("total amount $totalAmount");
+      developer.log("outstanding amount $outstandingAmount");
       firebaseStoreInstance.update({'outstanding_amount': totalAmount + outstandingAmount});
       emit(TransactionImportStatusUpdateState(
         completeIndex: currentImportIndex,
@@ -162,8 +164,8 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         ));
         return null;
       }
-      final fileLength = await file.length();
-      if(fileLength > 2000000) {
+      final fileLength = (await file.length()) ?? 0.0;
+      if(fileLength > 2000000 || fileLength <= 0.0) {
         emit(TransactionImportPickFileState(
           status: false, 
           message: AppStrings.fileSizeMsg

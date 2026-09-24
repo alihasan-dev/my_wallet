@@ -281,7 +281,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     duration: MyAppTheme.animationDuration,
                     transitionBuilder: (child, animation) {
                       final offsetAnimation = Tween<Offset>(
-                        begin: const Offset(0, -0.4), // from top
+                        begin: const Offset(0, -0.4),
                         end: Offset.zero,
                       ).animate(animation);
                       return ClipRect(

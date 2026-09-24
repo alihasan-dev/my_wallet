@@ -742,7 +742,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 amountRangeValues: tempAmountChangeValue
               ));
             }
-            originalTotalBalance = state.originalTotalBalance;
+            // originalTotalBalance = state.originalTotalBalance;
             if(!state.isTransactionAgainstFilter) {
               availableBalance = state.totalBalance;
               isFilterEnable = state.isFilterEnable;
@@ -833,7 +833,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               );
               break;
             case TransactionImportState _:
-              _showImportDialog();
+              _showImportDialog(state.finalTotalAmount);
               break;
           default:
         }
@@ -929,7 +929,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     }
   }
 
-  void _showImportDialog() {
+  void _showImportDialog(double totalAmount) {
     showGeneralDialog(
       context: context, 
       barrierDismissible: true,
@@ -938,7 +938,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: TransactionImportDialog(
           friendId: friendId,
-          totalAmount: originalTotalBalance,
+          totalAmount: totalAmount,
         ),
       ),
     );

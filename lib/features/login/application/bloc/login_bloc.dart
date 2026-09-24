@@ -45,7 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginShowPasswordEvent>(_onShowHidePassword);
     on<LoginRememberMeEvent>(_onRememberMe);
     on<LoginWithGoogleEvent>(_onLoginWithGoogle);
-    on<LoginWithGoogleStatusEvent>(_onLoginWithGoogleStatus);
+    // on<LoginWithGoogleStatusEvent>(_onLoginWithGoogleStatus);
 
     // _googleSignInSubscription = _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
     //   if(!Preferences.getBool(key: AppStrings.prefGoogleSignInFromSignup)) {
@@ -60,7 +60,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   //   return super.close();
   // }
 
-  Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
+  // Future<void> _onLoginWithGoogleStatus(LoginWithGoogleStatusEvent event, Emitter<LoginState> emit) async {
     // emit(LoginLoadingState());
     // if(event.googleSignInAccount != null) {
     //   final displayName = event.googleSignInAccount!.displayName ?? '';
@@ -143,7 +143,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     //   ));
     //   _isGoogleSignedOut = true;
     // }
-  }
+  // }
 
   // Future<void> _onLoginWithGoogle(LoginWithGoogleEvent event, Emitter<LoginState> emit) async {
   //   try {

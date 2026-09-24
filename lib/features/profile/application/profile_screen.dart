@@ -317,8 +317,8 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           isPasswordField: false, 
           textEditingController: addressTextController,
           errorText: errorAddress,
-          suffixIcon: kIsWeb ? null : Icons.location_pin,
-          onSuffixTap: kIsWeb ? null : () => _getCurrentLocation(profileBloc),
+          suffixIcon: Icons.location_pin,
+          onSuffixTap: () => _getCurrentLocation(profileBloc),
         ),
         const SizedBox(height: 14),
         Row(

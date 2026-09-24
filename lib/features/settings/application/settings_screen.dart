@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:my_wallet/features/settings/application/transaction_mode_dialog.dart';
 import 'package:sample_formatter/sample_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../constants/app_theme.dart';
 import '../../../core/analytics/analytics_events.dart';
 import '../../../core/analytics/analytics_service.dart';
 import '../../../l10n/app_localizations.dart';
@@ -292,69 +293,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return AlertDialog(
           title: CustomText(
             title: _localizations!.appearance,
-            textStyle: getMediumStyle(
+            textStyle: getSemiBoldStyle(
               color: Helper.isDark 
               ? AppColors.white.withValues(alpha: 0.9) 
               : AppColors.black,
-              fontSize: AppSize.s18
             ),
           ),
           backgroundColor: Helper.isDark 
           ? AppColors.dialogColorDark 
           : AppColors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+          insetPadding: const EdgeInsets.all(AppSize.s12),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSize.s12, 
-            vertical: AppSize.s12
+            horizontal: AppSize.s16, 
+            vertical: AppSize.s16
           ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              themeModeList.length,
-              (index) {
-                var data = themeModeList[index];
-                return InkWell(
-                  onTap: () { 
-                    context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
-                    _settingBloc.add(SettingsUserDetailsEvent());
-                    context.pop();
-                    AnalyticsService.instance.logEvent(
-                      name: AnalyticsEvents.settingsChanged,
-                      parameters: {'setting_name': 'theme'},
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSize.s8,
-                      vertical: AppSize.s8
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Preferences.getString(key: AppStrings.prefTheme) == data.theme 
-                          ? AppIcons.radioCheckIcon 
-                          : AppIcons.uncheckIcon,
-                          color: Preferences.getString(key: AppStrings.prefTheme) == data.theme 
-                          ? AppColors.primaryColor
-                          : AppColors.grey
-                        ),
-                        const SizedBox(width: AppSize.s10),
-                        CustomText(
-                          title: data.title,
-                          textStyle: getRegularStyle(
-                            color: Helper.isDark 
-                            ? AppColors.white.withValues(alpha: 0.9) 
-                            : AppColors.black,
-                            fontSize: AppSize.s14
+          content: SizedBox(
+            width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                themeModeList.length,
+                (index) {
+                  var data = themeModeList[index];
+                  return InkWell(
+                    onTap: () { 
+                      context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
+                      _settingBloc.add(SettingsUserDetailsEvent());
+                      context.pop();
+                      AnalyticsService.instance.logEvent(
+                        name: AnalyticsEvents.settingsChanged,
+                        parameters: {'setting_name': 'theme'},
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSize.s8,
+                        vertical: AppSize.s8
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Preferences.getString(key: AppStrings.prefTheme) == data.theme 
+                            ? AppIcons.radioCheckIcon 
+                            : AppIcons.uncheckIcon,
+                            color: Preferences.getString(key: AppStrings.prefTheme) == data.theme 
+                            ? AppColors.primaryColor
+                            : AppColors.grey
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSize.s10),
+                          CustomText(
+                            title: data.title,
+                            textStyle: getRegularStyle(
+                              color: Helper.isDark 
+                              ? AppColors.white.withValues(alpha: 0.9) 
+                              : AppColors.black,
+                              fontSize: AppSize.s14
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
+              ),
             ),
           ),
         );
@@ -381,73 +385,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void showLanguageDialog({required BuildContext context}) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: CustomText(
-            title: _localizations!.language,
-            textStyle: getMediumStyle(
-              color: Helper.isDark 
-              ? AppColors.white.withValues(alpha: 0.9) 
-              : AppColors.black,
-              fontSize: AppSize.s18
-            ),
-          ),
-          backgroundColor: Helper.isDark 
-          ? AppColors.dialogColorDark 
-          : AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              languageList.length,
-              (index) {
-                var data = languageList[index];
-                return InkWell(
-                  onTap: () { 
-                    context.read<MyAppBloc>().add(MyAppChangeLanguageEvent(locale: data.locale));
-                    context.pop();
-                    AnalyticsService.instance.logEvent(
-                      name: AnalyticsEvents.settingsChanged,
-                      parameters: {'setting_name': 'language'},
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSize.s8,
-                      vertical: AppSize.s8
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
-                          ? AppIcons.radioCheckIcon 
-                          : AppIcons.uncheckIcon,
-                          color: Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
-                          ? AppColors.primaryColor
-                          : AppColors.grey
-                        ),
-                        const SizedBox(width: AppSize.s10),
-                        CustomText(
-                          title: data.title,
-                          textStyle: getRegularStyle(
-                            color: Helper.isDark 
-                            ? AppColors.white.withValues(alpha: 0.9) 
-                            : AppColors.black,
-                            fontSize: AppSize.s14
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) {
+        return ScaleTransition(
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+            backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
+            insetPadding: const EdgeInsets.all(AppSize.s12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s18, vertical: AppSize.s16),
+            content: Container(
+              width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        title: _localizations!.language,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSize.s10),
+                  ...List.generate(
+                    languageList.length,
+                    (index) {
+                      var data = languageList[index];
+                      return InkWell(
+                        onTap: () { 
+                          context.read<MyAppBloc>().add(MyAppChangeLanguageEvent(locale: data.locale));
+                          context.pop();
+                          AnalyticsService.instance.logEvent(
+                            name: AnalyticsEvents.settingsChanged,
+                            parameters: {'setting_name': 'language'},
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSize.s4,
+                            vertical: AppSize.s8
+                          ),
+                          margin: EdgeInsets.only(bottom: AppSize.s4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
+                                ? AppIcons.radioCheckIcon 
+                                : AppIcons.uncheckIcon,
+                                color: Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
+                                ? AppColors.primaryColor
+                                : AppColors.grey
+                              ),
+                              const SizedBox(width: AppSize.s10),
+                              CustomText(
+                                title: data.title,
+                                textStyle: getRegularStyle(
+                                  color: Helper.isDark 
+                                  ? AppColors.white.withValues(alpha: 0.9) 
+                                  : AppColors.black,
+                                  fontSize: AppSize.s14
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    }
                   ),
-                );
-              }
+                ]
+              ),
             ),
-          ),
+          )
         );
       }
     );

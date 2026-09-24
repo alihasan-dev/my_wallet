@@ -45,7 +45,7 @@ class TransactionDateChangeState extends TransactionState {
 class AllTransactionState extends TransactionState {
   List<TransactionModel> listTransaction;
   double totalBalance;
-  double originalTotalBalance;
+  // double originalTotalBalance;
   bool isFilterEnable;
   bool isTransactionAgainstFilter;
   AllTransactionState({
@@ -53,7 +53,7 @@ class AllTransactionState extends TransactionState {
     required this.totalBalance, 
     this.isFilterEnable = false, 
     this.isTransactionAgainstFilter = false,
-    this.originalTotalBalance = 0.0
+    // this.originalTotalBalance = 0.0
   });
 }
 
@@ -111,4 +111,7 @@ class TransactionFetchDetailsState extends TransactionState {
 
 class TransactionClearTransactionIdState extends TransactionState {}
 
-class TransactionImportState extends TransactionState {}
+class TransactionImportState extends TransactionState {
+  double finalTotalAmount;
+  TransactionImportState({this.finalTotalAmount = 0.0});
+}

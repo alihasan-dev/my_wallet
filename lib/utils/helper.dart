@@ -152,8 +152,6 @@ mixin Helper {
     if(isLoadingVisible) {
       isLoadingVisible = false;
       context.pop();
-    } else {
-      log(AppStrings.dialogNotShowingMessage);
     }
   }
 

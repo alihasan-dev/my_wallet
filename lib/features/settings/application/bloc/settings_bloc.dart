@@ -93,7 +93,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     AnalyticsService.instance.logEvent(
       name: AnalyticsEvents.settingsChanged,
       parameters: {
-        'setting_name': 'dashboard_amount_mode',
+        'setting_name': AnalyticsEvents.transactionMode,
         'value': modeStringValue,
       },
     );

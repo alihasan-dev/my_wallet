@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../constants/app_images.dart';
 import '../../../constants/app_color.dart';
@@ -41,7 +41,7 @@ class LoginScreenState extends State<LoginScreen>  with Helper {
   var errorPassword = AppStrings.emptyString;
   bool showPassword = true;
   bool isRememberMe = false;
-  GoogleSignIn? gsi;
+  // GoogleSignIn? gsi;
 
   @override
   void initState() {

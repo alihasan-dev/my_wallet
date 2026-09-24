@@ -33,7 +33,7 @@ class SignupShowPasswordEvent extends SignupEvent {
 
 class SignupWithGoogleEvent extends SignupEvent {}
 
-class SignupWithGoogleStatusEvent extends SignupEvent {
-  GoogleSignInAccount? googleSignInAccount;
-  SignupWithGoogleStatusEvent(this.googleSignInAccount);
-}
+// class SignupWithGoogleStatusEvent extends SignupEvent {
+//   GoogleSignInAccount? googleSignInAccount;
+//   SignupWithGoogleStatusEvent(this.googleSignInAccount);
+// }

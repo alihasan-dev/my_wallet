@@ -25,7 +25,7 @@ class AboutScreen extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
       backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
       insetPadding: const EdgeInsets.all(AppSize.s12),
-      contentPadding: const EdgeInsets.all(AppSize.s15),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s16, vertical: AppSize.s16),
       content: Container(
         width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),

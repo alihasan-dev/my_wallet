@@ -32,4 +32,6 @@ class AnalyticsEvents {
   static const friendDeleted = 'friend_deleted';
 
   static const friendUpdated = 'friend_updated';
+
+  static const transactionMode = 'transaction_mode';
 }
