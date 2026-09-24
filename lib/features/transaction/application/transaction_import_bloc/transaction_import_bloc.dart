@@ -5,9 +5,11 @@ import 'package:csv/csv.dart';
 import 'package:excel_plus/excel_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wallet/features/transaction/domain/transaction_import_model.dart';
-import 'package:my_wallet/utils/preferences.dart';
+import '../../../../features/transaction/domain/transaction_import_model.dart';
+import '../../../../utils/preferences.dart';
 import '../../../../constants/app_strings.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../utils/mobile_download.dart'
   if(dart.library.html) '../../../../utils/web_download.dart';
 part 'transaction_import_event.dart';
@@ -89,7 +91,15 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         invalidCount: invalidRow,
         validCount: validRow
       ));
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.transactionImport,
+        parameters: {'import_status': 'completed'}
+      );
     } catch (e) {
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.transactionImport,
+        parameters: {'import_status': 'failed'}
+      );
       developer.log("Failed");
     }
   }
@@ -148,6 +158,10 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         status: false,
         message: 'Failed to import the transaction $e'
       ));
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.transactionImport,
+        parameters: {'import_status': 'failed'}
+      );
     }
   }
 
@@ -162,6 +176,10 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
           status: false, 
           message: 'Unable to upload file'
         ));
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.transactionImport,
+          parameters: {'import_status': 'Failed to pick the file'}
+        );
         return null;
       }
       final fileLength = (await file.length()) ?? 0.0;
@@ -178,6 +196,10 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
         status: false, 
         message: 'Unable failed : $e'
       ));
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.transactionImport,
+        parameters: {'import_status': 'Failed to pick the file'}
+      );
       return null;
     }
   }
@@ -217,6 +239,10 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
           isCompleted: false,
           message: "Your file doesn't have enough columns. Please check the sample template."
         ));
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.transactionImport,
+          parameters: {'import_status': 'Failed improper file'}
+        );
         return [];
       }
       if (!header.contains('date') || !header.contains('type') || !header.contains('amount')) {
@@ -227,6 +253,10 @@ class TransactionImportBloc extends Bloc<TransactionImportEvent, TransactionImpo
           isCompleted: false,
           message: "Your file's columns don't match the expected format. Please check the sample template."
         ));
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.transactionImport,
+          parameters: {'import_status': 'Failed : improper file column'}
+        );
         return [];
       }
       await Future.delayed(const Duration(milliseconds: 2000));

@@ -178,7 +178,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -251,7 +250,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -284,7 +282,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -317,12 +314,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
       isFilterEnable: true,
-      // originalTotalBalance: originalTotalBalance
     ));
     ////capture transaction filter event
-    AnalyticsService.instance.logEvent(
-      name: AnalyticsEvents.transactionFilterApplied
-    );
+    AnalyticsService.instance.logEvent(name: AnalyticsEvents.transactionFilterApplied);
   }
 
   void _allTransactionData(TransactionAllEvent event, Emitter emit) {
@@ -334,7 +328,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       listTransaction: listTransactionResult, 
       totalBalance: balance, 
       isTransactionAgainstFilter: hasFilterApplied,
-      // originalTotalBalance: originalTotalBalance
     ));
   }
 
@@ -372,7 +365,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -391,7 +383,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -410,7 +401,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         listTransaction: listTransactionResult, 
         totalBalance: balance, 
         isFilterEnable: hasFilterApplied,
-        // originalTotalBalance: originalTotalBalance
       ));
     }
   }
@@ -469,16 +459,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             firebaseStoreInstance.update({'outstanding_amount': outstandingAmount});
           }
         } catch (_) {log('FAILED:::while comparing last transaction date with current transaction date');}
-        ////capture tranaction event
-        AnalyticsService.instance.logEvent(
-          name: AnalyticsEvents.transactionCreated,
-          parameters: {
-            'transaction_type': event.type.toLowerCase(),
-            'status': event.isActive ? 'active' : 'inactive',
-            'description': event.description.toLowerCase(),
-            'amount': event.amount
-          },
-        );
       } else {
         if (event.prevTransactionState != null) {
           final finalizeTotalAmount = event.prevTransactionState?.type == AppStrings.transfer
@@ -497,17 +477,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'isActive': event.isActive,
           'description': event.description
         });
-        ////capture tranaction event
-        AnalyticsService.instance.logEvent(
-          name: AnalyticsEvents.transactionUpdated,
-          parameters: {
-            'transaction_type': event.type.toLowerCase(),
-            'status': event.isActive ? 'active' : 'inactive',
-            'description': event.description.toLowerCase(),
-            'amount': event.amount
-          },
-        );
       }
+      ////capture tranaction event
+      AnalyticsService.instance.logEvent(
+        name: event.transactionId.isBlank
+        ? AnalyticsEvents.transactionCreated
+        : AnalyticsEvents.transactionUpdated,
+        parameters: {
+          'transaction_type': event.type.toLowerCase(),
+          'status': event.isActive ? 'active' : 'inactive',
+          'description': event.description.toLowerCase(),
+          'amount': event.amount
+        },
+      );
     }
   }
 
@@ -526,7 +508,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       return false;
     } else if (!await checkConnectivity.hasConnection) {
       emit(TransactionFailedState(title: AppStrings.noInternetConnection,message: AppStrings.noInternetConnectionMessage));
-      await Future.delayed(const Duration(seconds: 3), () => emit(TransactionFailedState(message: '', title: '')));
+      await Future.delayed(const Duration(seconds: 3), () => emit(TransactionFailedState()));
       return false;
     }
     return true;
@@ -543,10 +525,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final reportNo = Helper.generateId(prefix: friendName);
     final sortingLabel = dateAscending ? 'Newest to Oldest' : 'Oldest to Newest';
     final hasDetailsEnable = Preferences.getBool(key: AppStrings.prefShowTransactionDetails);
-    String transactionType = 'All';
-    String transactionStatus = 'All';
-    String dateRange = 'All';
-    String amountRange = 'All';
+    String transactionType = AppStrings.all;
+    String transactionStatus = AppStrings.all;
+    String dateRange = AppStrings.all;
+    String amountRange = AppStrings.all;
     if (filterStatus != null) {
       transactionType = filterStatus!.transactionType;
       transactionStatus = filterStatus!.transactionStatus;
@@ -580,7 +562,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             dateRange: dateRange,
             amountRange: amountRange,
             sorting: sortingLabel,
-            detailsFlag: hasDetailsEnable ? 'Enable' : 'Disable'
+            detailsFlag: hasDetailsEnable ? AppStrings.enable : AppStrings.disable
           ),
           pw.SizedBox(height: 5),
           ReportTransactionInsights(
@@ -623,7 +605,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
               label1: dateFormat.format(item.date),
               label2: item.description,
               label3: item.type,
-              label4: item.isActive ? 'Active' : 'Inactive',
+              label4: item.isActive ? AppStrings.active : AppStrings.inactive,
               label5: item.amount.toString().currencyFormat
             );
           }
@@ -677,9 +659,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     ////capture transaction import event
     AnalyticsService.instance.logEvent(
       name: AnalyticsEvents.transactionImport,
-      parameters: {
-        'import_status': 'initiated',
-      }
+      parameters: {'import_status': 'initiated'}
     );
   }
 }

@@ -84,6 +84,8 @@ class AppStrings {
   static const String currency = 'Currency';
   static const String id = 'ID';
   static const String transactionStatus = 'Transaction Status';
+  static const String enable = 'Enable';
+  static const String disable = 'Disable';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
