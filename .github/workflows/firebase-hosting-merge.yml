@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create placeholder .env for asset bundling
+        run: touch .env
+
       - name: Build web (release)
         run: |
           flutter build web --release \
