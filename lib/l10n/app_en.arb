@@ -151,5 +151,6 @@
   "latest_transaction_msg": "Show the amount from the most recent transaction",
   "total_outstanding": "Total Outstanding",
   "total_outstanding_msg": "Show the current outstanding amount with each friend",
-  "transaction_mode_info_msg": "Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update."
+  "transaction_mode_info_msg": "Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update.",
+  "transaction_details": "Transaction Details"
 }

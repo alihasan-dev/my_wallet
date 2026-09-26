@@ -470,4 +470,7 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get transaction_mode_info_msg =>
       'जब आप कोई लेन-देन जोड़ेंगे, संपादित करेंगे, या बदलेंगे, तो आपकी बकाया राशि अपडेट हो जाएगी। मौजूदा लेन-देन आपके अगले लेन-देन अपडेट के बाद शामिल किए जाएंगे।';
+
+  @override
+  String get transaction_details => 'लेन-देन का विवरण';
 }

@@ -441,7 +441,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'amount': event.amount, 
           'type': event.type,
           'isActive': event.isActive,
-          'description': event.description
+          'description': event.description.trim()
         });
         var currentTransactionDateTime = event.date!; 
         final doubleParseAmount = double.tryParse(event.amount) ?? 0.0;
@@ -475,7 +475,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'amount': event.amount, 
           'type': event.type,
           'isActive': event.isActive,
-          'description': event.description
+          'description': event.description.trim()
         });
       }
       ////capture tranaction event

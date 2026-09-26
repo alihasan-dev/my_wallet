@@ -29,8 +29,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Flutter Web
-        run: flutter build web
+      - name: Build web (release)
+        run: |
+          flutter build web --release \
+            --dart-define=PROJECT_URL=${{ secrets.SUPABASE_PROJECT_URL }} \
+            --dart-define=PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0

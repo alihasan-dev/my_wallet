@@ -947,6 +947,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update.'**
   String get transaction_mode_info_msg;
+
+  /// No description provided for @transaction_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get transaction_details;
 }
 
 class _AppLocalizationsDelegate

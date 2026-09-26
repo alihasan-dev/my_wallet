@@ -30,10 +30,6 @@ Future<void> main() async {
   if (kIsWeb) {
     projectUrl = const String.fromEnvironment('PROJECT_URL');
     publishableKey = const String.fromEnvironment('PUBLISHABLE_KEY');
-    ////Build with values injected at compile time
-    ///flutter build web --release \
-    ///--dart-define=PROJECT_URL=https://mopbzkfxhlhtebpcgdvw.supabase.co \
-    ///--dart-define=PUBLISHABLE_KEY=sb_publishable_JtQtZ7okneKojY_ce8typw_aZpESb-K
   } else {
     await dotenv.load();
     projectUrl = dotenv.get('PROJECT_URL');
@@ -47,15 +43,14 @@ Future<void> main() async {
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // make status bar transparent
-      statusBarIconBrightness: Brightness.light, // dark icons (black)
-      statusBarBrightness: Brightness.light, // for iOS
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light
     ),
   );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (!kIsWeb) {
-    // Crashlytics has no web implementation — only wire it up on mobile/desktop
     FlutterError.onError = (errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
@@ -64,7 +59,6 @@ Future<void> main() async {
       return true;
     };
   } else {
-    // Web fallback: at least surface errors to the browser console
     FlutterError.onError = (errorDetails) {
       FlutterError.presentError(errorDetails);
     };

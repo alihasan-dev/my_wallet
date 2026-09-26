@@ -82,7 +82,7 @@ class _AddTransactionDetailsDialogState extends State<AddTransactionDetailsDialo
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        title: _localizations!.transactionBreakdown,
+                        title: _localizations!.transaction_details,
                         textStyle: getSemiBoldStyle(),
                       ),
                       Transform.translate(

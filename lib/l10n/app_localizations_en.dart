@@ -470,4 +470,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get transaction_mode_info_msg =>
       'Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update.';
+
+  @override
+  String get transaction_details => 'Transaction Details';
 }
