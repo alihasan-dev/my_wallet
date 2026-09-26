@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:my_wallet/utils/location_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../constants/app_theme.dart';
+import '../../../utils/text_input_formatter.dart';
 import '../../../widgets/custom_image_widget.dart';
 import '../../../constants/app_color.dart';
 import '../../../constants/app_icons.dart';
@@ -53,13 +53,8 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   String errorPhone = '';
   String errorAddress = '';
   bool isFetchProfileData = false;
+  bool isArchived = true;
   late LocationService _locationService;
-
-  //US Phone Number Format
-  var maskFormatter = MaskTextInputFormatter(
-    mask: '####-###-###',
-    filter: {"#": RegExp(r'[0-9]')}
-  );
 
   @override
   void initState() {
@@ -138,26 +133,42 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   userIdTextController.text = profileData['user_id'] ?? '';
                   emailTextController.text = profileData['email'] ?? '';
                   nameTextController.text = profileData['name'] ?? '';
-                  phoneTextController.text = maskFormatter.maskText(profileData['phone'] ?? '');
+                  phoneTextController.text = (profileData['phone'] ?? '').toString().formatIndianMobileNumber;
                   addressTextController.text = profileData['address'] ?? '';
+                  isArchived = profileData['isVerified'] ?? true;
                   imageUrl = profileData['profile_img'] ?? AppStrings.sampleImg;
-                  Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
+                  if (widget.userId.isBlank) {
+                    Preferences.setString(key: AppStrings.prefProfileImg, value: imageUrl);
+                  }
                   hideLoadingDialog(context: context);
                   if(isFetchProfileData) {
-                    showSnackBar(context: context, title: _localizations!.profileUpdateMsg, color: AppColors.green);
+                    showSnackBar(
+                      context: context, 
+                      title: _localizations!.profileUpdateMsg, 
+                      color: AppColors.green
+                    );
                   } else {
                     isFetchProfileData = true;
                   }
                   break;
                 case ProfileLoadingState _:
-                  showLoadingDialog(context: context);
+                  if (state.showLoading) {
+                    showLoadingDialog(context: context);
+                  } else {
+                    hideLoadingDialog(context: context);
+                  }
                   break;
                 case ProfileDeleteUserState _:
                   if(state.isDeleted) {
                     hideLoadingDialog(context: context);
                     context.pop();
                     context.pop();
-                    showSnackBar(context: context, title: AppStrings.success, message: AppStrings.userDeletedMsg, color: AppColors.green);
+                    showSnackBar(
+                      context: context, 
+                      title: AppStrings.success, 
+                      message: AppStrings.userDeletedMsg, 
+                      color: AppColors.green
+                    );
                   } else {
                     onUserDelete(nameTextController.text, context);
                   }
@@ -175,12 +186,18 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   Future<void> onUserDelete(String name, BuildContext mContext) async {
-    if(await confirmationDialog(context: context, title: _localizations!.deleteUser, content: _localizations!.deleteUserMsg(name), localizations: _localizations!)) {
+    if(await confirmationDialog(
+      context: context, 
+      title: _localizations!.deleteUser, 
+      content: _localizations!.deleteUserMsg(name), 
+      localizations: _localizations!) && mContext.mounted
+    ) {
       mContext.read<ProfileBloc>().add(ProfileDeleteUserEvent(isConfirmed: true));
     }
   }
 
   Widget mainWidget({required BuildContext bContext}) {
+    final profileBloc = bContext.read<ProfileBloc>();
     return ListView(
       shrinkWrap: true,
       padding: const EdgeInsets.symmetric(
@@ -204,6 +221,11 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                     child: CustomImageWidget(
                       imageUrl: imageUrl,
                       imageSize: 85,
+                      padding: 1.5,
+                      borderWidth: 1.5,
+                      borderColor: isArchived
+                      ? AppColors.primaryColor
+                      : AppColors.orange
                     ),
                   ),
                   Positioned(
@@ -231,28 +253,45 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
             ),
           ],
         ),
-        const SizedBox(height: AppSize.s12),
+        const SizedBox(height: AppSize.s30),
         CustomTextField(
           title: _localizations!.userId, 
           isPasswordField: !showProfileId, 
           textEditingController: userIdTextController,
           readOnly: true,
           isMandatory: true,
-          onSuffixTap: () => bContext.read<ProfileBloc>().add(ProfileShowIdEvent()),
+          onSuffixTap: () => profileBloc.add(ProfileShowIdEvent()),
           errorText: errorUserId,
         ),
+        const SizedBox(height: 14),
         CustomTextField(
           title: _localizations!.phone, 
           isPasswordField: false,
-          // isEnabled: widget.userId.isBlank ? true : false, 
           isMandatory: widget.userId.isBlank ? false : true,
           textEditingController: phoneTextController,
           errorText: errorPhone,
           keyboardType: TextInputType.number,
           maxLength: 12,
-          textInputFormatter: [maskFormatter],
-          onChange: (value) => bContext.read<ProfileBloc>().add(ProfilePhoneChangeEvent(text: maskFormatter.unmaskText(value))),
+          textInputFormatter: [IndianMobileNumberFormatter()],
+          hintStyle: getRegularStyle(
+            fontSize: 14,
+            color: Helper.isDark 
+            ? AppColors.grey 
+            : AppColors.black
+          ),
+          prefix: Text(
+            '+91 ',
+            style: TextStyle(
+              color: Helper.isDark 
+              ? AppColors.white 
+              : AppColors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w500
+            ),
+          ),
+          onChange: (value) => profileBloc.add(ProfilePhoneChangeEvent(text: phoneTextController.text.replaceAll('-', ''))),
         ),
+        const SizedBox(height: 14),
         CustomTextField(
           title: _localizations!.email, 
           isPasswordField: false, 
@@ -260,27 +299,28 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
           isMandatory: widget.userId.isBlank ? true : false,
           textEditingController: emailTextController,
           errorText: errorEmail,
-          onChange: (value) => bContext.read<ProfileBloc>().add(ProfileEmailChangeEvent(email: value)),
+          onChange: (value) => profileBloc.add(ProfileEmailChangeEvent(email: value)),
         ),
-        const SizedBox(height: AppSize.s4),
+        const SizedBox(height: 14),
         CustomTextField(
           title: _localizations!.name, 
           isPasswordField: false, 
           isMandatory: true,
           textEditingController: nameTextController,
           errorText: errorName,
-          onChange: (value) => bContext.read<ProfileBloc>().add(ProfileNameChangeEvent(text: value)),
+          onChange: (value) => profileBloc.add(ProfileNameChangeEvent(text: value)),
+          textInputFormatter: [NameInputFormatter()],
         ),
-        const SizedBox(height: AppSize.s4),
+        const SizedBox(height: 14),
         CustomTextField(
           title: _localizations!.address, 
           isPasswordField: false, 
           textEditingController: addressTextController,
           errorText: errorAddress,
-          suffixIcon: kIsWeb ? null : Icons.location_pin,
-          onSuffixTap: kIsWeb ? null : () => _getCurrentLocation(context),
+          suffixIcon: Icons.location_pin,
+          onSuffixTap: () => _getCurrentLocation(profileBloc),
         ),
-        const SizedBox(height: AppSize.s4),
+        const SizedBox(height: 14),
         Row(
           children: [
             Visibility(
@@ -290,7 +330,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                   children: [
                     Expanded(
                       child: CustomOutlinedButton(
-                        onPressed: () => bContext.read<ProfileBloc>().add(ProfileDeleteUserEvent()),
+                        onPressed: () => profileBloc.add(ProfileDeleteUserEvent()),
                         title: _localizations!.deleteUser, 
                         icon: AppIcons.deleteIcon,
                         isSelected: true,
@@ -306,17 +346,17 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
             ),
             Expanded(
               child: CustomTextButton(
-                onPressed: () => bContext.read<ProfileBloc>().add(ProfileUpdateEvent(profileData: {
+                onPressed: () => profileBloc.add(ProfileUpdateEvent(profileData: {
                   'user_id': userIdTextController.text,
                   'email': emailTextController.text,
                   'name': nameTextController.text,
-                  'phone':  maskFormatter.unmaskText(phoneTextController.text),
+                  'phone':  phoneTextController.text.replaceAll('-', ''),
                   'address': addressTextController.text,
                   'profile_img': imageUrl
                 })),
                 title: _localizations!.update,
                 isSelected: true,
-                verticalPadding: kIsWeb ? AppSize.s16 : AppSize.s12,
+                verticalPadding: kIsWeb ? 17 : AppSize.s12,
                 foregroundColor: AppColors.white,
                 backgroundColor: AppColors.primaryColor,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -329,6 +369,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
   }
 
   void showImagePickerSheet(BuildContext mContext) {
+    final profileBloc = mContext.read<ProfileBloc>();
     showGeneralDialog(
       context: mContext, 
       barrierDismissible: true,
@@ -379,7 +420,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           context.pop();
                           var data = await pickImage(imageSource: ImageSource.camera, context: context);
                           if(data.isNotEmpty && context.mounted){
-                            mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                            profileBloc.add(ProfileChooseImageEvent(imagePath: data));
                           }
                         },
                         child: Column(
@@ -410,7 +451,7 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
                           context.pop();
                           var data = await pickImage(imageSource: ImageSource.gallery, context: context);
                           if(data.isNotEmpty && context.mounted){
-                            mContext.read<ProfileBloc>().add(ProfileChooseImageEvent(imagePath: data));
+                            profileBloc.add(ProfileChooseImageEvent(imagePath: data));
                           }
                         },
                         child: Column(
@@ -470,8 +511,10 @@ class ProfileScreenState extends State<ProfileScreen> with Helper {
     );
   }
 
-  Future<void> _getCurrentLocation(BuildContext context) async {
+  Future<void> _getCurrentLocation(ProfileBloc profileBloc) async {
+    profileBloc.add(ProfileLoadingEvent());
     var address = await _locationService.getCurrentAddress();
+    profileBloc.add(ProfileLoadingEvent(showLoading: false));
     if (address.isBlank) return;
     addressTextController.text = address;
   }

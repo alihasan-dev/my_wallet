@@ -4,7 +4,6 @@ import '../widgets/custom_text.dart';
 import '../constants/app_color.dart';
 import '../constants/app_style.dart';
 import '../constants/app_size.dart';
-
 class CustomButton extends StatelessWidget {
 
   final String title;
@@ -13,6 +12,8 @@ class CustomButton extends StatelessWidget {
   final Color? titleColor;
   final double? titleSize;
   final double? verticalPadding;
+  final double? horizontalPadding;
+  final bool expanded;
 
   const CustomButton({
     required this.title,
@@ -21,6 +22,8 @@ class CustomButton extends StatelessWidget {
     this.titleColor,
     this.titleSize,
     this.verticalPadding,
+    this.horizontalPadding,
+    this.expanded = true,
     super.key
   });
 
@@ -29,8 +32,13 @@ class CustomButton extends StatelessWidget {
     return CustomInkWellWidget(
       onTap: onTap,
       widget: Ink(
-        width: double.maxFinite,
-        padding: EdgeInsets.symmetric(vertical: verticalPadding ?? AppSize.s12),
+        width: expanded
+        ? double.maxFinite
+        : null,
+        padding: EdgeInsets.symmetric(
+          vertical: verticalPadding ?? AppSize.s12,
+          horizontal: horizontalPadding ?? 0.0
+        ),
         decoration: BoxDecoration(
           color: buttonColor ?? (onTap == null ? AppColors.grey.withValues(alpha: 0.3) : AppColors.primaryColor),
           borderRadius: BorderRadius.circular(AppSize.s4)

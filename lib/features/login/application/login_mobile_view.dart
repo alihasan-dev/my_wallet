@@ -28,7 +28,7 @@ class LoginMobileView extends StatelessWidget {
           onChange: (value) => loginBloc.add(LoginEmailChangeEvent(email: value)),
           textInputAction: TextInputAction.next,
         ),
-        const SizedBox(height: AppSize.s10),
+        const SizedBox(height: AppSize.s12),
         CustomTextField(
           title: localizations.password,
           isPasswordField: loginScreenState.showPassword,
@@ -101,9 +101,7 @@ class LoginMobileView extends StatelessWidget {
             ),
           ),
         ),
-        kIsWeb
-        ? const GoogleSigninCustomButton(key: Key(AppStrings.continueWithGoogle))
-        : GoogleSigninCustomButton(onTap: () => loginBloc.add(LoginWithGoogleEvent())),
+        GoogleSigninCustomButton(onTap: () => loginBloc.add(LoginWithGoogleEvent())),
         const SizedBox(height: AppSize.s20),
         Row(
           mainAxisSize: MainAxisSize.min,

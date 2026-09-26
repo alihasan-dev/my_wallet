@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -42,6 +44,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardArchieveContactEvent>(_onArchiveContact);
     on<DashboardBiometricAuthEvent>(_onBiometricAuthenticated);
     on<DashboardTransactionDetailsWindowCloseEvent>(_onCloseTransactionWindow);
+    on<DashboardArchieveUserEvent>(_onChangeArchive);
 
     _streamSubscription = firebaseStoreInstance.doc(userId).snapshots().listen((event) {
       var userData = event.data() as Map;
@@ -75,7 +78,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             : mapData['lastTransactionTime'].millisecondsSinceEpoch,
             type: mapData['type'] ?? '',
             isUserVerified: mapData['isVerified'] ?? false,
-            isPinned: mapData['pinned'] ?? false
+            isPinned: mapData['pinned'] ?? false,
+            outstandingAmount: (mapData['outstanding_amount'] ?? 0.0).toDouble()
           ));
         }
       }
@@ -98,6 +102,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   void _onBiometricAuthenticated(DashboardBiometricAuthEvent event, Emitter emit) {
     emit(DashboardBiometricAuthState(isAuthenticated: event.isAuthenticated));
+    ////capture biometric event
+    AnalyticsService.instance.logEvent(
+      name: 'biometric authentication',
+      parameters: {
+        'status': event.isAuthenticated ? 'success' : 'failed'
+      },
+    );
   }
 
   Future<void> _onPinnedContact(DashboardPinnedContactEvent event, Emitter emit) async {
@@ -210,14 +221,23 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onAddUser(DashboardAddUserEvent event, Emitter emit) async {
     if(await validation(emit, name: event.name, email: event.email, phone: event.phone)) {
-      await firebaseStoreInstance.doc(userId).collection('friends').add({
+      final docRef = await firebaseStoreInstance.doc(userId).collection('friends').add({
         'name': event.name,
         'email': event.email,
         'phone': event.phone,
         'address': '',
         'profile_img': AppStrings.sampleImg,
-        'isVerified': true 
+        'isVerified': event.isArchived ? false : true,
+        'pinned': false
       });
+      await docRef.update({'user_id': docRef.id});
+      ////capture add friend event
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.friendAdded,
+        parameters: {
+          'friend_status': event.isArchived ? 'archived' : 'active'
+        },
+      );
     }
   }
 
@@ -228,6 +248,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<bool> validation(Emitter emit, {required String name, String email = '', required String phone}) async {
     if(name.isBlank) {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
+      return false;
+    } else if (name.length < 3) {
+      emit(DashboardNameFieldState(nameMessage: 'Please provide a valid name'));
       return false;
     } else if (phone.isBlank) {
       emit(DashboardPhoneFieldState(phoneMessage: AppStrings.emptyPhone));
@@ -268,9 +291,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _onNameChange(DashboardNameChangeEvent event, Emitter emit){
     if(event.name.isBlank){
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyName));
+    } else if (event.name.length < 3){
+      emit(DashboardNameFieldState(nameMessage: 'Please provide a valid name'));
     } else {
       emit(DashboardNameFieldState(nameMessage: AppStrings.emptyString));
     }
+  }
+
+  void _onChangeArchive(DashboardArchieveUserEvent event, Emitter emit) async {
+    emit(DashboardArchieveUserState(isArchievedUser: event.isArchievedUser));
   }
 
 }

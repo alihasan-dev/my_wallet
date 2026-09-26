@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_color.dart';
 import '../constants/app_size.dart';
-
 class CustomVerticalDivider extends StatelessWidget {
 
   const CustomVerticalDivider({super.key});

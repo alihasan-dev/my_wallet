@@ -353,7 +353,7 @@ abstract class AppLocalizations {
   /// No description provided for @appearance.
   ///
   /// In en, this message translates to:
-  /// **'Appearaance'**
+  /// **'Appearance'**
   String get appearance;
 
   /// No description provided for @theme.
@@ -416,11 +416,17 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @showUnverifiedUser.
+  /// No description provided for @show_archived_friends.
   ///
   /// In en, this message translates to:
-  /// **'Show Archived User'**
-  String get showUnverifiedUser;
+  /// **'Show Archived Friends'**
+  String get show_archived_friends;
+
+  /// No description provided for @show_archived_friends_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Include archived friends in your friends list'**
+  String get show_archived_friends_msg;
 
   /// No description provided for @forgotPassword.
   ///
@@ -587,13 +593,13 @@ abstract class AppLocalizations {
   /// No description provided for @transactionBreakdown.
   ///
   /// In en, this message translates to:
-  /// **'Transaction Details'**
+  /// **'Show Transaction Details'**
   String get transactionBreakdown;
 
   /// No description provided for @transactionBreakdownMsg.
   ///
   /// In en, this message translates to:
-  /// **'Details for Each Transaction'**
+  /// **'Display additional details for each transaction'**
   String get transactionBreakdownMsg;
 
   /// No description provided for @unselect.
@@ -661,6 +667,292 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleted'**
   String get deleted;
+
+  /// No description provided for @create_archived_user_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Create as archived user'**
+  String get create_archived_user_label;
+
+  /// No description provided for @archived_user_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived users are hidden from the main list (if the \'Show Archived Users\' option is disabled in settings). Restore them anytime by long-pressing them and tapping \'Unarchive\'.'**
+  String get archived_user_hint;
+
+  /// No description provided for @transactionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Transaction Descriptions'**
+  String get transactionDescription;
+
+  /// No description provided for @transactionDescriptionMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Display descriptions for your transactions'**
+  String get transactionDescriptionMsg;
+
+  /// No description provided for @transactionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Status'**
+  String get transactionStatus;
+
+  /// No description provided for @importReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Report'**
+  String get importReport;
+
+  /// No description provided for @transactionImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Import'**
+  String get transactionImport;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// No description provided for @transactionStatusMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Active transactions count toward your balance. You can change this anytime by editing the transaction.'**
+  String get transactionStatusMsg;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// No description provided for @review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get review;
+
+  /// No description provided for @clean.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean'**
+  String get clean;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @drag_drop_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag and drop or '**
+  String get drag_drop_msg;
+
+  /// No description provided for @select_files.
+  ///
+  /// In en, this message translates to:
+  /// **'select files'**
+  String get select_files;
+
+  /// No description provided for @upload_file_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your transaction file in CSV (.csv) or Excel (.xlsx/.xls) format.\nThe maximum file size allowed is 2 MB'**
+  String get upload_file_msg;
+
+  /// No description provided for @download_sample_template.
+  ///
+  /// In en, this message translates to:
+  /// **'Download sample template'**
+  String get download_sample_template;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @import_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import completed'**
+  String get import_completed;
+
+  /// No description provided for @import_complete_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'{transaction_count} transactions imported successfully'**
+  String import_complete_msg(Object transaction_count);
+
+  /// No description provided for @try_different_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different file'**
+  String get try_different_file;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get loading;
+
+  /// No description provided for @import_valid_transaction_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {row} Transactions'**
+  String import_valid_transaction_msg(Object row);
+
+  /// No description provided for @invalid_row_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'All {invalid_row} rows in your file had issues and were excluded. Nothing will be imported.'**
+  String invalid_row_msg(Object invalid_row);
+
+  /// No description provided for @import_review_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'I have reviewed the data and want to import the validated transactions into MyWallet.'**
+  String get import_review_msg;
+
+  /// No description provided for @no_valid_import.
+  ///
+  /// In en, this message translates to:
+  /// **'No valid transactions to import'**
+  String get no_valid_import;
+
+  /// No description provided for @import_warning_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward.'**
+  String get import_warning_msg;
+
+  /// No description provided for @invalid_row_exclude_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'{invalid_row} invalid rows excluded'**
+  String invalid_row_exclude_msg(Object invalid_row);
+
+  /// No description provided for @valid_row_include_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'{valid_row} transactions will be imported'**
+  String valid_row_include_msg(Object valid_row);
+
+  /// No description provided for @import_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Import summary'**
+  String get import_summary;
+
+  /// No description provided for @import_failed_parse.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Failed to Parse'**
+  String get import_failed_parse;
+
+  /// No description provided for @successful_read_file_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully read {total_row} rows and {total_column} columns from {file_name}'**
+  String successful_read_file_msg(
+    Object file_name,
+    Object total_column,
+    Object total_row,
+  );
+
+  /// No description provided for @reading_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your file'**
+  String get reading_file;
+
+  /// No description provided for @checking_formats.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking formats'**
+  String get checking_formats;
+
+  /// No description provided for @checking_your_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your data'**
+  String get checking_your_data;
+
+  /// No description provided for @transaction_import_msg_second.
+  ///
+  /// In en, this message translates to:
+  /// **'Your file must match the sample template format, or it will be rejected.'**
+  String get transaction_import_msg_second;
+
+  /// No description provided for @transaction_import_msg_first.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid re-uploading a file you\'ve already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.'**
+  String get transaction_import_msg_first;
+
+  /// No description provided for @import_valid_transaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {valid_row} transactions'**
+  String import_valid_transaction(Object valid_row);
+
+  /// No description provided for @transaction_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions Mode'**
+  String get transaction_mode;
+
+  /// No description provided for @latest_transaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Transaction'**
+  String get latest_transaction;
+
+  /// No description provided for @latest_transaction_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the amount from the most recent transaction'**
+  String get latest_transaction_msg;
+
+  /// No description provided for @total_outstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Outstanding'**
+  String get total_outstanding;
+
+  /// No description provided for @total_outstanding_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the current outstanding amount with each friend'**
+  String get total_outstanding_msg;
+
+  /// No description provided for @transaction_mode_info_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update.'**
+  String get transaction_mode_info_msg;
+
+  /// No description provided for @transaction_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get transaction_details;
 }
 
 class _AppLocalizationsDelegate

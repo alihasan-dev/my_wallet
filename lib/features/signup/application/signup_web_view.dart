@@ -32,7 +32,7 @@ class SignupWebView extends StatelessWidget {
               onChange: (value) => signupBloc.add(SignupNameChangeEvent(name: value)),
               textInputAction: TextInputAction.next,
             ),
-            const SizedBox(height: AppSize.s10),
+            const SizedBox(height: AppSize.s12),
             CustomTextField(
               title: localizations.email,
               isPasswordField: false,
@@ -42,7 +42,7 @@ class SignupWebView extends StatelessWidget {
               onChange: (value) => signupBloc.add(SignupEmailChangeEvent(email: value)),
               textInputAction: TextInputAction.next,
             ),
-            const SizedBox(height: AppSize.s10),
+            const SizedBox(height: AppSize.s12),
             CustomTextField(
               title: localizations.password,
               isPasswordField: signupScreenState.showPassword,
@@ -82,7 +82,7 @@ class SignupWebView extends StatelessWidget {
                 ),
               ),
             ),
-            const GoogleSigninCustomButton(key: Key(AppStrings.continueWithGoogle)),
+            GoogleSigninCustomButton(onTap: () => signupBloc.add(SignupWithGoogleEvent())),
             const SizedBox(height: AppSize.s20),
             Row(
               mainAxisSize: MainAxisSize.min,

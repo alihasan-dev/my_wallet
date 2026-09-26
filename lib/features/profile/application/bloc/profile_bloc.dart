@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../features/dashboard/domain/user_model.dart';
 import '../../../../utils/app_extension_method.dart';
 import '../../../../constants/app_strings.dart';
@@ -24,9 +27,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   String selectedImagePath = '';
   String friendId;
   List<UserModel> usersList = [];
+  late SupabaseClient supabaseClient;
+  late String userId;
 
   ProfileBloc({this.friendId = ''}) : super(ProfileInitialState()) {
     checkConnectivity = CheckConnectivity();
+    supabaseClient = Supabase.instance.client;
+    userId = Preferences.getString(key: AppStrings.prefUserId);
     final userCollectionRef = FirebaseFirestore.instance.collection('users').doc(Preferences.getString(key: AppStrings.prefUserId));
     firebaseDocReference = friendId.isBlank ? userCollectionRef : userCollectionRef.collection('friends').doc(friendId);
     firebaseStorage = FirebaseStorage.instance.ref();
@@ -40,6 +47,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileEmailChangeEvent>(_onEmailChange);
     on<ProfileChooseImageEvent>(_onChooseImage);
     on<ProfileDeleteUserEvent>(_onDeleteUser);
+    on<ProfileLoadingEvent>(_onLoadingEvent);
 
     if (!friendId.isBlank) {
       streamSubscriptionFriendList = userCollectionRef.collection('friends').snapshots().listen((event) {
@@ -75,9 +83,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     return super.close();
   }
 
+  void _onLoadingEvent(ProfileLoadingEvent event, Emitter emit) {
+    emit(ProfileLoadingState(showLoading: event.showLoading));
+  }
+
   void _onNameChange(ProfileNameChangeEvent event, Emitter emit) {
     if(event.text.isBlank){
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
+    } else if (event.text.length < 3) {
+      emit(ProfileErrorNameState(message: 'Please provide a valid name'));
     } else {
       emit(ProfileErrorNameState(message: AppStrings.emptyString));
     }
@@ -116,30 +130,85 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Future<void> _onProfileUpdate(ProfileUpdateEvent event, Emitter emit) async {
     if(await fieldValidation(event, emit)) {
-      var updatedImageUrl = '';
-      if(selectedImagePath.isNotEmpty) {
-        emit(ProfileLoadingState());
-        try {
-          final mountainImagesRef = friendId.isBlank 
-          ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
-          : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
-          await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
-            await mountainImagesRef.getDownloadURL().then((value) {
-              updatedImageUrl = value;
-            });
-          });
-        } catch (e) {
-          debugPrint(AppStrings.somethingWentWrong);
+      try {
+        String updatedImageUrl = '';
+        if(!selectedImagePath.isBlank) {
+          emit(ProfileLoadingState());
+          updatedImageUrl = await supabaseStorageUpload();
+          if (!updatedImageUrl.isBlank) {
+            updatedImageUrl = '$updatedImageUrl?v=${DateTime.now().millisecondsSinceEpoch}';
+            selectedImagePath = '';
+          }
         }
+        debugPrint("🎉 Firebase profile update initiated");
+        await firebaseDocReference.update({
+          'email': event.profileData['email'],
+          'name': event.profileData['name'],
+          'user_id': event.profileData['user_id'],
+          'phone': event.profileData['phone'],
+          'address': event.profileData['address'],
+          'profile_img': updatedImageUrl.isBlank ? event.profileData['profile_img'] : updatedImageUrl
+        });
+        debugPrint("🎉 Firestore document successfully updated!");
+        ////capture update friend event
+        AnalyticsService.instance.logEvent(
+          name: AnalyticsEvents.friendUpdated,
+          parameters: {
+            'profile_img': selectedImagePath.isBlank ? 'false' : 'true',
+            'friend_profile': friendId.isBlank ? 'false' : 'true'
+          }
+        );
+      } catch (e, stackTrace) {
+        debugPrint("❌ FIRESTORE UPDATE CRASHED!");
+        debugPrint("Error details: $e");
+        debugPrint("Stack trace: $stackTrace");
       }
-      await firebaseDocReference.update({
-        'email': event.profileData['email'],
-        'name': event.profileData['name'],
-        'user_id': event.profileData['user_id'],
-        'phone': event.profileData['phone'],
-        'address': event.profileData['address'],
-        'profile_img': updatedImageUrl.isBlank ? event.profileData['profile_img'] : updatedImageUrl
+    }
+  }
+
+  Future<String> firebaseStorageUpload() async {
+    try {
+      String updatedImageUrl = '';
+      final mountainImagesRef = friendId.isBlank 
+      ? firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/profile_img.jpg")
+      : firebaseStorage.child("${Preferences.getString(key: AppStrings.prefUserId)}/friends/$friendId.jpg");
+      await mountainImagesRef.putData(base64Decode(selectedImagePath), SettableMetadata(contentType: 'image/jpeg')).then((value) async {
+        await mountainImagesRef.getDownloadURL().then((value) {
+          updatedImageUrl = value;
+        });
       });
+      return updatedImageUrl;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  Future<String> supabaseStorageUpload() async {
+    try {
+      debugPrint("🟢 Step 1: Evaluating file path...");
+      final filePath = friendId.isBlank
+      ? "$userId/profile_img.jpg"
+      : "$userId/friends/$friendId.jpg";
+      debugPrint("File path calculated: $filePath");
+      debugPrint("🟢 Step 2: Converting base64 to bytes...");
+      final bytes = selectedImagePath.convertBase64ToUint8List;
+      debugPrint("Bytes converted successfully. Total size: ${bytes.length} bytes");
+      debugPrint("🟢 Step 3: Attempting Supabase storage upload...");
+      await supabaseClient.storage
+      .from('my_wallet_storage')
+      .uploadBinary(
+        filePath,
+        bytes,
+        fileOptions: const FileOptions(upsert: true),
+      );
+      debugPrint("🎉 Upload successful!");
+      final publicUrl = supabaseClient.storage.from('my_wallet_storage').getPublicUrl(filePath);
+      debugPrint("Public URL generated: $publicUrl");
+      return publicUrl;
+    } catch (e, stackTrace) {
+      debugPrint("❌ ERROR CAUGHT: $e");
+      debugPrint("❌ STACK TRACE: $stackTrace");
+      return '';
     }
   }
 
@@ -148,6 +217,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoadingState());
       await firebaseDocReference.delete();
       emit(ProfileDeleteUserState(isDeleted: true));
+      ////capture delete friend event
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.friendDeleted
+      );
     } else {
       emit(ProfileDeleteUserState());
     }
@@ -177,7 +250,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if(event.profileData['name'].toString().isBlank) {
       emit(ProfileErrorNameState(message: AppStrings.emptyName));
       result = false;
-    } 
+    } else if (event.profileData['name'].toString().length < 3) {
+      emit(ProfileErrorNameState(message: 'Please provide a valid name'));
+      result = false;
+    }
     final phone = event.profileData['phone'].toString();
     if (friendId.isBlank && !phone.isBlank) {
       if(phone.length < 10) result = false;
@@ -198,7 +274,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       }
     }
-
     if (result && !await checkConnectivity.hasConnection) {
       emit(ProfileFailedState(title: AppStrings.noInternetConnection, message: AppStrings.noInternetConnectionMessage));
       result = false;

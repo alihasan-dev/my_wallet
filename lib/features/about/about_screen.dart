@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../utils/app_extension_method.dart';
 import '../../constants/app_theme.dart';
 import '../../constants/app_icons.dart';
@@ -19,13 +20,14 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentYear = DateTime.now().year;
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
       backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
       insetPadding: const EdgeInsets.all(AppSize.s12),
-      contentPadding: const EdgeInsets.all(AppSize.s15),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s16, vertical: AppSize.s16),
       content: Container(
-        width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s40),
+        width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),
         child: ListView(
           shrinkWrap: true,
@@ -50,8 +52,8 @@ class AboutScreen extends StatelessWidget {
               title: '  Version ${AppStrings.appVersion.determineAppVersion}',
               textSize: AppSize.s12,
             ),
-            const CustomText(
-              title: '  \u00a9 2026 Traversal Inc.',
+            CustomText(
+              title: '  \u00a9 $currentYear Traversal Inc.',
               textSize: AppSize.s12,
             ),
             Padding(
@@ -87,6 +89,10 @@ class AboutScreen extends StatelessWidget {
     final Uri uri = Uri.parse(AppStrings.privacyPolicyUrl);
     if(await launchUrl(uri) && context.mounted) {
       context.pop();
+      AnalyticsService.instance.logEvent(
+        name: 'screen_view',
+        parameters: {'screen_name': 'about_us'},
+      );
     }
   }
   

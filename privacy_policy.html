@@ -3,101 +3,625 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyWallet - Transaction Tracking Application</title>
+  <meta name="description" content="MyWallet - personal transaction tracking, friend balances, reports, privacy policy and terms of service.">
+  <title>MyWallet - About, Features, Privacy Policy & Terms</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-  <link rel="icon" type="image/x-icon" href="assets/images/app_icon.png"><style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      color: #333;
+  <link rel="icon" type="image/x-icon" href="assets/images/app_icon.png">
+
+  <style>
+    :root {
+      --primary: #007bff;
+      --primary-dark: #005fc4;
+      --text: #263238;
+      --muted: #667085;
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --info-bg: #eef6ff;
+      --success-bg: #eefaf2;
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Roboto, Arial, sans-serif;
+      line-height: 1.7;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
     header {
-      background-color: #007bff;
-      color: white;
-      padding: 1em 0;
+      background: linear-gradient(135deg, var(--primary), #0056b3);
+      color: #fff;
+      padding: 42px 20px 34px;
       text-align: center;
     }
-    main {
-      padding: 2em;
-      max-width: 800px;
-      margin: 0 auto;
+
+    header img {
+      width: 84px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 8px 22px rgba(0,0,0,.18);
       background: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      position: relative;
+      margin-bottom: 12px;
     }
-    .top-right-image {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 100px;
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    h1, h2, h3 {
-      color: #007bff;
-    }
-    ul {
+
+    header h1 {
       margin: 0;
-      padding-left: 20px;
+      font-size: 2.25rem;
     }
-    li {
-      margin-bottom: 0.5em;
+
+    header p {
+      margin: 8px auto 0;
+      max-width: 760px;
+      opacity: .94;
     }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,.97);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    nav .nav-inner {
+      max-width: 1050px;
+      margin: auto;
+      padding: 10px 16px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 7px 11px;
+      border-radius: 7px;
+      font-size: .92rem;
+    }
+
+    nav a:hover {
+      background: #eef4fb;
+      color: var(--primary);
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 28px auto;
+      padding: 0 16px;
+    }
+
+    section, .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.035);
+    }
+
+    h2 {
+      color: var(--primary-dark);
+      margin-top: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      color: #344054;
+      margin-top: 24px;
+    }
+
+    p { margin: 10px 0 14px; }
+
+    ul, ol {
+      padding-left: 23px;
+    }
+
+    li { margin-bottom: 8px; }
+
+    .hero-card {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .hero-card h2 {
+      border: 0;
+      padding: 0;
+      margin-bottom: 8px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 13px;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--primary-dark);
+    }
+
+    .callout {
+      background: var(--info-bg);
+      border-left: 4px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 7px;
+      margin: 16px 0;
+    }
+
+    .success {
+      background: var(--success-bg);
+      border-left-color: #28a745;
+    }
+
+    .feature-grid, .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .feature, .service {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 17px;
+    }
+
+    .feature h3, .service h3 {
+      margin: 0 0 6px;
+      font-size: 1.03rem;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 11px;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 500;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
     footer {
       text-align: center;
-      padding: 1em 0;
-      background: #007bff;
-      color: white;
-      margin-top: 2em;
+      padding: 28px 16px;
+      background: #0f172a;
+      color: #dbeafe;
+      margin-top: 30px;
+    }
+
+    footer p { margin: 5px 0; }
+
+    @media (max-width: 700px) {
+      header h1 { font-size: 1.8rem; }
+      .hero-card, .feature-grid, .service-grid { grid-template-columns: 1fr; }
+      section, .hero-card { padding: 20px; }
     }
   </style>
 </head>
+
 <body>
+  <header>
+    <img src="assets/images/app_icon.png" alt="MyWallet app icon">
+    <h1>MyWallet</h1>
+    <p>A simple and secure way to track money you borrow from friends, money you give to friends, outstanding balances, and transaction history.</p>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#overview">Overview</a>
+      <a href="#features">Features</a>
+      <a href="#workflow">How It Works</a>
+      <a href="#services">Technology & Services</a>
+      <a href="#security">Security</a>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms & Conditions</a>
+    </div>
+  </nav>
+
   <main>
-    <img src="assets/images/app_icon.png" alt="Top Right Illustration" class="top-right-image">
-    <section>
-      <h1>MyWallet</h1>
-      <p>A Powerful Mobile Tool for Tracking Transactions</p>
-      <h2>Overview</h2>
-      <p>The application we'll discuss is designed to be a powerful yet user-friendly mobile tool for tracking user transactions. This app allows users to record and view their income and expenses, categorize transactions, and review historical data to better understand spending habits.</p>
-      <p>Using Firebase as the backend platform allows us to manage user data securely and efficiently while leveraging features like real-time data sync, authentication, and cloud storage.</p>
+    <div class="hero-card" id="overview">
+      <div>
+        <h2>About MyWallet</h2>
+        <p>
+          MyWallet is a personal money-tracking application designed to help users keep a clear
+          record of money exchanged with friends and other people they track in the application.
+        </p>
+        <p>
+          Users can record money they receive from a friend or transfer/give to a friend,
+          review their transaction history, see outstanding balances, manage friends,
+          and generate reports.
+        </p>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>Transactions</strong>Record and manage money exchanges.</div>
+        <div class="stat"><strong>Friends</strong>Maintain people and their transaction history.</div>
+        <div class="stat"><strong>Reports</strong>Generate transaction reports in PDF format.</div>
+        <div class="stat"><strong>Cloud Data</strong>Sync application data through Firebase.</div>
+      </div>
+    </div>
+
+    <section id="features">
+      <h2>Key Features</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <h3>Account Authentication</h3>
+          <p>Users can create an account, sign in, sign out, and recover access using Firebase Authentication. Google sign-in is supported where configured.</p>
+        </div>
+        <div class="feature">
+          <h3>Friend Management</h3>
+          <p>Create and manage friends, maintain their transaction history, and optionally include archived friends in the friends list.</p>
+        </div>
+        <div class="feature">
+          <h3>Transaction Tracking</h3>
+          <p>Record transactions involving a friend. Transactions support amount, date, description, type, and active/inactive status.</p>
+        </div>
+        <div class="feature">
+          <h3>Receive & Transfer</h3>
+          <p>Receive represents money owed to the user; Transfer represents money given/owed by the user. Active transactions contribute to the outstanding balance.</p>
+        </div>
+        <div class="feature">
+          <h3>Outstanding Balances</h3>
+          <p>Users can view the current outstanding amount with a friend. The balance is derived from active transactions and is maintained as transactions are created, updated, activated, deactivated, or deleted.</p>
+        </div>
+        <div class="feature">
+          <h3>Transaction Views</h3>
+          <p>Transactions can be presented in table or card view, depending on the user's display preference.</p>
+        </div>
+        <div class="feature">
+          <h3>Filtering & Search</h3>
+          <p>Transaction history can be filtered using criteria such as date, transaction type, and amount.</p>
+        </div>
+        <div class="feature">
+          <h3>Active & Inactive Transactions</h3>
+          <p>Transactions can be made inactive without losing their history. Inactive transactions are excluded from outstanding balance calculations.</p>
+        </div>
+        <div class="feature">
+          <h3>Transaction Reports</h3>
+          <p>Users can generate PDF reports containing transaction information, summaries, settlement information, and related report details.</p>
+        </div>
+        <div class="feature">
+          <h3>Transaction Import</h3>
+          <p>The application supports a structured CSV/Excel import workflow where transaction data can be uploaded, reviewed, validated, cleaned, and explicitly confirmed before import.</p>
+        </div>
+        <div class="feature">
+          <h3>Personalization</h3>
+          <p>Users can configure application preferences such as appearance, transaction details, transaction descriptions, archived friends, and dashboard amount display.</p>
+        </div>
+        <div class="feature">
+          <h3>Analytics & Diagnostics</h3>
+          <p>Firebase Analytics and Crashlytics are used to understand application usage and identify application errors so the service can be maintained and improved.</p>
+        </div>
+      </div>
     </section>
-    <section>
-      <h2>Key Features of the Application</h2>
-      <ul>
-        <li><strong>User Authentication:</strong> Secure login and sign-up options using Firebase Authentication, with support for email-based authentication.</li>
-        <li><strong>Transaction Entry:</strong> Users can add new transactions, specifying details like amount, category, and date.</li>
-        <li><strong>Real-Time Sync:</strong> Firebase’s real-time database keeps transaction data up to date across all of the user’s devices.</li>
-        <li><strong>Categorization and Filtering:</strong> Users can filter transactions by type (transfer/receive), data, and amount.</li>
-        <li><strong>Data Storage and Security:</strong> All data is stored securely on Firebase Cloud Firestore, providing robust data storage.</li>
-      </ul>
-    </section>
-    <section>
-      <h2>Basic Workflow of the Application</h2>
+
+    <section id="workflow">
+      <h2>How MyWallet Works</h2>
       <ol>
-        <li><strong>User Registration/Login:</strong> When users first open the app, they’ll be prompted to register or log in using Firebase Authentication.</li>
-        <li><strong>Add Transaction:</strong> After authentication, users can add transaction details such as amount, category and date.</li>
-        <li><strong>Data Storage:</strong> Transaction data is saved to Firebase Cloud Firestore, making it available on all synced devices in real time.</li>
-        <li><strong>View and Manage Transactions:</strong> Users can browse their past transactions, filter by category, date, and amount, export transaction report feature can also be used to get the report in the form of PDF.</li>
+        <li><strong>Create or sign in to an account:</strong> Firebase Authentication handles account authentication.</li>
+        <li><strong>Add a friend:</strong> The user creates the person with whom transactions will be tracked.</li>
+        <li><strong>Add transactions:</strong> The user records whether money was received or transferred, together with the relevant amount and transaction details.</li>
+        <li><strong>Review history:</strong> The user can view, edit, filter, activate/deactivate, or delete transactions.</li>
+        <li><strong>Track the balance:</strong> Active transactions contribute to the friend balance. Inactive transactions do not contribute to the outstanding amount.</li>
+        <li><strong>Generate a report:</strong> Users can generate a PDF report of relevant transaction information.</li>
+        <li><strong>Manage preferences:</strong> Users can change display and transaction-related settings from the Settings area.</li>
       </ol>
+
+      <div class="callout success">
+        <strong>Balance calculation:</strong>
+        A positive balance represents an amount the friend owes the user. A negative balance represents an amount the user owes the friend. A zero balance means there is no outstanding amount.
+      </div>
     </section>
+
     <section>
-      <h2>Key Technologies and Tools</h2>
+      <h2>Transaction Import</h2>
+      <p>MyWallet's bulk transaction import is designed to avoid writing unreviewed data directly to the database.</p>
+      <ol>
+        <li><strong>Upload:</strong> Select a supported CSV or Excel (.xlsx) file.</li>
+        <li><strong>Review:</strong> Inspect the parsed transaction records.</li>
+        <li><strong>Clean & Validate:</strong> Required fields and supported values are validated before import.</li>
+        <li><strong>Confirm:</strong> The user explicitly confirms the number of transactions to import.</li>
+        <li><strong>Import:</strong> Validated records are written to the user's transaction data.</li>
+      </ol>
+      <p>Supported transaction types are Receive and Transfer. Amounts must be positive numeric values. Status may be Active or Inactive; when omitted or unrecognized during import, the application can apply its configured default behavior.</p>
+    </section>
+
+    <section id="services">
+      <h2>Technology & Services</h2>
+      <div class="service-grid">
+        <div class="service">
+          <h3>Flutter</h3>
+          <p>Cross-platform application framework used for the MyWallet Android, iOS, and Web interfaces.</p>
+        </div>
+        <div class="service">
+          <h3>Firebase Authentication</h3>
+          <p>Handles user authentication and account access, including supported sign-in and password recovery flows.</p>
+        </div>
+        <div class="service">
+          <h3>Cloud Firestore</h3>
+          <p>Cloud NoSQL database used for application data such as user-related records, friends, transactions, and application information.</p>
+        </div>
+        <div class="service">
+          <h3>Firebase Hosting</h3>
+          <p>Hosts the MyWallet Web application and serves its production web build.</p>
+        </div>
+        <div class="service">
+          <h3>Firebase Analytics</h3>
+          <p>Used for aggregated application usage and event measurement, such as feature usage and navigation/activity events.</p>
+        </div>
+        <div class="service">
+          <h3>Firebase Crashlytics</h3>
+          <p>Used to capture application crashes and errors to support troubleshooting and reliability improvements on supported platforms.</p>
+        </div>
+        <div class="service">
+          <h3>Supabase Storage</h3>
+          <p>Used for profile image storage. Supabase Storage is separate from Firebase Authentication and Firestore.</p>
+        </div>
+        <div class="service">
+          <h3>Geolocation Services</h3>
+          <p>Where location functionality is used and permission is granted, the application may obtain device/browser coordinates. Address lookup requires a compatible reverse-geocoding service.</p>
+        </div>
+        <div class="service">
+          <h3>Local Preferences</h3>
+          <p>Local application preferences are cached on the device/browser to support settings and user experience.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Service status:</strong> The exact availability of platform-specific services can differ between Android, iOS, and Web. Some capabilities may be introduced or changed as MyWallet evolves.
+      </div>
+    </section>
+
+    <section id="security">
+      <h2>Security & Data Protection</h2>
+      <p>MyWallet is designed with multiple layers of application and infrastructure security. Security controls can change as the application evolves.</p>
       <ul>
-        <li><strong>Frontend Framework:</strong> Flutter.</li>
-        <li><strong>Backend as a Service (BaaS):</strong> Firebase, which provides database, authentication, storage, and hosting services</li>
-        <li><strong>Cloud Firestore:</strong> Firebase’s NoSQL database to store transaction records.</li>
-        <li><strong>Firebase Authentication:</strong> For managing user registration and login.</li>
+        <li><strong>Authentication:</strong> Firebase Authentication is used to manage account identity and sign-in.</li>
+        <li><strong>Cloud database:</strong> User application data is stored in Cloud Firestore and should be protected through Firebase Security Rules and authenticated access controls.</li>
+        <li><strong>Separation of services:</strong> Profile images are stored separately in Supabase Storage rather than being stored directly in Firestore.</li>
+        <li><strong>Credential protection:</strong> Sensitive server-side credentials and secret keys should not be embedded in the Flutter Web client. Public client configuration is not treated as a secret.</li>
+        <li><strong>Secure transport:</strong> Production web communication is served over HTTPS. Firebase and other supported cloud services provide encrypted network transport.</li>
+        <li><strong>Crash monitoring:</strong> Crashlytics helps identify application failures and supports reliability work.</li>
+        <li><strong>Analytics minimization:</strong> Analytics should use event-level information needed for product measurement and should not contain transaction amounts, friend names, descriptions, email addresses, or other unnecessary personal/financial details.</li>
+        <li><strong>Session/account controls:</strong> Users can sign out and use the supported account recovery mechanisms.</li>
+        <li><strong>Import validation:</strong> Imported transactions are reviewed and validated before the user confirms the import.</li>
       </ul>
+      <div class="callout">
+        <strong>Important:</strong> No internet-connected service can guarantee absolute security. Users should use strong account credentials, protect their devices, and avoid sharing account access.
+      </div>
+    </section>
+
+    <section>
+      <h2>Data Used by MyWallet</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data / Category</th>
+              <th>Purpose</th>
+              <th>Storage / Service</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Account information</td>
+              <td>Authentication and account management</td>
+              <td>Firebase Authentication</td>
+            </tr>
+            <tr>
+              <td>Friend records</td>
+              <td>Maintain people tracked in MyWallet</td>
+              <td>Cloud Firestore</td>
+            </tr>
+            <tr>
+              <td>Transaction information</td>
+              <td>Record and calculate money exchanged with friends</td>
+              <td>Cloud Firestore</td>
+            </tr>
+            <tr>
+              <td>Profile image</td>
+              <td>Display the user's profile image</td>
+              <td>Supabase Storage</td>
+            </tr>
+            <tr>
+              <td>Application preferences</td>
+              <td>Remember selected display and transaction settings</td>
+              <td>Local preferences and/or configured cloud settings</td>
+            </tr>
+            <tr>
+              <td>Usage events</td>
+              <td>Understand feature usage and improve the application</td>
+              <td>Firebase Analytics</td>
+            </tr>
+            <tr>
+              <td>Crash/error information</td>
+              <td>Diagnose application failures</td>
+              <td>Firebase Crashlytics on supported platforms</td>
+            </tr>
+            <tr>
+              <td>Location coordinates, where requested</td>
+              <td>Location-aware functionality and/or reverse geocoding</td>
+              <td>Device/browser location provider and configured geocoding service</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">Only the data required for a particular feature should be collected or processed. Feature availability and exact data flows may vary by platform and application version.</p>
+    </section>
+
+    <section id="privacy">
+      <h2>Privacy Policy</h2>
+      <p><strong>Last updated:</strong> September 26, 2026</p>
+
+      <h3>1. Scope</h3>
+      <p>This Privacy Policy explains how MyWallet may collect, use, store, and process information when you use the MyWallet application and related services.</p>
+
+      <h3>2. Information We May Collect</h3>
+      <ul>
+        <li><strong>Account information:</strong> Information provided through supported authentication methods, such as an email address or information made available by a supported identity provider.</li>
+        <li><strong>Friend and transaction information:</strong> Information you choose to enter, including friend records, transaction amounts, dates, descriptions, transaction types, and statuses.</li>
+        <li><strong>Profile information:</strong> A profile image if you choose to add one.</li>
+        <li><strong>Usage information:</strong> Application events and technical information processed through Firebase Analytics where analytics is enabled and applicable.</li>
+        <li><strong>Error information:</strong> Crash and error diagnostics through Firebase Crashlytics on supported platforms.</li>
+        <li><strong>Location information:</strong> If a feature requests location and you grant permission, MyWallet may receive device/browser coordinates. Location permission can be controlled through the operating system or browser.</li>
+      </ul>
+
+      <h3>3. How Information Is Used</h3>
+      <ul>
+        <li>To create and authenticate your account.</li>
+        <li>To store, display, calculate, and synchronize your friends and transactions.</li>
+        <li>To generate transaction reports requested by you.</li>
+        <li>To provide settings and personalization.</li>
+        <li>To process supported transaction imports.</li>
+        <li>To monitor application performance, diagnose errors, and improve reliability.</li>
+        <li>To understand aggregate feature usage and improve the MyWallet experience.</li>
+        <li>To provide functionality that requires location when you explicitly grant location permission.</li>
+      </ul>
+
+      <h3>4. Financial Information</h3>
+      <p>MyWallet is a transaction-recording and personal tracking application. Transaction amounts and balances entered into the application are used to maintain your records and calculate the outstanding amounts shown by the application. MyWallet does not itself constitute a bank account, payment processor, investment account, lending service, or financial institution.</p>
+
+      <h3>5. Third-Party Services</h3>
+      <p>MyWallet relies on third-party infrastructure and service providers, including Firebase services and Supabase Storage. These providers may process information according to their own terms and privacy policies. Their services can change over time.</p>
+
+      <h3>6. Analytics</h3>
+      <p>Firebase Analytics may be used to understand how users interact with the application. MyWallet's analytics implementation is intended to avoid sending unnecessary sensitive transaction content, such as transaction amounts, friend names, transaction descriptions, email addresses, or phone numbers as analytics event parameters.</p>
+
+      <h3>7. Location</h3>
+      <p>Location is permission-based. If location functionality is used, the browser or operating system controls whether access is granted. You can deny or revoke location permission through your device or browser settings. When coordinates are sent to a reverse-geocoding service, the service may process those coordinates to return an address or location description.</p>
+
+      <h3>8. Data Retention</h3>
+      <p>MyWallet retains account and application information for as long as necessary to provide the service, maintain the user's records, satisfy legitimate operational requirements, or as otherwise required by applicable law. Specific retention periods may vary by data type and service provider.</p>
+
+      <h3>9. Data Sharing</h3>
+      <p>MyWallet does not intend to sell users' personal information. Information may be processed by infrastructure and service providers required to operate the application, such as authentication, database, storage, analytics, crash reporting, hosting, and geocoding providers where applicable.</p>
+
+      <h3>10. Your Choices</h3>
+      <ul>
+        <li>You can choose whether to provide optional profile information.</li>
+        <li>You can control location permission through your browser or device.</li>
+        <li>You can sign out of your account.</li>
+        <li>You can use the application's supported account recovery features.</li>
+        <li>You can manage available application preferences through Settings.</li>
+      </ul>
+
+      <h3>11. Children's Privacy</h3>
+      <p>MyWallet is not designed to knowingly collect personal information from children where prohibited by applicable law. If you believe a child has provided personal information inappropriately, please contact the application operator so the situation can be reviewed.</p>
+
+      <h3>12. Changes to This Privacy Policy</h3>
+      <p>This Privacy Policy may be updated when MyWallet's features, services, or legal requirements change. The updated version will be made available through the application or this page, together with an updated revision date where appropriate.</p>
+
+      <h3>13. Contact</h3>
+      <p>For privacy questions, data requests, or concerns about MyWallet, use the support/contact channel provided by the application operator.</p>
+
+      <div class="callout">
+        <strong>Legal note:</strong> This section is an application-specific privacy-policy draft based on the current MyWallet architecture and features. It should be reviewed and adapted by the application's owner or qualified legal counsel for the jurisdictions in which MyWallet is offered.
+      </div>
+    </section>
+
+    <section id="terms">
+      <h2>Terms & Conditions</h2>
+      <p><strong>Last updated:</strong> September 26, 2026</p>
+
+      <h3>1. Acceptance</h3>
+      <p>By accessing or using MyWallet, you agree to these Terms & Conditions. If you do not agree with these terms, do not use the application.</p>
+
+      <h3>2. Description of the Service</h3>
+      <p>MyWallet provides tools for recording, organizing, reviewing, and reporting personal transaction information involving friends and other tracked contacts.</p>
+
+      <h3>3. User Responsibilities</h3>
+      <ul>
+        <li>You are responsible for the accuracy of information you enter into MyWallet.</li>
+        <li>You are responsible for maintaining control of your account and device.</li>
+        <li>You must not use the application for unlawful activities or to violate another person's rights.</li>
+        <li>You must not attempt to gain unauthorized access to another user's account or data.</li>
+        <li>You should maintain appropriate backups or records when the information is important to you.</li>
+      </ul>
+
+      <h3>4. Financial Records</h3>
+      <p>MyWallet is a record-keeping tool. Amounts, balances, reports, and calculations are based on information entered or imported by the user and the application's configured calculation rules. Users are responsible for independently verifying important financial records.</p>
+
+      <h3>5. No Financial or Legal Advice</h3>
+      <p>MyWallet does not provide financial, investment, tax, accounting, legal, lending, or payment advice. Information displayed by the application should not be treated as professional advice.</p>
+
+      <h3>6. Third-Party Services</h3>
+      <p>The service depends on third-party infrastructure such as Firebase, Supabase, identity providers, and other services that may be used for specific features. Availability may be affected by those providers, network conditions, browser restrictions, or platform limitations.</p>
+
+      <h3>7. Availability and Changes</h3>
+      <p>Features may be added, modified, suspended, or discontinued. The application may require updates to continue using certain features. We may also perform maintenance that temporarily affects availability.</p>
+
+      <h3>8. User Content</h3>
+      <p>You retain responsibility for the transaction information and other content you choose to enter into MyWallet. You must have the necessary rights and permissions to provide any information you upload or store.</p>
+
+      <h3>9. Prohibited Use</h3>
+      <p>You must not misuse the service, interfere with its operation, attempt to bypass security controls, introduce malicious code, access data belonging to other users, or use the service in a manner prohibited by applicable law.</p>
+
+      <h3>10. Disclaimer</h3>
+      <p>MyWallet is provided subject to applicable law and without a guarantee that the service will always be uninterrupted, error-free, or available on every device or browser. Users should independently verify important transaction records.</p>
+
+      <h3>11. Limitation of Liability</h3>
+      <p>To the maximum extent permitted by applicable law, the application operator will not be responsible for losses arising from unauthorized access caused by the user's failure to protect account credentials or device access, inaccurate information entered by the user, third-party service outages, network failures, or other circumstances outside the operator's reasonable control.</p>
+
+      <h3>12. Termination</h3>
+      <p>Access to MyWallet may be suspended or terminated where necessary to protect the service, users, or third parties, to address misuse, or where required by applicable law.</p>
+
+      <h3>13. Changes to These Terms</h3>
+      <p>These Terms & Conditions may be updated as the application evolves or legal requirements change. Continued use of the service after an updated version becomes effective may constitute acceptance where permitted by applicable law.</p>
+
+      <h3>14. Governing Law</h3>
+      <p>The governing law and dispute-resolution provisions for MyWallet should be completed by the application owner based on the legal entity, jurisdiction, and countries in which the service is offered.</p>
+
+      <div class="callout">
+        <strong>Legal note:</strong> This Terms & Conditions section is a product-specific draft, not legal advice. The application owner should have the final terms reviewed by qualified legal counsel before publishing them as binding terms.
+      </div>
+    </section>
+
+    <section>
+      <h2>About This Document</h2>
+      <p>This page consolidates information about the current MyWallet product, its major functionality, technology stack, security approach, privacy practices, and draft terms of use.</p>
+      <p class="small">Some features or integrations may be platform-specific or under development. The production application configuration and the final legal documents take precedence over this general product description.</p>
     </section>
   </main>
+
   <footer>
-    <p>&copy; 2026 MyWallet. All Rights Reserved.</p>
+    <p>&copy; <span id="currentYear"></span> MyWallet. All Rights Reserved.</p>
+    <p>Transaction tracking and personal record management.</p>
   </footer>
+
+  <script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_color.dart';
 import '../constants/app_font.dart';
@@ -43,6 +44,10 @@ abstract class MyAppTheme {
 
   static ThemeData get getAppTheme {
     return ThemeData(
+      scaffoldBackgroundColor: Colors.white,
+      popupMenuTheme: const PopupMenuThemeData(
+        color: Colors.white
+      ),
       //main color of app
       primarySwatch: Colors.indigo,
       primaryColor: AppColors.primaryColor,
@@ -95,9 +100,11 @@ abstract class MyAppTheme {
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: <TargetPlatform, PageTransitionsBuilder>{
-          TargetPlatform.android: ZoomPageTransitionsBuilder(
-            allowEnterRouteSnapshotting: false
-          )
+          // TargetPlatform.android: ZoomPageTransitionsBuilder(
+          //   allowEnterRouteSnapshotting: false
+          // )
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(), // ⬅ forces iOS-style slide on Android
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         }
       )
     );

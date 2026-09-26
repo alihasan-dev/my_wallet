@@ -5,9 +5,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'add_transaction_dialog.dart';
+import '../../../features/transaction/application/transaction_import_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/preferences.dart';
-import '../../transaction/application/transaction_dialog.dart';
 import '../../../constants/app_theme.dart';
 import '../../../features/transaction/application/transaction_details.dart';
 import '../../../features/transaction/application/transaction_filter_dialog.dart';
@@ -62,10 +63,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
   RangeValues? amountChangeValue;
   DateTimeRange? initialDateTimeRage;
   String transactionType = AppStrings.all;
+  String transactionStatus = AppStrings.all;
   double maxAmount = - double.maxFinite;
   double minAmount = double.maxFinite;
   int _selectedTransactionCount = 0;
   String? transactionId;
+  double originalTotalBalance = 0.0;
 
   @override
   void initState() {
@@ -87,7 +90,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
     }
     _localizations = AppLocalizations.of(context)!;
     super.didChangeDependencies();
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +147,12 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                           imageSize: AppSize.s40,
                                           circularPadding: AppSize.s5,
                                           strokeWidth: AppSize.s1,
-                                          padding: 1.2,
-                                          borderWidth: 0,
+                                          padding: 1.5,
+                                          borderWidth: 1.5,
                                           fromProfile: false,
+                                          borderColor: widget.userModel?.isUserVerified ?? true
+                                          ? AppColors.primaryColor
+                                          : AppColors.orange
                                         ),
                                       ),
                                     ],
@@ -210,27 +216,29 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               duration: MyAppTheme.animationDuration,
                               child: _selectedTransactionCount > 1
                               ? const SizedBox()
-                              : Row(
-                                children: [
-                                  IconButton(
-                                    tooltip: _localizations!.editTransaction,
-                                    onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
-                                    visualDensity: VisualDensity.compact,
-                                    icon: const Icon(AppIcons.editIcon, color: AppColors.white)
-                                  ),
-                                  IconButton(
-                                    tooltip: 'Active/Inactive Transaction',
-                                    onPressed: () => _transactionBloc.add(TransactionActiveEvent()), 
-                                    visualDensity: VisualDensity.compact,
-                                    icon: const Icon(AppIcons.visibilityIcon, color: AppColors.white)
-                                  )
-                                ],
-                              ),
+                              : IconButton(
+                                  tooltip: _localizations!.editTransaction,
+                                  onPressed: () => _transactionBloc.add(TransactionEditEvent()), 
+                                  visualDensity: VisualDensity.compact,
+                                  icon: const Icon(AppIcons.editIcon, color: AppColors.white)
+                                )
                             ),
                           ],
                         )
                       : Row(
                         children: [
+                          IconButton(
+                            tooltip: _localizations!.importReport,
+                            onPressed: () {
+                              _transactionBloc.add(TransactionImportEvent());
+                              // showComingSoonDialog(
+                              //   context: context,
+                              //   title: "Import Transactions Coming Soon",
+                              //   description: "We're currently working on bulk transaction import. Soon, you'll be able to upload Excel or CSV files and add multiple transactions to MyWallet in just a few steps"
+                              // );
+                            }, 
+                            icon: const Icon(Icons.upload, color: AppColors.white)
+                          ),
                           IconButton(
                             tooltip: _localizations!.addTransaction,
                             onPressed: () => _showAddTransactionDialog(),
@@ -243,7 +251,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                           Badge(
                             backgroundColor: AppColors.red,
                             isLabelVisible: isFilterEnable,
-                            alignment: const Alignment(0.4,- 0.5),
+                            alignment: const Alignment(0.4, -0.5),
                             smallSize: AppSize.s10,
                             child: IconButton(
                               tooltip: _localizations!.advanceFilter,
@@ -341,6 +349,41 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                               color: textColor.withValues(alpha: 0.8)
                             ),
                           ),
+                          if (Preferences.getBool(key: AppStrings.prefShowTransactionDescription)) ...[
+                            Expanded(
+                              child: Material(
+                                color: AppColors.transparent,
+                                child: InkWell(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSize.s10, 
+                                      vertical: AppSize.s15
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CustomText(
+                                          title: _localizations!.description, 
+                                          textStyle: getSemiBoldStyle(
+                                            color: textColor, 
+                                            fontSize: AppSize.s14
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: appBarHeight - AppSize.s8,
+                              child: VerticalDivider(
+                                thickness: AppSize.s05, 
+                                width: AppSize.s05, 
+                                color: textColor.withValues(alpha: 0.8)
+                              ),
+                            ),
+                          ],
                           Expanded(
                             child: Material(
                               color: AppColors.transparent,
@@ -498,6 +541,41 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                                           ),
                                         ),
                                       ),
+                                      if (Preferences.getBool(key: AppStrings.prefShowTransactionDescription)) ...[
+                                        const CustomVerticalDivider(),
+                                        Expanded(
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: AppSize.s10, 
+                                              vertical: AppSize.s15
+                                            ),
+                                            color: transactionId == null || subData.id != transactionId 
+                                            ? Helper.isDark 
+                                              ? AppColors.backgroundColorDark
+                                              : AppColors.white
+                                            : Helper.isDark
+                                              ?AppColors.backgroundColorDark.withValues(alpha: 0.8)
+                                              :AppColors.white.withValues(alpha: 0.8), 
+                                            child: CustomText(
+                                              title: subData.description.isBlank
+                                              ? '-'
+                                              : subData.description,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textStyle: TextStyle(
+                                                color: !subData.isActive
+                                                ? AppColors.grey
+                                                :  Helper.isDark 
+                                                  ? AppColors.white.withValues(alpha: 0.9) 
+                                                  : AppColors.black,
+                                                decoration: !subData.isActive
+                                                ? TextDecoration.lineThrough
+                                                : TextDecoration.none
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                       const CustomVerticalDivider(),
                                       Expanded(
                                         child: Container(
@@ -600,7 +678,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 2,
+                    flex: Preferences.getBool(key: AppStrings.prefShowTransactionDescription)
+                    ? 3
+                    : 2,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSize.s10, 
@@ -658,9 +738,11 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               _transactionBloc.add(TransactionApplyFilterEvent(
                 dateTimeRange: initialDateTimeRage,
                 transactionType: transactionType,
+                transactionStatus: transactionStatus,
                 amountRangeValues: tempAmountChangeValue
               ));
             }
+            // originalTotalBalance = state.originalTotalBalance;
             if(!state.isTransactionAgainstFilter) {
               availableBalance = state.totalBalance;
               isFilterEnable = state.isFilterEnable;
@@ -669,6 +751,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
               _selectedTransactionCount = transactionDataList.where((item) => item.selected).length;
               if(!isFilterEnable) {
                 transactionType = AppStrings.all;
+                transactionStatus = AppStrings.all;
                 initialDateTimeRage = null;
                 amountChangeValue = null;
               }
@@ -717,6 +800,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             case TransactionTypeChangeState _:
               transactionType = state.type;
               break;
+            case TransactionStatusChangeState _:
+              transactionStatus = state.status;
+              break;
             case TransactionEditState _:
               _showAddTransactionDialog(transactionModel: state.selectedTransaction);
               break;
@@ -745,6 +831,9 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
                 title: state.message, 
                 color: AppColors.green
               );
+              break;
+            case TransactionImportState _:
+              _showImportDialog(state.finalTotalAmount);
               break;
           default:
         }
@@ -819,7 +908,8 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
             finalAmountRange: RangeValues(minAmount, maxAmount),
             transactionBloc: _transactionBloc,
             initialDateTimeRage: initialDateTimeRage,
-            transactionType: transactionType
+            transactionType: transactionType,
+            transactionStatus: transactionStatus
           ),
         ),
       );
@@ -831,11 +921,27 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
           _transactionBloc.add(TransactionApplyFilterEvent(
             dateTimeRange: data['initial_date_time_range'],
             transactionType: data['transaction_type'],
+            transactionStatus: data['transaction_status'],
             amountRangeValues: data['amount_range']
           ));
         }
       }
     }
+  }
+
+  void _showImportDialog(double totalAmount) {
+    showGeneralDialog(
+      context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
+        child: TransactionImportDialog(
+          friendId: friendId,
+          totalAmount: totalAmount,
+        ),
+      ),
+    );
   }
 
 }

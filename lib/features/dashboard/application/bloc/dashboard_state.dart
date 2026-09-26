@@ -62,3 +62,9 @@ class DashboardBiometricAuthState extends DashboardState {
 }
 
 class DashboardTransactionDetailsWindowCloseState extends DashboardState {}
+
+class DashboardArchieveUserState extends DashboardState {
+  bool isArchievedUser;
+
+  DashboardArchieveUserState({this.isArchievedUser = false});
+}

@@ -1,5 +1,4 @@
 part of 'signup_screen.dart';
-
 class SignupAlert extends StatelessWidget {
 
   const SignupAlert({super.key});

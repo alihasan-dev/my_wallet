@@ -3,12 +3,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/features/settings/application/transaction_mode_dialog.dart';
+import 'package:sample_formatter/sample_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../constants/app_theme.dart';
+import '../../../core/analytics/analytics_events.dart';
+import '../../../core/analytics/analytics_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../features/settings/application/bloc/settings_bloc.dart';
 import '../../../utils/app_extension_method.dart';
 import '../../../widgets/currency_dialog_view.dart';
 import '../../about/about_screen.dart';
+import '../domain/setting_dashboard_transaction_mode_model.dart';
 import '../domain/settings_language_model.dart';
 import '../domain/settings_model.dart';
 import '../domain/settings_theme_model.dart';
@@ -21,7 +27,6 @@ import '../../../constants/app_strings.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../constants/app_size.dart';
-// import 'package:sample_formatter/sample_formatter.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -33,16 +38,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   var settingItemList = <SettingModel>[];
   var themeModeList = <SettingThemeModel>[];
+  var dashboardTransactionModeList = <SettingDashboardAmountModeModel>[];
   var languageList = <SettingLanguageModel>[];
   AppLocalizations? _localizations;
   late SettingsBloc _settingBloc;
-  // CurrencyModel? currencyModel;
+  CurrencyModel? currencyModel;
 
-  // @override
-  // void initState() {
-  //   currencyModel = CurrencyModel(countryCode: "IN");
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    currencyModel = CurrencyModel(countryCode: "IN");
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -55,17 +61,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     languageList.clear();
     languageList.add(SettingLanguageModel(title: AppStrings.english, selectedLanguage:  AppStrings.english, locale: const Locale('en','US')));
     languageList.add(SettingLanguageModel(title: "हिंदी", selectedLanguage:  AppStrings.hindi, locale: const Locale('hi','IN')));
+    dashboardTransactionModeList.clear();
+    dashboardTransactionModeList.add(SettingDashboardAmountModeModel(title: _localizations!.latest_transaction, subtitle:  _localizations!.latest_transaction_msg, mode: DashboardAmountMode.latestTransaction));
+    dashboardTransactionModeList.add(SettingDashboardAmountModeModel(title: _localizations!.total_outstanding, subtitle:  _localizations!.total_outstanding_msg, mode: DashboardAmountMode.totalOutstanding));
     settingItemList.clear();
-    settingItemList.add(SettingModel(icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
-    settingItemList.add(SettingModel(icon: AppIcons.themeModeIcon, title: _localizations!.theme, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
-    settingItemList.add(SettingModel(icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
-    settingItemList.add(SettingModel(icon: AppIcons.verifiedIcon, title: _localizations!.showUnverifiedUser, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.language, icon: AppIcons.languageIcon, title: _localizations!.language, subTitle: Preferences.getString(key: AppStrings.prefLanguage)));
+    settingItemList.add(SettingModel(id: SettingItemId.theme, icon: AppIcons.themeModeIcon, title: _localizations!.appearance, subTitle: Preferences.getString(key: AppStrings.prefTheme)));
+    settingItemList.add(SettingModel(id: SettingItemId.dashboardTransactionMode, icon: AppIcons.swaphorizIcon, title: _localizations!.transaction_mode, subTitle: DashboardAmountModeExtension.label()));
+    settingItemList.add(SettingModel(id: SettingItemId.transactionDetails, icon: AppIcons.barChartIcon, title: _localizations!.transactionBreakdown, subTitle: _localizations!.transactionBreakdownMsg, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.transactionDescription, icon: AppIcons.description, title: _localizations!.transactionDescription, subTitle: _localizations!.transactionDescriptionMsg, showSwitch: true));
+    settingItemList.add(SettingModel(id: SettingItemId.archiveUser, icon: AppIcons.verifiedIcon, title: _localizations!.show_archived_friends, subTitle: _localizations!.show_archived_friends_msg, showSwitch: true));
     if(!kIsWeb) {
-      settingItemList.add(SettingModel(icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
-      settingItemList.add(SettingModel(icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
+      settingItemList.add(SettingModel(id: SettingItemId.biometricToggle, icon: AppIcons.fingerprintIcon, title: _localizations!.enableBiometric, subTitle: _localizations!.enableBiometricMsg, showSwitch: true));
+      settingItemList.add(SettingModel(id: SettingItemId.webApp, icon: AppIcons.adsClickIcon, title: _localizations!.openAppOnBrowser, subTitle: AppStrings.webUrl, isLauncher: true));
     }
-    // settingItemList.add(SettingModel(icon: AppIcons.currencyIcon, title: "Currency"));
-    settingItemList.add(SettingModel(icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
+    // settingItemList.add(SettingModel(id: SettingItemId.currency, icon: AppIcons.currencyIcon, title: "Currency"));
+    settingItemList.add(SettingModel(id: SettingItemId.about, icon: AppIcons.infoIcon, title: _localizations!.aboutMyWallet));
     super.didChangeDependencies();
   }
 
@@ -89,11 +100,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (context, state) {
           switch (state) {
             case SettingsUserDetailsState _:
-              settingItemList[2].switchValue = state.userModel.showTransactionDetails;
-              settingItemList[3].switchValue = state.userModel.isUserVerified;
-              settingItemList[4].switchValue = state.userModel.enableBiometric;
-              settingItemList[3].subTitle = state.userModel.isUserVerified ? _localizations!.yes : _localizations!.no;
-              settingItemList[1].subTitle = Preferences.getString(key: AppStrings.prefTheme);
+              for (final item in settingItemList) {
+                switch (item.id) {
+                  case SettingItemId.theme:
+                    item.subTitle = Preferences.getString(key: AppStrings.prefTheme);
+                    break;
+                  case SettingItemId.transactionDetails:
+                    item.switchValue = state.userModel.showTransactionDetails;
+                    break;
+                  case SettingItemId.transactionDescription:
+                    item.switchValue = state.userModel.showTransactionDescription;
+                    break;
+                  case SettingItemId.archiveUser:
+                    item.switchValue = state.userModel.isUserVerified;
+                    break;
+                  case SettingItemId.biometricToggle:
+                    item.switchValue = state.userModel.enableBiometric;
+                  case SettingItemId.dashboardTransactionMode:
+                    item.subTitle = DashboardAmountModeExtension.label();
+                  default:
+                }
+              }
               break;
             default:
           }
@@ -163,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: CupertinoSwitch(
                               value: data.switchValue, 
                               activeTrackColor: AppColors.primaryColor,
-                              onChanged: (value) => onChangeSwith(index: index, value: value)
+                              onChanged: (value) => onChangeSwith(id: data.id, value: value)
                             ),
                           ),
                       ],
@@ -180,39 +207,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void onTapOption({required SettingModel data, required int index}) {
     if(data.showSwitch || data.isLauncher) {
-      if(data.showSwitch) onChangeSwith(index: index, value: !data.switchValue);
+      if(data.showSwitch) onChangeSwith(id: data.id, value: !data.switchValue);
       if(data.isLauncher) launchPolicyUrl();
     } else {
-      switch (index) {
-        case 0:
+      switch (data.id) {
+        case SettingItemId.language:
           showLanguageDialog(context: context);
           break;
-        case 1:
+        case SettingItemId.theme:
           showThemeDialog(context: context);
           break;
-        case 4:
-        case 6:
-        //   showCurrencyDialog(context: context);
-        //   break;
-        // case 5:
-        // case 7:
+        case SettingItemId.currency:
+          showCurrencyDialog(context: context);
+          break;
+        case SettingItemId.about:
           showAboutAppDialog(context: context);
+          break;
+        case SettingItemId.dashboardTransactionMode:
+          showDashboardTransactionModeDialog(context: context);
           break;
         default:
       }
     }
   }
 
-  void onChangeSwith({required int index, required bool value}) {
-    switch (index) {
-      case 2:
+  void onChangeSwith({required SettingItemId id, required bool value}) {
+    switch (id) {
+      case SettingItemId.transactionDetails:
         _settingBloc.add(SettingsOnChangeTransactionDetailsEvent(isEnable: value));
         break;
-      case 3:
+      case SettingItemId.archiveUser:
         _settingBloc.add(SettingsOnChangeVerifiedEvent(isVerified: value));
         break;
-      case 4: 
+      case SettingItemId.biometricToggle: 
         _settingBloc.add(SettingsOnChangeBiometricEvent(enableBiometric: value));
+        break;
+      case SettingItemId.transactionDescription: 
+        _settingBloc.add(SettingsOnChangeTransactionDescriptionEvent(isEnable: value));
         break;
       default:
     }
@@ -221,6 +252,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> launchPolicyUrl() async {
     final Uri uri = Uri.parse(AppStrings.webUrl);
     await launchUrl(uri);
+    AnalyticsService.instance.logEvent(
+      name: 'screen_view',
+      parameters: {'screen_name': 'app_web_view'},
+    );
   }
 
   void showAboutAppDialog({required BuildContext context}) {
@@ -235,21 +270,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // void showCurrencyDialog({required BuildContext context}) {
-  //   showGeneralDialog(
-  //     context: context, 
-  //     barrierDismissible: true,
-  //     barrierLabel: AppStrings.close,
-  //     pageBuilder: (_, a1, _) => CurrencyDialogView(
-  //       selectedCurrency: currencyModel,
-  //       onSelect: (p0) {
-  //         currencyModel = p0;
-  //         setState(() {});
-  //         context.pop();
-  //       },
-  //     )
-  //   );
-  // }
+  void showCurrencyDialog({required BuildContext context}) {
+    showGeneralDialog(
+      context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => CurrencyDialogView(
+        selectedCurrency: currencyModel,
+        onSelect: (p0) {
+          currencyModel = p0;
+          setState(() {});
+          context.pop();
+        },
+      )
+    );
+  }
 
   void showThemeDialog({required BuildContext context}) {
     showDialog(
@@ -257,66 +292,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (_) {
         return AlertDialog(
           title: CustomText(
-            title: _localizations!.theme,
-            textStyle: getMediumStyle(
+            title: _localizations!.appearance,
+            textStyle: getSemiBoldStyle(
               color: Helper.isDark 
               ? AppColors.white.withValues(alpha: 0.9) 
               : AppColors.black,
-              fontSize: AppSize.s18
             ),
           ),
           backgroundColor: Helper.isDark 
           ? AppColors.dialogColorDark 
           : AppColors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+          insetPadding: const EdgeInsets.all(AppSize.s12),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSize.s12, 
-            vertical: AppSize.s12
+            horizontal: AppSize.s16, 
+            vertical: AppSize.s16
           ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              themeModeList.length,
-              (index) {
-                var data = themeModeList[index];
-                return InkWell(
-                  onTap: () { 
-                    context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
-                    _settingBloc.add(SettingsUserDetailsEvent());
-                    context.pop();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSize.s8,
-                      vertical: AppSize.s8
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Preferences.getString(key: AppStrings.prefTheme) == data.theme 
-                          ? AppIcons.radioCheckIcon 
-                          : AppIcons.uncheckIcon,
-                          color: Preferences.getString(key: AppStrings.prefTheme) == data.theme 
-                          ? AppColors.primaryColor
-                          : AppColors.grey
-                        ),
-                        const SizedBox(width: AppSize.s10),
-                        CustomText(
-                          title: data.title,
-                          textStyle: getRegularStyle(
-                            color: Helper.isDark 
-                            ? AppColors.white.withValues(alpha: 0.9) 
-                            : AppColors.black,
-                            fontSize: AppSize.s14
+          content: SizedBox(
+            width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                themeModeList.length,
+                (index) {
+                  var data = themeModeList[index];
+                  return InkWell(
+                    onTap: () { 
+                      context.read<MyAppBloc>().add(MyAppChangeThemeEvent(themeMode: data.themeMode));
+                      _settingBloc.add(SettingsUserDetailsEvent());
+                      context.pop();
+                      AnalyticsService.instance.logEvent(
+                        name: AnalyticsEvents.settingsChanged,
+                        parameters: {'setting_name': 'theme'},
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSize.s8,
+                        vertical: AppSize.s8
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Preferences.getString(key: AppStrings.prefTheme) == data.theme 
+                            ? AppIcons.radioCheckIcon 
+                            : AppIcons.uncheckIcon,
+                            color: Preferences.getString(key: AppStrings.prefTheme) == data.theme 
+                            ? AppColors.primaryColor
+                            : AppColors.grey
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSize.s10),
+                          CustomText(
+                            title: data.title,
+                            textStyle: getRegularStyle(
+                              color: Helper.isDark 
+                              ? AppColors.white.withValues(alpha: 0.9) 
+                              : AppColors.black,
+                              fontSize: AppSize.s14
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
+              ),
             ),
           ),
         );
@@ -324,70 +366,104 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void showDashboardTransactionModeDialog({required BuildContext context}) {
+    showGeneralDialog(
+      context: context, 
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) => ScaleTransition(
+        scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+        child: TransactionModeDialog(
+          dashboardTransactionModeList: dashboardTransactionModeList,
+          onChange: (mode) {
+            _settingBloc.add(SettingsOnDashboardTransactionModeEvent(mode: mode));
+            context.pop();
+          },
+        )
+      ),
+    );
+  }
+
   void showLanguageDialog({required BuildContext context}) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: CustomText(
-            title: _localizations!.language,
-            textStyle: getMediumStyle(
-              color: Helper.isDark 
-              ? AppColors.white.withValues(alpha: 0.9) 
-              : AppColors.black,
-              fontSize: AppSize.s18
-            ),
-          ),
-          backgroundColor: Helper.isDark 
-          ? AppColors.dialogColorDark 
-          : AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s12, vertical: AppSize.s12),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              languageList.length,
-              (index) {
-                var data = languageList[index];
-                return InkWell(
-                  onTap: () { 
-                    context.read<MyAppBloc>().add(MyAppChangeLanguageEvent(locale: data.locale));
-                    context.pop();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSize.s8,
-                      vertical: AppSize.s8
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
-                          ? AppIcons.radioCheckIcon 
-                          : AppIcons.uncheckIcon,
-                          color: Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
-                          ? AppColors.primaryColor
-                          : AppColors.grey
-                        ),
-                        const SizedBox(width: AppSize.s10),
-                        CustomText(
-                          title: data.title,
-                          textStyle: getRegularStyle(
-                            color: Helper.isDark 
-                            ? AppColors.white.withValues(alpha: 0.9) 
-                            : AppColors.black,
-                            fontSize: AppSize.s14
+      barrierDismissible: true,
+      barrierLabel: AppStrings.close,
+      pageBuilder: (_, a1, _) {
+        return ScaleTransition(
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(a1),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+            backgroundColor: Helper.isDark ? AppColors.topDarkColor : AppColors.white,
+            insetPadding: const EdgeInsets.all(AppSize.s12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s18, vertical: AppSize.s16),
+            content: Container(
+              width: kIsWeb ? MyAppTheme.columnWidth : (MyAppTheme.columnWidth - AppSize.s60),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSize.s10)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        title: _localizations!.language,
+                        textStyle: getSemiBoldStyle(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSize.s10),
+                  ...List.generate(
+                    languageList.length,
+                    (index) {
+                      var data = languageList[index];
+                      return InkWell(
+                        onTap: () { 
+                          context.read<MyAppBloc>().add(MyAppChangeLanguageEvent(locale: data.locale));
+                          context.pop();
+                          AnalyticsService.instance.logEvent(
+                            name: AnalyticsEvents.settingsChanged,
+                            parameters: {'setting_name': 'language'},
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSize.s4,
+                            vertical: AppSize.s8
+                          ),
+                          margin: EdgeInsets.only(bottom: AppSize.s4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
+                                ? AppIcons.radioCheckIcon 
+                                : AppIcons.uncheckIcon,
+                                color: Preferences.getString(key: AppStrings.prefLanguage) == data.selectedLanguage 
+                                ? AppColors.primaryColor
+                                : AppColors.grey
+                              ),
+                              const SizedBox(width: AppSize.s10),
+                              CustomText(
+                                title: data.title,
+                                textStyle: getRegularStyle(
+                                  color: Helper.isDark 
+                                  ? AppColors.white.withValues(alpha: 0.9) 
+                                  : AppColors.black,
+                                  fontSize: AppSize.s14
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    }
                   ),
-                );
-              }
+                ]
+              ),
             ),
-          ),
+          )
         );
       }
     );

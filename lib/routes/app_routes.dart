@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../core/analytics/analytics_service.dart';
 import '../features/transaction/application/sub_transaction_bloc/sub_transaction_bloc.dart';
 import '../features/dashboard/application/bloc/dashboard_bloc.dart';
 import '../features/dashboard/application/dashboard_screen.dart';
@@ -167,7 +168,7 @@ class AppRoutes {
                         )
                       );
                     }
-                  )
+                  ),
                 ]
               ),
             ]
@@ -197,16 +198,13 @@ class AppRoutes {
 class CustomObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route topRoute, Route? previousTopRoute) {
-    if(topRoute.settings.name != null) {
-      switch (topRoute.settings.name) {
-        case AppRoutes.signupScreen:
-          Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: true);
-          break;
-        case AppRoutes.loginScreen:
-          Preferences.setBool(key: AppStrings.prefGoogleSignInFromSignup, value: false);
-          break;
-        default:
-      }
+    final screenName = topRoute.settings.name;
+    if(!(screenName ?? '').isBlank) {
+      final screenName = topRoute.settings.name;
+      AnalyticsService.instance.logEvent(
+        name: 'screen_view',
+        parameters: {'screen_name': screenName ?? ''},
+      );
     }
   }
 }

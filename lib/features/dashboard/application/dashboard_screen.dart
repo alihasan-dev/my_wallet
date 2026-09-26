@@ -6,8 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../constants/app_theme.dart';
+import '../../../core/analytics/analytics_events.dart';
+import '../../../core/analytics/analytics_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/preferences.dart';
 import '../../../widgets/custom_image_widget.dart';
@@ -25,6 +26,7 @@ import '../../../features/dashboard/domain/user_model.dart';
 import '../../../widgets/custom_empty_widget.dart';
 import '../../../utils/helper.dart';
 import '../../../widgets/transaction_deleted_widget.dart';
+import '../../settings/domain/settings_model.dart';
 part 'dashboard_web_view.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -49,16 +51,16 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
   late LocalAuthentication _localAuthentication;
   String? selectedUserId;
   int selectedUserCount = 0;
-
-  var maskFormatter = MaskTextInputFormatter(
-    mask: '####-###-###',
-    filter: {"#": RegExp(r'[0-9]')}
-  );
   late DateFormat dateFormat;
 
   @override
-  void didChangeDependencies() {
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
     _dashboardBloc = context.read<DashboardBloc>();
     _localizations = AppLocalizations.of(context)!;
     _localAuthentication = LocalAuthentication();
@@ -173,12 +175,17 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
         }
         GoRouter.of(context).pushReplacement(AppRoutes.loginScreen);
       }
+      ///capture logout event
+      AnalyticsService.instance.clearUserId();
+      AnalyticsService.instance.logEvent(
+        name: AnalyticsEvents.logout
+      );
     }
   }
 
   ///method used to open the biometric failed info dialog
   Future<void> openBiometricDialog() async {
-    if(!await biometricAuthentication()) {
+    if(!await biometricAuthentication() && context.mounted) {
       showDialog(
         context: context,
         barrierDismissible: false, 
@@ -234,7 +241,6 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
         isBiometricDialogOpen = true;
         data =  await _localAuthentication.authenticate(
           localizedReason: AppStrings.biometricMessage,
-          // options: const AuthenticationOptions(biometricOnly: false, stickyAuth: true)
         );
         isBiometricDialogOpen = !data;
       } catch (e) {
@@ -280,6 +286,7 @@ class DashboardScreenState extends State<DashboardScreen>  with Helper, WidgetsB
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
     final location = GoRouter.of(context).routerDelegate.currentConfiguration.fullPath;
     if(location != AppRoutes.dashboard) return;
     switch (state) {

@@ -1,4 +1,5 @@
 class AppStrings {
+
   AppStrings._();
 
   static const String appName = 'MyWallet';
@@ -64,6 +65,27 @@ class AppStrings {
   static const String success = 'Success';
   static const String back = 'Back';
   static const String archive = 'Archive';
+  static const String active = 'Active';
+  static const String inactive = 'Inactive';
+  static const String appliedFilter = 'Applied Filters';
+  static const String status = 'Status';
+  static const String dateRange = 'Date Range';
+  static const String amountRange = 'Amount Range';
+  static const String sorting = 'Sorting';
+  static const String details = 'Details';
+  static const String transactionStatement = 'Transaction Statement';
+  static const String reportNo = 'Report no';
+  static const String settlementStatus = 'Settlement Status';
+  static const String transactionSettled = 'All transactions are settled';
+  static const String transactionInsight = 'Transaction Insights';
+  static const String totalCount = 'Total Count';
+  static const String total = 'Total';
+  static const String reportDate = 'Report Date';
+  static const String currency = 'Currency';
+  static const String id = 'ID';
+  static const String transactionStatus = 'Transaction Status';
+  static const String enable = 'Enable';
+  static const String disable = 'Disable';
 
   ///Warning and Error Messages
   static const String logoutMessage = 'Are you sure you want to logout?';
@@ -86,6 +108,7 @@ class AppStrings {
   static const String forgotPasswordMsg = "Enter the email address associated with your account and we'll send you a link to reset your password";
   static const String invalidPhone = "Please provide valid phone number";
   static const String imageSizeMsg = "Image size should not be more than 2MB";
+  static const String fileSizeMsg = "File size should not be more than 2MB";
   static const String userDeletedMsg = "User deleted successfully";
   static const String continueWithGoogle = "Continue with Google";
   static const String termAndPolilcy = "  Terms & Privacy Policy";
@@ -104,6 +127,8 @@ class AppStrings {
   static const String emailSentForgotPasswordMsg = "Email has been sent successfully, follow the link and reset your password";
   static const String userDoesNotExist = "User does not exist";
   static const String userDoesNotExistMsg = "User is not registered with this email.";
+  static const String description = "Description";
+  static const String userDetails = "User Details";
 
   ////Preferences Key Constant
   static const String prefEmail = 'PREF_EMAIL';
@@ -117,8 +142,9 @@ class AppStrings {
   static const String prefProfileImg = 'PREF_PROFILE_IMG';
   static const String prefLanguage = 'PREF_LANGUAGE';
   static const String prefTheme = 'PREF_THEME';
-  static const String prefGoogleSignInFromSignup = 'PREF_GOOGLE_SIGNIN_FROM';
   static const String prefShowTransactionDetails = 'PREF_SHOW_TRANSACTION_DETAILS';
+  static const String prefShowTransactionDescription = 'PREF_SHOW_TRANSACTION_DESCRIPTION';
+  static const String prefDashboardAmountMode = 'PREF_DASHBOARD_AMOUNT_MODE';
 
   ///static url
   static const String sampleImg = "https://lh3.googleusercontent.com/d/1UxpcEcgtN-krRXopTvdu1nLVlh37V5an";

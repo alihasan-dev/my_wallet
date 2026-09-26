@@ -134,6 +134,10 @@ class DashboardWebView extends StatelessWidget {
                           iconColor: AppColors.white,
                           menuPadding: const EdgeInsets.symmetric(vertical: AppSize.s5),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s10)),
+                          child: CustomImageWidget(
+                            imageUrl: Preferences.getString(key: AppStrings.prefProfileImg),
+                            imageSize: 34,
+                          ),
                           itemBuilder: (_) {
                             return <PopupMenuEntry<String>> [
                               PopupMenuItem<String>(
@@ -231,7 +235,10 @@ class DashboardWebView extends StatelessWidget {
                                         strokeWidth: AppSize.s1,
                                         padding: 1.5,
                                         borderWidth: 1.5,
-                                        isSelected: data.isSelected
+                                        isSelected: data.isSelected,
+                                        borderColor: data.isUserVerified
+                                        ? AppColors.primaryColor
+                                        : AppColors.orange
                                       ),
                                       const SizedBox(width: AppSize.s10),
                                       Column(
@@ -247,23 +254,23 @@ class DashboardWebView extends StatelessWidget {
                                                 duration: MyAppTheme.animationDuration,
                                                 child: !data.isUserVerified
                                                 ? Container(
-                                                  margin: const EdgeInsets.only(left: AppSize.s8),
-                                                  padding: const EdgeInsets.symmetric(
-                                                    vertical: 1.8,
-                                                    horizontal: AppSize.s4
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.orange.withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(AppSize.s4)
-                                                  ),
-                                                  child: CustomText(
-                                                    title: localizations.archive,
-                                                    textStyle: getRegularStyle(
-                                                      color: AppColors.orange,
-                                                      fontSize: 11
+                                                    margin: const EdgeInsets.only(left: AppSize.s8),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 1.8,
+                                                      horizontal: AppSize.s4
                                                     ),
-                                                  ),
-                                                )
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.orange.withValues(alpha: 0.1),
+                                                      borderRadius: BorderRadius.circular(AppSize.s4)
+                                                    ),
+                                                    child: CustomText(
+                                                      title: localizations.archive,
+                                                      textStyle: getRegularStyle(
+                                                        color: AppColors.orange,
+                                                        fontSize: 11
+                                                      ),
+                                                    ),
+                                                  )
                                                 : const SizedBox.shrink()
                                               ),
                                             ],
@@ -283,21 +290,7 @@ class DashboardWebView extends StatelessWidget {
                                   ),
                                   Row(
                                     children: [
-                                      AnimatedSize(
-                                        duration: MyAppTheme.animationDuration,
-                                        child: data.amount.isBlank
-                                        ? const SizedBox.shrink()
-                                        : data.amount == 'deleted'
-                                          ? TransactionDeletedWidget(appLocalization: localizations)
-                                          : CustomText(
-                                          title: data.amount.amountFormat(type: data.type),
-                                          textStyle: getMediumStyle(
-                                            color: data.type == AppStrings.transfer
-                                            ? AppColors.red
-                                            : AppColors.green
-                                          ),
-                                        ),
-                                      ),
+                                      _buildAmountWidget(data, localizations),
                                       AnimatedSize(
                                         duration: MyAppTheme.animationDuration,
                                         child: !data.isPinned
@@ -353,6 +346,39 @@ class DashboardWebView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAmountWidget(UserModel data, AppLocalizations localizations) {
+    final displayMode = DashboardAmountModeExtension.fromValue(
+      Preferences.getString(key: AppStrings.prefDashboardAmountMode),
+    );
+    final isLatestMode = displayMode == DashboardAmountMode.latestTransaction;
+    final isOutstandingMode = displayMode == DashboardAmountMode.totalOutstanding;
+
+    final shouldHide = data.amount.isBlank && (isOutstandingMode && data.outstandingAmount == 0.0);
+    final isDeletedLatest = data.amount == 'deleted' && isLatestMode;
+
+    Widget child;
+    if (shouldHide) {
+      child = const SizedBox.shrink();
+    } else if (isDeletedLatest) {
+      child = TransactionDeletedWidget(appLocalization: localizations);
+    } else {
+      final title = isLatestMode
+      ? data.amount.amountFormat(type: data.type)
+      : data.outstandingAmount.balanceFormat;
+      final color = isLatestMode
+      ? (data.type == AppStrings.transfer ? AppColors.red : AppColors.green)
+      : (data.outstandingAmount.isNegative ? AppColors.red : AppColors.green);
+      child = CustomText(
+        title: title,
+        textStyle: getMediumStyle(color: color),
+      );
+    }
+    return AnimatedSize(
+      duration: MyAppTheme.animationDuration,
+      child: child,
     );
   }
 }

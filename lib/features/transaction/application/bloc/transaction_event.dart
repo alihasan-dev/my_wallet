@@ -4,7 +4,7 @@ sealed class TransactionEvent {}
 
 class TransactionInitialEvent extends TransactionEvent {}
 
-class TransactionAddEvent extends TransactionEvent {
+class TransactionAddUpdateEvent extends TransactionEvent {
   String userName;
   DateTime? date;
   String amount;
@@ -12,16 +12,31 @@ class TransactionAddEvent extends TransactionEvent {
   String transactionId;
   bool isActive;
   String description;
+  TransactionModel? prevTransactionState;
 
-  TransactionAddEvent({
+  TransactionAddUpdateEvent({
     required this.userName,
     required this.amount,
     required this.type,
     this.date,
     this.transactionId = '',
     this.isActive = true,
-    this.description = ''
+    this.description = '',
+    this.prevTransactionState
   });
+
+  @override
+  String toString() {
+    return 'TransactionAddEvent('
+        'userName: $userName, '
+        'date: $date, '
+        'amount: $amount, '
+        'type: $type, '
+        'transactionId: $transactionId, '
+        'isActive: $isActive, '
+        'description: $description'
+        ')';
+  }
 } 
 
 class TransactionAmountChangeEvent extends TransactionEvent {
@@ -32,6 +47,10 @@ class TransactionAmountChangeEvent extends TransactionEvent {
 class TransactionTypeChangeEvent extends TransactionEvent {
   String type;
   TransactionTypeChangeEvent({required this.type});
+}
+class TransactionStatusChangeEvent extends TransactionEvent {
+  String status;
+  TransactionStatusChangeEvent({required this.status});
 }
 
 class TransactionDateChangeEvent extends TransactionEvent {
@@ -60,7 +79,10 @@ class TransactionProfileUpdateEvent extends TransactionEvent {
   String userName;
   String profileImage;
 
-  TransactionProfileUpdateEvent({this.userName = '', this.profileImage = ''});
+  TransactionProfileUpdateEvent({
+    this.userName = '', 
+    this.profileImage = ''
+  });
 }
 
 class TransactionFilterEvent extends TransactionEvent {}
@@ -69,8 +91,14 @@ class TransactionApplyFilterEvent extends TransactionEvent {
   DateTimeRange? dateTimeRange;
   String transactionType;
   RangeValues? amountRangeValues;
+  String transactionStatus;
 
-  TransactionApplyFilterEvent({this.dateTimeRange, this.transactionType = '', this.amountRangeValues});
+  TransactionApplyFilterEvent({
+    this.dateTimeRange, 
+    this.transactionType = '', 
+    this.amountRangeValues, 
+    this.transactionStatus = ''
+  });
 }
 
 class TransactionChangeAmountRangeEvent extends TransactionEvent {
@@ -94,6 +122,8 @@ class TransactionDeleteEvent extends TransactionEvent {}
 
 class TransactionEditEvent extends TransactionEvent {}
 
+class TransactionImportEvent extends TransactionEvent {}
+
 class TransactionActiveEvent extends TransactionEvent {}
 
 class TransactionClearSelectionEvent extends TransactionEvent {}
@@ -102,7 +132,10 @@ class TransactionShowDetailsEvent extends TransactionEvent {
   String transactionId;
   String title;
 
-  TransactionShowDetailsEvent({required this.transactionId, required this.title});
+  TransactionShowDetailsEvent({
+    required this.transactionId, 
+    required this.title
+  });
 }
 
 class TransactionDetailsEvent extends TransactionEvent {
@@ -113,3 +146,5 @@ class TransactionDetailsEvent extends TransactionEvent {
 class TransactionClearTransactionIdEvent extends TransactionEvent {}
 
 class TransactionSubDetailsEvent extends TransactionEvent {}
+
+class TransactionImportTransactionEvent extends TransactionEvent {}

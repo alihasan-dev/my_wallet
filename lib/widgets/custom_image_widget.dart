@@ -64,11 +64,11 @@ class CustomImageWidget extends StatelessWidget {
           : imageUrl.isNetworkImage
             ? CachedNetworkImage(
                 imageUrl: imageUrl,
-                placeholder: (context, url) => Padding(
+                placeholder: (_, _) => Padding(
                   padding: EdgeInsets.all(circularPadding),
                   child: CircularProgressIndicator.adaptive(strokeWidth: strokeWidth)
                 ),
-                errorWidget: (context, url, error) {
+                errorWidget: (_, url, _) {
                   return CachedNetworkImage(
                     imageUrl: AppStrings.sampleImg,
                     fit: BoxFit.cover,

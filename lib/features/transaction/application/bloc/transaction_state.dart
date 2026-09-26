@@ -3,11 +3,9 @@ part of 'transaction_bloc.dart';
 sealed class TransactionState {}
 
 class TransactionInitialState extends TransactionState {}
-
 class DashboardSuccessState extends TransactionState {
   DashboardSuccessState();
 }
-
 class TransactionFailedState extends TransactionState {
   String message;
   String title;
@@ -17,47 +15,48 @@ class TransactionFailedState extends TransactionState {
 class TransactionLoadingState extends TransactionState {}
 
 class TransactionDetailsLoadingState extends TransactionState {}
-
 class TransactionAmountFieldState extends TransactionState {
   String errorAmountMsg;
   TransactionAmountFieldState({this.errorAmountMsg = ''});
 }
-
 class TransactionUserNameFieldState extends TransactionState {
   String userNameMessage;
   TransactionUserNameFieldState({required this.userNameMessage});
 }
-
 class TransactionTypeChangeState extends TransactionState {
   String type = AppStrings.transfer;
   TransactionTypeChangeState(this.type);
 }
-
+class TransactionStatusChangeState extends TransactionState {
+  String status = AppStrings.active;
+  TransactionStatusChangeState(this.status);
+}
 class TransactionDateChangeState extends TransactionState {
   bool isEmpty;
   TransactionDateChangeState(this.isEmpty);
 }
-
 class AllTransactionState extends TransactionState {
   List<TransactionModel> listTransaction;
   double totalBalance;
   bool isFilterEnable;
   bool isTransactionAgainstFilter;
-  AllTransactionState({required this.listTransaction, required this.totalBalance, this.isFilterEnable = false, this.isTransactionAgainstFilter = false});
+  AllTransactionState({
+    required this.listTransaction, 
+    required this.totalBalance, 
+    this.isFilterEnable = false, 
+    this.isTransactionAgainstFilter = false,
+  });
 }
-
 class TransactionScrollState extends TransactionState {
   double appbarSize;
   TransactionScrollState({required this.appbarSize});
 }
-
 class TransactionExportPDFState extends TransactionState {
   String message;
   bool isSuccess;
 
   TransactionExportPDFState({this.message = '', this.isSuccess = false});
 }
-
 class TransactionProfileUpdateState extends TransactionState {
   String userName;
   String profileImage;
@@ -66,23 +65,19 @@ class TransactionProfileUpdateState extends TransactionState {
 }
 
 class TransactionFilterState extends TransactionState {}
-
 class TransactionChangeAmountRangeState extends TransactionState {
   RangeValues rangeAmount;
 
   TransactionChangeAmountRangeState({required this.rangeAmount});
 }
-
 class TransactionEditState extends TransactionState {
   TransactionModel selectedTransaction;
   TransactionEditState({required this.selectedTransaction});
 }
-
 class TransactionActiveInActiveState extends TransactionState {
   String message;
   TransactionActiveInActiveState({this.message = ''});
 }
-
 class TransactionShowDetailsState extends TransactionState {
   String transactionId;
   String title;
@@ -91,11 +86,13 @@ class TransactionShowDetailsState extends TransactionState {
     required this.title
   }) : assert(transactionId.isNotEmpty, "Please provide valid transaction id");
 }
-
-
 class TransactionFetchDetailsState extends TransactionState {
   List<TransactionDetailsModel> transactionDetailsList;
   TransactionFetchDetailsState({this.transactionDetailsList = const []});
 }
 
 class TransactionClearTransactionIdState extends TransactionState {}
+class TransactionImportState extends TransactionState {
+  double finalTotalAmount;
+  TransactionImportState({this.finalTotalAmount = 0.0});
+}

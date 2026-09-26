@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../../constants/app_icons.dart';
 
 class SettingModel {
+  SettingItemId id;
   String title;
   String subTitle;
   IconData icon;
@@ -11,6 +11,7 @@ class SettingModel {
   bool isLauncher;
 
   SettingModel({
+    required this.id,
     this.icon = AppIcons.settingsIcon,
     required this.title,
     this.subTitle = "",
@@ -18,4 +19,22 @@ class SettingModel {
     this.switchValue = false,
     this.isLauncher = false,
   });
+}
+
+enum SettingItemId {
+  language,
+  theme,
+  dashboardTransactionMode,
+  transactionDetails,
+  transactionDescription,
+  archiveUser,
+  biometricToggle,
+  webApp,
+  currency,
+  about
+}
+
+enum DashboardAmountMode {
+  latestTransaction,
+  totalOutstanding,
 }

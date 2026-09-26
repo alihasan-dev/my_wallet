@@ -4,7 +4,10 @@ sealed class ProfileState {}
 
 class ProfileInitialState extends ProfileState {}
 
-class ProfileLoadingState extends ProfileState {}
+class ProfileLoadingState extends ProfileState {
+  bool showLoading;
+  ProfileLoadingState({this.showLoading = true});
+}
 
 class ProfileSuccessState extends ProfileState {
   Map<String, dynamic> profileData;

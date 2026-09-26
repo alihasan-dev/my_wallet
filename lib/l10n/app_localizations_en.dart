@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -137,7 +138,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get camera => 'Camera';
 
   @override
-  String get appearance => 'Appearaance';
+  String get appearance => 'Appearance';
 
   @override
   String get theme => 'Theme';
@@ -172,7 +173,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get showUnverifiedUser => 'Show Archived User';
+  String get show_archived_friends => 'Show Archived Friends';
+
+  @override
+  String get show_archived_friends_msg =>
+      'Include archived friends in your friends list';
 
   @override
   String get forgotPassword => 'Forgot Password';
@@ -260,10 +265,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gotIt => 'Got it';
 
   @override
-  String get transactionBreakdown => 'Transaction Details';
+  String get transactionBreakdown => 'Show Transaction Details';
 
   @override
-  String get transactionBreakdownMsg => 'Details for Each Transaction';
+  String get transactionBreakdownMsg =>
+      'Display additional details for each transaction';
 
   @override
   String get unselect => 'Unselect';
@@ -297,4 +303,174 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleted => 'Deleted';
+
+  @override
+  String get create_archived_user_label => 'Create as archived user';
+
+  @override
+  String get archived_user_hint =>
+      'Archived users are hidden from the main list (if the \'Show Archived Users\' option is disabled in settings). Restore them anytime by long-pressing them and tapping \'Unarchive\'.';
+
+  @override
+  String get transactionDescription => 'Show Transaction Descriptions';
+
+  @override
+  String get transactionDescriptionMsg =>
+      'Display descriptions for your transactions';
+
+  @override
+  String get transactionStatus => 'Transaction Status';
+
+  @override
+  String get importReport => 'Import Report';
+
+  @override
+  String get transactionImport => 'Transaction Import';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String get transactionStatusMsg =>
+      'Active transactions count toward your balance. You can change this anytime by editing the transaction.';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get review => 'Review';
+
+  @override
+  String get clean => 'Clean';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get drag_drop_msg => 'Drag and drop or ';
+
+  @override
+  String get select_files => 'select files';
+
+  @override
+  String get upload_file_msg =>
+      'Upload your transaction file in CSV (.csv) or Excel (.xlsx/.xls) format.\nThe maximum file size allowed is 2 MB';
+
+  @override
+  String get download_sample_template => 'Download sample template';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get import_completed => 'Import completed';
+
+  @override
+  String import_complete_msg(Object transaction_count) {
+    return '$transaction_count transactions imported successfully';
+  }
+
+  @override
+  String get try_different_file => 'Try a different file';
+
+  @override
+  String get loading => 'Loading';
+
+  @override
+  String import_valid_transaction_msg(Object row) {
+    return 'Import $row Transactions';
+  }
+
+  @override
+  String invalid_row_msg(Object invalid_row) {
+    return 'All $invalid_row rows in your file had issues and were excluded. Nothing will be imported.';
+  }
+
+  @override
+  String get import_review_msg =>
+      'I have reviewed the data and want to import the validated transactions into MyWallet.';
+
+  @override
+  String get no_valid_import => 'No valid transactions to import';
+
+  @override
+  String get import_warning_msg =>
+      'This action cannot be undone automatically — imported transactions can be edited or deleted individually afterward.';
+
+  @override
+  String invalid_row_exclude_msg(Object invalid_row) {
+    return '$invalid_row invalid rows excluded';
+  }
+
+  @override
+  String valid_row_include_msg(Object valid_row) {
+    return '$valid_row transactions will be imported';
+  }
+
+  @override
+  String get import_summary => 'Import summary';
+
+  @override
+  String get import_failed_parse => 'Import Failed to Parse';
+
+  @override
+  String successful_read_file_msg(
+    Object file_name,
+    Object total_column,
+    Object total_row,
+  ) {
+    return 'Successfully read $total_row rows and $total_column columns from $file_name';
+  }
+
+  @override
+  String get reading_file => 'Reading your file';
+
+  @override
+  String get checking_formats => 'Checking formats';
+
+  @override
+  String get checking_your_data => 'Checking your data';
+
+  @override
+  String get transaction_import_msg_second =>
+      'Your file must match the sample template format, or it will be rejected.';
+
+  @override
+  String get transaction_import_msg_first =>
+      'Avoid re-uploading a file you\'ve already imported — only exact matches are caught as duplicates, so edited or partial re-uploads may create repeat entries.';
+
+  @override
+  String import_valid_transaction(Object valid_row) {
+    return 'Import $valid_row transactions';
+  }
+
+  @override
+  String get transaction_mode => 'Transactions Mode';
+
+  @override
+  String get latest_transaction => 'Latest Transaction';
+
+  @override
+  String get latest_transaction_msg =>
+      'Show the amount from the most recent transaction';
+
+  @override
+  String get total_outstanding => 'Total Outstanding';
+
+  @override
+  String get total_outstanding_msg =>
+      'Show the current outstanding amount with each friend';
+
+  @override
+  String get transaction_mode_info_msg =>
+      'Your outstanding amount will update when you add, edit, or change a transaction. Existing transactions will be included after your next transaction update.';
+
+  @override
+  String get transaction_details => 'Transaction Details';
 }

@@ -1,15 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../features/settings/domain/settings_model.dart';
 import '../utils/helper.dart';
 import '../utils/preferences.dart';
 import '../constants/app_strings.dart';
 
 extension StringExtension on String {
 
-  bool get isBlank {
-    return trim().isEmpty ? true : false;
-  }
+  bool get isBlank => trim().isEmpty;
 
   bool get isNetworkImage {
     if(startsWith('http') || startsWith('https')) {
@@ -91,6 +91,29 @@ extension StringExtension on String {
       return kIsWeb ? 'Web' : 'Unknown';
     }
   }
+
+  Uint8List get convertBase64ToUint8List {
+    final base64String = this;
+    String cleanedBase64 = base64String;
+    if (base64String.contains(',')) {
+      cleanedBase64 = base64String.split(',').last;
+    }
+    Uint8List bytes = base64Decode(cleanedBase64);
+    return bytes;
+  }
+
+  String get formatIndianMobileNumber {
+    final digits = replaceAll(RegExp(r'\D'), '');
+    if (digits.length != 10) {
+      return this;
+    }
+    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+      return this;
+    }
+    return '${digits.substring(0, 4)}-'
+        '${digits.substring(4, 7)}-'
+        '${digits.substring(7, 10)}';
+  }
   
 }
 
@@ -144,4 +167,40 @@ extension NumberExtension on num {
     }
   }
 
+}
+
+extension DashboardAmountModeExtension on DashboardAmountMode {
+
+  String get value {
+    switch (this) {
+      case DashboardAmountMode.latestTransaction:
+        return 'latest_transaction';
+
+      case DashboardAmountMode.totalOutstanding:
+        return 'total_outstanding';
+    }
+  }
+
+  static DashboardAmountMode fromValue(String? value) {
+    switch (value ?? '') {
+      case 'total_outstanding':
+        return DashboardAmountMode.totalOutstanding;
+
+      case 'latest_transaction':
+      default:
+        return DashboardAmountMode.latestTransaction;
+    }
+  }
+
+  static String label() {
+    final prefValue = Preferences.getString(key: AppStrings.prefDashboardAmountMode);
+    switch (prefValue) {
+      case 'total_outstanding':
+        return 'Total Outstanding';
+
+      case 'latest_transaction':
+      default:
+        return 'Latest Transaction';
+    }
+  }
 }

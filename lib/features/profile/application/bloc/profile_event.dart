@@ -1,7 +1,6 @@
 part of 'profile_bloc.dart';
 
 sealed class ProfileEvent {}
-
 class ProfileUpdateEvent extends ProfileEvent {
   Map<String, dynamic> profileData;
   ProfileUpdateEvent({required this.profileData});
@@ -34,4 +33,9 @@ class ProfileChooseImageEvent extends ProfileEvent {
 class ProfileDeleteUserEvent extends ProfileEvent {
   bool isConfirmed;
   ProfileDeleteUserEvent({this.isConfirmed = false});
+}
+
+class ProfileLoadingEvent extends ProfileEvent {
+  bool showLoading;
+  ProfileLoadingEvent({this.showLoading = true});
 }
