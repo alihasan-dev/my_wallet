@@ -25,7 +25,7 @@ import '../../../../utils/report_generator/report_footer.dart';
 import '../../../../utils/report_generator/report_header.dart' show ReportHeader;
 import '../../../../utils/report_generator/report_settlement_status.dart';
 import '../../../../utils/report_generator/report_transaction_insights.dart';
-import '../../../../utils/report_generator/report_transaction_timeilne_header.dart';
+import '../../../../utils/report_generator/report_transaction_timeline_header.dart';
 import '../../../../utils/report_generator/report_user_details.dart';
 import '../../../dashboard/application/bloc/dashboard_bloc.dart';
 import '../../domain/transaction_details_model.dart';
@@ -478,7 +478,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           'description': event.description.trim()
         });
       }
-      ////capture tranaction event
+      ////capture transaction event
       AnalyticsService.instance.logEvent(
         name: event.transactionId.isBlank
         ? AnalyticsEvents.transactionCreated

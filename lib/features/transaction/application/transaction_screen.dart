@@ -861,6 +861,7 @@ class _TransactionScreenState extends State<TransactionScreen> with Helper {
       context: context, 
       barrierDismissible: true,
       barrierLabel: AppStrings.close,
+      useRootNavigator: true,
       pageBuilder: (_, a1, _) => ScaleTransition(
         scale: Tween<double>( begin: 0.8, end: 1.0 ).animate(a1),
         child: AddTransactionDialog(

@@ -4,7 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../constants/app_size.dart';
 import '../../constants/app_strings.dart';
 import '../../utils/app_extension_method.dart';
-import '../../utils/report_generator/report_transaction_timeilne_header.dart';
+import '../../utils/report_generator/report_transaction_timeline_header.dart';
 
 class ReportHeader extends pw.StatelessWidget {
   
